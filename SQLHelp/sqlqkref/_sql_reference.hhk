@@ -1,0 +1,513 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALLOCATE (Embedded SQL)">
+			<param name="Local" value="ALLOCATE (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER CLUSTER">
+			<param name="Local" value="ALTER CLUSTER.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER DATABASE">
+			<param name="Local" value="ALTER DATABASE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER FUNCTION">
+			<param name="Local" value="ALTER FUNCTION.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER INDEX">
+			<param name="Local" value="ALTER INDEX.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER PACKAGE">
+			<param name="Local" value="ALTER PACKAGE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER PROCEDURE">
+			<param name="Local" value="ALTER PROCEDURE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER PROFILE">
+			<param name="Local" value="ALTER PROFILE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER RESOURCE COST">
+			<param name="Local" value="ALTER RESOURCE COST.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER ROLE">
+			<param name="Local" value="ALTER ROLE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER ROLLBACK SEGMENT">
+			<param name="Local" value="ALTER ROLLBACK SEGMENT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER SEQUENCE">
+			<param name="Local" value="ALTER SEQUENCE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER SESSION">
+			<param name="Local" value="ALTER SESSION.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER SNAPSHOT">
+			<param name="Local" value="ALTER SNAPSHOT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER SNAPSHOT LOG">
+			<param name="Local" value="ALTER SNAPSHOT LOG.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER SYSTEM">
+			<param name="Local" value="ALTER SYSTEM.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER TABLE">
+			<param name="Local" value="ALTER TABLE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER TABLESPACE">
+			<param name="Local" value="ALTER TABLESPACE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER TRIGGER">
+			<param name="Local" value="ALTER TRIGGER.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER TYPE">
+			<param name="Local" value="ALTER TYPE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER USER">
+			<param name="Local" value="ALTER USER.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ALTER VIEW">
+			<param name="Local" value="ALTER VIEW.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ANALYZE">
+			<param name="Local" value="ANALYZE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ARCHIVE LOG clause">
+			<param name="Local" value="ARCHIVE LOG clause.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="AUDIT (SQL Statements)">
+			<param name="Local" value="AUDIT (SQL Statements).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="AUDIT (Schema Objects)">
+			<param name="Local" value="AUDIT (Schema Objects).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CLOSE (Embedded SQL)">
+			<param name="Local" value="CLOSE (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="COMMENT">
+			<param name="Local" value="COMMENT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="COMMIT">
+			<param name="Local" value="COMMIT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="COMMIT (Embedded SQL)">
+			<param name="Local" value="COMMIT (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CONNECT (Embedded SQL)">
+			<param name="Local" value="CONNECT (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CONSTRAINT clause">
+			<param name="Local" value="CONSTRAINT clause.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE CLUSTER">
+			<param name="Local" value="CREATE CLUSTER.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE CONTROLFILE">
+			<param name="Local" value="CREATE CONTROLFILE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE DATABASE">
+			<param name="Local" value="CREATE DATABASE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE DATABASE LINK">
+			<param name="Local" value="CREATE DATABASE LINK.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE DIRECTORY">
+			<param name="Local" value="CREATE DIRECTORY.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE FUNCTION">
+			<param name="Local" value="CREATE FUNCTION.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE INDEX">
+			<param name="Local" value="CREATE INDEX.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE LIBRARY">
+			<param name="Local" value="CREATE LIBRARY.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE PACKAGE">
+			<param name="Local" value="CREATE PACKAGE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE PACKAGE BODY">
+			<param name="Local" value="CREATE PACKAGE BODY.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE PROCEDURE">
+			<param name="Local" value="CREATE PROCEDURE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE PROFILE">
+			<param name="Local" value="CREATE PROFILE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE ROLE">
+			<param name="Local" value="CREATE ROLE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE ROLLBACK SEGMENT">
+			<param name="Local" value="CREATE ROLLBACK SEGMENT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE SCHEMA">
+			<param name="Local" value="CREATE SCHEMA.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE SEQUENCE">
+			<param name="Local" value="CREATE SEQUENCE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE SNAPSHOT">
+			<param name="Local" value="CREATE SNAPSHOT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE SNAPSHOT LOG">
+			<param name="Local" value="CREATE SNAPSHOT LOG.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE SYNONYM">
+			<param name="Local" value="CREATE SYNONYM.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE TABLE">
+			<param name="Local" value="CREATE TABLE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE TABLESPACE">
+			<param name="Local" value="CREATE TABLESPACE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE TRIGGER">
+			<param name="Local" value="CREATE TRIGGER.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE TYPE">
+			<param name="Local" value="CREATE TYPE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE TYPE BODY">
+			<param name="Local" value="CREATE TYPE BODY.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE USER">
+			<param name="Local" value="CREATE USER.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="CREATE VIEW">
+			<param name="Local" value="CREATE VIEW.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DEALLOCATE clause">
+			<param name="Local" value="DEALLOCATE clause.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DECLARE CURSOR (Embedded SQL)">
+			<param name="Local" value="DECLARE CURSOR (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DECLARE DATABASE (Embedded SQL)">
+			<param name="Local" value="DECLARE DATABASE (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DECLARE STATEMENT (Embedded SQL)">
+			<param name="Local" value="DECLARE STATEMENT (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DECLARE TABLE (Embedded SQL)">
+			<param name="Local" value="DECLARE TABLE (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DELETE">
+			<param name="Local" value="DELETE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DELETE (Embedded SQL)">
+			<param name="Local" value="DELETE (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DESCRIBE (Embedded SQL)">
+			<param name="Local" value="DESCRIBE (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DISABLE clause">
+			<param name="Local" value="DISABLE clause.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP CLUSTER">
+			<param name="Local" value="DROP CLUSTER.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP DATABASE LINK">
+			<param name="Local" value="DROP DATABASE LINK.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP DIRECTORY">
+			<param name="Local" value="DROP DIRECTORY.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP FUNCTION">
+			<param name="Local" value="DROP FUNCTION.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP INDEX">
+			<param name="Local" value="DROP INDEX.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP LIBRARY">
+			<param name="Local" value="DROP LIBRARY.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP PACKAGE">
+			<param name="Local" value="DROP PACKAGE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP PROCEDURE">
+			<param name="Local" value="DROP PROCEDURE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP PROFILE">
+			<param name="Local" value="DROP PROFILE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP ROLE">
+			<param name="Local" value="DROP ROLE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP ROLLBACK SEGMENT">
+			<param name="Local" value="DROP ROLLBACK SEGMENT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP SEQUENCE">
+			<param name="Local" value="DROP SEQUENCE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP SNAPSHOT">
+			<param name="Local" value="DROP SNAPSHOT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP SNAPSHOT LOG">
+			<param name="Local" value="DROP SNAPSHOT LOG.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP SYNONYM">
+			<param name="Local" value="DROP SYNONYM.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP TABLE">
+			<param name="Local" value="DROP TABLE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP TABLESPACE">
+			<param name="Local" value="DROP TABLESPACE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP TRIGGER">
+			<param name="Local" value="DROP TRIGGER.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP TYPE">
+			<param name="Local" value="DROP TYPE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP TYPE BODY">
+			<param name="Local" value="DROP TYPE BODY.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP USER">
+			<param name="Local" value="DROP USER.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP VIEW">
+			<param name="Local" value="DROP VIEW.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="DROP clause">
+			<param name="Local" value="DROP clause.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ENABLE clause">
+			<param name="Local" value="ENABLE clause.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="EXECUTE (Embedded SQL)">
+			<param name="Local" value="EXECUTE (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="EXPLAIN PLAN">
+			<param name="Local" value="EXPLAIN PLAN.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="FETCH (Embedded SQL)">
+			<param name="Local" value="FETCH (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Filespec">
+			<param name="Local" value="Filespec.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="GRANT (Object Privileges)">
+			<param name="Local" value="GRANT (Object Privileges).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="GRANT (System Privileges and Roles)">
+			<param name="Local" value="GRANT (System Privileges and Roles).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="INSERT">
+			<param name="Local" value="INSERT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="INSERT (Embedded SQL)">
+			<param name="Local" value="INSERT (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="LOCK TABLE">
+			<param name="Local" value="LOCK TABLE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="MERGE">
+			<param name="Local" value="MERGE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="NOAUDIT (SQL Statements)">
+			<param name="Local" value="NOAUDIT (SQL Statements).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="NOAUDIT (Schema Objects)">
+			<param name="Local" value="NOAUDIT (Schema Objects).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="OPEN (Embedded SQL)">
+			<param name="Local" value="OPEN (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="PARALLEL clause">
+			<param name="Local" value="PARALLEL clause.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="PREPARE (Embedded SQL)">
+			<param name="Local" value="PREPARE (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="RECOVER clause">
+			<param name="Local" value="RECOVER clause.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="RENAME">
+			<param name="Local" value="RENAME.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="REVOKE (Schema Object Privileges)">
+			<param name="Local" value="REVOKE (Schema Object Privileges).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="REVOKE (System Privileges and Roles)">
+			<param name="Local" value="REVOKE (System Privileges and Roles).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ROLLBACK">
+			<param name="Local" value="ROLLBACK.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="ROLLBACK (Embedded SQL)">
+			<param name="Local" value="ROLLBACK (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="SAVEPOINT">
+			<param name="Local" value="SAVEPOINT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="SAVEPOINT (Embedded SQL)">
+			<param name="Local" value="SAVEPOINT (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="SELECT">
+			<param name="Local" value="SELECT.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="SELECT (Embedded SQL)">
+			<param name="Local" value="SELECT (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="SET CONSTRAINT(S)">
+			<param name="Local" value="SET CONSTRAINT(S).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="SET ROLE">
+			<param name="Local" value="SET ROLE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="SET TRANSACTION">
+			<param name="Local" value="SET TRANSACTION.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="STORAGE clause">
+			<param name="Local" value="STORAGE clause.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="TRUNCATE">
+			<param name="Local" value="TRUNCATE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="TYPE (Embedded SQL)">
+			<param name="Local" value="TYPE (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="UPDATE">
+			<param name="Local" value="UPDATE.htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="UPDATE (Embedded SQL)">
+			<param name="Local" value="UPDATE (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="VAR (Embedded SQL)">
+			<param name="Local" value="VAR (Embedded SQL).htm">
+		</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="WHENEVER (Embedded SQL)">
+			<param name="Local" value="WHENEVER (Embedded SQL).htm">
+		</OBJECT>
+</UL>
+</BODY></HTML>

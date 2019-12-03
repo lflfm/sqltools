@@ -1,0 +1,90 @@
+<html>
+    <head>
+        <title>Application launcher - sqlt-launcher.exe</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252">
+        <LINK href="_sqltools.css" type="text/css" rel="stylesheet"></head>
+    <body>
+        <OBJECT classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e" type="application/x-oleobject"
+            VIEWASTEXT>
+            <PARAM NAME="Keyword" VALUE="Launcher">
+            <PARAM NAME="Keyword" VALUE="sqlt-launcher">
+        </OBJECT>
+        <h3>Application launcher (sqlt-launcher.exe)</h3>
+        <HR SIZE="3">
+        <p>There are a situations when you cannot modify your environment 
+            variables like PATH or ORACLE_HOME but that might be necessary in order to make 
+            SQLTools work properly. In order to run SQLTools in modified environment you 
+            need to create XML control file sql-launcher.xml in the same folder as 
+            sql-launcher.exe. The following xml is provided for demonstration.</p>
+        <pre lang="xml" >
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;us-ascii&quot;?&gt;
+&lt;programs default=&quot;&quot; detailed_labels=&quot;0&quot;&gt;
+  &lt;program 
+    id=&quot;1&quot; 
+    name=&quot;sqltools 1.6 with 10g client&quot; 
+    executable=&quot;...\SQLTools 1.6\SQLTools.exe&quot; 
+    oracle_bin_path=&quot;C:\Apps\instantclient_10_2\&quot; 
+    tns_admin=&quot;C:\Apps\instantclient_10_2\&quot;
+  /&gt;
+  &lt;program 
+    id=&quot;2&quot; 
+    name=&quot;sqltools 1.7 with 10g client&quot; 
+    executable=&quot;...\SQLTools 1.7\SQLTools.exe&quot; 
+    oracle_bin_path=&quot;C:\Apps\instantclient_10_2\&quot; 
+  /&gt;
+  &lt;program id=&quot;3&quot; 
+    name=&quot;sqltools 1.8 with 11g client&quot; 
+    executable=&quot;...\Debug\SQLTools.exe&quot;        
+    oracle_bin_path=&quot;C:\Apps\instantclient_11_2\&quot; 
+    oracle_home=&quot;C:\Apps\instantclient_11_2&quot;
+  /&gt;
+&lt;/programs&gt;  </pre>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr valign="top">
+    <td width="100" bgColor="#99ccff"><p class="tab_header">element</td>
+    <td width="100" bgColor="#99ccff"><p class="tab_header">attribute</td>
+    <td bgColor="#99ccff"><p class="tab_header">description</td>
+  </tr>
+  <tr valign="top">
+    <td width="100">programs</td>
+    <td width="100">default</td>
+    <td>if it is set then an entry with corresponding id will be executed w/o showing 
+        UI. example: default=1</td>
+  </tr>
+  <tr valign="top">
+    <td width="100">program</td>
+    <td width="100">id</td>
+    <td>optional, it is used only with default</td>
+  </tr>
+  <tr valign="top">
+    <td width="100">program</td>
+    <td width="100">name</td>
+    <td>required, it will be displayed in the list</td>
+  </tr>
+  <tr valign="top">
+    <td width="100">program</td>
+    <td width="100">executable</td>
+    <td>requred, the full path to a executable of your choice</td>
+  </tr>
+  <tr valign="top">
+    <td width="100">program</td>
+    <td width="100">oracle_bin_path</td>
+    <td>optional, the path to oracle bin folder</td>
+  </tr>
+  <tr valign="top">
+    <td width="100">program</td>
+    <td width="100">tns_admin</td>
+    <td>optional, set TNS_ADMIN=&quot;value&quot; will be set before launching the executable</td>
+  </tr>
+  <tr valign="top">
+    <td width="100">program</td>
+    <td width="100">oracle_home</td>
+    <td>optional, set ORACLE_HOME=&quot;value&quot; will be set before launching the executable</td>
+  </tr>
+</table>
+        <p>
+            The program will show the list of choices:</p>
+        <img src="Images\sqlt-launcher.jpg">
+        </body>
+</html>

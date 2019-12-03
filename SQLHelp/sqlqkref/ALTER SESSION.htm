@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER SESSION</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER SESSION">
+    <param name="Keyword" value="SESSION">
+</OBJECT>
+<H3>ALTER SESSION<HR SIZE="3"></H3>
+<P>
+ Use this command to alter your current session in one of the
+ following:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+to enable or disable the SQL trace facility
+<LI>
+to enable or disable global name resolution
+<LI>
+to change the values of NLS parameters
+<LI>
+to change your DBMS session label in Trusted Oracle
+<LI>
+to change the default label format for your session
+<LI>
+to specify the size of the cache used to hold frequently used
+      cursors
+<LI>
+to enable or disable the closing of cached cursors on COMMIT or
+      ROLLBACK
+<LI>
+in a parallel server, to indicate that the session must access
+      database files as if the session was connected to another 
+      instance
+<LI>
+to enable, disable, and change the behavior of hash join 
+      operations
+<LI>
+to change the handling of remote procedure call dependencies
+<LI>
+to change transaction level handling
+<LI>
+to close a database link
+<LI>
+to send advice to remote databases for forcing an in-doubt
+      distributed transaction
+<LI>
+to permit or prohibit stored procedures and functions from
+      issuing COMMIT and ROLLBACK statements
+<LI>
+to change the goal of the cost-based optimization approach
+<LI>
+in a parallel server, to enable DML statements to be considered
+      for parallel execution
+<LI>
+to insert, update, or delete from tables with indexes or index
+      partitions marked as unusable
+<LI>
+to allow deferrable constraints to be checked either 
+      immediately following every DML statement or at the end of a
+      transaction
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ALTER SESSION
+   {SET { {SQL_TRACE | GLOBAL_NAMES | SKIP_UNUSABLE_INDEXES}={TRUE |
+     FALSE}
+        | NLS_LANGUAGE = language
+        | NLS_TERRITORY = territory
+        | NLS_DATE_FORMAT = 'fmt'
+        | NLS_DATE_LANGUAGE = language
+        | NLS_NUMERIC_CHARACTERS = 'text'
+        | NLS_ISO_CURRENCY = territory
+        | NLS_CURRENCY = 'text'
+        | NLS_SORT = {sort | BINARY}
+        | NLS_CALENDAR = 'text'
+        | LABEL = {'text' | DBHIGH | DBLOW | OSLABEL}
+        | MLS_LABEL_FORMAT = fmt
+        | OPTIMIZER_GOAL = {ALL_ROWS | FIRST_ROWS | RULE | CHOOSE}
+        | FLAGGER = {ENTRY | INTERMEDIATE | FULL | OFF}
+        | SESSION_CACHED_CURSORS = integer
+        | CLOSE_CACHED_OPEN_CURSORS = {TRUE | FALSE}
+        | INSTANCE = integer
+        | HASH_AREA_SIZE = integer
+        | HASH_MULTILBLOCK_IO_COUNT = integer
+        | REMOTE_DEPENDENCIES_MODE = {TIMESTAMP | SIGNATURE}
+        | ISOLATION_LEVEL {SERIALIZABLE | READ COMMITTED}
+        | CONSTRAINT[S] = {IMMEDIATE | DEFERRED | DEFAULT} } ...
+   | CLOSE DATABASE LINK dblink
+   | ADVISE {COMMIT | ROLLBACK | NOTHING}
+   | {ENABLE | DISABLE} COMMIT IN PROCEDURE}
+   | {ENABLE | DISABLE} PARALLEL DML
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER SYSTEM.htm">ALTER SYSTEM</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

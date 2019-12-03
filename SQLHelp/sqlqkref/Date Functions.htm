@@ -1,0 +1,146 @@
+<html xmlns:o>
+
+<head>
+<title>Date Functions</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="ADD_MONTHS">
+  <param name="Keyword" value="LAST_DAY">
+  <param name="Keyword" value="MONTHS_BETWEEN">
+  <param name="Keyword" value="NEW_TIME">
+  <param name="Keyword" value="NEXT_DAY">
+  <param name="Keyword" value="SYSDATE">
+  <param name="Keyword" value="ROUND">
+  <param name="Keyword" value="TRUNC">
+  <param name="Keyword" value="Date Format">
+  <param name="Keyword" value="Mask">
+</object>
+</p>
+
+<h3>Date Functions</h3>
+
+<hr SIZE="3">
+
+<h4>Single-row date functions that return values of datatype DATE, except MONTHS_BETWEEN,
+which returns a number. </h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td vAlign="top" width="144" bgColor="#99ccff"><p class="tab_header">Function</td>
+    <td vAlign="top" bgColor="#99ccff"><p class="tab_header">Value Returned</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">ADD_MONTHS(<i>d</i>,<i>n</i>)</td>
+    <td vAlign="top"><p class="tab_desc">Date <i>d </i>plus <i>n </i>months</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">LAST_DAY(<i>d</i>)</td>
+    <td vAlign="top"><p class="tab_desc">Date of last day of month containing <i>d </i></td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">MONTHS_BETWEEN(<i>d</i>,<i>e</i>)</td>
+    <td vAlign="top"><p class="tab_desc">Number of months by which <i>e </i>precedes <i>d </i></td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">NEW_TIME(<i>d</i>,<i>a</i>,<i>b</i>)</td>
+    <td vAlign="top"><p class="tab_desc">Date and time in time zone <i>b </i>when date and
+    time in zone <i>a </i>are <i>d</i>. <i>a </i>and <i>b </i>are CHAR values identifying time
+    zones.</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">NEXT_DAY(<i>d</i>,<i>char</i>)</td>
+    <td vAlign="top"><p class="tab_desc">Date of the first day of the week named by <i>char </i>that
+    is equal to or later than the date <i>d</i></td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">SYSDATE</td>
+    <td vAlign="top"><p class="tab_desc">Current date and time</td>
+  </tr>
+</table>
+
+<h4>Date Truncation and Rounding</h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td vAlign="top" width="144" bgColor="#99ccff"><p class="tab_header">Function</td>
+    <td vAlign="top" bgColor="#99ccff"><p class="tab_header">Value Returned</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">ROUND(<i>d</i>,<i>fmt</i>) </td>
+    <td vAlign="top"><p class="tab_desc"><i>d </i>rounded as specified by rounding unit <i>fmt
+    </i></td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">TRUNC(<i>d</i>,<i>fmt</i>) </td>
+    <td vAlign="top"><p class="tab_desc"><i>d </i>truncated as specified by <i>fmt</i> </td>
+  </tr>
+</table>
+
+<h4>Format Models for ROUND and TRUNC</h4>
+
+<p>This table lists the date format elements used to control truncation and rounding. If
+no format element is specified, <i>fmt </i>defaults to ‘DD’.</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td vAlign="top" width="144" bgColor="#99ccff"><p class="tab_header">Format Element</td>
+    <td vAlign="top" bgColor="#99ccff"><p class="tab_header">Value Returned</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">CC or SCC</td>
+    <td vAlign="top"><p class="tab_desc">First day of century</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">YYYY or SYYYY<br>
+    YYY or YY or Y<br>
+    Y,YYY or YEAR<br>
+    or SYEAR</td>
+    <td vAlign="top"><p class="tab_desc">First day of year (rounds up on July 1)</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">Q</td>
+    <td vAlign="top"><p class="tab_desc">First day of the quarter (rounds up on 16th day of
+    2nd month of the quarter)</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">MONTH or MON or MM or RM</td>
+    <td vAlign="top"><p class="tab_desc">First day of the month (rounds up on 16th day)</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">WW or IW</td>
+    <td vAlign="top"><p class="tab_desc">Same day of the week as Jan 1 of that year</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">W</td>
+    <td vAlign="top"><p class="tab_desc">Same day of the week as the first of the month</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">DD or DD or J</td>
+    <td vAlign="top"><p class="tab_desc">Day</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">DAY or DY or D</td>
+    <td vAlign="top"><p class="tab_desc">First day of the week</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">HH or HH12 or HH24</td>
+    <td vAlign="top"><p class="tab_desc">Hour</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="144"><p class="tab_func">MI</td>
+    <td vAlign="top"><p class="tab_desc">Minute</td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

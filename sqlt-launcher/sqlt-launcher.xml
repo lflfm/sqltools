@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<programs default="3" detailed_labels="1">
+  <program id1="1" name="sqltools 1.6 with 10g client" executable="E:\_TEST\SQLTools 1.6\SQLTools.exe" oracle_bin_path="C:\Apps\instantclient_10_2\" tns_admin="C:\Apps\instantclient_10_2\"/>
+  <program id1="2" name="sqltools 1.7 with 10g client" executable="E:\_TEST\SQLTools 1.7\SQLTools.exe" oracle_bin_path="C:\Apps\instantclient_10_2\" />
+  <program id1="3" name="sqltools 1.8 with 11g client" executable="E:\_CPP\sqlt.18\_output_\Debug\SQLTools.exe" oracle_bin_path="C:\Apps\instantclient_11_2\" oracle_home="C:\Apps\instantclient_11_2"/>
+</programs>  

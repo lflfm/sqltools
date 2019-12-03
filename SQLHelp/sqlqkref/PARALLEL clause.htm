@@ -1,0 +1,46 @@
+<HTML>
+<HEAD>
+<TITLE>PARALLEL clause</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="PARALLEL clause">
+</OBJECT>
+<H3>PARALLEL clause<HR SIZE="3"></H3>
+<P>
+ This clause can only be used in the following commands:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+ALTER CLUSTER
+<LI>
+ALTER DATABASE ... RECOVER
+<LI>
+ALTER INDEX ... REBUILD
+<LI>
+ALTER TABLE
+<LI>
+CREATE CLUSTER
+<LI>
+CREATE INDEX
+<LI>
+CREATE TABLE
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ { NOPARALLEL | PARALLEL
+   ( { DEGREE {integer | DEFAULT}
+     | INSTANCES {integer | DEFAULT} } ...) }
+ 
+</PRE>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

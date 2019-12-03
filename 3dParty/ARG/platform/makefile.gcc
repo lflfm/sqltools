@@ -1,0 +1,48 @@
+# gcc build tool options
+#
+
+.SUFFIXES:
+
+
+CC=g++ -Wall -pedantic -D__int64="long long" -I $(ARG_SRC)/include
+CFLAGS= -c
+AR=ar -cr #
+O=.o
+A=.a
+X=.exe
+
+.SUFFIXES: .cpp $(X) .d $(O) $(A)
+
+
+GCC_DLL_LDFLAGS= -Wl,-e,__cygwin_noncygwin_dll_entry@12 -s
+
+GCC_DLLWRAP_FLAGS= \
+	--add-stdcall-alias \
+	--driver-name c++ \
+	--target=cygwin32 \
+	--output-def $(@:.dll=.def)
+
+
+# Making an object file
+MKOBJ=$(CC) $(CFLAGS) $< -o $@
+
+# Making an executable file
+define MKEXE
+	$(CC) $^ -o $@
+	strip $@
+endef
+
+# Making a DLL
+MKDLL=dllwrap $(GCC_DLLWRAP_FLAGS) -o $@ \
+	    $(filter %$(O), $^) $(GCC_DLL_LDFLAGS) $(filter %$(A), $^)
+
+# Making a static library
+MKLIB=$(AR)$@ $(filter %$(O), $^)
+
+# Making a dependency file
+define MKDEP
+	echo "$@\\"  > $@ 
+	echo "\$$(ARG_BUILD)/\$$(ARG_PACKAGE)/$(@F:.d=.o)\\" >> $@ 
+	echo "\$$(ARG_BUILD)/\$$(ARG_PACKAGE)/$(@F:.d=.obj)\\" >> $@ 
+	$(CC) -MM -I $(ARG_SRC)/include $(filter %.cpp, $^) >> $@
+endef

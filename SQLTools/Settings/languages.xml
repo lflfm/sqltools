@@ -1,0 +1,339 @@
+<?xml version="1.0" standalone="yes" ?>
+<OpenEditor>
+    <Languages MajorVersion="1" MinorVersion="1">
+        <Language Name="PL/SQL" Delimiters=" &#x09;&apos;\()[]{}+-*/,.!?;:=&gt;&lt;%|@&amp;^" CaseSensiteve="0" CommentPairFirst="/*" CommentPairLast="*/" EndLineComment="--" EndLineCommentCol="-1" EscapeChar="" StringPairFirst="&apos;" StringPairLast="&apos;" CharPairFirst="" CharPairLast="">
+            <StartLineComments>
+                <StartLineComment value="PRO" />
+                <StartLineComment value="PROM" />
+                <StartLineComment value="PROMP" />
+                <StartLineComment value="PROMPT" />
+                <StartLineComment value="REM" />
+                <StartLineComment value="REMA" />
+                <StartLineComment value="REMAR" />
+                <StartLineComment value="REMARK" />
+            </StartLineComments>
+            <MatchBraceSets>
+                <MatchBraceSet>
+                    <Brace value="{" />
+                    <Brace value="}" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="(" />
+                    <Brace value=")" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="[" />
+                    <Brace value="]" />
+                </MatchBraceSet>
+            </MatchBraceSets>
+            <KeywordGroups>
+                <KeywordGroup Name="Operators">! &quot; % ( ) * + , - . / : ; &lt; = &gt; @ ^ | ~</KeywordGroup>
+                <KeywordGroup Name="SQL Keywords">ACCESS ADD AFTER ALL ALTER AND ANY AS ASC AT AUDIT AUTHID BEFORE BETWEEN BFILE BLOB BY CASCADE CASE CAST CHAR CHECK CLOB CLUSTER COLUMN COMMENT COMMIT COMPILE COMPRESS CONNECT CONSTRAINT CREATE CURRENT CURRVAL DATABASE DATE DEBUG DECIMAL DEFAULT DELETE DISABLE DISTINCT DROP EACH ENABLE EXCEPTIONS EXCLUSIVE EXECUTE EXISTS FILE FLOAT FOREIGN FROM GRANT GROUP HAVING HEAP IDENTIFIED IMMEDIATE IN INCREMENT INDEX INITIAL INITRANS INSERT INTEGER INTERSECT INTO IS ISOLATION KEY LEVEL LIKE LINK LOCK LONG MAXEXTENTS MAXTRANS MINEXTENTS MINUS MLSLABEL MODE MODIFY NCLOB NEXT NEXTVAL NOAUDIT NOCOMPRESS NOCOPY NOT NOWAIT NULL NUMBER OF OFFLINE OLD ON ONLINE OPTION OR ORDER ORGANIZATION PARTITION PCTFREE PCTINCREASE PCTUSED PRIMARY PRIOR PRIVATE PRIVILEGES PUBLIC QUOTA RAW REFERENCES REFERENCING RENAME REPLACE RESOURCE REVOKE ROLLBACK ROW ROWID ROWLABEL ROWNUM ROWS SELECT SEQUENCE SESSION SET SHARE SIZE SMALLINT SOME START STORAGE SUCCESSFUL SYNONYM SYSDATE TABLE TABLESPACE TEMPORARY TO TRIGGER UNION UNIQUE UPDATE UROWID USER VALIDATE VALUES VARCHAR VARCHAR2 VIEW WHENEVER WHERE WITH XOR JOIN OUTER INNER OVER</KeywordGroup>
+                <KeywordGroup Name="SQL Functions">Abs Acos Add_Months Ascii Asin Atan Atan2 Avg BFileName Ceil CharToRowid Chr Concat Convert Corr Cos Cosh Count Covar_Pop Covar_Samp Cume_Dist Decode Dense_Rank Deref Dump Empty_Blob Empty_Clob Exp First_Value Floor GLB Greatest Greatest_Lb Grouping HexToRaw InitCap InStr InStrB Lag Last_Day Last_Value Lead Least Least_Ub Length LengthB Ln Log Lower LPad LTrim Make_Ref Max Min Mod Months_Between New_Time Next_Day NlsSort Nls_Charset_Decl_Len Nls_Charset_Id Nls_Charset_Name Nls_InitCap Nls_Lower Nls_Upper Ntile NumToDSInterval NumToYMInterval Nvl Nvl2 Percent_Rank Power Rank Ratio_To_Report RawToHex Reftohex Regr_Avgx Regr_Avgy Regr_Count Regr_Intercept Regr_R2 Regr_Slope Regr_Sxx Regr_Sxy Regr_Syy Round RowidToChar Row_Number RPad RTrim Sign Sin SinH SoundEx Sqrt StdDev Stddev_Pop Stddev_Samp SubStr SubStrB Sum Sys_Context Sys_Guid Tan TanH To_Char To_Date To_Label To_Lob To_Multi_Byte To_Number To_Single_Byte Translate Trim Trunc UID Upper UserEnv Value Variance Var_Pop Var_Samp VSize</KeywordGroup>
+                <KeywordGroup Name="PL/SQL Keywords">ABORT ACCEPT Access_Into_Null ARRAY ASSERT ASSIGN AUTHORIZATION BEGIN BINARY_INTEGER BODY BOOLEAN BULK CHAR_BASE CLOSE COLAUTH COLLECT Collection_Is_Null COLUMNS CONSTANT CRASH CURSOR Cursor_Already_Open DATA_BASE DAY DBA DEBUGOFF DEBUGON DECLARE DEFINITION DELAY DELTA DESC DIGITS DISPOSE DO Dup_Val_On_Index ELSE ELSIF END ENTRY EXCEPTION EXCEPTION_INIT EXIT EXTENDS FALSE FETCH FOR FORALL FORM FOUND FUNCTION GENERIC GOTO HOUR IF INDICATOR INTERFACE INTERVAL Invalid_Cursor Invalid_Number ISOPEN JAVA LIMITED Login_Denied LOOP MINUTE MONTH NATURAL NATURALN NEW NOTFOUND Not_Logged_On No_Data_Found NUMBER_BASE OCIROWID OPAQUE OPEN OPERATOR OTHERS OUT PACKAGE PLS_INTEGER POSITIVE POSITIVEN PRAGMA PROCEDURE Program_Error RAISE RANGE REAL RECORD REF RELEASE REM RESTRICT_REFERENCES RETURN REVERSE ROWCOUNT ROWTYPE Rowtype_Mismatch RUN SAVEPOINT SCHEMA SECOND Self_Is_Null SEPARATE SPACE SQL SQLCODE SQLERRM STATEMENT Storage_Error Subscript_Beyond_Count Subscript_Outside_Limit SUBTYPE Sys_Invalid_Rowid TABAUTH TASK TERMINATE THEN TIME Timeout_On_Resource TIMESTAMP Too_Many_Rows TRUE TYPE USE Value_Error WHEN WHILE WORK WRITE YEAR Zero_Divide ZONE</KeywordGroup>
+                <KeywordGroup Name="SYS Packages">Dbms_Application_Info Dbms_Aq Dbms_Aqadm Dbms_Aqin Dbms_Ddl Dbms_Debug Dbms_Describe Dbms_Job Dbms_Lob Dbms_Lock Dbms_Output Dbms_Pipe Dbms_Random Dbms_Refresh Dbms_Resource_Manager Dbms_Resource_Manager_Privs Dbms_Rmgr_Group_Export Dbms_Rmgr_Pact_Export Dbms_Rmgr_Plan_Export Dbms_Rowid Dbms_Rule Dbms_Session Dbms_Snapshot Dbms_Snapshot_Utl Dbms_Space Dbms_Sql Dbms_Stats Dbms_Summary Dbms_Trace Dbms_Transaction Dbms_Utility DELETING Htf Htp INSERTING Raise_Application_Error Set_Transaction_Use UPDATING Utl_File Utl_Http Utl_Inaddr Utl_Raw Utl_Ref Utl_Smtp Utl_Tcp</KeywordGroup>
+                <KeywordGroup Name="Other Keywords">ADMIN ALLOCATE ANALYZE ARCHIVE ARCHIVELOG AUTOALLOCATE AUTOEXTEND BACKUP BECOME BLOCK BUFFER_POOL CACHE CANCEL CHANGE CHARACTER CHECKPOINT CHUNK COBOL CONSTRAINTS CONTENTS CONTINUE CONTROLFILE CYCLE DATAFILE DEC DEFERRABLE DEFERRED DEGREE DICTIONARY DIRECTORY DISMOUNT DOUBLE ESCAPE EVENTS EXCEPT EXEC EXPLAIN EXTENT EXTERNALLY FLUSH FORCE FORTRAN FREELIST FREELISTS GLOBAL GO GROUPS HASH INCLUDING INITIALLY INSTANCE INSTANCES INT KEEP KILL LANGUAGE LAYER LESS LISTS LOB LOCAL LOGFILE LOGGING MANAGE MANAGEMENT MANUAL MAXDATAFILES MAXINSTANCES MAXLOGFILES MAXLOGHISTORY MAXLOGMEMBERS MAXSIZE MAXVALUE MINVALUE MODULE MONITORING MOUNT NCHAR NEVER NOARCHIVELOG NOCACHE NOCYCLE NOLOGGING NOMAXVALUE NOMINVALUE NOMONITORING NONE NOORDER NOPARALLEL NORESETLOGS NORMAL NOSORT NUMERIC NVARCHAR2 OFF ONLY OPTIMAL OVERFLOW OWN PARALLEL PCTTHRESHOLD PCTVERSION PERMANENT PLAN PLI PRECISION PRESERVE PROFILE READ RECOVER RECYCLE REFRESH RESETLOGS RESIZE RESTRICTED REUSE ROLE ROLES SCN SECTION SEGMENT SHARED SNAPSHOT SORT SQLERROR OSERROR SQLSTATE STATEMENT_ID STATISTICS STOP STORE SUBPARTITIONS SWITCH SYSTEM TEMPFILE THAN THREAD TRACING TRANSACTION TRIGGERS TRUNCATE UNDER UNIFORM UNLIMITED UNTIL USING</KeywordGroup>
+            </KeywordGroups>
+        </Language>
+        <Language Name="C++" Delimiters=' &#x09;&apos;&quot;\()[]{}+-*/.,!?;:=&gt;&lt;%|@&amp;^' CaseSensiteve="1" CommentPairFirst="/*" CommentPairLast="*/" EndLineComment="//" EndLineCommentCol="-1" EscapeChar="\" StringPairFirst='&quot;' StringPairLast='&quot;' CharPairFirst="&apos;" CharPairLast="&apos;">
+            <StartLineComments />
+            <MatchBraceSets>
+                <MatchBraceSet>
+                    <Brace value="{" />
+                    <Brace value="}" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="(" />
+                    <Brace value=")" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="[" />
+                    <Brace value="]" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="#if" />
+                    <Brace value="#else" />
+                    <Brace value="#endif" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="#ifdef" />
+                    <Brace value="#else" />
+                    <Brace value="#endif" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="#ifndef" />
+                    <Brace value="#else" />
+                    <Brace value="#endif" />
+                </MatchBraceSet>
+            </MatchBraceSets>
+            <KeywordGroups>
+                <KeywordGroup Name="Operators">! % &amp; ( ) * + - / &lt; = &gt; [ ] ^ { | } ~</KeywordGroup>
+                <KeywordGroup Name="Keywords">__asm __based __cdecl __fastcall __inline __multiple_inheritance __pascal __single_inheritance __stdcall __virtual_inheritance auto bool break case catch char class const const_cast continue default delete do double dynamic_cast else enum explicit extern false float for friend goto if inline int long mutable namespace new operator private protected public register reinterpret_cast return short signed sizeof static static_cast struct switch template this throw true try typedef typeid typename union unsigned using virtual void volatile wchar_t while</KeywordGroup>
+                <KeywordGroup Name="Preprocessor">#define #elif #else #endif #error #if #ifdef #ifndef #import #include #line #pragma #undef defined</KeywordGroup>
+            </KeywordGroups>
+        </Language>
+        <Language Name="Java" Delimiters=' &#x09;&apos;&quot;\()[]{}+-*/.,!?;:=&gt;&lt;%|@&amp;^' CaseSensiteve="1" CommentPairFirst="/*" CommentPairLast="*/" EndLineComment="//" EndLineCommentCol="-1" EscapeChar="\" StringPairFirst='&quot;' StringPairLast='&quot;' CharPairFirst="&apos;" CharPairLast="&apos;">
+            <StartLineComments />
+            <MatchBraceSets>
+                <MatchBraceSet>
+                    <Brace value="{" />
+                    <Brace value="}" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="(" />
+                    <Brace value=")" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="[" />
+                    <Brace value="]" />
+                </MatchBraceSet>
+            </MatchBraceSets>
+            <KeywordGroups>
+                <KeywordGroup Name="Operators">! % &amp; ( ) * + - / &lt; = &gt; [ ] ^ { | } ~</KeywordGroup>
+                <KeywordGroup Name="Keywords">abstract boolean break byte case catch char class continue default delegate do double else extends false final finally float for if implements import instanceof int interface long native new null package private protected public return short static super switch synchronized this throw throws transient true try void volatile while</KeywordGroup>
+                <KeywordGroup Name="Preprocessor">#define #elif #else #endif #error #if #undef #warning</KeywordGroup>
+            </KeywordGroups>
+        </Language>
+        <Language Name="Shell" Delimiters=' &#x09;&apos;&quot;\()[]{}+-*/.,!?;:=&gt;&lt;%|@&amp;^$#' CaseSensiteve="1" CommentPairFirst="" CommentPairLast="" EndLineComment="#" EndLineCommentCol="-1" EscapeChar="" StringPairFirst='&quot;' StringPairLast='&quot;' CharPairFirst="&apos;" CharPairLast="&apos;">
+            <StartLineComments />
+            <MatchBraceSets>
+                <MatchBraceSet>
+                    <Brace value="{" />
+                    <Brace value="}" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="(" />
+                    <Brace value=")" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="[" />
+                    <Brace value="]" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="if" />
+                    <Brace value="elif" />
+                    <Brace value="else" />
+                    <Brace value="fi" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="case" />
+                    <Brace value="esac" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="for" />
+                    <Brace value="do" />
+                    <Brace value="done" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="while" />
+                    <Brace value="do" />
+                    <Brace value="done" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="until" />
+                    <Brace value="do" />
+                    <Brace value="done" />
+                </MatchBraceSet>
+            </MatchBraceSets>
+            <KeywordGroups>
+                <KeywordGroup Name="Operators">! % &amp; ( ) * + - : ; &lt; = &gt; [ ] ^ | ~</KeywordGroup>
+                <KeywordGroup Name="Keywords">case do done elif else esac fi for function if in select then time until while</KeywordGroup>
+                <KeywordGroup Name="Built-in Commands">alias bg break builtin cd command continue disown echo eval exec exit export false fg getconf getopts hist jobs kill let newgrp print pwd read readonly return set shift sleep trap true typeset ulimit umask unalias unset wait whence</KeywordGroup>
+            </KeywordGroups>
+        </Language>
+        <Language Name="XML" Delimiters=' &#x09;&apos;&quot;&gt;&lt;&amp;;=/' CaseSensiteve="0" CommentPairFirst="&lt;!--" CommentPairLast="--&gt;" EndLineComment="" EndLineCommentCol="-1" EscapeChar="" StringPairFirst='&quot;' StringPairLast='&quot;' CharPairFirst="&apos;" CharPairLast="&apos;">
+            <StartLineComments />
+            <MatchBraceSets>
+                <MatchBraceSet>
+                    <Brace value="{" />
+                    <Brace value="}" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="(" />
+                    <Brace value=")" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="[" />
+                    <Brace value="]" />
+                </MatchBraceSet>
+            </MatchBraceSets>
+            <KeywordGroups>
+                <KeywordGroup Name="Operators">&amp; &amp;amp; &amp;apos; &amp;gt; &amp;lt; &amp;quot; / &lt; = &gt;</KeywordGroup>
+            </KeywordGroups>
+        </Language>
+        <Language Name="SQR" Delimiters=' &#x09;&apos;&quot;!()*+.,/:;&lt;=&gt;^|~' CaseSensiteve="0" CommentPairFirst="" CommentPairLast="" EndLineComment="!" EndLineCommentCol="-1" EscapeChar="" StringPairFirst="&apos;" StringPairLast="&apos;" CharPairFirst="" CharPairLast="">
+            <StartLineComments />
+            <MatchBraceSets>
+                <MatchBraceSet>
+                    <Brace value="{" />
+                    <Brace value="}" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="(" />
+                    <Brace value=")" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="[" />
+                    <Brace value="]" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="declare-chart" />
+                    <Brace value="end-declare" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="declare-image" />
+                    <Brace value="end-declare" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="declare-layout" />
+                    <Brace value="end-declare" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="declare-printer" />
+                    <Brace value="end-declare" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="declare-procedure" />
+                    <Brace value="end-declare" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="declare-report" />
+                    <Brace value="end-declare" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="declare-variable" />
+                    <Brace value="end-declare" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="begin-footing" />
+                    <Brace value="end-footing" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="begin-heading" />
+                    <Brace value="end-heading" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="begin-procedure" />
+                    <Brace value="end-procedure" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="begin-program" />
+                    <Brace value="end-program" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="begin-report" />
+                    <Brace value="end-report" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="begin-setup" />
+                    <Brace value="end-setup" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="begin-document" />
+                    <Brace value="end-document" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="begin-select" />
+                    <Brace value="exit-select" />
+                    <Brace value="end-select" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="begin-sql" />
+                    <Brace value="end-sql" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="if" />
+                    <Brace value="else" />
+                    <Brace value="end-if" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="evaluate" />
+                    <Brace value="when" />
+                    <Brace value="end-evaluate" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="while" />
+                    <Brace value="end-while" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="#if" />
+                    <Brace value="#else" />
+                    <Brace value="#endif" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="#if" />
+                    <Brace value="#else" />
+                    <Brace value="#end-if" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="#ifdef" />
+                    <Brace value="#else" />
+                    <Brace value="#endif" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="#ifdef" />
+                    <Brace value="#else" />
+                    <Brace value="#end-if" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="#ifndef" />
+                    <Brace value="#else" />
+                    <Brace value="#end-if" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="#ifndef" />
+                    <Brace value="#else" />
+                    <Brace value="#endif" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="begin-execute" />
+                    <Brace value="end-execute" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="declare-color-map" />
+                    <Brace value="end-declare" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="declare-connection" />
+                    <Brace value="end-declare" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="declare-toc" />
+                    <Brace value="end-declare" />
+                </MatchBraceSet>
+            </MatchBraceSets>
+            <KeywordGroups>
+                <KeywordGroup Name="Operators">! &quot; % ( ) * + , - . / : ; &lt; = &gt; AND BitAND BitOR BitXOR NOT OR XOR ^ | ~</KeywordGroup>
+                <KeywordGroup Name="Section">begin-document begin-footing begin-heading begin-procedure begin-program begin-report begin-setup end-document end-footing end-heading end-procedure end-program end-report end-setup</KeywordGroup>
+                <KeywordGroup Name="Declaration">alter-color-map alter-connection alter-locale alter-printer begin-execute begin-select begin-sql declare-chart declare-color-map declare-connection declare-image declare-layout declare-printer declare-procedure declare-report declare-toc declare-variable end-declare end-execute end-select end-sql exit-select load-lookup</KeywordGroup>
+                <KeywordGroup Name="Preprocessor">#debug #define #else #end-if #endif #if #ifdef #ifndef #include</KeywordGroup>
+                <KeywordGroup Name="Functions">add array-add array-divide array-multiply array-subtract ask break call clear-array close columns concat connect create-array create-color-palette date-time datenow display divide do dollar-symbol else encode end-evaluate end-if end-while evaluate execute extract find find font get get-color goto graphic if input last-page let lookup lowercase money-symbol move multiply new-page new-report next-column next-listing no-formfeed open page-number page-size position print print-bar-code print-chart print-direct print-image printer-deinit printer-init put read set-color show string subtract unstring uppercase use use-column use-printer-type use-procedure use-report while while write</KeywordGroup>
+                <KeywordGroup Name="Reserved variables">#current-column #current-line #end-file #page-count #return-status #sql-count #sql-status #sqr-max-columns #sqr-max-lines #sqr-pid #sqr-toc-level #sqr-toc-page $batch-mode $current-date $sql-error $sqr-database $sqr-dbcs $sqr-encoding $sqr-encoding-console $sqr-encoding-database $sqr-encoding-file-input $sqr-encoding-file-output $sqr-encoding-report-output $sqr-hostname $sqr-locale $sqr-platform $sqr-program $sqr-report $sqr-toc-text $sqr-ver $username</KeywordGroup>
+                <KeywordGroup Name="Other keywords">3d-effects abs access acos after after-bold after-page after-report all alter analyze any array as asc ascii asin at at-end atan audit authid avg beep before before-bold before-page before-report between blink bold bottom-margin box by cascade case cast ceil center change char char-size char-width chars-inch chart-size check cl clear-line clear-screen cluster column comment commit compile compress compute cond constraint cos cosh count create cs current currval database date dateadd datetostr debug decimal decimal-separator decode default deg degree delete desc disable distinct drop e10 each edit enable erase-page exceptions exclusive exists exp extent field file fill fixed fixed_nolf float floor font font-type for-append for-reading for-reports for-writing foreign formfeed from getenv goto-top grant group having heap horz-line identified image-size immediate in increment index initial initrans insert instr integer intersect into is isblank isnull isolation keep-top key layout left-margin legend legend-placement legend-presentation legend-title length level like line-height line-size line-width lines-inch link local lock log10 long loops lower lpad ltrim max max-columns max-lines maxextents maxlen maxtrans min minextents minus mlslabel mod mode modify name need newline newpage next nextval no-advance noaudit nocompress nocopy noline nologging noprompt normal nowait null number nvl of offline old on on-break on-error online option order organization orientation page-depth paper-size parallel partition pctfree pctincrease pctused pie-segment-explode pie-segment-percent-display pie-segment-quantity-display pitch prior point-markers point-size power primary printer-type private privileges public quiet quota rad range raw record references referencing rename replace resource return_value reverse revoke right-margin rollback round row rowid rowlabel rownum rows row_number rpad rtrim select sequence session set share sign sin sinh size skip skiplines smallint some sort sort_area_size source sqrt start startup-file statistics status stop storage strtodate sub-title substr successful sum symbol-set synonym sysdate table tablespace tan tanh temporary thousand-separator times title to top-margin top-page to_char to_date to_number translate trigger trunc truncate type underline union unique update upper user using validate values varchar varchar2 vary vert-line view warn when when-other whenever where with wrap wrapdepth x-axis-grid x-axis-label x-axis-major-increment x-axis-major-tick-marks x-axis-max-value x-axis-min-value x-axis-minor-increment x-axis-minor-tick-marks x-axis-scale x-axis-tick-mark-placement y-axis-grid y-axis-label y-axis-major-increment y-axis-major-tick-marks y-axis-max-value y-axis-min-value y-axis-minor-increment y-axis-minor-tick-marks y-axis-scale y-axis-tick-mark-placement</KeywordGroup>
+            </KeywordGroups>
+        </Language>
+        <Language Name="PERL" Delimiters=' &#x09;&apos;&quot;\()[]{}+-/.,!?;:=&gt;&lt;|^#' CaseSensiteve="1" CommentPairFirst="" CommentPairLast="" EndLineComment="#" EndLineCommentCol="-1" EscapeChar="\" StringPairFirst='&quot;' StringPairLast='&quot;' CharPairFirst="&apos;" CharPairLast="&apos;">
+            <StartLineComments />
+            <MatchBraceSets>
+                <MatchBraceSet>
+                    <Brace value="{" />
+                    <Brace value="}" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="(" />
+                    <Brace value=")" />
+                </MatchBraceSet>
+                <MatchBraceSet>
+                    <Brace value="[" />
+                    <Brace value="]" />
+                </MatchBraceSet>
+            </MatchBraceSets>
+            <KeywordGroups>
+                <KeywordGroup Name="Operators">! % &amp; ( ) * + - / &lt; = &gt; [ ] ^ { | } ~</KeywordGroup>
+                <KeywordGroup Name="Keywords">bool continue do else elsif for foreach goto if last local my next no our package redo require return sub unless until use while</KeywordGroup>
+                <KeywordGroup Name="Functions">accept alarm atan2 bind binmode caller chdir chmod chomp chop chown chr chroot close closedir connect cos crypt dbmclose dbmopen defined delete die dump each endgrent endhostent endnetent endprotoent endpwent endservent eof eval exec exists exit exp fcntl fileno flock fork format formline getc getgrent getgrgid getgrname gethostbyaddr gethostbyname gethostent getlogin getnetbyaddr getnetbyname getnetent getpeername getpgrp getppid getpriority getprotobyname getprotobynumber getprotoent getpwent getpwnam getpwuid getservbyname getservbyport getservent getsockname getsockopt glob gmtime grep hex index int ioctl join keys kill lc lcfirst length less link listen localtime log lstat map mkdir msgctl msgget msgrcv msgsnd new oct open opendir ord pack pipe pop pos print printf push quotemeta rand read readdir readline readlink recv ref rename reset reverse rewinddir rindex rmdir scalar seek seekdir select semctl semgett semop send setgrent sethostent setnetent setpgrp setpriority setprotoent setpwent setservent setsockopt shift shmctl shmget shmread shmwrite shutdown sin sleep socket socketpair sort splice split sprintf sqrt srand stat study substr symlink syscall sysopen sysread system syswrite tell telldir tie tied time times truncate uc ucfirst umask undef unlink unpack unshift utime values vec wait waitpid wantarray warn write</KeywordGroup>
+                <KeywordGroup Name="DBI-Functions">available_drivers bind_col bind_columns bind_param bind_param_inout commit connect_cached data_sources disconnect dump_results err errstr execute fetchall_arrayref fetchrow_array fetchrow_arrayref fetchrow_hashref finish func neat neat_list ping prepare prepare_cached quote rollback rows selectall_arrayref selectcol_arrayref selectrow_array state table_info tables trace trace_msg type_info_all</KeywordGroup>
+            </KeywordGroups>
+        </Language>
+    </Languages>
+</OpenEditor>

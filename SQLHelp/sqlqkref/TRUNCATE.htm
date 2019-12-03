@@ -1,0 +1,34 @@
+<HTML>
+<HEAD>
+<TITLE>TRUNCATE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="TRUNCATE">
+</OBJECT>
+<H3>TRUNCATE<HR SIZE="3"></H3>
+<P>
+ Use this command to remove all rows from a table or cluster and
+ reset the STORAGE parameters to the values when the table or cluster
+ was created.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ TRUNCATE
+   { TABLE [ schema. ]table
+     [ [ PRESERVE | PURGE ] SNAPSHOT LOG ]
+     | CLUSTER [ schema. ]cluster }
+   [ { DROP | REUSE } STORAGE ]
+ 
+</PRE>
+<P>See also:  <A HREF="DELETE.htm">DELETE</A>
+, <A HREF="DROP TABLE.htm">DROP TABLE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

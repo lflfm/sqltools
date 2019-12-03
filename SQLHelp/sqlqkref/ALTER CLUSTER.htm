@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER CLUSTER</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER CLUSTER">
+    <param name="Keyword" value="CLUSTER">
+</OBJECT>
+<H3>ALTER CLUSTER<HR SIZE="3"></H3>
+<P>
+ Use this command to redefine storage and parallelism characteristics
+ for a cluster.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ ALTER CLUSTER [schema.]cluster
+   { PCTUSED integer
+   | PCTFREE integer
+   | SIZE integer [K | M]
+   | INITRANS integer
+   | MAXTRANS integer
+   | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+   | ALLOCATE EXTENT [({ SIZE integer [K | M]
+                       | DATAFILE 'filename'
+                       | INSTANCE integer} ...)]
+   | DEALLOCATE UNUSED [KEEP integer [K | M]]} ...
+   [PARALLEL <A HREF="PARALLEL clause.htm">parallel_clause</A> | NOPARALLEL]
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE CLUSTER.htm">CREATE CLUSTER</A>
+, <A HREF="DROP CLUSTER.htm">DROP CLUSTER</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

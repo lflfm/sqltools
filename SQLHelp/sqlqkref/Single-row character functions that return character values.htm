@@ -1,0 +1,147 @@
+<html xmlns:o>
+
+<head>
+<title>Single-row character functions that return character values</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="CHR">
+  <param name="Keyword" value="CONCAT">
+  <param name="Keyword" value="INITCAP">
+  <param name="Keyword" value="LOWER">
+  <param name="Keyword" value="LPAD">
+  <param name="Keyword" value="LTRIM">
+  <param name="Keyword" value="NLS_INITCAP">
+  <param name="Keyword" value="NLS_LOWER">
+  <param name="Keyword" value="NLSSORT">
+  <param name="Keyword" value="NLS_UPPER">
+  <param name="Keyword" value="REPLACE">
+  <param name="Keyword" value="RPAD">
+  <param name="Keyword" value="RTRIM">
+  <param name="Keyword" value="SOUNDEX">
+  <param name="Keyword" value="SUBSTR">
+  <param name="Keyword" value="SUBSTRB">
+  <param name="Keyword" value="TRANSLATE">
+  <param name="Keyword" value="TRIM">
+  <param name="Keyword" value="UPPER">
+</object>
+</p>
+
+<h3>Single-row character functions that return character values</h3>
+
+<hr SIZE="3">
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr valign="top">
+    <td width="208" bgColor="#99ccff"><p class="tab_header">Function</td>
+    <td bgColor="#99ccff"><p class="tab_header">Value Returned</td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">CHR(<em>n</em>)</td>
+    <td><p class="tab_desc">Character with numeric value <em>n</em> </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">CONCAT(<em>char1</em>,<em>char2</em>) </td>
+    <td><p class="tab_desc">Concatenates <em>char1</em> and <em>char2</em> </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">INITCAP(<em>char</em>) </td>
+    <td><p class="tab_desc"><em>char</em>, with first letter of each word capitalized </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">LOWER(<em>char</em>) </td>
+    <td><p class="tab_desc"><em>char, </em>with all letters lowercase </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">LPAD(<em>char1</em>,<em>n</em>[,<em>char2</em>]) </td>
+    <td><p class="tab_desc"><em>char1</em>, left-padded to display length <em>n</em> with the
+    sequence of character in <em>char2</em>; <em>char2</em> defaults to ’’. (A multibyte
+    character that does not fit is replaced with a blank.) </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">LTRIM(<em>char</em>[,<em>set</em>]) </td>
+    <td><p class="tab_desc"><em>char</em>, with initial characters removed up to the first
+    character not in <em>set</em> (<em>Set </em>defaults to ’’.) </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">NLS_INITCAP(<em>n</em>[,<em>nls_sort</em>]) </td>
+    <td><p class="tab_desc"><em>char</em>, with first letter in each word capitalized. <em>nls_sort</em>
+    defines the handling of language-specific capitalization. </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">NLS_LOWER(<em>n</em>[,<em>nls_sort</em>]) </td>
+    <td><p class="tab_desc"><em>char</em>, with all characters lowercase. <em>nls_sort </em>defines
+    the handling of language-specific capitalization. </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">NLSSORT(<i>char </i>[,<i>nls_sort</i>]) </td>
+    <td><p class="tab_desc">The NLS-equivalent value used when sorting <i>char</i></td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">NLS_UPPER(<em>n</em>[,<em>nls_sort</em>]) </td>
+    <td><p class="tab_desc"><em>char</em>, with all characters uppercase. <em>nls_sort</em>
+    defines the handling of language-specific capitalization. </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">REPLACE(<i>char</i>,<i>search_string</i>[,<i>replacement_string</i>])
+<o:p></o:p>    </td>
+    <td><p class="tab_desc"><i>char</i>, with every occurrence of <i>search_string </i>replaced
+    by <i>replacement string</i>. If you do not specify <i>replacement_string</i>, Oracle
+    server removes all occurrences of <i>search_string</i>. <o:p></o:p></td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">RPAD(<i>char1</i>,<i>n</i>[,<i>char2</i>]) <o:p></o:p></td>
+    <td><p class="tab_desc"><i>char1</i>, right-padded to display length <i>n </i>with the
+    sequence of character in <i>char2</i>; <i>char2 </i>defaults to a blank. (A multibyte
+    character that does not fit is replaced with a blank.) <o:p></o:p></td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">RTRIM(<i>char</i>[,<i>set</i>]) <o:p></o:p></td>
+    <td><p class="tab_desc"><i>char</i>, with final characters removed after the last
+    character not in <i>set</i>. (Set defaults to <span style="FONT-FAMILY: Arial">’’</span>.)
+<o:p></o:p>    </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">SOUNDEX(<i>char</i>) <o:p></o:p></td>
+    <td><p class="tab_desc">A <i>char </i>value representing the sound of the characters in <i>char</i>,
+    in English <o:p></o:p></td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">SUBSTR(<i>char</i>,<i>m</i>[,<i>n</i>]) <o:p></o:p></td>
+    <td><p class="tab_desc">A substring of <i>char</i>, beginning at character <i>m</i>, <i>n </i>characters
+    long (if <i>n </i>is omitted, to end of <i>char</i>) <o:p></o:p></td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">SUBSTRB(<i>char</i>,<i>m</i>[,<i>n</i>]) <o:p></o:p></td>
+    <td><p class="tab_desc">A substring of <i>char</i>, beginning at byte <i>m</i>, <i>n </i>bytes
+    long (if <i>n </i>is omitted, to end of <i>char</i>) <o:p></o:p></td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">TRANSLATE(<i>char</i>,<i>from</i>,<i>to</i>) <o:p></o:p></td>
+    <td><p class="tab_desc"><i>char</i>, translated from the character set <i>from </i>to the
+    character set <i>to <o:p></o:p></i></td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">TRIM([LEADING|TRAILING| BOTH][<i>char </i>FROM]<i>source</i>)
+<o:p></o:p>    </td>
+    <td><p class="tab_desc">Trims heading or trailing characters (or both) from a character
+    string <o:p></o:p></td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">UPPER(<i>char</i>) <o:p></o:p></td>
+    <td><p class="tab_desc"><i>char</i>, with all characters uppercase.<span
+    style="FONT-SIZE: 10pt"> <o:p></o:p> </span></td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

@@ -1,0 +1,106 @@
+# Template rules for a package (part of global makefile).
+#
+# The following make targets are provided:
+#
+#   $(ARG_PACKAGE)      : build the subproject
+#   clean_$(ARG_PACKAGE): delete the files created by the subproject
+#   test_$(ARG_PACKAGE) : run the test harnesses for the project
+#
+# The following variables are assumed to be in place...
+#
+#   $(ARG_SRC)  : Root of the sourcecode tree    (from the global makefile)
+#   $(ARG_BUILD): Root of the build tree         (from the global makefile)
+#   $(ARG_DEPEND) Root of the dependencies tree  (from the global makefile)
+#   $(MKEXE)    : Creation of executable         (from compiler configuration)
+#   $(MKOBJ)    : Compilation to object          (from compiler configuration)
+#   $(MKDEP)	: Generation of dependency info. (from compiler configuration)
+#   $(MKDLL)	: Creation of DLL                (from compiler configuration)
+#   $(O)        : Extension for object files     (from compiler configuration)
+#   $(X)        : Extension for executable files (from compiler configuration)
+#   $(A)        : Extension for archive files    (from compiler configuration)
+#   $(ARG_PACKAGE)  : Name of the package being built (from package options)
+#
+# The following variables (supplied on a per-package basis) control the 
+# generation of the corresponding targets:
+#
+#   $(IMPLEMENTATION)   : objects to archive in $(ARG_BUILD)/lib/$(ARG_PACKAGE)$(A)
+#   $(TEST_HARNESSES)   : unit test harnesses for package
+#   $(ARG_TOOLS)	: tools to create in $(ARG_BUILD)/bin
+#
+# The test harnesses are run before [re]building the archive, DLL or tools.
+#
+#                                                      Alan Griffiths 02-Jan-00
+
+
+$(ARG_PACKAGE)_error:
+	echo To build $(ARG_PACKAGE): go to the root and type "make $(ARG_PACKAGE)"
+
+# how to run a test
+$(ARG_BUILD)/$(ARG_PACKAGE)/%.test: $(ARG_BUILD)/$(ARG_PACKAGE)/%$(X)
+	$^
+
+
+# How to create a ".o" from a ".cpp"
+$(ARG_BUILD)/$(ARG_PACKAGE)/%$(O) : $(ARG_SRC)/$(ARG_PACKAGE)/%.cpp
+	mkdir -p $(@D)
+	$(MKOBJ)
+
+# how to create a ".d" dependency file
+$(ARG_DEPEND)/$(ARG_PACKAGE)/%.d : $(ARG_SRC)/$(ARG_PACKAGE)/%.cpp
+	mkdir -p $(@D)
+	$(MKDEP)
+
+TEST_HARNESSES_CPP:=$(filter %.cpp, $(TEST_HARNESSES)) 
+TEST_HARNESSES_C:=$(filter %.c, $(TEST_HARNESSES))
+TEST_HARNESSES_EXE:=$(TEST_HARNESSES_C:$(ARG_PACKAGE)/%.cpp=$(ARG_BUILD)/$(ARG_PACKAGE)/%$(X)) $(TEST_HARNESSES_CPP:$(ARG_PACKAGE)/%.cpp=$(ARG_BUILD)/$(ARG_PACKAGE)/%$(X))
+TEST_HARNESSES_D:=$(TEST_HARNESSES_CPP:$(ARG_PACKAGE)/%.cpp=$(ARG_DEPEND)/$(ARG_PACKAGE)/%.d) $(TEST_HARNESSES_C:$(ARG_PACKAGE)/%.c=$(ARG_DEPEND)/$(ARG_PACKAGE)/%.d)
+
+TOOL_CPP:=$(filter %.cpp, $(TOOLS)) 
+TOOL_C:=$(filter %.c, $(TOOLS))
+TOOL_EXE:=$(TOOLS_C:$(ARG_PACKAGE)/%.cpp=$(ARG_BUILD)/bin/%$(X)) $(TOOLS_CPP:$(ARG_PACKAGE)/%.cpp=$(ARG_BUILD)/bin/%$(X))
+TOOL_D:=$(TOOL_CPP:$(ARG_PACKAGE)/%.cpp=$(ARG_DEPEND)/$(ARG_PACKAGE)/%.d) $(TOOL_C:$(ARG_PACKAGE)/%.c=$(ARG_DEPEND)/$(ARG_PACKAGE)/%.d)
+          
+ARCHIVE_CPP:=$(filter %.cpp, $(IMPLEMENTATION))
+ARCHIVE_C:=$(filter %.c, $(IMPLEMENTATION))
+ARCHIVE_O:=$(ARCHIVE_CPP:$(ARG_PACKAGE)/%.cpp=$(ARG_BUILD)/$(ARG_PACKAGE)/%$(O)) $(ARCHIVE_C:$(ARG_PACKAGE)/%.c=$(ARG_BUILD)/$(ARG_PACKAGE)/%$(O))
+ARCHIVE_D:=$(ARCHIVE_CPP:$(ARG_PACKAGE)/%.cpp=$(ARG_DEPEND)/$(ARG_PACKAGE)/%.d) $(ARCHIVE_C:$(ARG_PACKAGE)/%.c=$(ARG_DEPEND)/$(ARG_PACKAGE)/%.d)
+
+TESTS:=$(TEST_HARNESSES_EXE:$(X)=.test)
+ARCHIVE:=$(ARG_BUILD)/lib/$(ARG_PACKAGE)$(A)
+SOURCE:=$(ARG_SRC)/$(ARG_PACKAGE)
+
+.PHONEY: $(ARG_PACKAGE) $(ARG_PACKAGE)_error clean_$(ARG_PACKAGE) test_$(ARG_PACKAGE)
+.INTERMEDIATE: $(TESTS)
+
+include $(ARCHIVE_D) $(TEST_HARNESSES_D) $(TOOL_D)
+
+$(ARG_PACKAGE): $(ARCHIVE) $(TOOL_EXE) $(TEST_HARNESSES_EXE)
+	
+# create a "$(X)" from a ".o"
+$(ARG_BUILD)/$(ARG_PACKAGE)/%$(X) : $(ARG_BUILD)/$(ARG_PACKAGE)/%$(O) $(ARCHIVE_O) $(LIBRARIES_USED)
+	mkdir -p $(@D)
+	$(MKEXE)
+
+# create a "$(X)" from a ".o"
+$(ARG_BUILD)/bin/%$(X) : $(ARG_BUILD)/$(ARG_PACKAGE)/%$(O) $(ARCHIVE) $(LIBRARIES_USED)
+	mkdir -p $(@D)
+	$(MKEXE)
+
+$(ARCHIVE): $(ARCHIVE_O) $(TESTS)
+	mkdir -p $(@D)
+	$(MKLIB)
+
+test_$(ARG_PACKAGE): $(TESTS)	
+
+clean_$(ARG_PACKAGE):
+	rm -f $(ARG_BUILD)/$(subst clean_,,$@)/*$(O) $(ARG_BUILD)/$(subst clean_,,$@)/*$(X)
+	rm -f $(ARG_BUILD)/lib/$(subst clean_,,$@)$(A)
+
+depend_$(ARG_PACKAGE): $(ARCHIVE_D) $(TEST_HARNESSES_D) $(TOOL_D)
+
+
+ARG_PACKAGE:=
+IMPLEMENTATION:=
+TEST_HARNESSES:=
+TOOLS:=
+DEPEND:=

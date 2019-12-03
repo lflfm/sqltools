@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <title>Initial setup</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+        <link href="_sqltools.css" type="text/css" rel="stylesheet" />
+    </head>
+    <body>
+        <object id="Object1" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e" type="application/x-oleobject">
+            <param name="Keyword" value="Initial setup">
+        </object>
+        <h3>Initial setup</h3>
+        <hr size="3">
+        <p>
+            If you are installing SQLTools for the first time, please read the following:</p>
+        <h4>Oracle client</h4>
+        <p><strong>Oracle 32-bit client</strong> (9i, 10i, 11i or 12c) is required 
+            regardless of whether you have 32-bit or 64-bit Windows. If you don't have any 
+            Oracle client then the program fails to start with a message like &quot;OCI.DLL not 
+            found&quot;. Do not try to find and download this DLL because you need a properly 
+            installed client, check www.oracle.com for the latest one. The smallest 
+            available distribution package is called <a href="oracle_instant_client.htm">Oracle Instant client</a>. 
+            <br />
+            If you have only 
+            64-bit client installed then SQLTools fails with the very cryptic message &quot;The application was 
+            unable to start correctly (0xc000007b)&quot; </p>
+        <h4>Private vs shared configurations</h4>
+        <img src="Images\initial_setup.jpg"><p class="MsoNormal">
+            <span lang="EN-US" style="font-size:9.5pt;font-family:Arial;
+color:black;mso-ansi-language:EN-US">When SQLTools starts for the very first time, it asks 
+            the user to choose where to keep XML settings files.<br />
+            There are two options:</p>
+            <table width="600" cols="2">
+                <tr valign="top">
+                    <td width="150"><strong>Configuration</strong></td>
+                    <td><strong>Settings Location</strong></td>
+                </tr>
+                <tr valign="top">
+                    <td width="150"><strong>User private</strong></td>
+                    <td>
+                        <span lang="EN-US" style="font-size:9.5pt;font-family:Arial;
+color:black;mso-ansi-language:EN-US">%APPDATA%/GNU/SQLTools folder</span></td>
+                </tr>
+                <tr valign="top">
+                    <td width="150"><strong>Shared</strong></td>
+                    <td>
+                        <span lang="EN-US" style="font-size:9.5pt;font-family:Arial;
+color:black;mso-ansi-language:EN-US">
+                        &lt;SQLTools program 
+                folder&gt;/SharedData 
+                </span>
+                    </td>
+                </tr>
+             </table>
+
+            <p>
+            The first option is highly recommended if the program is installed for all 
+            users however if the program folder is under user profile then shared is good as 
+                private. The second one is preferable for installation on a usb drive. An 
+                additional benefit of using the first option is that the configuration can be 
+                shared between multiple SQLTools installations.</p>
+                <p>
+                You can always find your setting using menu &quot;Tools-&gt;Open Setting Folder&quot;.</p>
+        <p>
+                &nbsp;</p>
+                </span>
+        <h4>Master password for stored connection passwords</h4>
+        <img src="Images\connect_settings.jpg">
+        <p>
+            Another choice during the initial setup is <a href="connect_dialog_settings.htm">
+            the master password</a> for encrypting some connection attributes. You can leave it 
+            blank, a default password will be used.&nbsp;
+        </p>
+    </body>
+</html>

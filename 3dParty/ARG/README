@@ -1,0 +1,23 @@
+arglib - readme
+
+arglib is provided in a distribution tree that assumes the presence of 
+GNU make and gcc. These are available for most platforms (see www.gnu.org).
+For Windows these tools are supplied as part of Cygwin (www.cygnus.com).
+
+The root directory contains the entry point of a global makefile.  If you 
+wish to build the library using gcc you simply have to type:
+
+    $make
+
+For another compiler (e.g. Microsoft Visual C++) type:
+
+    $make COMPILER=msc
+
+The "platform" subdirectory contains the compiler specific options
+(so hacking support for other compilers should be simple enough.)
+
+Documentation may be generated using Doxygen by typing:
+
+    $make manual
+
+Doxygen is available from http://www.stack.nl/~dimitri/doxygen/index.html

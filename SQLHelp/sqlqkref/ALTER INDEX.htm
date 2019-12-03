@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER INDEX</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER INDEX">
+    <param name="Keyword" value="INDEX">
+</OBJECT>
+<H3>ALTER INDEX<HR SIZE="3"></H3>
+<P>
+ Use this command to:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+change storage allocation for, rebuild, or rename an index
+<LI>
+rename, split, remove, mark as unusable, or rebuild a partition
+      of a partitioned index
+<LI>
+modify the physical, parallel, or logging attributes of a non-
+      partitioned index
+<LI>
+modify the default physical, parallel, or logging attributes of
+      a partitioned index
+<LI>
+rebuild an index to store the bytes of the index block in 
+      reverse order
+<LI>
+modify a nested table index
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ALTER INDEX [schema.]index
+   [REBUILD [ {PARALLEL <A HREF="PARALLEL clause.htm">parallel_clause</A> | NOPARALLEL}
+            | {LOGGING | NOLOGGING}
+            | {REVERSE | NOREVERSE}
+            | physical_attributes_clause
+            | TABLESPACE tablespace] ...]
+   [ DEALLOCATE UNUSED [KEEP integer [K | M] ]
+   | ALLOCATE EXTENT [ ( { SIZE integer [K | M]
+                         | DATAFILE 'filename'
+                         | INSTANCE integer} ...) ]
+   | {PARALLEL <A HREF="PARALLEL clause.htm">parallel_clause</A> | NOPARALLEL}
+   | physical_attributes_clause
+   | {LOGGING | NOLOGGING}
+   | RENAME TO new_index_name
+   | MODIFY PARTITION partition_name [ physical_attributes_clause
+                                     | {LOGGING | NOLOGGING}
+                                     | UNUSABLE ]
+   | RENAME PARTITION partition_name TO new_partition_name
+   | DROP PARTITION partition_name
+   | SPLIT PARTITION partition_name_old AT (value_list)
+     [ INTO ( PARTITION [split_partition_1]
+                        [ physical_attributes_clause
+                        | TABLESPACE tablespace
+                        | {LOGGING | NOLOGGING} ... ]
+              PARTITION [split_partition_2]
+                        [ physical_attributes_clause
+                        | TABLESPACE tablespace
+                        | {LOGGING | NOLOGGING} ... ] ) ]
+     [ PARALLEL <A HREF="PARALLEL clause.htm">parallel_clause</A> | NOPARALLEL ]
+   | REBUILD PARTITION partition_name [ physical_attributes_clause
+                                      | TABLESPACE tablespace
+                                      | {PARALLEL <A HREF="PARALLEL clause.htm">parallel_clause</A>
+                                        | NOPARALLEL}
+                                      | {LOGGING | NOLOGGING} ... ]
+   | UNUSABLE
+
+ physical_attributes_clause
+   [ PCTFREE integer
+   | INITRANS integer
+   | MAXTRANS integer
+   | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A> ] ...
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE INDEX.htm">CREATE INDEX</A>
+, <A HREF="DROP INDEX.htm">DROP INDEX</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

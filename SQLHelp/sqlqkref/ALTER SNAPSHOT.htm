@@ -1,0 +1,52 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER SNAPSHOT</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER SNAPSHOT">
+    <param name="Keyword" value="SNAPSHOT">
+</OBJECT>
+<H3>ALTER SNAPSHOT<HR SIZE="3"></H3>
+<P>
+ Use this command to alter a snapshot in one of the following ways:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+changing its storage characteristics
+<LI>
+changing its automatic refresh mode and times
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ALTER SNAPSHOT [schema.]snapshot
+   [ physical_attributes_clause ] ...
+   [USING {INDEX [physical_attributes_clause] ...
+          | [DEFAULT] MASTER ROLLBACK SEGMENT [rollback_segment] }
+   [REFRESH [FAST | COMPLETE | FORCE]
+   [START WITH date] [NEXT date] [WITH PRIMARY KEY ]
+ 
+ physical_attributes_clause
+   [ PCTFREE integer
+   | PCTUSED integer
+   | INITRANS integer
+   | MAXTRANS integer
+   | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A> ]
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE SNAPSHOT.htm">CREATE SNAPSHOT</A>
+, <A HREF="DROP SNAPSHOT.htm">DROP SNAPSHOT</A>
+, <A HREF="ALTER SNAPSHOT LOG.htm">ALTER SNAPSHOT LOG</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

@@ -1,0 +1,96 @@
+<!-- xml comment highlighting test, this line should be scolled out of view-->
+<root>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    <!-- xml comment highlighting test, this line should be scolled out of view -->
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+    <elem1 attribute="value" >
+	    <elem2 attribute="value" >
+	    </elem2>
+    </elem1>
+</root>

@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+<TITLE>CONSTRAINT clause</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CONSTRAINT clause">
+</OBJECT>
+<H3>CONSTRAINT clause<HR SIZE="3"></H3>
+<P>
+ Use this command to define an integrity constraint. An integrity
+ constraint is a rule that restricts the values for one or more
+ columns in a table or an index-only table.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ table_constraint
+   [CONSTRAINT constraint]
+     { {UNIQUE | PRIMARY KEY} (column [, column] ...)
+     | FOREIGN KEY (column [, column] ...)
+     | REFERENCES [schema.]table [(column [column] ...) ]
+      [ON DELETE CASCADE]
+     | CHECK (condition) }
+     [ [ [NOT] DEFERRABLE ] [INITIALLY [IMMEDIATE | DEFERRED]] ]
+   | [ [INITIALLY [IMMEDIATE | DEFERRED]] [ [NOT] DEFERRABLE ] ]
+     [ { USING INDEX [ physical_attributes_clause
+                     | NOSORT
+                     | {LOGGING | NOLOGGING} ] ... [ EXCEPTIONS INTO
+                                                     [schema.]table]
+       | DISABLE}]
+ 
+ column_constraint
+   [CONSTRAINT constraint]
+     { [NOT] NULL
+     | {UNIQUE | PRIMARY KEY}
+     | REFERENCES [schema.]table [(column)] [ON DELETE CASCADE]
+     | CHECK (condition)}
+     [ [ [NOT] DEFERRABLE ] [INITIALLY [IMMEDIATE | DEFERRED]] ]
+   | [ [INITIALLY [IMMEDIATE | DEFERRED]] [ [NOT] DEFERRABLE ] ]
+     [ { USING INDEX [ physical_attributes_clause
+                     | NOSORT
+                     | {LOGGING | NOLOGGING} ] ...] [ EXCEPTIONS INTO
+                                                      [schema.]table]
+       | DISABLE}]
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE TABLE.htm">CREATE TABLE</A>
+, <A HREF="ALTER TABLE.htm">ALTER TABLE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

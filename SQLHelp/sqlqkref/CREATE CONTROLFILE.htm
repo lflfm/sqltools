@@ -1,0 +1,60 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE CONTROLFILE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE CONTROLFILE">
+    <param name="Keyword" value="CONTROLFILE">
+</OBJECT>
+<H3>CREATE CONTROLFILE<HR SIZE="3"></H3>
+<P>
+ Use this command to recreate a control file in one of the following
+ cases:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+All copies of your existing control files have been lost
+      through media failure.
+<LI>
+You want to change the name of the database.
+</LI>
+</UL>
+<P>
+ 
+ You want to change the maximum number of redo log file groups, redo
+ log file members, archived redo log files, data files, or instances
+ that can concurrently have the database mounted and open.
+</P>
+<P>
+ 
+ Warning: It is recommended that you perform a full backup of all
+ files in the database before using this command.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ CREATE CONTROLFILE [REUSE] [SET] DATABASE database
+ LOGFILE [GROUP integer] <A HREF="Filespec.htm">filespec</A>
+      [, [GROUP integer] <A HREF="Filespec.htm">filespec</A>] ... {RESETLOGS | NORESETLOGS}
+ DATAFILE <A HREF="Filespec.htm">filespec</A> [, <A HREF="Filespec.htm">filespec</A>] ... [ MAXLOGFILES integer
+                                    | MAXLOGMEMBERS integer
+                                    | MAXLOGHISTORY integer
+                                    | MAXDATAFILES integer
+                                    | MAXINSTANCES integer
+                                    | {ARCHIVELOG | NOARCHIVELOG} ] ...
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER DATABASE.htm">ALTER DATABASE</A>
+, <A HREF="CREATE DATABASE.htm">CREATE DATABASE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

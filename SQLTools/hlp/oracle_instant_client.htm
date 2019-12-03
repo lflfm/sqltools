@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>Oracle Instant client</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252">
+        <LINK href="_sqltools.css" type="text/css" rel="stylesheet"></head>
+    <body>
+        <OBJECT classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e" type="application/x-oleobject"
+            VIEWASTEXT>
+            <PARAM NAME="Keyword" VALUE="Oracle Instant client">
+            <PARAM NAME="Keyword" VALUE="Instant client">
+        </OBJECT>
+        <h3>Oracle Instant client</h3>
+        <HR SIZE="3">
+        <h4>Using with Oracle Instant Client provided by Dennis McRitchie</h4>
+        <P>After extracting Instant Client on your hard drive you will need to set the 
+            TNS_ADMIN environment variable to point to the location of the various *.ora 
+            files (e.g., sqlnet.ora, ldap.ora, tnsnames.ora). Oracle suggests putting these 
+            in the ORACLE_HOME directory, and sqlplus can find them there, but without 
+            TNS_ADMIN, SQLTools apparently looks in the wrong place. </P>
+        <p>So what&#39;s needed is:</p>
+            <pre>ORACLE_HOME=<instant_client_path>instant_client_path&gt;
+PATH=%ORACLE_HOME%;<rest_of_path>&lt;rest_of_path&gt;
+TNS_ADMIN=%ORACLE_HOME%</pre>
+        <P>If you cannot change yout environment variable because of lack of permissions 
+            then <a href="launcher.htm">sqlt-launcher</a> might be the only 
+            choice.</P>
+    </body>
+</html>

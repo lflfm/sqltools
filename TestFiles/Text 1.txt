@@ -1,0 +1,28 @@
+xxxxxxxxxxx
+xxxxxxxxxxx
+xxxxxxxxxxx
+xxxxxxxxxxx
+     a    a
+     b    b bmk1
+     c    c
+xxxxxxxxxxx
+xxxxxxxxxxx
+xxxxxxxxxxx
+xxxxxxxxxxx
+     d    d
+     e	  e bmk2
+     f	  f
+xxxxxxxxxxx
+xxxxxxxxxxx
+xxxxxxxxxxx
+xxxxxxxxxxx
+     g	  g
+     1	  1 bmk3
+     2	  2
+xxxxxxxxxxx
+xxxxxxxxxxx
+xxxxxxxxxxx
+xxxxxxxxxxx
+     3	  3
+     4	  4
+YYYYYYYYYYY

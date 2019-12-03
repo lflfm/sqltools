@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE TRIGGER</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE TRIGGER">
+    <param name="Keyword" value="TRIGGER">
+</OBJECT>
+<H3>CREATE TRIGGER<HR SIZE="3"></H3>
+<P>
+ Use this command to create and enable a database trigger. A database
+ trigger is a stored PL/SQL block that is associated with a table.
+ Oracle automatically executes a trigger when a specified SQL
+ statement is issued against the table.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ CREATE [OR REPLACE] TRIGGER [schema.]trigger
+   {BEFORE | AFTER | INSTEAD OF}
+   { DELETE
+   | INSERT
+   | UPDATE [OF column [, column] ...] }
+   [ OR { DELETE
+        | INSERT
+        | UPDATE [OF column [, column] ... ] } ] ...
+   ON [schema.]{table | view}
+   [ [ REFERENCING { OLD [AS] old | NEW [AS] new} ...]
+     FOR EACH {ROW | STATMENT} [WHEN (condition) ] ] pl/sql_block
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER TRIGGER.htm">ALTER TRIGGER</A>
+, <A HREF="DROP TRIGGER.htm">DROP TRIGGER</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

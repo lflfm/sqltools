@@ -1,0 +1,32 @@
+<HTML>
+<HEAD>
+<TITLE>WHENEVER (Embedded SQL)</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="WHENEVER (Embedded SQL)">
+</OBJECT>
+<H3>WHENEVER (Embedded SQL)<HR SIZE="3"></H3>
+<P>
+ Use this command to specify the action to be taken when if error an
+ warning results from executing an embedded SQL program.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ EXEC SQL WHENEVER
+   { NOT FOUND
+   | SQLERROR
+   | SQLWARNING }
+   { CONTINUE 
+   | GOTO label_name
+   | STOP
+   | DO routine_call }
+ 
+</PRE>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

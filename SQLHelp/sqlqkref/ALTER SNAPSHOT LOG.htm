@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER SNAPSHOT LOG</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER SNAPSHOT LOG">
+    <param name="Keyword" value="SNAPSHOT LOG">
+</OBJECT>
+<H3>ALTER SNAPSHOT LOG<HR SIZE="3"></H3>
+<P>
+ Use this command to change the storage characteristics of a snapshot
+ log.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ ALTER SNAPSHOT LOG ON [schema.]table
+   [ ADD {[PRIMARY KEY] [,ROWID]
+         [,(filter_column) | ,(filter_column)] ...}
+   [ PCTFREE integer
+   | PCTUSED integer
+   | INITRANS integer
+   | MAXTRANS integer
+   | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>] ...
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE SNAPSHOT LOG.htm">CREATE SNAPSHOT LOG</A>
+, <A HREF="DROP SNAPSHOT LOG.htm">DROP SNAPSHOT LOG</A>
+, <A HREF="ALTER SNAPSHOT.htm">ALTER SNAPSHOT</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

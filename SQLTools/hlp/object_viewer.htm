@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<META content="Microsoft Visual Studio 7.0" name="GENERATOR">
+<LINK href="_sqltools.css" type="text/css" rel="stylesheet">
+    <style type="text/css">
+        .auto-style2 {
+            margin-left: 40px;
+        }
+    </style>
+</HEAD>
+<BODY>
+    <OBJECT id="Object1" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e" type="application/x-oleobject" VIEWASTEXT>
+        <PARAM NAME="Keyword" VALUE="Object Viewer">
+        <PARAM NAME="Keyword" VALUE="SQL*Plus DESC">
+    </OBJECT>
+    <h3>Object Viewer</h3>
+    <h4 class="auto-style2"><a href="#dad">Drag and Drop</a>
+    <br><a href="#query">Query and Count query</a></h4>
+    <HR SIZE="3">
+    <p>Object Viewer is better alternative to SQL*Plus DESC command. It is designed to work with the editor. 
+    <br>Press F12 to pass the current word (under the cursor) / selection into Object Viewer, if it is a valid database object 
+    <br>then it will be displayed in the viewer. You also can enter an object name into the top field of Object Viewer.</p>
+
+    <img src="Images\object_viewer.jpg" />
+
+    <a name="dad"></a>
+    <h4>Drag and Drop</h4>
+
+    <p>Depends on &lt;Shift&gt; and &lt;Ctrl&gt;, the result of drag and drop of a <i>single</i> object is summarized in the table:
+    <p/>
+
+    <table style="width:600" cellSpacing="0" cellPadding="2" border="1" >
+        <tr><th style="width:150">Object</th><th style="width:150">Default</th><th style="width:150">&lt;Shift&gt;pressed</th><th style="width:150">&lt;Ctrl&gt;pressed</th></tr>
+        <tr><td>column             </td><td>name</td><td style="color: #808080">same</td><td>name and datatype</td></tr>
+        <tr><td>constraint         </td><td>name</td><td>columns in line</td><td>columns in column</td></tr>
+        <tr><td>container / folder*</td><td>name</td><td>objects in line</td><td>objects in column</td></tr>
+        <tr><td>granted privilege  </td><td>label</td><td style="color: #808080">same</td><td style="color: #808080">same</td></tr>
+        <tr><td>index              </td><td>name</td><td>columns in line</td><td>columns in column</td></tr>
+        <tr><td>package spec / body</td><td>name</td><td style="color: #808080">same</td><td style="color: #808080">same</td></tr>
+        <tr><td>package procedure  </td><td>call with parameters formatted in line</td><td style="color: #808080">same</td><td>call with parameters formatted in column</td></tr>
+        <tr><td>partition / subpartition</td><td>name</td><td>partition clause</td><td style="color: #808080">same</td></tr>
+        <tr><td>procedure          </td><td>call with parameters formatted in line</td><td style="color: #808080">same</td><td>call with parameters formatted in column</td></tr>
+        <tr><td>sequence           </td><td>name</td><td style="color: #808080">same</td><td style="color: #808080">same</td></tr>
+        <tr><td>synonym            </td><td>name</td><td style="color: #808080">same</td><td style="color: #808080">same</td></tr>
+        <tr><td>table / view       </td><td>name</td><td>columns in line</td><td>columns in column</td></tr>
+        <tr><td>trigger            </td><td>name</td><td style="color :#808080">same</td><td style="color: #808080">same</td></tr>
+    </table>
+
+    <p>
+    If mutltiple objects are selected for a drag and drop operation then default format is applied to every item 
+    <br>and additionally the result can be formatted in COLUMN with &lt;Ctrl&gt; pressed. 
+    <br>&lt;Shift&gt; is always ignored in the case of multiple selection.
+    </p>
+
+    <a name="query"></a>
+    <h4>Query and Count query</h4>
+
+    <p>Object Viewer lets you make a quick (count) query from selected table (or partition/subpartition). 
+    <br>You also can select multiple columns belong that table (or partition/subpartition). If no columns are selected, * is used. 
+    <br>However only a single object can be chosen for "FROM" clause so it is either none, table, partition or subpartition.</p>
+
+    <img src="Images\object_viewer_quick_count.jpg" />
+</BODY>
+</HTML>

@@ -1,0 +1,371 @@
+<html>
+
+<head>
+<title>SYSTEM PRIVILEGES </title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="CREATE INDEX">
+  <param name="Keyword" value="CREATE ANY INDEX">
+  <param name="Keyword" value="ALTER ANY INDEX">
+  <param name="Keyword" value="DROP ANY INDEX">
+  <param name="Keyword" value="QUERY REWRITE">
+  <param name="Keyword" value="GLOBAL QUERY REWRITE">
+  <param name="Keyword" value="CREATE ROLE">
+  <param name="Keyword" value="ALTER ANY ROLE">
+  <param name="Keyword" value="DROP ANY ROLE">
+  <param name="Keyword" value="GRANT ANY ROLE">
+  <param name="Keyword" value="CREATE SEQUENCE">
+  <param name="Keyword" value="CREATE ANY SEQUENCE">
+  <param name="Keyword" value="ALTER ANY SEQUENCE">
+  <param name="Keyword" value="DROP ANY SEQUENCE">
+  <param name="Keyword" value="SELECT ANY SEQUENCE">
+  <param name="Keyword" value="CREATE SESSION">
+  <param name="Keyword" value="ALTER RESOURCE COST">
+  <param name="Keyword" value="ALTER SESSION">
+  <param name="Keyword" value="RESTRICTED SESSION">
+  <param name="Keyword" value="CREATE SYNONYM">
+  <param name="Keyword" value="CREATE ANY SYNONYM">
+  <param name="Keyword" value="CREATE PUBLIC SYNONYM">
+  <param name="Keyword" value="DROP ANY SYNONYM">
+  <param name="Keyword" value="DROP PUBLIC SYNONYM">
+  <param name="Keyword" value="CREATE TABLE">
+  <param name="Keyword" value="CREATE ANY TABLE">
+  <param name="Keyword" value="ALTER ANY TABLE">
+  <param name="Keyword" value="BACKUP ANY TABLE">
+  <param name="Keyword" value="DELETE ANY TABLE">
+  <param name="Keyword" value="DROP ANY TABLE">
+  <param name="Keyword" value="INSERT ANY TABLE">
+  <param name="Keyword" value="LOCK ANY TABLE">
+  <param name="Keyword" value="UPDATE ANY TABLE">
+  <param name="Keyword" value="SELECT ANY TABLE">
+  <param name="Keyword" value="COMMENT ANY TABLE">
+  <param name="Keyword" value="CREATE USER">
+  <param name="Keyword" value="ALTER USER">
+  <param name="Keyword" value="BECOME USER">
+  <param name="Keyword" value="DROP USER">
+  <param name="Keyword" value="CREATE VIEW">
+  <param name="Keyword" value="CREATE ANY VIEW">
+  <param name="Keyword" value="DROP ANY VIEW">
+  <param name="Keyword" value="GRANT ANY PRIVILEGE">
+</object>
+</p>
+
+<h3>SYSTEM PRIVILEGES </h3>
+
+<hr SIZE="3">
+
+<ul>
+  <li><h4><a href="#INDEX">INDEX</a></h4>
+  </li>
+  <li><h4><a href="#ROLES">ROLES</a></h4>
+  </li>
+  <li><h4><a href="#SEQUENCES">SEQUENCES</a></h4>
+  </li>
+  <li><h4><a href="#SESSIONS">SESSIONS</a></h4>
+  </li>
+  <li><h4><a href="#SYNONYMS">SYNONYMS</a></h4>
+  </li>
+  <li><h4><a href="#TABLES">TABLES</a></h4>
+  </li>
+  <li><h4><a href="#USERS">USERS</a></h4>
+  </li>
+  <li><h4><a href="#VIEWS">VIEWS</a></h4>
+  </li>
+  <li><h4><a href="#MISCELLANEOUS">MISCELLANEOUS</a></h4>
+  </li>
+</ul>
+
+<h4><a name="INDEX">INDEX</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">System Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ... </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE INDEX</td>
+    <td valign="top"><p class="tab_desc">Create in the grantee’s schema an index on any
+    table in the grantee’s schema or a domain index</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE ANY INDEX</td>
+    <td valign="top"><p class="tab_desc">Create in any schema except SYS a domain index or an
+    index on any table in any schema except SYS</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ALTER ANY INDEX</td>
+    <td valign="top"><p class="tab_desc">Alter indexes in any schema except SYS</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DROP ANY INDEX </td>
+    <td valign="top"><p class="tab_desc">Drop indexes in any schema except SYS </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">QUERY REWRITE </td>
+    <td valign="top"><p class="tab_desc">Enable rewrite using a materialized view, or create a
+    function-based index, when that materialized view or index references tables and views
+    that are in the grantee’s own schema </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">GLOBAL QUERY REWRITE</td>
+    <td valign="top"><p class="tab_desc">Enable rewrite using a materialized view, or create a
+    function-based index, when that materialized view or index references tables or views in
+    any schema except SYS </td>
+  </tr>
+</table>
+
+<h4><a name="ROLES">ROLES</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">System Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ... </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE ROLE</td>
+    <td valign="top"><p class="tab_desc">Create roles</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ALTER ANY ROLE </td>
+    <td valign="top"><p class="tab_desc">Alter any role in the database </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DROP ANY ROLE </td>
+    <td valign="top"><p class="tab_desc">Drop roles </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">GRANT ANY ROLE </td>
+    <td valign="top"><p class="tab_desc">Grant any role in the database </td>
+  </tr>
+</table>
+
+<h4><a name="SEQUENCES">SEQUENCES</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">System Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ... </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE SEQUENCE </td>
+    <td valign="top"><p class="tab_desc">Create a sequence in grantee’s schema </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE ANY SEQUENCE </td>
+    <td valign="top"><p class="tab_desc">Create sequences in any schema except SYS </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ALTER ANY SEQUENCE </td>
+    <td valign="top"><p class="tab_desc">Alter any sequence in the database </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DROP ANY SEQUENCE </td>
+    <td valign="top"><p class="tab_desc">Drop sequences in any schema except SYS </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">SELECT ANY SEQUENCE </td>
+    <td valign="top"><p class="tab_desc">Reference sequences in any schema except SYS </td>
+  </tr>
+</table>
+
+<h4><a name="SESSIONS">SESSIONS</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">System Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ... </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE SESSION </td>
+    <td valign="top"><p class="tab_desc">Connect to the database </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ALTER RESOURCE COST </td>
+    <td valign="top"><p class="tab_desc">Set costs for session resources </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ALTER SESSION </td>
+    <td valign="top"><p class="tab_desc">Issue ALTER SESSION statements </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">RESTRICTED SESSION </td>
+    <td valign="top"><p class="tab_desc">Log on after the database is started using the
+    SQL*Plus STARTUP RESTRICT statement </td>
+  </tr>
+</table>
+
+<h4><a name="SYNONYMS">SYNONYMS</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">System Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ... </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE SYNONYM </td>
+    <td valign="top"><p class="tab_desc">Create synonyms in grantee’s schema </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE ANY SYNONYM </td>
+    <td valign="top"><p class="tab_desc">Create private synonyms in any schema except SYS </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE PUBLIC SYNONYM </td>
+    <td valign="top"><p class="tab_desc">Create public synonyms </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DROP ANY SYNONYM </td>
+    <td valign="top"><p class="tab_desc">Drop private synonyms in any schema, except SYS </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DROP PUBLIC SYNONYM </td>
+    <td valign="top"><p class="tab_desc">Drop public synonyms </td>
+  </tr>
+</table>
+
+<h4><a name="TABLES">TABLES</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">System Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ... </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE TABLE </td>
+    <td valign="top"><p class="tab_desc">Create tables in grantee’s schema. To create a
+    table, the grantee must also have space quota on the tablespace to contain the table. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE ANY TABLE </td>
+    <td valign="top"><p class="tab_desc">Create tables in any schema. The owner of the schema
+    containing the table must have space quota on the tablespace to contain the table. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ALTER ANY TABLE </td>
+    <td valign="top"><p class="tab_desc">Alter any table or view in the schema </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">BACKUP ANY TABLE </td>
+    <td valign="top"><p class="tab_desc">Use the Export utility to incrementally export
+    objects from the schema of other users </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DELETE ANY TABLE </td>
+    <td valign="top"><p class="tab_desc">Delete rows from table, table partitions, or views in
+    any schema except SYS </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DROP ANY TABLE </td>
+    <td valign="top"><p class="tab_desc">Drop or truncate tables in any schema except SYS </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">INSERT ANY TABLE </td>
+    <td valign="top"><p class="tab_desc">Insert rows into tables and views in any schema
+    except SYS </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">LOCK ANY TABLE</td>
+    <td valign="top"><p class="tab_desc">Lock tables and views in any schema except SYS</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">UPDATE ANY TABLE</td>
+    <td valign="top"><p class="tab_desc">Update rows in tables and views in any schema except
+    SYS</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">SELECT ANY TABLE </td>
+    <td valign="top"><p class="tab_desc">Query tables, views, or snapshots in any schema
+    except SYS </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">COMMENT ANY TABLE </td>
+    <td valign="top"><p class="tab_desc">Comment on any table, view, or column in any schema
+    except SYS </td>
+  </tr>
+</table>
+
+<h4><a name="USERS">USERS</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">System Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ... </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE USER </td>
+    <td valign="top"><p class="tab_desc">Create users. This privilege also allows the creator
+    to: <ul>
+      <li class="tab_desc_list">Assign quotas on any tablespace </li>
+      <li class="tab_desc_list">Set default and temporary tablespaces </li>
+      <li class="tab_desc_list">Assign a profile as part of a CREATE USER statement </li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ALTER USER </td>
+    <td valign="top"><p class="tab_desc">Alter any user. This privilege authorizes the grantee
+    to: <ul>
+      <li class="tab_desc_list">Change another user’s password or authentication method </li>
+      <li class="tab_desc_list">Assign quotas on any tablespace</li>
+      <li class="tab_desc_list">Set default and temporary tablespaces</li>
+      <li class="tab_desc_list">Assign a profile and default roles</li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">BECOME USER </td>
+    <td valign="top"><p class="tab_desc">Become another user (required by any user performing
+    a full database import) </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DROP USER </td>
+    <td valign="top"><p class="tab_desc">Drop users </td>
+  </tr>
+</table>
+
+<h4><a name="VIEWS">VIEWS</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">System Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ... </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE VIEW </td>
+    <td valign="top"><p class="tab_desc">Create views in grantee’s schema </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CREATE ANY VIEW </td>
+    <td valign="top"><p class="tab_desc">Create view in any schema except SYS </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DROP ANY VIEW </td>
+    <td valign="top"><p class="tab_desc">Drop views in any schema except SYS </td>
+  </tr>
+</table>
+
+<h4><a name="MISCELLANEOUS">MISCELLANEOUS</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">System Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ... </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">GRANT ANY PRIVILEGE </td>
+    <td valign="top"><p class="tab_desc">Grant any system privilege </td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

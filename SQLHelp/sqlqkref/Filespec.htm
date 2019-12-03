@@ -1,0 +1,31 @@
+<HTML>
+<HEAD>
+<TITLE>Filespec</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="Filespec">
+</OBJECT>
+<H3>Filespec<HR SIZE="3"></H3>
+<P>
+ Use this command to either specify a file as a data file or specify
+ a group of one or more files as a redo log file group.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ filespec (Data Files)
+   'filename' [SIZE integer [K | M]] [REUSE]
+ 
+ filespec (Redo Log File Groups)
+   { 'filename'
+   | (filename [, filename] ...)}
+   [SIZE integer [K | M]] [REUSE]
+ 
+</PRE>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

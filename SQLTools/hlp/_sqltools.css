@@ -1,0 +1,98 @@
+body
+{
+  font-size : .80em ;
+  font-weight: normal;
+  background-color: #E8F2FF;
+  color: black;
+  font-family: Arial, sans-serif;
+}
+
+A:hover      { color: #CC3333; }
+
+table
+{
+  width : 100%;
+  font-size : 1.05em ;
+}
+
+TABLE.page {
+    margin-top: 0em;
+	width : 600;
+}
+
+th
+{
+    margin-left: 0em;
+    background : #DEE7EF;
+    text-align : left;
+}
+
+h1
+{
+  text-align: left;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size : 3em ;
+  font-weight: normal;
+  color: #0050B2;
+}
+
+h2
+{
+  text-align: left;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size : 2em ;
+  font-weight: bold;
+  font-style: italic;
+  color: #0050B2;
+}
+
+h3
+{
+  text-align: left;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size : 1.5em ;
+  font-weight: bold;
+  color: #0050B2;
+}
+
+h4
+{
+  text-align: left;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size : 1.2em ;
+  font-weight: bold;
+  color: #0050B2;
+}
+
+h5
+{
+  text-align: left;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size : 0.9em ;
+  font-weight: bold;
+  color: #0050B2;
+}
+
+h6
+{
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size : 0.75em ;
+  font-weight: bold;
+  color: #0050B2;
+}
+
+pre
+{
+  margin-left: 0em ;
+  font-size : 1em ;
+}
+
+code
+{
+  font-size: 1.1em;
+}
+
+.p
+{
+  font-size : 0.8em ;
+}

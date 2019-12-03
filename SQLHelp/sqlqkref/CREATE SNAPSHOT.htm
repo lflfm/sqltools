@@ -1,0 +1,50 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE SNAPSHOT</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE SNAPSHOT">
+    <param name="Keyword" value="SNAPSHOT">
+</OBJECT>
+<H3>CREATE SNAPSHOT<HR SIZE="3"></H3>
+<P>
+ Use this command to create a snapshot. A snapshot is a table that
+ contains the results of a query of one or more tables or views,
+ often located on a remote database.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ CREATE SNAPSHOT [schema.]snapshot
+   { { PCTFREE integer
+     | PCTUSED integer
+     | INITRANS integer
+     | MAXTRANS integer
+     | TABLESPACE tablespace
+     | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>}
+   | CLUSTER cluster (column [, column] ...) } ...
+   [ USING  {INDEX [ PCTFREE integer
+                   | PCTUSED integer
+                   | INITRANS integer
+                   | MAXTRANS integer ]
+                   | [DEFAULT] [MASTER | LOCAL] ROLLBACK SEGMENT
+                     [rollback_segment] } ]
+   [ REFRESH [FAST | COMPLETE | FORCE]
+     [ START WITH date]
+     [ NEXT date]
+     [ WITH {PRIMARY KEY | ROWID}] ]
+   [ FOR UPDATE] AS subquery
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER SNAPSHOT.htm">ALTER SNAPSHOT</A>
+, <A HREF="DROP SNAPSHOT.htm">DROP SNAPSHOT</A>
+, <A HREF="CREATE SNAPSHOT LOG.htm">CREATE SNAPSHOT LOG</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

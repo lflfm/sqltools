@@ -1,0 +1,131 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER DATABASE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER DATABASE">
+    <param name="Keyword" value="DATABASE">
+</OBJECT>
+<H3>ALTER DATABASE<HR SIZE="3"></H3>
+<P>
+ Use this command to alter an existing database in one of these ways:
+
+</P>
+<UL>
+<LI>
+mount the database or standby database
+<LI>
+convert an Oracle7 data dictionary when migrating to Oracle8
+<LI>
+open the database
+<LI>
+choose archivelog or noarchivelog mode for redo log file groups
+<LI>
+perform media recovery
+<LI>
+add or drop a redo log file group or a member of a redo log
+      file group
+<LI>
+clear and initialize an online redo log file
+<LI>
+rename a redo log file member or a datafile
+<LI>
+back up the current control file
+<LI>
+back up SQL commands (that can be used to re-create the
+      database) to the database's trace file
+<LI>
+take a datafile online or offline
+<LI>
+enable or disable a thread of redo log file groups
+<LI>
+change the database's global name
+<LI>
+prepare to downgrade to an earlier release of Oracle
+<LI>
+change the MAC mode
+<LI>
+equate the predefined label DBHIGH or DBLOW with an operating
+      system label
+<LI>
+resize one or more datafiles
+<LI>
+create a new datafile in place of an old one for recovery
+      purposes
+<LI>
+enable or disable the autoextending of the size of datafiles
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ALTER DATABASE [database]
+   { MOUNT [STANDBY DATABASE] [EXCLUSIVE | PARALLEL]
+   | CONVERT
+   | OPEN [RESETLOGS | NORESETLOGS]
+   | ACTIVATE STANDBY DATABASE
+   | ARCHIVELOG
+   | NOARCHIVELOG
+   | RECOVER <A HREF="RECOVER clause.htm">recover_clause</A>
+   | ADD LOGFILE [THREAD integer] [GROUP integer] <A HREF="Filespec.htm">filespec</A>
+       [, [GROUP integer] <A HREF="Filespec.htm">filespec</A>] ...
+   | ADD LOGFILE MEMBER 'filename' [REUSE]
+       [, 'filename' [REUSE] ] ...
+     TO { GROUP integer
+        | ('filename' [, 'filename'] ...)
+        | 'filename'}
+       [, 'filename' [REUSE] [, 'filename' [REUSE] ] ...
+     TO { GROUP integer
+        | ('filename' [, 'filename'] ...)
+        | 'filename' } ] ...
+   | DROP LOGFILE
+     { GROUP integer
+     | ('filename' [, 'filename'] ...)
+     | 'filename'}
+       [, { GROUP integer
+          | ('filename' [,'filename'] ...)
+          | 'filename' } ] ...
+   | DROP LOGFILE MEMBER 'filename' [, 'filename'] ...
+   | CLEAR [UNARCHIVED] LOGFILE
+     { GROUP integer
+     | ('filename' [, 'filename'] ...)
+     | 'filename'}
+       [, { GROUP integer
+          | ('filename' [, 'filename'] ...)
+          | 'filename'} ] ...
+       [UNRECOVERABLE DATAFILE]
+   | RENAME FILE 'filename' [, 'filename'] ...
+     TO 'filename' [, 'filename'] ...
+   | CREATE STANDBY CONTROLFILE AS 'filename' [REUSE]
+   | BACKUP CONTROLFILE { TO 'filename' [REUSE]
+                        | TO TRACE [RESETLOGS | NORESETLOGS] }
+   | RENAME GLOBAL_NAME TO database [.domain] ...
+   | RESET COMPATIBILITY
+   | SET { DBLOW = 'TEXT'
+         | DBHIGH = 'TEXT'
+         | DBMAC {ON | OFF} }
+   | ENABLE [PUBLIC] THREAD integer
+   | DISABLE THREAD integer
+   | CREATE DATAFILE 'filename' [, filename] ...
+       [AS <A HREF="Filespec.htm">filespec</A> [, <A HREF="Filespec.htm">filespec</A>] ...]
+   | DATAFILE 'filename' ['filename'] ...
+       { ONLINE
+       | OFFLINE [DROP]
+       | RESIZE integer [K | M]
+       | AUTOEXTEND { OFF | ON
+                    [NEXT integer [K | M] ]
+                    [MAXSIZE {UNLIMITED | integer [K | M] } }
+       | END BACKUP} }
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE DATABASE.htm">CREATE DATABASE</A>
+, <A HREF="CREATE CONTROLFILE.htm">CREATE CONTROLFILE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

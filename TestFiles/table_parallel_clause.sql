@@ -1,0 +1,29 @@
+SELECT * FROM all_tab_columns WHERE column_name like '%DEGREE%' AND table_name LIKE 'ALL%';
+
+SELECT table_name, DEGREE, INSTANCES FROM user_tables;
+
+ALTER TABLE PT_RANGE PARALLEL 2;
+ALTER TABLE PT_RANGE PARALLEL (DEGREE 3);
+ALTER TABLE PT_RANGE PARALLEL (DEGREE 4 INSTANCES 4);
+ALTER TABLE PT_RANGE NOPARALLEL;
+
+ALTER TABLE dept PARALLEL (DEGREE 4 INSTANCES 2);
+
+
+SELECT index_name, degree,instances FROM user_indexes;
+
+
+ALTER INDEX pk_dept PARALLEL (DEGREE 4 INSTANCES 2);
+ALTER INDEX pt_range_i PARALLEL (DEGREE 4 INSTANCES 2);
+ALTER INDEX pt_range_i2 PARALLEL (DEGREE 4 INSTANCES 2);
+
+
+CREATE CLUSTER personnel (department NUMBER(4)) SIZE 512 STORAGE (initial 100K next 50K);
+ALTER CLUSTER personnel PARALLEL (DEGREE 5 INSTANCES 3);
+
+
+ALTER SESSION SET current_schema = control;
+
+SELECT * FROM f_dept_me;
+SELECT * FROM control.f_dept_me;
+SELECT * FROM presentation.f_dept_me;

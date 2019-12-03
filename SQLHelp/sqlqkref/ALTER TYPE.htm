@@ -1,0 +1,39 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER TYPE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER TYPE">
+    <param name="Keyword" value="TYPE">
+</OBJECT>
+<H3>ALTER TYPE<HR SIZE="3"></H3>
+<P>
+ Use this command to recompile the specification and/or body, or to
+ change the specification of an object type by adding new object 
+ member subprogram specifications.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ ALTER TYPE [schema.]type_name
+   { COMPILE [SPECIFICATION | BODY] | REPLACE }
+     (attribute_name  datatype[, attribute_name  datatype]... 
+     | [{MAP | ORDER} MEMBER function_specification]
+     | [MEMBER {procedure_specification | function_specification}
+     [, MEMBER {procedure_specification | function_specification}]... ]
+     | [PRAGMA RESTRICT_REFERENCES (method_name, constraints)
+     [, PRAGMA RESTRICT_REFERENCES (method_name, constraints)]... ] )
+ 
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE TYPE.htm">CREATE TYPE</A>
+, <A HREF="DROP TYPE.htm">DROP TYPE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

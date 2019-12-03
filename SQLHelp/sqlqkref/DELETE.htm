@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<TITLE>DELETE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="DELETE">
+</OBJECT>
+<H3>DELETE<HR SIZE="3"></H3>
+<P>
+ Use this command to remove rows from a table, a partitioned table, a
+ view's base table, or from a view's partitioned base table.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ DELETE [FROM]
+   { [schema.]{table [PARTITION (partition_name) | @dblink]
+               | view [@dblink] }
+   | [THE] ( subquery ) }
+   [alias]
+   [WHERE condition]
+ 
+</PRE>
+<P>See also:  <A HREF="EXPLAIN PLAN.htm">EXPLAIN PLAN</A>
+, <A HREF="INSERT.htm">INSERT</A>
+, <A HREF="SELECT.htm">SELECT</A>
+, <A HREF="TRUNCATE.htm">TRUNCATE</A>
+, <A HREF="UPDATE.htm">UPDATE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

@@ -1,0 +1,293 @@
+<html>
+
+<head>
+<title>Operators</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="Operators">
+  <param name="Keyword" value="+">
+  <param name="Keyword" value="-">
+  <param name="Keyword" value="*">
+  <param name="Keyword" value="/">
+  <param name="Keyword" value="NOT">
+  <param name="Keyword" value="AND">
+  <param name="Keyword" value="OR">
+  <param name="Keyword" value="=">
+  <param name="Keyword" value="!=">
+  <param name="Keyword" value="^=">
+  <param name="Keyword" value="¬=">
+  <param name="Keyword" value="&lt;&gt;">
+  <param name="Keyword" value="&lt;">
+  <param name="Keyword" value="&gt;">
+  <param name="Keyword" value="&lt;=">
+  <param name="Keyword" value="&gt;=">
+  <param name="Keyword" value="IN">
+  <param name="Keyword" value="NOT IN">
+  <param name="Keyword" value="ANY">
+  <param name="Keyword" value="SOME">
+  <param name="Keyword" value="ALL">
+  <param name="Keyword" value="BETWEEN">
+  <param name="Keyword" value="EXISTS">
+  <param name="Keyword" value="LIKE">
+  <param name="Keyword" value="IS NULL">
+  <param name="Keyword" value="UNION">
+  <param name="Keyword" value="UNION ALL">
+  <param name="Keyword" value="INTERSECT">
+  <param name="Keyword" value="MINUS">
+  <param name="Keyword" value="||">
+  <param name="Keyword" value="(+)">
+  <param name="Keyword" value="PRIOR">
+</object>
+</p>
+
+<h3>Operators</h3>
+
+<hr SIZE="3">
+
+<ul>
+  <li><h4><a href="#Arithmetic Operators">Arithmetic Operators</a></h4>
+  </li>
+  <li><h4><a href="#Logical Operators">Logical Operators</a></h4>
+  </li>
+  <li><h4><a href="#Comparison Operators">Comparison Operators</a></h4>
+  </li>
+  <li><h4><a href="#Set Operators">Set Operators</a></h4>
+  </li>
+  <li><h4><a href="#Others">Others</a></h4>
+  </li>
+  <li><h4><a href="#Operator Precedence">Operator Precedence</a></h4>
+  </li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4><a name="Arithmetic Operators">Arithmetic Operators</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="120" bgColor="#99ccff"><p class="tab_header">Operator</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Purpose</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">+ -</td>
+    <td valign="top"><p class="tab_desc">Denotes a positive or negative expression</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">* /</td>
+    <td valign="top"><p class="tab_desc">Multiplies, divides</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">+ -</td>
+    <td valign="top"><p class="tab_desc">Adds, subtracts</td>
+  </tr>
+</table>
+
+<h4><a name="Logical Operators">Logical Operators</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="120" bgColor="#99ccff"><p class="tab_header">Operator</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Function</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">NOT</td>
+    <td valign="top"><p class="tab_desc">Returns TRUE if the following condition is FALSE <br>
+    Returns FALSE if it is TRUE; <br>
+    if it is UNKNOWN, it remains UNKNOWN </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">AND</td>
+    <td valign="top"><p class="tab_desc">Returns TRUE if both component conditions are TRUE <br>
+    Returns FALSE if either is FALSE; <br>
+    otherwise returns UNKNOWN </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">OR</td>
+    <td valign="top"><p class="tab_desc">Returns TRUE if either component condition is TRUE <br>
+    Returns FALSE if both are FALSE; <br>
+    otherwise returns UNKNOWN </td>
+  </tr>
+</table>
+
+<h4><a name="Comparison Operators">Comparison Operators</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="120" bgColor="#99ccff"><p class="tab_header">Operator</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Purpose</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p ALIGN="LEFT" class="tab_func">=</td>
+    <td valign="top"><p class="tab_desc">Equality test</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p ALIGN="LEFT" class="tab_func">!= ^= ¬= &lt;&gt;</td>
+    <td valign="top"><p class="tab_desc">Inequality test. Some forms of the inequality
+    operator may be unavailable on some platforms </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p ALIGN="LEFT" class="tab_func">&gt; &gt;= &lt; &lt;=</td>
+    <td valign="top"><p class="tab_desc">‘Greater than’, ‘greater than or equal to’,
+    ‘less than’, and ‘less than or equal to’ tests </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">IN</td>
+    <td valign="top"><p class="tab_desc">‘Equal to any member of’ test. Equivalent to ‘=
+    ANY’.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">NOT IN</td>
+    <td valign="top"><p class="tab_desc">Equivalent to ‘!=ALL’. Evaluates to FALSE if any
+    member of the set is NULL. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p ALIGN="LEFT" class="tab_func">ANY<br>
+    SOME</td>
+    <td valign="top"><p class="tab_desc">Compares a value to each value in a list or returned
+    by a query. Must be preceded by =, !=, &gt;, &lt;, &gt;=, &lt;=. <br>
+    Evaluates to FALSE if the query returns no rows </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">ALL</td>
+    <td valign="top"><p class="tab_desc">Compares a value to every value in a list or returned
+    by a query. Must be preceded by =, !=, &gt;, &lt;, &gt;=, &lt;=. <br>
+    Evaluates to TRUE if the query returns no rows </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p ALIGN="LEFT" class="tab_func">[NOT] BETWEEN <em>x</em> AND
+    <em>y</em></td>
+    <td valign="top"><p class="tab_desc">[Not] greater than or equal to <em>x</em> and less
+    than or equal to y </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p ALIGN="LEFT" class="tab_func">[NOT] EXISTS</td>
+    <td valign="top"><p class="tab_desc">TRUE if a subquery returns [does not return] at least
+    one row </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p ALIGN="LEFT" class="tab_func"><em>x</em> [NOT] LIKE <em>y</em>
+    [ESCAPE '<em>z</em>']</td>
+    <td valign="top"><p class="tab_desc">TRUE if <em>x</em> does [not] match the pattern <em>y</em>.
+    Within <em>y</em>, the character ‘%’ matches any string of zero of more characters
+    except null. The character ‘_’ matches any single character. Any character, except
+    percent (%) and underbar (_), may follow ESCAPE. A wildcard character is treated as a
+    literal if preceded by the character designated as the escape character. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p ALIGN="LEFT" class="tab_func">IS [NOT] NULL</td>
+    <td valign="top"><p class="tab_desc">Tests for nulls. This is the only operator that you
+    should use to test for nulls. </td>
+  </tr>
+</table>
+
+<h4><a name="Set Operators">Set Operators</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="120" bgColor="#99ccff"><p class="tab_header">Operator</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Returns</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">UNION</td>
+    <td valign="top"><p class="tab_desc">All rows selected by either query</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">UNION ALL</td>
+    <td valign="top"><p class="tab_desc">All rows selected by either query, including all
+    duplicates</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">INTERSECT</td>
+    <td valign="top"><p class="tab_desc">All distinct rows selected by both queries</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">MINUS</td>
+    <td valign="top"><p class="tab_desc">All distinct rows selected by the first query but not
+    the second</td>
+  </tr>
+</table>
+
+<h4><a name="Others">Others</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="120" bgColor="#99ccff"><p class="tab_header">Operator</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Purpose</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">||</td>
+    <td valign="top"><p class="tab_desc">Concatenation operator. Concatenates character
+    strings</td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">(+)</td>
+    <td valign="top"><p class="tab_desc">Outer Join operator. Indicates that the preceding
+    column is an outer join column in a join </td>
+  </tr>
+  <tr>
+    <td valign="top" width="120"><p class="tab_func">PRIOR</td>
+    <td valign="top"><p class="tab_desc">Evaluates the following expression for the parent row
+    of the current row in a hierarchical, or tree-structured, query. You must use this
+    operator in the CONNECT BY clause to define the relationship between parent and child
+    rows. You can also use this operator in other parts of a SELECT statement that performs a
+    hierarchical query.</td>
+  </tr>
+</table>
+
+<h4><a name="Operator Precedence">Operator Precedence</a></h4>
+
+<p>When evaluating an expression, the Oracle server evaluates operators with greater
+precedence first. Operators on the same line have the same precedence. <br>
+<strong>Note</strong>: Parentheses() override normal precedence. The Oracle server
+evaluates operators inside parentheses before those outside. Without parentheses,
+operators at the same precedence are evaluated from left to right. </p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%"
+height="217">
+  <tr>
+    <td valign="top" width="160" bgColor="#99ccff"><p class="tab_header">Operator</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Purpose</td>
+  </tr>
+  <tr>
+    <td valign="top" width="160"><p class="tab_func">+, -</td>
+    <td valign="top"><p class="tab_desc">identity, negation</td>
+  </tr>
+  <tr>
+    <td valign="top" width="160"><p class="tab_func">*, /</td>
+    <td valign="top"><p class="tab_desc">multiplication, division</td>
+  </tr>
+  <tr>
+    <td valign="top" width="160"><p class="tab_func">+, -, ||</td>
+    <td valign="top"><p class="tab_desc">addition, subtraction, concatenation</td>
+  </tr>
+  <tr>
+    <td valign="top" width="160"><p class="tab_func">=, !=, &lt;, &gt;, &lt;=, &gt;=, IS NULL,
+    LIKE, BETWEEN, IN</td>
+    <td valign="top"><p class="tab_desc">comparison</td>
+  </tr>
+  <tr>
+    <td valign="top" width="160"><p class="tab_func">NOT</td>
+    <td valign="top"><p class="tab_desc">exponentiation, logical negation</td>
+  </tr>
+  <tr>
+    <td valign="top" width="160"><p class="tab_func">AND</td>
+    <td valign="top"><p class="tab_desc">conjunction</td>
+  </tr>
+  <tr>
+    <td valign="top" width="160"><p class="tab_func">OR</td>
+    <td valign="top"><p class="tab_desc">disjunction</td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

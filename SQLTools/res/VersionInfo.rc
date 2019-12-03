@@ -1,0 +1,39 @@
+#include "VersionInfo.rh"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION SQLTOOLS_VERSION_ID
+ PRODUCTVERSION SQLTOOLS_VERSION_ID
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "CompanyName", "Freeware by Aleksey Kochetov"
+            VALUE "FileDescription", "SQLTools"
+            VALUE "FileVersion", SQLTOOLS_VERSION_STR
+            VALUE "InternalName", "SQLTools"
+            VALUE "LegalCopyright", SQLTOOLS_COPYRIGHT
+            VALUE "OriginalFilename", "SQLTools.exe"
+            VALUE "ProductName", "SQLTools"
+            VALUE "ProductVersion", SQLTOOLS_VERSION_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END

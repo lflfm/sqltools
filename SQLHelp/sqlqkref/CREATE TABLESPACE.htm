@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE TABLESPACE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE TABLESPACE">
+    <param name="Keyword" value="TABLESPACE">
+</OBJECT>
+<H3>CREATE TABLESPACE<HR SIZE="3"></H3>
+<P>
+ Use this command to create a tablespace. A tablespace is an
+ allocation of space in the database that can contain schema objects.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ CREATE TABLESPACE tablespace
+ DATAFILE <A HREF="Filespec.htm">filespec</A>
+   [ AUTOEXTEND
+     { OFF | ON
+       [ NEXT integer [K | M] ]
+       [ MAXSIZE
+         { UNLIMITED | integer [K | M] } ] } ]
+   [ LOGGING | NOLOGGING]
+   [, <A HREF="Filespec.htm">filespec</A>
+     [ AUTOEXTEND
+       { OFF | ON
+         [ NEXT integer [K | M] ]
+         [ MAXSIZE
+           { UNLIMITED | integer [K | M] } ] } ] ]
+   [LOGGING | NOLOGGING] ...
+   [ MINIMUM EXTENT integer [K | M] ]
+   [ DEFAULT STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+     | {ONLINE | OFFLINE}
+     | {PERMANENT | TEMPORARY} ] ...
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER TABLESPACE.htm">ALTER TABLESPACE</A>
+, <A HREF="DROP TABLESPACE.htm">DROP TABLESPACE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

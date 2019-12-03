@@ -1,0 +1,141 @@
+/*! \mainpage arg library
+*
+*\section	arglib_Introduction Introduction to arglib
+*
+*	This is a C++ library, it contains a mixture of stable, useful classes
+*	and "doodles in code". These are provided "as is" without any guarantees.
+*
+*	There are also tutorial articles discussing the rationale and usage of
+*	the various library elements. It is a "work in progress": enhancement
+*	and additional articles will be posted as and when I get around to it.
+*
+*	All the code has been compiled and tested with egcs-1.1.2, gcc 2.95.2
+*	Visual C++ 5.0 Visual C++ 6.0 and Borland C++ 5.5 on WinNT4/Intel 
+*	and with gcc 2.95.2 on Solaris7/Sparc.
+*
+*\section  arglib_Overview Overview of contents
+*
+*	arglib contains the following headers (A more detailed discussion
+* 	of the smart pointers is <A href=#arglib_Smart_pointers>below</A>):
+*
+*	<DL>
+*
+*	<DT><CODE>"arg_shared.h"</CODE></DT>
+*		<DD>This provides <CODE>arg::counted_ptr<></CODE> which
+*		supports a form of shared ownership. This and the related
+*		<CODE>arg::uncounted_ptr<></CODE> are discussed in the 
+*		<A href=http://www.octopull.demon.co.uk/arglib/uncounted_ptr.html>"uncounted pointer" article</A></DD>
+*
+*	<DT><CODE>"arg_grin_ptr.h"</CODE></DT>
+*		<DD>This provides <CODE>arg::grin_ptr<></CODE> which
+*		provides supports for the "Cheshire Cat" idiom. Copy and
+*		assignment operations replicate the owned object.  (This differs
+*		from the similar <CODE>arg::deep_copy_ptr<></CODE> in that
+*		- with the exception of the explicit constructor - the methods
+*		do not depend upon the pointee being of a complete type. More 
+*		details in <A href=http://www.octopull.demon.co.uk/arglib/TheGrin.html>Ending with the grin</A>.
+*
+*	<DT><CODE>"arg_deep_copy.h"</CODE></DT>
+*		<DD>This provides <CODE>arg::deep_copy_ptr<></CODE> which
+*		supports a form of unshared ownership. (Copy operations duplicate
+*		the owned object.) This and the related
+*		<CODE>arg::body_part_ptr<></CODE> will be the subject of
+*		a future article.</DD>
+*
+*	<DT><CODE>"arg_auto_ptr.h"</CODE></DT>
+*		<DD>This is just my attempt to implement the standard library 
+*		<CODE>auto_ptr</CODE> template.  It has no utility except when working
+*		with C++ implementations that supply a broken <CODE>auto_ptr</CODE>.</DD>
+*
+*	<DT><CODE>"arg_observer.h"</CODE></DT>
+*		<DD>Support template classes for implementing the GOF observer pattern.
+*		(Principally a <CODE>subject</CODE> template class.)</DD>
+*
+*	<DT><CODE>"arg_iterator.h"</CODE></DT>
+*		<DD>Proxy template classes for wrapping iterators.  These allow the 
+*		a class interface to be defined without exposing the choice of 
+*		used in the implementation.</DD>
+*
+*	<DT><CODE>"arg_deep_copy_utils.h"</CODE></DT>
+*		<DD>Provides a template function <CODE>deep_copy()</CODE> to 
+*		to copy the object referenced by a pointer. (Using a copy constructor,
+*	    a <CODE>clone()</CODE> method and using a <CODE>makeClone()</CODE>
+*	    method are all supported - users may also supply alternatives.)
+*		The pointer template classes in <CODE>"arg_deep_copy.h"</CODE> and 
+*		<CODE>"arg_grin_ptr.h"</CODE> use this to copy the objects they
+*		manage correctly.</DD>
+*
+*	<DT><CODE>"arg_test.h"</CODE></DT>
+*		<DD>This provides a number of utilities used by the test harnesses.
+*		At present there is no tutorial, but plenty of examples.</DD>
+*
+*	</DL>
+*
+*
+*\section  arglib_Smart_pointers Smart pointers
+*
+*	The headers <CODE>"arg_shared.h"</CODE>, <CODE>"arg_grin_ptr.h"</CODE>,
+*	<CODE>"arg_deep_copy.h"</CODE> and <CODE>"arg_auto_ptr.h"</CODE> all
+*	provide smart pointers that manage an "owned" object.  This may seem
+*	a little confusing at first - but they do meet different needs.  The
+*	following table and glossary attempt to resolve any confusion.
+*
+*	<TABLE>
+*	<TR BGCOLOR=black TEXT=yellow>
+*	    <TD>Pointer</TD>		<TD>Ownership</TD>	<TD>Copying</TD><TD>Incomplete Types</TD>	<TD>Const-qualified</TD></TR>
+*	<TR><TD>arg::counted_ptr</TD>	<TD>shared</TD>	<TD>value</TD> 	<TD>no</TD>					<TD>no</TD> 	</TR>
+*	<TR><TD>arg::uncounted_ptr</TD>	<TD>no</TD> 	<TD>value</TD> 	<TD>no</TD>					<TD>no</TD>		</TR>
+*	<TR><TD>arg::deep_copy_ptr</TD>	<TD>sole</TD>	<TD>deep</TD> 	<TD>no</TD>					<TD>no</TD> 	</TR>
+*	<TR><TD>arg::body_part_ptr</TD>	<TD>sole</TD> 	<TD>deep</TD> 	<TD>no</TD>					<TD>yes</TD> 	</TR>
+*	<TR><TD>arg::grin_ptr</TD>	    <TD>sole</TD> 	<TD>deep</TD> 	<TD>yes</TD>				<TD>yes</TD> 	</TR>
+*	<TR><TD>arg::auto_ptr</TD>	    <TD>sole</TD>	<TD>reseat</TD>	<TD>no</TD>					<TD>no</TD> 	</TR>
+*	</TABLE>
+*	
+*	<DL>
+*
+*	<DT>Ownership</DT>
+*		<DD>Not all smart pointers deal with management of the lifetime of
+*		the referenced object.  However most of the ones in the above table do.
+*
+*		A smart pointer that owns the referenced object is responsible for
+*		destroying the object when its ownership is revoked. This happens,
+*		for example, when the pointer itself is destroyed, or when it receives
+*	    ownership of a new object.</DD>
+*
+*	<DT>Copying</DT>
+*		<DD>When a smart pointer is constructed from, or is assigned from
+*		another smart pointer then the references to objects that they hold
+*		will be manipulated.
+*
+*		Several possibilities exist - the value of the reference may be copied,
+*		the object referenced may be copied, or (in the case of 
+*		<CODE>auto_ptr</CODE>) the reference may be reseated in the target pointer.
+*	</DD>
+*
+*	<DT>Incomplete Types</DT>
+*		<DD>Since they destroy the referenced object - which may require a 
+*		destructor call the majority of these smart pointers can only deal with 
+*		complete types.  (Where the compiler has seen the definition of the
+*		referenced object type.)
+*
+*		Because it was written to support the "Cheshire Cat" idiom
+*		<CODE>grin_ptr</CODE> does support working with incomplete types.  
+*		(Actually, the type does need to be complete at the point of
+*	    initialisation, but not elsewhere.)</DD>
+*
+*	<DT>Const-qualified</DT>
+*		<DD>When writing a class that delegates all or part of its behaviour to
+*		an object referenced via a pointer it is desirable to maintain 
+*		const-correctness.  This does not happen with ordinary pointers as
+*		the const qualification of the pointer does not qualify the access to
+*		object.
+*
+*		The <CODE>body_part_ptr</CODE> and <CODE>grin_ptr</CODE> smart pointers 
+*		support const-qualified access to the referenced object.</DD>
+*	</DL>
+*
+*\section	Downloading_arglib Downloading arglib
+*
+*	The library is supplied as sourcecode 
+*	<A href=http://www.octopull.demon.co.uk/download/arg.zip>download arglib</A>.
+*/

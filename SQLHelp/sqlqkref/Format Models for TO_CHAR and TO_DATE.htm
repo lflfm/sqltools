@@ -1,0 +1,412 @@
+<html>
+
+<head>
+<title>Format Models for TO_CHAR and TO_DATE</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="TO_DATE">
+  <param name="Keyword" value="TO_CHAR">
+  <param name="Keyword" value="Date Format">
+  <param name="Keyword" value="Number Format">
+  <param name="Keyword" value="Mask">
+</object>
+</p>
+
+<h3>Format Models for TO_CHAR and TO_DATE</h3>
+
+<hr SIZE="3">
+
+<ul>
+  <li><h4><a href="#Date format elements">Date Format Elements</a></h4>
+  </li>
+  <li><h4><a href="#Date Format Prefixes and Suffixes"><b>Date Format Prefixes and Suffixes</b></a></h4>
+  </li>
+  <li><h4><a href="#Date Format Case Control"><b>Date Format Case Control</b></a></h4>
+  </li>
+  <li><h4><a href="#Number Format Models for TO_CHAR">Number Format Models for TO_CHAR</a></h4>
+  </li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4><a name="Date format elements"></a>Date Format Elements</h4>
+
+<p>You can use any combination of these elements as the <i>fmt </i>argument of the TO_CHAR
+or TO_DATE functions. If no format is specified, <i>fmt </i>defaults to the default DATE
+format, ’DD-MON-YY’.</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="96" bgColor="#99ccff"><p class="tab_header">Format Element</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Value Returned</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Available in TO_DATE</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">SCC or CC</td>
+    <td valign="top"><p class="tab_desc">Century; ‘S’ prefixes BC date with ‘-’</td>
+    <td valign="top"><p class="tab_desc">No</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">YYYY or SYYYY</td>
+    <td valign="top"><p class="tab_desc">Year; ‘S’ prefixes BC date with ‘-’</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">YYY or YY or Y</td>
+    <td valign="top"><p class="tab_desc">Last 3, 2, or 1 digit(s) of year. Century defaults to
+    current</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">IYYY</td>
+    <td valign="top"><p class="tab_desc">4-digit ISO standard year</td>
+    <td valign="top"><p class="tab_desc">No</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">IYY or IY or I</td>
+    <td valign="top"><p class="tab_desc">Last 3, 2, or 1 digit(s) of ISO year</td>
+    <td valign="top"><p class="tab_desc">No</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">Y,YYY</td>
+    <td valign="top"><p class="tab_desc">Year with comma in this position</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">SYEAR or YEAR</td>
+    <td valign="top"><p class="tab_desc">Year spelled out; ‘S’ prefixes BC date with
+    ‘-’</td>
+    <td valign="top"><p class="tab_desc">No</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">RR</td>
+    <td valign="top"><p class="tab_desc">Given a year with 2 digits and knowing the current
+    year and century, calculates the century of the year you specify</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">RRRR</td>
+    <td valign="top"><p class="tab_desc">Round year. Accepts either 4-digit or 2-digit input.
+    If 2-digit, provides the same return as RR. If you don't want this functionality, enter
+    the 4-digit year.</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">BC or AD or B.C. or A.D.</td>
+    <td valign="top"><p class="tab_desc">BC/AD indicator with or without periods</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">Q</td>
+    <td valign="top"><p class="tab_desc">Quarter of year (1,2,3,4; JAN-MAR=1)</td>
+    <td valign="top"><p class="tab_desc">No</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">MM</td>
+    <td valign="top"><p class="tab_desc">Month of year (01-12; JAN=01)</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">RM</td>
+    <td valign="top"><p class="tab_desc">Roman numeral month (I..XII;JAN=I)</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">MONTH</td>
+    <td valign="top"><p class="tab_desc">Month name, padded with blanks to 9 characters</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">MON</td>
+    <td valign="top"><p class="tab_desc">Name of month, abbreviated (JAN, FEB)</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">WW or W</td>
+    <td valign="top"><p class="tab_desc">Week of year (1052) or month (1-5)</td>
+    <td valign="top"><p class="tab_desc">No</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">IW</td>
+    <td valign="top"><p class="tab_desc">ISO standard week of the year (1..21 or 1..53)</td>
+    <td valign="top"><p class="tab_desc">No</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">DDD or DD or D</td>
+    <td valign="top"><p class="tab_desc">Day of year (1-366) or month (1-31) or week (1-7)</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">DAY</td>
+    <td valign="top"><p class="tab_desc">Name of day, blank-padded to 9 characters</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">DY</td>
+    <td valign="top"><p class="tab_desc">Name of day, 3-lettter abbreviation</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">J</td>
+    <td valign="top"><p class="tab_desc">Julian day (days since December 31, 4713 BC)</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">AM or A.M.</td>
+    <td valign="top"><p class="tab_desc">Meridian indicator with or without periods</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">PM or P.M.</td>
+    <td valign="top"><p class="tab_desc">Meridian indicator with or without periods</td>
+    <td valign="top"><p class="tab_desc">No</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">HH or HH12</td>
+    <td valign="top"><p class="tab_desc">Hour of the day (1-12)</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">HH24</td>
+    <td valign="top"><p class="tab_desc">Hour of day (0-23)</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">MI</td>
+    <td valign="top"><p class="tab_desc">Minute (0-59)</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">SS or SSSSS</td>
+    <td valign="top"><p class="tab_desc">Second (0-59) or seconds past midnight (0-86399)</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">-/,.;:</td>
+    <td valign="top"><p class="tab_desc">Punctuation is reproduced in the result.</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">&quot;...text...&quot;</td>
+    <td valign="top"><p class="tab_desc">Quoted string is reproduced in the result.</td>
+    <td valign="top"><p class="tab_desc">Yes</td>
+  </tr>
+</table>
+<b><font FACE="Times New Roman">
+
+<h4></font><a name="Date Format Prefixes and Suffixes"></a>Date Format Prefixes and
+Suffixes</b></h4>
+<font FACE="Times New Roman">
+
+<p></font>You can add these prefixes to date format elements:</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top"><p class="tab_func">FM</td>
+    <td valign="top"><p class="tab_desc">“Fill mode.” Suppresses blank padding when
+    prefixed to MONTH or DAY. FM is a toggle. Use FM twice to reenable blank padding.</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">FX</td>
+    <td valign="top"><p class="tab_desc">“Format exact.” Specifies exact matching for the
+    character argument and date format model of a TO_DATE function </td>
+  </tr>
+</table>
+
+<p>You can add these suffixes to date format elements:</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top"><p class="tab_func">TH</td>
+    <td valign="top"><p class="tab_desc">Ordinal number (“DDTH” for “4TH”)</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">SP</td>
+    <td valign="top"><p class="tab_desc">Spelled-out number (“DDSP” for “FOUR”)</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">SPTH and THSP</td>
+    <td valign="top"><p class="tab_desc">Spelled-out ordinal number (“DDSPTH” for
+    “FOURTH”) </td>
+  </tr>
+</table>
+
+<h4><a name="Date Format Case Control"></a><b>Date Format Case Control</h4>
+</b>
+
+<p>The following strings output in uppercase, initial caps, or lowercase:</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td bgColor="#99ccff"><p class="tab_header">Uppercase</td>
+    <td bgColor="#99ccff"><p class="tab_header">Initial Caps</td>
+    <td bgColor="#99ccff"><p class="tab_header">Lowercase</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">DAY</td>
+    <td valign="top"><p class="tab_func">Day</td>
+    <td valign="top"><p class="tab_func">day</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">DY</td>
+    <td valign="top"><p class="tab_func">Dy</td>
+    <td valign="top"><p class="tab_func">dy</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">MONTH</td>
+    <td valign="top"><p class="tab_func">Month</td>
+    <td valign="top"><p class="tab_func">month</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">MON</td>
+    <td valign="top"><p class="tab_func">Mon</td>
+    <td valign="top"><p class="tab_func">mon</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">YEAR</td>
+    <td valign="top"><p class="tab_func">Year</td>
+    <td valign="top"><p class="tab_func">year</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">AM</td>
+    <td valign="top"><p class="tab_func">Am</td>
+    <td valign="top"><p class="tab_func">am</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">PM</td>
+    <td valign="top"><p class="tab_func">Pm</td>
+    <td valign="top"><p class="tab_func">pm</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">A.M</td>
+    <td valign="top"><p class="tab_func">A.m.</td>
+    <td valign="top"><p class="tab_func">am</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">P.M.</td>
+    <td valign="top"><p class="tab_func">P.m.</td>
+    <td valign="top"><p class="tab_func">pm</td>
+  </tr>
+</table>
+
+<p>When prefixes or suffixes are added to a date format, the case (uppercase, initial
+caps, or lowercase) is determined by the format element, not by the prefix or suffix. For
+example, 'ddTH' produces &quot;04th&quot;, not &quot;04TH&quot;</p>
+<b>
+
+<h4></b><a name="Number Format Models for TO_CHAR"></a>Number Format Models for TO_CHAR</h4>
+
+<p>This table lists the number format elements. You can use a combination of these
+elements as the <i>fmt </i>argument of the TO_CHAR function.</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td bgColor="#99ccff"><p class="tab_header">Format Element</td>
+    <td bgColor="#99ccff"><p class="tab_header">Example</td>
+    <td bgColor="#99ccff"><p class="tab_header">Function</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">9</td>
+    <td valign="top"><p class="tab_func">9999</td>
+    <td valign="top"><p class="tab_desc">Number of <i>9</i>s determines length of returned
+    character</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">0</td>
+    <td valign="top"><p class="tab_func">0999</td>
+    <td valign="top"><p class="tab_desc">Prefixes value with leading zeroes</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">$</td>
+    <td valign="top"><p class="tab_func">$9999</td>
+    <td valign="top"><p class="tab_desc">Prefixes value with dollar sign</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">B</td>
+    <td valign="top"><p class="tab_func">B9999</td>
+    <td valign="top"><p class="tab_desc">Returns zero value as blank, instead of “0”</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">MI</td>
+    <td valign="top"><p class="tab_func">9999MI</td>
+    <td valign="top"><p class="tab_desc">Returns “-” after negative values</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">S</td>
+    <td valign="top"><p class="tab_func">S9999</td>
+    <td valign="top"><p class="tab_desc">Returns “+” for positive values and “-” for
+    negative values</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">PR</td>
+    <td valign="top"><p class="tab_func">9999PR</td>
+    <td valign="top"><p class="tab_desc">Returns negative values in &lt;angle brackets&gt;</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">D</td>
+    <td valign="top"><p class="tab_func">99D99</td>
+    <td valign="top"><p class="tab_desc">Returns the decimal character</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">G</td>
+    <td valign="top"><p class="tab_func">9G999</td>
+    <td valign="top"><p class="tab_desc">Returns the group separator</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">C</td>
+    <td valign="top"><p class="tab_func">C999</td>
+    <td valign="top"><p class="tab_desc">Returns the international currency symbol</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">L</td>
+    <td valign="top"><p class="tab_func">L999</td>
+    <td valign="top"><p class="tab_desc">Returns the local currency symbol</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">,</td>
+    <td valign="top"><p class="tab_func">9,999</td>
+    <td valign="top"><p class="tab_desc">Returns a comma in this position</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">.</td>
+    <td valign="top"><p class="tab_func">99.99</td>
+    <td valign="top"><p class="tab_desc">Returns a period in this position</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">V</td>
+    <td valign="top"><p class="tab_func">999V99</td>
+    <td valign="top"><p class="tab_desc">Multiplies value by 10<i>n</i>, where <i>n </i>is the
+    number of <i>9</i>s after the <i>V</i></td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">EEEE</td>
+    <td valign="top"><p class="tab_func">9.999EEEE</td>
+    <td valign="top"><p class="tab_desc">Returns value in scientific notation. <i>fmt </i>must
+    contain exactly four <i>E</i>s</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">RN or rn</td>
+    <td valign="top"><p class="tab_func">RN</td>
+    <td valign="top"><p class="tab_desc">upper- or lower-case Roman numerals (numbers in range
+    1..3999)</td>
+  </tr>
+  <tr>
+    <td valign="top"><p class="tab_func">DATE</td>
+    <td valign="top"><p class="tab_func">‘DATE’</td>
+    <td valign="top"><p class="tab_desc">Returns value converted from Julian date to
+    ‘MM/DD/YY’ date format</td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

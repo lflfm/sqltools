@@ -1,0 +1,45 @@
+<?xml version="1.0" standalone="yes" ?>
+<OpenEditor>
+    <Templates MajorVersion="1" MinorVersion="1">
+        <Language Name="PL/SQL" AlwaysListIfAlternative="0">
+            <Template Name="Block (begin)" Keyword="begin" MinLength="1" CurLine="1" CurPos="2">BEGIN&#x0D;&#x0A;  &#x0D;&#x0A;--EXCEPTION&#x0D;&#x0A;--  WHEN Others THEN&#x0D;&#x0A;END;&#x0D;&#x0A;</Template>
+            <Template Name="Block (declare)" Keyword="declare" MinLength="1" CurLine="1" CurPos="2">DECLARE&#x0D;&#x0A;  &#x0D;&#x0A;BEGIN&#x0D;&#x0A;  &#x0D;&#x0A;--EXCEPTION&#x0D;&#x0A;--  WHEN Others THEN&#x0D;&#x0A;END;&#x0D;&#x0A;</Template>
+            <Template Name="Copyright" Keyword="copyright" MinLength="2" CurLine="3" CurPos="0">--&#x0D;&#x0A;--  Copyright 2001 (c) Aleksey Kochetov&#x0D;&#x0A;--&#x0D;&#x0A;</Template>
+            <Template Name="Create or Replace" Keyword="create" MinLength="2" CurLine="0" CurPos="18">CREATE OR REPLACE &#x0D;&#x0A;</Template>
+            <Template Name="Cursor" Keyword="cursor" MinLength="2" CurLine="0" CurPos="7">CURSOR  IS&#x0D;&#x0A;  SELECT * &#x0D;&#x0A;    FROM  &#x0D;&#x0A;    WHERE;&#x0D;&#x0A;</Template>
+            <Template Name="Dbms_Output.Put_Line" Keyword="put" MinLength="1" CurLine="0" CurPos="21">Dbms_Output.Put_Line();&#x0D;&#x0A;</Template>
+            <Template Name="Delete" Keyword="delete" MinLength="1" CurLine="0" CurPos="12">DELETE FROM  WHERE;&#x0D;&#x0A;</Template>
+            <Template Name="Exception" Keyword="exception" MinLength="3" CurLine="2" CurPos="4">EXCEPTION&#x0D;&#x0A;  WHEN Others THEN&#x0D;&#x0A;</Template>
+            <Template Name="Execute Immediate" Keyword="execute" MinLength="1" CurLine="0" CurPos="19">EXECUTE IMMEDIATE &apos;&apos;;</Template>
+            <Template Name="For" Keyword="for" MinLength="2" CurLine="0" CurPos="4">FOR  IN  LOOP&#x0D;&#x0A;END LOOP;&#x0D;&#x0A;</Template>
+            <Template Name="Function" Keyword="function" MinLength="2" CurLine="0" CurPos="9">FUNCTION  RETURN  IS&#x0D;&#x0A;BEGIN&#x0D;&#x0A;  RETURN ;&#x0D;&#x0A;END;&#x0D;&#x0A;</Template>
+            <Template Name="If" Keyword="if" MinLength="1" CurLine="0" CurPos="3">IF  THEN&#x0D;&#x0A;END IF;&#x0D;&#x0A;</Template>
+            <Template Name="If Else" Keyword="ife" MinLength="3" CurLine="0" CurPos="3">IF  THEN&#x0D;&#x0A;ELSE&#x0D;&#x0A;END IF;&#x0D;&#x0A;</Template>
+            <Template Name="If Else If" Keyword="ifeif" MinLength="4" CurLine="0" CurPos="3">IF  THEN&#x0D;&#x0A;ELSIF THEN&#x0D;&#x0A;ELSE&#x0D;&#x0A;END IF;&#x0D;&#x0A;</Template>
+            <Template Name="Insert" Keyword="insert" MinLength="1" CurLine="0" CurPos="12">INSERT INTO  () VALUES();&#x0D;&#x0A;</Template>
+            <Template Name="Integer" Keyword="intsert" MinLength="3" CurLine="0" CurPos="7">INTEGER &#x0D;&#x0A;</Template>
+            <Template Name="Loop" Keyword="loop" MinLength="1" CurLine="1" CurPos="2">LOOP&#x0D;&#x0A;  &#x0D;&#x0A;END LOOP;&#x0D;&#x0A;</Template>
+            <Template Name="Number" Keyword="number" MinLength="1" CurLine="0" CurPos="6">NUMBER &#x0D;&#x0A;</Template>
+            <Template Name="Package" Keyword="package" MinLength="2" CurLine="0" CurPos="26">CREATE OR REPLACE PACKAGE  IS&#x0D;&#x0A;END;&#x0D;&#x0A;/&#x0D;&#x0A;&#x0D;&#x0A;CREATE OR REPLACE PACKAGE BODY  IS&#x0D;&#x0A;END;&#x0D;&#x0A;/&#x0D;&#x0A;</Template>
+            <Template Name="Pls Integer" Keyword="pls_integer" MinLength="2" CurLine="0" CurPos="11">PLS_INTEGER &#x0D;&#x0A;</Template>
+            <Template Name="Procedure" Keyword="procedure" MinLength="2" CurLine="0" CurPos="10">PROCEDURE  IS&#x0D;&#x0A;BEGIN&#x0D;&#x0A;END;&#x0D;&#x0A;</Template>
+            <Template Name="Raise_Application_Error" Keyword="raise_application_error" MinLength="2" CurLine="0" CurPos="32">Raise_Application_Error(-20999,&apos;&apos;);&#x0D;&#x0A;</Template>
+            <Template Name="Record Type" Keyword="record" MinLength="2" CurLine="0" CurPos="5">TYPE  IS RECORD &#x0D;&#x0A;(&#x0D;&#x0A;);&#x0D;&#x0A;</Template>
+            <Template Name="Restrict References" Keyword="restrict_references" MinLength="3" CurLine="0" CurPos="27">PRAGMA RESTRICT_REFERENCES(,WNDS,WNPS,RNDS,RNPS)&#x0D;&#x0A;</Template>
+            <Template Name="Return" Keyword="return" MinLength="3" CurLine="0" CurPos="7">RETURN &#x0D;&#x0A;</Template>
+            <Template Name="Select" Keyword="select" MinLength="1" CurLine="0" CurPos="14">SELECT * FROM  WHERE;&#x0D;&#x0A;</Template>
+            <Template Name="Table Type" Keyword="type" MinLength="1" CurLine="0" CurPos="5">TYPE  IS TABLE&#x0D;&#x0A;  OF &#x0D;&#x0A;  INDEX BY BINARY_INTEGER;&#x0D;&#x0A;</Template>
+            <Template Name="Trigger" Keyword="trigger" MinLength="2" CurLine="1" CurPos="8">CREATE OR REPLACE&#x0D;&#x0A;TRIGGER &#x0D;&#x0A;BEFORE--AFTER&#x0D;&#x0A;INSERT OR DELETE OR UPDATE&#x0D;&#x0A; --OF &lt;list of columns&gt;&#x0D;&#x0A;ON --&lt;table name&gt;&#x0D;&#x0A;FOR EACH ROW&#x0D;&#x0A;--WHEN &lt;condition&gt;&#x0D;&#x0A;DECLARE&#x0D;&#x0A;  &#x0D;&#x0A;BEGIN&#x0D;&#x0A;  &#x0D;&#x0A;--EXCEPTION&#x0D;&#x0A;--  WHEN Others THEN&#x0D;&#x0A;END;&#x0D;&#x0A;/  &#x0D;&#x0A;</Template>
+            <Template Name="Update" Keyword="update" MinLength="1" CurLine="0" CurPos="7">UPDATE  SET () = () WHERE;&#x0D;&#x0A;</Template>
+            <Template Name="Varchar2" Keyword="varchar2" MinLength="1" CurLine="0" CurPos="8">VARCHAR2 &#x0D;&#x0A;</Template>
+            <Template Name="While" Keyword="while" MinLength="1" CurLine="0" CurPos="6">WHILE  LOOP&#x0D;&#x0A;END LOOP;&#x0D;&#x0A;</Template>
+        </Language>
+        <Language Name="C++" AlwaysListIfAlternative="0" />
+        <Language Name="Java" AlwaysListIfAlternative="0" />
+        <Language Name="SQR" AlwaysListIfAlternative="0" />
+        <Language Name="Shell" AlwaysListIfAlternative="0" />
+        <Language Name="Text" AlwaysListIfAlternative="0" />
+        <Language Name="XML" AlwaysListIfAlternative="0" />
+        <Language Name="PERL" AlwaysListIfAlternative="0" />
+    </Templates>
+</OpenEditor>

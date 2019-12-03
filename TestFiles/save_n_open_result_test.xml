@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<QUERY>
+<REC N="6" >
+	<job>CLERK</job>
+	<mgr>7902</mgr>
+	<hiredate>1980-12-17 00:00:00</hiredate>
+</REC>
+<REC N="7" >
+	<job>SALESMAN</job>
+	<mgr>7698</mgr>
+	<hiredate>1981-02-20 00:00:00</hiredate>
+</REC>
+<REC N="8" >
+	<job>SALESMAN</job>
+	<mgr>7698</mgr>
+	<hiredate>1981-02-22 00:00:00</hiredate>
+</REC>
+</QUERY>

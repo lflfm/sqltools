@@ -1,0 +1,156 @@
+<html>
+
+<head>
+<title>Miscellaneous Single-Row Functions</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="BFILENAME">
+  <param name="Keyword" value="DECODE">
+  <param name="Keyword" value="DUMP">
+  <param name="Keyword" value="EMPTY_BLOB">
+  <param name="Keyword" value="EMPTY_CLOB">
+  <param name="Keyword" value="GREATEST">
+  <param name="Keyword" value="LEAST">
+  <param name="Keyword" value="NLS_CHARSET_DECL_LEN">
+  <param name="Keyword" value="NLS_CHARSET_ID">
+  <param name="Keyword" value="NLS_CHARSET_NAME">
+  <param name="Keyword" value="NVL">
+  <param name="Keyword" value="NVL2">
+  <param name="Keyword" value="SYS_CONTEXT">
+  <param name="Keyword" value="SYS_GUID">
+  <param name="Keyword" value="UID">
+  <param name="Keyword" value="USER">
+  <param name="Keyword" value="USERENV">
+  <param name="Keyword" value="VSIZE">
+</object>
+</p>
+
+<h3>Miscellaneous Single-Row Functions</h3>
+
+<p>Functions that do not fall into any of the other single-row function categories.</p>
+
+<hr SIZE="3">
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="236" bgColor="#99ccff"><p class="tab_header">Function</td>
+    <td valign="top" bgColor="#99ccff" width="587"><p class="tab_header">Value Returned</td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">BFILENAME(<em>'directory', 'filename'</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc">BFILENAME returns a BFILE locator that is
+    associated with a physical LOB binary file on the server’s file system. A <em>'directory</em>'
+    is an alias for a full pathname on the server’s file system where the files are actually
+    located, and <em>’filename’</em> is the name of the file in the server’s file
+    system. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">DECODE(<em>expr, search, return1,
+    [search2, return2,] ... [default]</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc">If <i>expr </i>equals any search, returns
+    the following return; if not, returns default</td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">DUMP(<em>expr [,display_format
+    [,start_position [,length]]]</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc"><em>expr</em> in Oracle internal format</td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">EMPTY_BLOB()<br>
+    EMPTY_CLOB()</td>
+    <td valign="top" width="587"><p class="tab_desc">EMPTY_BLOB and EMPTY_CLOB returns an
+    empty LOB locator that can be used to initialize a LOB variable or in an INSERT or UPDATE
+    statement to initialize a LOB column or attribute to EMPTY. EMPTY means that the LOB is
+    initialized, but not populated with data. <br>
+    You cannot use the locator returned from this function as a parameter to the DBMS_LOB
+    package or the OCI. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">GREATEST(<em>expr [,expr]...</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc"><em>expr</em> with the greatest value</td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">LEAST(<em>expr [,expr]...</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc"><em>expr</em> with the least value</td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">NLS_CHARSET_DECL_LEN(<em>bytecnt</em>,<em>csid</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc">NLS_CHARSET_DECL_LEN returns the
+    declaration width (in number of characters) of an NCHAR column. The <em>bytecnt</em>
+    argument is the width of the column. The <em>csid</em> argument is the character set ID of
+    the column. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">NLS_CHARSET_ID(<em>text</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc">NLS_CHARSET_ID returns the NLS character
+    set ID number corresponding to NLS character set name, <em>text</em>. The <em>text</em>
+    argument is a run-time VARCHAR2 value. The <em>text</em> value ’CHAR_CS’ returns the
+    database character set ID number of the server. The text value ’NCHAR_CS’ returns the
+    national character set ID number of the server. <br>
+    Invalid character set names return null. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">NLS_CHARSET_NAME(<em>n</em>) </td>
+    <td valign="top" width="587"><p class="tab_desc">NLS_CHARSET_NAME returns the name of the
+    NLS character set corresponding to ID number <em>n</em>. The character set name is
+    returned as a VARCHAR2 value in the database character set. <br>
+    If n is not recognized as a valid character set ID, this function returns null. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">NVL(<em>expr1,expr2</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc">If <em>expr1</em> is null, NVL returns <em>expr2</em>;
+    if <em>expr1</em> is not null, NVL returns <em>expr1</em>. The arguments <em>expr1</em>
+    and <em>expr2</em> can have any datatype. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">NVL2(<em>expr1,expr2,expr3</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc">If <em>expr1</em> is not null, NVL2
+    returns <em>expr2</em>. If <em>expr1</em> is null, NVL2 returns <em>expr3</em>. The
+    argument <em>expr1</em> can have any datatype. The arguments <em>expr2</em> and <em>expr3</em>
+    can have any datatypes except LONG. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">SYS_CONTEXT(’<em>namespace</em>’, ’<em>attribute</em>’[,<em>length</em>])
+    </td>
+    <td valign="top" width="587"><p class="tab_desc">SYS_CONTEXT returns the value of
+    attribute associated with the context namespace. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">SYS_GUID()</td>
+    <td valign="top" width="587"><p class="tab_desc">SYS_GUID generates and returns a globally
+    unique identifier (RAW value) made up of 16 bytes. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">UID</td>
+    <td valign="top" width="587"><p class="tab_desc">Number that uniquely identifies the
+    current user</td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">USER</td>
+    <td valign="top" width="587"><p class="tab_desc">Name of the current user</td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">USERENV(<em>'option'</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc">Information about the current session.
+    Specify option in single quotes. Options: ISDBA, LANGUAGE, TERMINAL, SESSIONID, ENTRYID,
+    LANG, INSTANCE and CLIENT_INFO. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="236"><p class="tab_func">VSIZE(<em>expr</em>)</td>
+    <td valign="top" width="587"><p class="tab_desc">The number of bytes in Oracle’s
+    internal representation of expr.</td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

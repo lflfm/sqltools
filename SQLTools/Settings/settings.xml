@@ -1,0 +1,174 @@
+<?xml version="1.0" standalone="yes" ?>
+<OpenEditor>
+    <Settings MajorVersion="1" MinorVersion="1" PrintBlackAndWhite="0" PrintLineNumbers="1" PrintHeader="&amp;F&amp;b&amp;b&amp;D" PrintFooter="&amp;bPage &amp;p of &amp;P" PrintMarginMeasurement="0" PrintLeftMargin="20." PrintRightMargin="5." PrintTopMargin="5." PrintBottomMargin="5." UndoLimit="1000" UndoMemLimit="1024000" UndoAfterSaving="1" TruncateSpaces="1" CursorBeyondEOL="1" CursorBeyondEOF="1" LineNumbers="0" VisibleSpaces="0" Ruler="1" TimestampFormat="dd.mm.yyyy hh24:mi" EOFMark="1" HomeGotoFirstColumn="0" ColumnMarkers="1" IndentGuide="1" BlockKeepMarking="0" BlockKeepMarkingAfterDragAndDrop="1" BlockDelAndBSDelete="1" BlockTypingOverwrite="1" BlockTabIndent="1" ColBlockDeleteSpaceAfterMove="1" ColBlockCursorToStartAfterPaste="1" ColBlockEditMode="1" MouseSelectionDelimiters="" FileLocking="0" FileMemMapForBig="1" FileMemMapThreshold="2" FileSaveOnSwith="0" FileDetectChanges="1" FileReloadChanges="0" FileAutoscrollAfterReload="1" FileOverwriteReadonly="0" AllowMultipleInstances="1" NewDocOnStartup="1" MaximizeFirstDocument="1" WorkDirFollowsDocument="1" SaveCurPosAndBookmarks="0" SaveMainWinPosition="1" DoubleClickCloseTab="1" Locale="English" KeymapLayout="Default" DefaultClass="PL/SQL">
+        <Categories>
+            <Category Name="PL/SQL" Extensions="sql pls plb trg tab con ind vw sqs" Language="PL/SQL" Delimiters=" &#x09;&apos;\()[]{}+-*/.,!?;:=&gt;&lt;%|@&amp;^" TabSpacing="2" IndentSpacing="2" IndentType="1" TabExpand="1" NormalizeKeywords="1" FileCreateAs="0" FilenameTemplate="Script &amp;n">
+                <VisualAttributes>
+                    <VisualAttribute Name="Text" FontName="Courier New" FontSize="9" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="887" />
+                    <VisualAttribute Name="Selected Text" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="16777215" Background="0" Mask="768" />
+                    <VisualAttribute Name="Current Line" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="12648447" Mask="512" />
+                    <VisualAttribute Name="Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16776960" Mask="512" />
+                    <VisualAttribute Name="Random Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16760832" Mask="768" />
+                    <VisualAttribute Name="End of File" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="256" />
+                    <VisualAttribute Name="SQL Keywords" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="1" Foreground="8388608" Background="0" Mask="368" />
+                    <VisualAttribute Name="SQL Functions" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="1" Foreground="16711680" Background="0" Mask="368" />
+                    <VisualAttribute Name="PL/SQL Keywords" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8388608" Background="0" Mask="368" />
+                    <VisualAttribute Name="SYS Packages" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8388736" Background="0" Mask="368" />
+                    <VisualAttribute Name="Operators" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="16711680" Background="0" Mask="368" />
+                    <VisualAttribute Name="String" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="32768" Background="0" Mask="368" />
+                    <VisualAttribute Name="Number" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="32768" Background="0" Mask="368" />
+                    <VisualAttribute Name="Comment" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="368" />
+                    <VisualAttribute Name="Line Comment" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="368" />
+                    <VisualAttribute Name="Bind Variable" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="255" Background="0" Mask="368" />
+                    <VisualAttribute Name="Substitution" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="1" Foreground="255" Background="0" Mask="368" />
+                    <VisualAttribute Name="File name (@ &amp; @@)" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421376" Background="0" Mask="368" />
+                    <VisualAttribute Name="Other Keywords" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="12582912" Background="0" Mask="368" />
+                </VisualAttributes>
+                <ColumnMarkers>
+                    <ColumnMarker value="80" />
+                </ColumnMarkers>
+            </Category>
+            <Category Name="Text" Extensions="txt lst log" Language="NONE" Delimiters=' &#x09;&apos;&quot;\()[]{}+-*/.,!?;:=&gt;&lt;%|@&amp;^' TabSpacing="4" IndentSpacing="4" IndentType="0" TabExpand="0" NormalizeKeywords="0" FileCreateAs="0" FilenameTemplate="Text &amp;n">
+                <VisualAttributes>
+                    <VisualAttribute Name="Text" FontName="Courier New" FontSize="9" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="887" />
+                    <VisualAttribute Name="Selected Text" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16760832" Mask="768" />
+                    <VisualAttribute Name="Current Line" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="12648447" Mask="512" />
+                    <VisualAttribute Name="Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16776960" Mask="512" />
+                    <VisualAttribute Name="Random Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16760832" Mask="768" />
+                    <VisualAttribute Name="End of File" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="256" />
+                </VisualAttributes>
+                <ColumnMarkers>
+                    <ColumnMarker value="80" />
+                </ColumnMarkers>
+            </Category>
+            <Category Name="C++" Extensions="cpp cxx h hpp" Language="C++" Delimiters=' &#x09;&apos;&quot;\()[]{}+-*/.,!?;:=&gt;&lt;%|@&amp;^' TabSpacing="4" IndentSpacing="4" IndentType="1" TabExpand="1" NormalizeKeywords="0" FileCreateAs="0" FilenameTemplate="Text&amp;n">
+                <VisualAttributes>
+                    <VisualAttribute Name="Text" FontName="Courier New" FontSize="8" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="887" />
+                    <VisualAttribute Name="Selected Text" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="16777215" Background="0" Mask="768" />
+                    <VisualAttribute Name="Current Line" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="15590104" Mask="512" />
+                    <VisualAttribute Name="Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16776960" Mask="512" />
+                    <VisualAttribute Name="Random Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16760832" Mask="768" />
+                    <VisualAttribute Name="End of File" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="256" />
+                    <VisualAttribute Name="Keywords" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="1" Foreground="8388608" Background="0" Mask="368" />
+                    <VisualAttribute Name="Operators" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8388608" Background="0" Mask="368" />
+                    <VisualAttribute Name="Preprocessor" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421376" Background="0" Mask="368" />
+                    <VisualAttribute Name="Character" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="49152" Background="0" Mask="368" />
+                    <VisualAttribute Name="String" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="1" Foreground="49152" Background="0" Mask="368" />
+                    <VisualAttribute Name="Number" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="32768" Background="0" Mask="368" />
+                    <VisualAttribute Name="Comment" FontName="" FontSize="0" FontBold="0" FontItalic="1" FontUnderline="0" Foreground="12583167" Background="0" Mask="368" />
+                    <VisualAttribute Name="Line Comment" FontName="" FontSize="0" FontBold="0" FontItalic="1" FontUnderline="0" Foreground="12583104" Background="0" Mask="368" />
+                </VisualAttributes>
+                <ColumnMarkers>
+                    <ColumnMarker value="80" />
+                </ColumnMarkers>
+            </Category>
+            <Category Name="Java" Extensions="java" Language="Java" Delimiters=' &#x09;&apos;&quot;\()[]{}+-*/.,!?;:=&gt;&lt;%|@&amp;^' TabSpacing="4" IndentSpacing="4" IndentType="1" TabExpand="1" NormalizeKeywords="0" FileCreateAs="0" FilenameTemplate="Text&amp;n">
+                <VisualAttributes>
+                    <VisualAttribute Name="Text" FontName="Courier New" FontSize="9" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="887" />
+                    <VisualAttribute Name="Selected Text" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="16777215" Background="0" Mask="768" />
+                    <VisualAttribute Name="Current Line" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="12648447" Mask="512" />
+                    <VisualAttribute Name="Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16776960" Mask="512" />
+                    <VisualAttribute Name="Random Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16760832" Mask="768" />
+                    <VisualAttribute Name="End of File" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="256" />
+                    <VisualAttribute Name="Keywords" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="1" Foreground="8388608" Background="0" Mask="368" />
+                    <VisualAttribute Name="Operators" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8388608" Background="0" Mask="368" />
+                    <VisualAttribute Name="Preprocessor" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="368" />
+                    <VisualAttribute Name="Character" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="49152" Background="0" Mask="368" />
+                    <VisualAttribute Name="String" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="1" Foreground="49152" Background="0" Mask="368" />
+                    <VisualAttribute Name="Number" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="32768" Background="0" Mask="368" />
+                    <VisualAttribute Name="Comment" FontName="" FontSize="0" FontBold="0" FontItalic="1" FontUnderline="0" Foreground="12583167" Background="0" Mask="368" />
+                    <VisualAttribute Name="Line Comment" FontName="" FontSize="0" FontBold="0" FontItalic="1" FontUnderline="0" Foreground="12583104" Background="0" Mask="368" />
+                </VisualAttributes>
+                <ColumnMarkers>
+                    <ColumnMarker value="80" />
+                </ColumnMarkers>
+            </Category>
+            <Category Name="Shell" Extensions="sh ksh" Language="Shell" Delimiters=' &#x09;&apos;&quot;\()[]{}+-*/.,!?;:=&gt;&lt;%|@&amp;^' TabSpacing="4" IndentSpacing="4" IndentType="1" TabExpand="1" NormalizeKeywords="0" FileCreateAs="1" FilenameTemplate="Text&amp;n">
+                <VisualAttributes>
+                    <VisualAttribute Name="Text" FontName="Fixedsys" FontSize="10" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="12632256" Background="0" Mask="887" />
+                    <VisualAttribute Name="Selected Text" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="768" />
+                    <VisualAttribute Name="Current Line" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="8388608" Mask="512" />
+                    <VisualAttribute Name="Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16776960" Mask="512" />
+                    <VisualAttribute Name="Random Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16760832" Mask="768" />
+                    <VisualAttribute Name="End of File" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="256" />
+                    <VisualAttribute Name="Keywords" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="1" Foreground="12632064" Background="0" Mask="368" />
+                    <VisualAttribute Name="Operators" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="16777215" Background="0" Mask="368" />
+                    <VisualAttribute Name="Built-in Commands" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="12632064" Background="0" Mask="368" />
+                    <VisualAttribute Name="String" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="49152" Background="0" Mask="368" />
+                    <VisualAttribute Name="Number" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="32768" Background="0" Mask="368" />
+                    <VisualAttribute Name="Comment" FontName="" FontSize="0" FontBold="0" FontItalic="1" FontUnderline="0" Foreground="12583167" Background="0" Mask="368" />
+                    <VisualAttribute Name="Line Comment" FontName="" FontSize="0" FontBold="0" FontItalic="1" FontUnderline="0" Foreground="12583104" Background="0" Mask="368" />
+                    <VisualAttribute Name="Substitution" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="49344" Background="0" Mask="368" />
+                </VisualAttributes>
+                <ColumnMarkers>
+                    <ColumnMarker value="80" />
+                </ColumnMarkers>
+            </Category>
+            <Category Name="XML" Extensions="xml xsl htm html" Language="XML" Delimiters=' &#x09;&apos;&quot;\()[]{}+-*/.,!?;:=&gt;&lt;%|@&amp;^' TabSpacing="6" IndentSpacing="4" IndentType="1" TabExpand="1" NormalizeKeywords="0" FileCreateAs="1" FilenameTemplate="Text&amp;n">
+                <VisualAttributes>
+                    <VisualAttribute Name="Text" FontName="Courier New" FontSize="9" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="887" />
+                    <VisualAttribute Name="Selected Text" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="16777215" Background="0" Mask="768" />
+                    <VisualAttribute Name="Current Line" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="12648447" Mask="512" />
+                    <VisualAttribute Name="Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16776960" Mask="512" />
+                    <VisualAttribute Name="Random Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16760832" Mask="768" />
+                    <VisualAttribute Name="End of File" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="256" />
+                    <VisualAttribute Name="Operators" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="16711680" Background="0" Mask="368" />
+                    <VisualAttribute Name="Elements" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="1" Foreground="12582912" Background="0" Mask="368" />
+                    <VisualAttribute Name="Attributes" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421376" Background="0" Mask="368" />
+                    <VisualAttribute Name="Values" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="255" Background="0" Mask="368" />
+                    <VisualAttribute Name="Comment" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="368" />
+                </VisualAttributes>
+                <ColumnMarkers>
+                    <ColumnMarker value="80" />
+                </ColumnMarkers>
+            </Category>
+            <Category Name="SQR" Extensions="sqr sqc sqh sqt" Language="SQR" Delimiters=" &#x09;&apos;\()[]{}+*/.,!?;:=&gt;&lt;%|^" TabSpacing="2" IndentSpacing="2" IndentType="1" TabExpand="1" NormalizeKeywords="0" FileCreateAs="0" FilenameTemplate="Text&amp;n">
+                <VisualAttributes>
+                    <VisualAttribute Name="Text" FontName="Courier New" FontSize="9" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="887" />
+                    <VisualAttribute Name="Selected Text" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="16777215" Background="8421504" Mask="768" />
+                    <VisualAttribute Name="Current Line" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="12648447" Mask="512" />
+                    <VisualAttribute Name="Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16776960" Mask="512" />
+                    <VisualAttribute Name="Random Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16760832" Mask="768" />
+                    <VisualAttribute Name="End of File" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="256" />
+                    <VisualAttribute Name="Operators" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="16711680" Background="0" Mask="368" />
+                    <VisualAttribute Name="Section" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="1" Foreground="8388608" Background="0" Mask="368" />
+                    <VisualAttribute Name="Declaration" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8388608" Background="0" Mask="368" />
+                    <VisualAttribute Name="Functions" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="10485760" Background="0" Mask="368" />
+                    <VisualAttribute Name="Other keywords" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="12582912" Background="0" Mask="368" />
+                    <VisualAttribute Name="Preprocessor" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421376" Background="0" Mask="368" />
+                    <VisualAttribute Name="Reserved variables" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="8388736" Background="0" Mask="368" />
+                    <VisualAttribute Name="Variables" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8388736" Background="0" Mask="368" />
+                    <VisualAttribute Name="String" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="32768" Background="0" Mask="368" />
+                    <VisualAttribute Name="Number" FontName="" FontSize="0" FontBold="1" FontItalic="0" FontUnderline="0" Foreground="32768" Background="0" Mask="368" />
+                    <VisualAttribute Name="Line Comment" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="368" />
+                </VisualAttributes>
+                <ColumnMarkers>
+                    <ColumnMarker value="80" />
+                </ColumnMarkers>
+            </Category>
+            <Category Name="PERL" Extensions="pl wpl" Language="PERL" Delimiters=' &#x09;&apos;&quot;\()[]{}+-*/.,!?;:=&gt;&lt;%|@&amp;^' TabSpacing="4" IndentSpacing="4" IndentType="1" TabExpand="1" NormalizeKeywords="1" FileCreateAs="0" FilenameTemplate="Text&amp;n">
+                <VisualAttributes>
+                    <VisualAttribute Name="Text" FontName="Courier New" FontSize="9" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="887" />
+                    <VisualAttribute Name="Selected Text" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="16777215" Background="0" Mask="768" />
+                    <VisualAttribute Name="Current Line" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="65535" Mask="512" />
+                    <VisualAttribute Name="Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16776960" Mask="512" />
+                    <VisualAttribute Name="Random Bookmark" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16760832" Mask="768" />
+                    <VisualAttribute Name="End of File" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="256" />
+                    <VisualAttribute Name="Keywords" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="192" Background="0" Mask="368" />
+                    <VisualAttribute Name="Operators" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="192" Background="0" Mask="368" />
+                    <VisualAttribute Name="Functions" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="192" Background="0" Mask="368" />
+                    <VisualAttribute Name="Character" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="368" />
+                    <VisualAttribute Name="String" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421504" Background="0" Mask="368" />
+                    <VisualAttribute Name="Number" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="192" Background="0" Mask="368" />
+                    <VisualAttribute Name="Comment" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421376" Background="0" Mask="368" />
+                    <VisualAttribute Name="Line Comment" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8421376" Background="0" Mask="368" />
+                    <VisualAttribute Name="DBI-Functions" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="12582912" Background="0" Mask="368" />
+                    <VisualAttribute Name="Variables" FontName="" FontSize="0" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="8388736" Background="0" Mask="368" />
+                </VisualAttributes>
+                <ColumnMarkers>
+                    <ColumnMarker value="80" />
+                </ColumnMarkers>
+            </Category>
+        </Categories>
+    </Settings>
+</OpenEditor>

@@ -1,0 +1,35 @@
+<HTML>
+<HEAD>
+<TITLE>EXPLAIN PLAN</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="EXPLAIN PLAN">
+</OBJECT>
+<H3>EXPLAIN PLAN<HR SIZE="3"></H3>
+<P>
+ Use this command to determine the execution plan Oracle follows to
+ execute a specified SQL statement. This command inserts a row
+ describing each step of the execution plan into a specified table.
+ If you are using cost-based optimization, this command also
+ determines the cost of executing the statement.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ EXPLAIN PLAN [ SET STATEMENT_ID = 'text' ]
+   [ INTO [schema.]table [@dblink] ] FOR statement
+ 
+</PRE>
+<P>See also:  <A HREF="DELETE.htm">DELETE</A>
+, <A HREF="INSERT.htm">INSERT</A>
+, <A HREF="SELECT.htm">SELECT</A>
+, <A HREF="UPDATE.htm">UPDATE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

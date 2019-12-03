@@ -1,0 +1,124 @@
+;Codewright Project File (do not remove or modify this line)
+[Files]
+
+[ProjInit]
+ProjSetConfigFlags=0x04010940
+ProjCheckPath='C:\usr\Alan\c++\public\\'
+
+[State]
+SysSetCwd='c:\usr\Alan\c++\public'
+SrchSetFlags=0x0614680a
+FileSortMode=0x0
+StateWindowFrame=445,10,808,858,0x730d77c8
+_StateWindow=0,0,556,512,0x00100018,'C:\usr\Alan\c++\Borland\Bin\BCC32.cfg',240,15,244,4,20,12,46,26,126,176,8,4294967295,4294967295,1,10,'',12,255,48,0,10,499,0,0,753,252,249,2,27,400,0,244,246,242,252,753,753,752,761,253,80,0,253,224,14,1,1,208,1,6
+_StateWindow=242,242,556,512,0x00100008,'c:\usr\Alan\c++\public\include\arg_compiler.h',240,15,244,4,20,12,46,26,126,176,8,4294967295,4294967295,0,10,'',12,255,48,0,10,499,0,0,753,252,249,72,1,400,0,244,246,242,252,753,753,752,761,253,80,0,253,224,14,72,1,208,5,6
+_StateWindow=220,220,556,512,0x00100008,'c:\usr\Alan\c++\public\include\arg_shared.h',240,15,244,4,20,12,46,26,126,176,8,4294967295,4294967295,0,10,'',12,255,48,0,10,499,0,0,753,252,249,21,15,400,0,244,246,242,252,753,753,752,761,253,80,0,253,224,14,1,1,208,6,6
+_StateWindow=44,44,556,512,0x00100008,'C:\usr\Alan\c++\public\platform\makefile.gcc',240,15,244,4,20,12,46,26,126,176,8,4294967295,4294967295,0,10,'',12,255,48,0,10,499,0,0,753,252,249,41,1,400,0,244,246,242,252,753,753,752,761,253,80,0,253,224,14,1,1,208,7,6
+_StateWindow=88,88,556,512,0x00100008,'C:\usr\Alan\c++\public\arglib\makefile',240,15,244,4,20,12,46,26,126,176,8,4294967295,4294967295,0,10,'',12,255,48,0,10,499,0,0,753,252,249,4,1,400,0,244,246,242,252,753,753,752,761,253,80,0,253,224,14,1,1,208,4,6
+_StateWindow=66,66,556,512,0x00100008,'C:\usr\Alan\c++\public\makefile.template2',240,15,244,4,20,12,46,26,126,176,8,4294967295,4294967295,0,10,'',12,255,48,0,10,499,0,0,753,252,249,46,13,400,0,244,246,242,252,753,753,752,761,253,80,0,253,224,14,6,1,208,3,6
+_StateWindow=22,22,556,512,0x00100008,'C:\usr\Alan\c++\public\platform\makefile.bcc',240,15,244,4,20,12,46,26,126,176,8,4294967295,4294967295,0,10,'',12,255,48,0,10,499,0,0,753,252,249,36,26,400,0,244,246,242,252,753,753,752,761,253,80,0,253,224,14,1,1,208,2,6
+_StateBuffer='c:\usr\Alan\c++\public\include\arg_shared.h',0x0400048e,21,15,25,'5 9','',0x0,'',1,72,0
+_StateBuffer='c:\usr\Alan\c++\public\include\arg_compiler.h',0x0400048e,72,1,25,'5 9','',0x0,'',1,72,0
+_StateBuffer='C:\usr\Alan\c++\Borland\Bin\BCC32.cfg',0x0400048e,2,27,25,'5 9','',0x0,'',1,72,1
+_StateBuffer='C:\usr\Alan\c++\public\platform\makefile.bcc',0x0400048e,36,26,25,'5 9','',0x0,'',1,72,0
+_StateBuffer='C:\usr\Alan\c++\public\makefile.template2',0x0400048e,46,13,25,'5 9','',0x0,'',1,72,0
+_StateBuffer='C:\usr\Alan\c++\public\arglib\makefile',0x0400048e,4,1,25,'5 9','',0x0,'',1,72,0
+_StateBuffer='C:\usr\Alan\c++\public\platform\makefile.gcc',0x0400048e,41,1,25,'5 9','',0x0,'',1,72,0
+_StateHistory=FILELIST,'c:\usr\Alan\c++\public\include\arg_auto_ptr.h','c:\usr\Alan\c++\public\arglib\test_auto_ptr.cpp','c:\usr\Alan\c++\public\include\arg_shared.h','c:\usr\Alan\c++\public\include\arg_compiler.h','C:\usr\Alan\c++\Borland\Bin\BCC32.cfg','C:\usr\Alan\c++\public\platform\makefile.bcc','C:\usr\Alan\c++\public\platform\makefile.gcc','C:\usr\Alan\c++\public\makefile.template2','C:\usr\Alan\c++\public\arglib\makefile'
+_StateHistory=SEARCH,'arg','$(O)','MCL_SRC','ARCHIVE','SUBPROJECT','echo','MKEXE'
+_StateHistory=REPLACE,'.cpp','ARG_SRC','ARG_PACKAGE'
+_StateHistory=XSYMBOL,'typed_reference'
+_StateHistory=EDITFILE,'C:\usr\Alan\c++\public\include\arg_shared.h','C:\usr\Alan\c++\Borland\Bin\BCC32.cfg','C:\usr\Alan\c++\public\platform\makefile.bcc','c:\usr\Alan\c++\public\makefile.template2','C:\usr\Alan\c++\public\arglib\makefile'
+_StateHistory=FGREP,'arg'
+_StateHistory=GREPSCOPE,'*.*'
+_StateHistory=FGREPDIR,'C:\usr\Alan\c++\public'
+
+[Editor]
+VCSProject=''
+VCSProjectPath=''
+VCSProjectLocalPath=''
+ClipboardSetTermStr='\r\n',0
+ClipboardEnableTermStr=1
+ClipboardSetSepStr='\r\n',0
+ClipboardEnableSepStr=1
+ScrapSetCount=1
+
+[Compiler]
+TagSetCmd='${HOME}${WTAGS} -oc -d -t${TAGFILE}.tag -p${TAGFILE}.ptg',0x8000060
+BrowseSetFile='C:\usr\Alan\c++\public\c++public.ptg'
+TagSetFile='C:\usr\Alan\c++\public\c++public.tag'
+CompilerAddCmd='Microsoft Assembler','',1073741840,'',16,'',16,'',16,'',0,'',0,'','','','',''
+CompilerAddResponse='Microsoft Assembler',
+CompilerAddCmd='Microsoft C Debug (NT-i386)','${FTEE} cl -DSTRICT -c -W3 -G3 -D_X86_=1 -DWIN32 -Zi -Od %r%e',1073741936,'${FTEE} cl -DSTRICT -c -W3 -G3 -D_X86_=1 -DWIN32 -Zi -Od %r%e',112,'',144,'',144,'',0,'',0,'_MicrosoftErrorInfo','','','',''
+CompilerAddResponse='Microsoft C Debug (NT-i386)',
+CompilerAddCmd='Sun Java','${FTEE} javac -O %r%e',1073741936,'${FTEE} javac -g %r%e',112,'',144,'',144,'',0,'',0,'_JAVAErrorInfo','','','',''
+CompilerAddResponse='Sun Java',
+CompilerAddCmd='Default Compiler Settings','javac -cp d:\alan\Java -deprecation %r%e',1073741840,'javac -cp d:\alan\Java -debug %r%e',16,'',16,'',16,'',0,'',0,'','','','',''
+CompilerAddResponse='Default Compiler Settings',
+CompilerAddCmd='Borland C++','ftee bcc -ml -c -W %b%e',1073741824,'',0,'',0,'',0,'',0,'',0,'','','','',''
+CompilerAddResponse='Borland C++',
+CompilerAddCmd='Borland C++ (16-bit)','${FTEE} bcc -c -ml -w %b%e',1073741936,'${FTEE} bcc -c -ml -w %b%e',112,'',144,'',144,'',0,'',0,'_BorlandCppErrorInfo','','','',''
+CompilerAddResponse='Borland C++ (16-bit)',
+CompilerAddCmd='javac','jikes +E -deprecation %r%e',1073741840,'javac -deprecation %r%e',16,'',16,'',16,'',0,'',0,'','','','',''
+CompilerAddResponse='javac',
+CompilerAddCmd='Borland C++ (32-bit)','${FTEE} bcc32 -c -w %b%e',1073741936,'${FTEE} bcc32 -c -w %b%e',112,'',144,'',144,'',0,'',0,'_BorlandCppErrorInfo','','','',''
+CompilerAddResponse='Borland C++ (32-bit)',
+CompilerAddCmd='Microsoft J++','${FTEE} jvc /O %r%e',1073741936,'${FTEE} jvc /g %r%e',112,'',144,'',144,'',0,'',0,'_JakartaErrorInfo','','','',''
+CompilerAddResponse='Microsoft J++',
+CompilerAddCmd='jikes','jikes +E %r%e',1073741840,'',16,'',16,'',16,'',0,'',0,'','','','',''
+CompilerAddResponse='jikes',
+CompilerAddCmd='$_cw_proj_hash_$','',1073742288,'',145,'make COMPILER=msc',464,'make COMPILER=gcc',465,'jre -cp \Alan\Java uk.co.demon.octopull.chess.framework.DemoGraphics',32,'jre -cp \Alan\Java uk.co.demon.octopull.chess.framework.Demo',32,'_MicrosoftErrorInfo','_GccErrorInfo','_BorlandCppErrorInfo','proj.err','%x'
+CompilerAddResponse='$_cw_proj_hash_$',
+CompilerAddCmd='egcs','g++ -c -Wall -pedantic %r%e -o %r.o',1073741840,'cl -W4 %r%e',16,'',16,'',16,'',0,'',0,'','','','',''
+CompilerAddResponse='egcs',
+CompilerAddCmd='Microsoft C DLL Debug (NT-i386)','${FTEE} cl -DSTRICT -c -W3 -G3 -D_X86_=1 -DWIN32 -D_MT -D_DLL -Zi -Od %r%e',1073741904,'${FTEE} cl -DSTRICT -c -W3 -G3 -D_X86_=1 -DWIN32 -D_MT -D_DLL -Zi -Od %r%e',80,'',144,'',144,'',0,'',0,'_MicrosoftErrorInfo','','','',''
+CompilerAddResponse='Microsoft C DLL Debug (NT-i386)',
+CompilerAddCmd='Borland Java','${FTEE} javac -O %r%e',1073741936,'${FTEE} javac -g %r%e',112,'',144,'',144,'',0,'',0,'_BorlandJavaErrorInfo','','','',''
+CompilerAddResponse='Borland Java',
+CompilerAddCmd='Microsoft C DLL (NT-i386)','${FTEE} cl -DSTRICT -c -W3 -G3 -D_X86_=1 -DWIN32 -D_MT -D_DLL %r%e',1073741936,'${FTEE} cl -DSTRICT -c -W3 -G3 -D_X86_=1 -DWIN32 -D_MT -D_DLL %r%e',112,'',144,'',144,'',0,'',0,'_MicrosoftErrorInfo','','','',''
+CompilerAddResponse='Microsoft C DLL (NT-i386)',
+CompilerAddCmd='Microsoft C(NT-i386)','${FTEE} cl -DSTRICT -c -W3 -G3 -D_X86_=1 -DWIN32 %r%e',1073741936,'${FTEE} cl -DSTRICT -c -W3 -G3 -D_X86_=1 -DWIN32 %r%e',112,'',144,'',144,'',0,'',0,'_MicrosoftErrorInfo','','','',''
+CompilerAddResponse='Microsoft C(NT-i386)',
+CompilerNewExt=.htm
+CompilerAssign='egcs','.c'
+CompilerNewExt=.pas
+CompilerAssign='Microsoft C(NT-i386)','.h'
+CompilerNewExt=.ini
+CompilerNewExt=.html
+CompilerAssign='egcs','.cpp'
+CompilerAssign='Default Compiler Settings','.*'
+CompilerAssign='egcs','.cxx'
+CompilerNewExt=.txt
+CompilerAssign='Microsoft Assembler','.asm'
+CompilerAssign='Microsoft C(NT-i386)','.hpp'
+CompilerAssign='javac','.java'
+
+[VersionControl:PVCS]
+VCSSetCmd=VCS_CHECKIN_ID,'put -n -T@%Q -M@%Q %b%e',0x8000040
+VCSSetCmd=VCS_CHECKINLOCK_ID,'put -n -T@%Q -M@%Q -l %b%e',0x8000040
+VCSSetCmd=VCS_CHECKOUT_ID,'get -y %b%e',0x8000040
+VCSSetCmd=VCS_CHECKOUTLOCK_ID,'get -y -l %b%e',0x8000040
+VCSSetCmd=VCS_CHECKLOCK_ID,'vcs -y -l %b%e',0x8000040
+VCSSetCmd=VCS_CHECKUNLOCK_ID,'vcs -y -u %b%e',0x8000040
+VCSSetCmd=VCS_CHECKLABEL_ID,'vcs -y -v"${VCSLABEL}" %b%e',0x8000040
+VCSSetCmd=VCS_CHECKLOG_ID,'vlog %b%e',0x8000040
+VCSSetCmd=VCS_CHECKPROP_ID,'vlog -b %b%e',0x8000040
+VCSSetCmd=VCS_CHECKDIFF_ID,'vdiff -r %b%e',0x8000040
+VCSSetCmd=VCS_CHECKMENU_ID,'pvcsvmwn',0x8000000
+VCSSetCmd=VCS_ADD_ID,'vcs -i -t@%Q %b%e',0x8000040
+VCSSetCmd=VCS_REMOVE_ID,'del /f %b%{??v|___}e',0x8000040
+
+[VersionControl:SourceSafe]
+VCSSetCmd=VCS_CHECKIN_ID,'ss UPDATE -I- -C@%Q -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_CHECKINLOCK_ID,'ss UPDATE -I- -C@%Q -K -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_CHECKOUT_ID,'ss GET -I- -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_CHECKOUTLOCK_ID,'ss CHECKOUT -I- -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_CHECKLOCK_ID,'ss CHECKOUT -I- -G- -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_CHECKUNLOCK_ID,'ss UNCHECKOUT -I- -G- -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_CHECKLABEL_ID,'ss LABEL -I- -L"${VCSLABEL}" -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_CHECKLOG_ID,'ss HISTORY -I- -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_CHECKPROP_ID,'ss PROPERTIES -I- -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_CHECKDIFF_ID,'ss DIFF -I- -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_CHECKMENU_ID,'ssexp',0x8000000
+VCSSetCmd=VCS_ADD_ID,'ss ADD -I- -Y${USER} %r%e',0x8000040
+VCSSetCmd=VCS_REMOVE_ID,'ss DELETE -I- -Y${USER} %r%e',0x8000040

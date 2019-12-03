@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<TITLE>ENABLE clause</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ENABLE clause">
+</OBJECT>
+<H3>ENABLE clause<HR SIZE="3"></H3>
+<P>
+ Use this command to enable an integrity constraint or all triggers
+ associated with a table:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+If you enable a constraint, Oracle enforces it by applying it
+      to all data in the table. All table data must satisfy an
+      enabled constraint.
+<LI>
+If you enable a trigger, Oracle fires the trigger whenever its
+      triggering condition is satisfied.
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ENABLE
+   { { UNIQUE (column [, column] ...)
+     | PRIMARY KEY
+     | CONSTRAINT constraint}
+   [ USING INDEX [ INITRANS integer
+                 | MAXTRANS integer
+                 | TABLESPACE tablespace
+                 | STORAGE storage_clause
+                 | PCTFREE integer ] ...]
+   [ EXCEPTIONS INTO [schema.]table ]
+   | ALL TRIGGERS }
+ 
+</PRE>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

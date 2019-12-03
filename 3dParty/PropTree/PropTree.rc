@@ -1,0 +1,16 @@
+/*
+#include "PropTree.rh"
+*/
+
+IDC_PROPTREE_FPOINT   CURSOR  "res\\fpoint.cur"
+IDC_PROPTREE_SPLITTER CURSOR  "res\\spliter.cur"
+
+/*
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_TRUE                "True"
+    IDS_FALSE               "False"
+    IDS_NOITEMSEL           "No Item Selected"
+    IDS_SELFORINFO          "Select an item to see its description"
+END
+*/

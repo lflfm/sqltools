@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Explan Plan</title>
+<script src="<XTREE_FOLDER>/xtree.js"></script>
+<script>
+XTREE_FOLDER = "<XTREE_FOLDER>/";
+webFXTreeConfig.rootIcon        = XTREE_FOLDER + webFXTreeConfig.rootIcon;
+webFXTreeConfig.openRootIcon    = XTREE_FOLDER + webFXTreeConfig.openRootIcon;
+webFXTreeConfig.folderIcon      = XTREE_FOLDER + webFXTreeConfig.folderIcon;
+webFXTreeConfig.openFolderIcon  = XTREE_FOLDER + webFXTreeConfig.openFolderIcon;
+webFXTreeConfig.fileIcon        = XTREE_FOLDER + webFXTreeConfig.fileIcon;
+webFXTreeConfig.iIcon           = XTREE_FOLDER + webFXTreeConfig.iIcon;
+webFXTreeConfig.lIcon           = XTREE_FOLDER + webFXTreeConfig.lIcon;
+webFXTreeConfig.lMinusIcon      = XTREE_FOLDER + webFXTreeConfig.lMinusIcon;
+webFXTreeConfig.lPlusIcon       = XTREE_FOLDER + webFXTreeConfig.lPlusIcon;
+webFXTreeConfig.tIcon           = XTREE_FOLDER + webFXTreeConfig.tIcon;
+webFXTreeConfig.tMinusIcon      = XTREE_FOLDER + webFXTreeConfig.tMinusIcon;
+webFXTreeConfig.tPlusIcon       = XTREE_FOLDER + webFXTreeConfig.tPlusIcon;
+webFXTreeConfig.blankIcon       = XTREE_FOLDER + webFXTreeConfig.blankIcon;
+</script>
+<link type="text/css" rel="stylesheet" href="<XTREE_FOLDER>/explain_plan.css">
+</head>
+<body>
+<p><input type="button" value="Show/Hide sql statement" name="showHideSql" onclick="doShowHideSql()"></p>
+<script language="JavaScript">
+function doShowHideSql() { var area = document.getElementById("sqlArea"); if (area.style.display == "none") area.style.display = "block"; else area.style.display = "none"; } </script>
+<div id='sqlArea' style='display:none'>
+<div style='border-right: gray 1px solid; border-top: gray 1px solid; border-left: gray 1px solid; border-bottom: gray 1px solid; background-color: #f0f8ff'>
+<pre style='margin-right:3px; margin-left:3px;'><SQL_STATEMENT></pre>
+</div></div><hr size=1><script><PLAN_TREE></script><hr size=1></body>
+</html>

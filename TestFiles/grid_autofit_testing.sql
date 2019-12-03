@@ -1,0 +1,1 @@
+SELECT object_name, object_type, object_id FROM all_objects ORDER BY Length(object_name);

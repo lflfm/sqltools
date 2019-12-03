@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="yes" ?>
+<SQLTools>
+    <Settings MajorVersion="1" MinorVersion="1" DateFormat="" Autocommit="0" CommitOnDisconnect="2" ObjectCache="1" OutputEnable="1" OutputSize="100000" SessionStatistics="0" ScanForSubstitution="1" PlanTable="PLAN_TABLE" CancelQueryDelay="1" TopmostCancelQuery="1" GridMaxColLength="24" GridMultilineCount="3" GridNullRepresentation="&lt;null&gt;" GridAllowLessThanHeader="0" GridAllowRememColWidth="1" GridColumnFitType="0" GridNlsNumberFormat="" GridNlsDateFormat="dd.mm.yyyy hh24:mi:ss" GridNlsTimeFormat="hh24:mi:ssxff" GridNlsTimestampFormat="dd.mm.yy hh24:mi:ss.ff3" GridNlsTimestampTzFormat="dd.mm.yyyy hh24:mi:ss.ff3 tzr" GridExpFormat="0" GridExpWithHeader="1" GridExpCommaChar="," GridExpQuoteChar='&quot;' GridExpQuoteEscapeChar='&quot;' GridExpPrefixChar="=" GridExpColumnNameAsAttr="0" GridPrefetchLimit="100" GridMaxLobLength="8192" GridBlobHexRowLength="32" GridSkipLobs="0" GridTimestampFormat="" HistoryEnabled="1" HistoryAction="1" HistoryKeepSelection="1" HistoryMaxCout="100" HistoryMaxSize="64" HistoryValidOnly="1" HistoryDistinct="0" HistoryInherit="0" HistoryPersitent="0" HistoryGlobal="0" NoPrompts="0" GroupByDDL="1" PreloadDictionary="0" PreloadStartPercent="7" BodyWithSpec="0" SpecWithBody="1">
+        <DDL-Settings Comments="1" Grants="1" LowerNames="1" ShemaName="0" SQLPlusCompatibility="1" CommentsAfterColumn="0" CommentsPos="48" Constraints="1" Indexes="1" NoStorageForConstraint="0" StorageClause="1" AlwaysPutTablespace="0" TableDefinition="1" Triggers="1" SequnceWithStart="0" ViewWithTriggers="1" ViewWithForce="0" EndOfShortStatement=";" />
+        <GUI-Settings>
+            <Window Name="Data Grid Window">
+                <VisualAttribute Name="Text" FontName="Verdana" FontSize="8" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="118" />
+            </Window>
+            <Window Name="Statistics Window">
+                <VisualAttribute Name="Text" FontName="Verdana" FontSize="8" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="118" />
+            </Window>
+            <Window Name="Output Window">
+                <VisualAttribute Name="Text" FontName="Verdana" FontSize="8" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="118" />
+            </Window>
+            <Window Name="History Window">
+                <VisualAttribute Name="Text" FontName="Verdana" FontSize="8" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="118" />
+            </Window>
+            <Window Name="Bind Window">
+                <VisualAttribute Name="Text" FontName="Verdana" FontSize="8" FontBold="0" FontItalic="0" FontUnderline="0" Foreground="0" Background="16777215" Mask="118" />
+            </Window>
+        </GUI-Settings>
+    </Settings>
+</SQLTools>

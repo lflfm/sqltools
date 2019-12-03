@@ -1,0 +1,15 @@
+# Dependency rules for the arglib package
+#                                                      Alan Griffiths 02-Jan-00
+
+ARG_PACKAGE:=arglib
+
+IMPLEMENTATION:=$(ARG_PACKAGE)/arg_test.cpp $(ARG_PACKAGE)/arg_shared.cpp
+
+TEST_HARNESSES:=$(ARG_PACKAGE)/test_deep_copy.cpp $(ARG_PACKAGE)/test_auto_ptr.cpp\
+	$(ARG_PACKAGE)/test_shared.cpp $(ARG_PACKAGE)/test_grin_ptr.cpp $(ARG_PACKAGE)/test_observer.cpp\
+	$(ARG_PACKAGE)/test_iterator.cpp $(ARG_PACKAGE)/test_shared-unsafe.cpp
+	
+TOOLS:=
+
+# Special additional rule for this test harness
+$(ARG_BUILD)/$(ARG_PACKAGE)/test_grin_ptr.exe: $(ARG_BUILD)/$(ARG_PACKAGE)/test_grin_ptr$(O) $(ARG_BUILD)/$(ARG_PACKAGE)/test_grin_ptr1$(O)

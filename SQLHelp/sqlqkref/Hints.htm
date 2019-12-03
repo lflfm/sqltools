@@ -1,0 +1,464 @@
+<html>
+
+<head>
+<title>Hints</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="DELETE">
+  <param name="Keyword" value="INSERT">
+  <param name="Keyword" value="SELECT">
+  <param name="Keyword" value="UPDATE">
+  <param name="Keyword" value="hint">
+  <param name="Keyword" value="ALL_ROWS">
+  <param name="Keyword" value="CHOOSE">
+  <param name="Keyword" value="FIRST_ROWS">
+  <param name="Keyword" value="RULE">
+  <param name="Keyword" value="AND_EQUAL">
+  <param name="Keyword" value="CLUSTER">
+  <param name="Keyword" value="FULL">
+  <param name="Keyword" value="HASH">
+  <param name="Keyword" value="HASH_AJ">
+  <param name="Keyword" value="HASH_SJ">
+  <param name="Keyword" value="INDEX">
+  <param name="Keyword" value="INDEX_ASC">
+  <param name="Keyword" value="INDEX_COMBINE">
+  <param name="Keyword" value="INDEX_DESC">
+  <param name="Keyword" value="INDEX_FFS">
+  <param name="Keyword" value="MERGE_AJ">
+  <param name="Keyword" value="MERGE_SJ">
+  <param name="Keyword" value="NO_EXPAND">
+  <param name="Keyword" value="NO_INDEX">
+  <param name="Keyword" value="NOREWRITE">
+  <param name="Keyword" value="NO_UNNEST">
+  <param name="Keyword" value="ORDERED_PREDICATES">
+  <param name="Keyword" value="REWRITE">
+  <param name="Keyword" value="ROWID">
+  <param name="Keyword" value="UNNEST">
+  <param name="Keyword" value="USE_CONCAT">
+  <param name="Keyword" value="ORDERED">
+  <param name="Keyword" value="STAR">
+  <param name="Keyword" value="DRIVING_SITE">
+  <param name="Keyword" value="LEADING ">
+  <param name="Keyword" value="USE_HASH">
+  <param name="Keyword" value="USE_MERGE">
+  <param name="Keyword" value="USE_NL">
+  <param name="Keyword" value="APPEND">
+  <param name="Keyword" value="NOAPPEND">
+  <param name="Keyword" value="NOPARALLEL">
+  <param name="Keyword" value="PARALLEL">
+  <param name="Keyword" value="PARALLEL">
+  <param name="Keyword" value="PARALLEL_INDEX">
+  <param name="Keyword" value="PQ_DISTRIBUTE">
+  <param name="Keyword" value="NOPARALLEL_INDEX">
+  <param name="Keyword" value="CACHE">
+  <param name="Keyword" value="NOCACHE">
+  <param name="Keyword" value="MERGE">
+  <param name="Keyword" value="NO_MERGE">
+  <param name="Keyword" value="PUSH_JOIN_PRED">
+  <param name="Keyword" value="NO_PUSH_JOIN_PRED">
+  <param name="Keyword" value="PUSH_SUBQ">
+  <param name="Keyword" value="STAR_TRANSFORMATION">
+  <param name="Keyword" value="optimizer">
+  <param name="Keyword" value="cost">
+</object>
+</p>
+
+<h3>Hints</h3>
+
+<hr SIZE="3">
+
+<ul>
+  <li><h4><a href="#Optimization Approaches and Goals">Optimization Approaches and Goals</a></h4>
+  </li>
+  <li><h4><a href="#Access Methods">Access Methods</a></h4>
+  </li>
+  <li><h4><a href="#Join Orders">Join Orders</a></h4>
+  </li>
+  <li><h4><a href="#Join Operations">Join Operations</a></h4>
+  </li>
+  <li><h4><a href="#Parallel Execution">Parallel Execution</a></h4>
+  </li>
+  <li><h4><a href="#Other Hints">Other Hints</a></h4>
+  </li>
+</ul>
+
+<p>You can use comments in a SQL statement to pass instructions, or <em>hints</em>, to the
+Oracle optimizer. The optimizer uses these hints as suggestions for choosing an execution
+plan for the statement. </p>
+
+<p>A statement block can have only one comment containing hints, and that comment must
+follow the SELECT, UPDATE, INSERT, or DELETE keyword. The syntax below shows hints
+contained in both styles of comments that Oracle supports within a statement block.</p>
+
+<pre>
+{DELETE|INSERT|SELECT|UPDATE} /*+ hint [text] [hint[text]]... */
+</pre>
+
+<p>or</p>
+
+<pre>
+{DELETE|INSERT|SELECT|UPDATE} --+ hint [text] [hint[text]]...
+</pre>
+
+<p>where</p>
+
+<table cellSpacing="0" cellPadding="0" border="0" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="90"><p class="tab_func">DELETE<br>
+    INSERT<br>
+    SELECT<br>
+    UPDATE </td>
+    <td valign="top"><p class="tab_desc">is a DELETE, INSERT, SELECT, or UPDATE keyword that
+    begins a statement block. Comments containing hints can appear only after these keywords. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="90"><p class="tab_func">+</td>
+    <td valign="top"><p class="tab_desc">is a plus sign that causes Oracle to interpret the
+    comment as a list of hints. The plus sign must follow immediately after the comment
+    delimiter (no space is permitted). </td>
+  </tr>
+  <tr>
+    <td valign="top" width="90"><p class="tab_func"><em>hint</em></td>
+    <td valign="top"><p class="tab_desc">is one of the hints discussed in this section and in <strong><em>Oracle8i
+    Designing and Tuning for Performance</em></strong>. The space between the plus sign and
+    the hint is optional. If the comment contains multiple hints, separate the hints by at
+    least one space. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="90"><p class="tab_func"><em>text</em></td>
+    <td valign="top"><p class="tab_desc">is other commenting text that can be interspersed
+    with the hints. </td>
+  </tr>
+</table>
+
+<h4><a name="Optimization Approaches and Goals">Optimization Approaches and Goals</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="240" bgColor="#99ccff"><p class="tab_header">Hint Syntax</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Description</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ ALL_ROWS */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses the cost-based approach to
+    optimize a statement block with a goal of best throughput (that is, minimum total resource
+    consumption). </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ CHOOSE */</td>
+    <td valign="top"><p class="tab_desc">Causes the optimizer to choose between the rule-based
+    approach and the cost-based approach for a SQL statement based on the presence of
+    statistics for the tables accessed by the statement. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ FIRST_ROWS */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses the cost-based approach to
+    optimize a statement block with a goal of best response time (minimum resource usage to
+    return first row). </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ RULE */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses rule-based optimization for a
+    statement block. </td>
+  </tr>
+</table>
+
+<h4><a name="Access Methods">Access Methods</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="240" bgColor="#99ccff"><p class="tab_header">Hint Syntax</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Description</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ AND_EQUAL(table index) */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses an execution plan that uses an
+    access path that merges the scans on several single-column indexes.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ CLUSTER(table) */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses a cluster scan to access the
+    specified table.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ FULL(table) */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses a full table scan for the
+    specified table.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ HASH(table) */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses a hash scan to access the
+    specified table.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ HASH_AJ(table) */</td>
+    <td valign="top"><p class="tab_desc">Transforms a <code>NOT IN </code>subquery into a hash
+    anti-join to access the specified table.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ HASH_SJ(table) */</td>
+    <td valign="top"><p class="tab_desc">Transforms a <code>NOT IN</code> subquery into a hash
+    semi-join to access the specified table.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ INDEX(table index) */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses an index scan for the specified
+    table.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ INDEX_ASC(table index) */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses an ascending-range index scan for
+    the specified table. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ INDEX_COMBINE(table index) */</td>
+    <td valign="top"><p class="tab_desc">If no indexes are given as arguments for the <code>INDEX_COMBINE</code>
+    hint, the optimizer uses whatever Boolean combination of bitmap indexes has the best cost
+    estimate. If particular indexes are given as arguments, the optimizer tries to use some
+    Boolean combination of those particular bitmap indexes. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ INDEX_DESC(table index) */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses a descending-range index scan for
+    the specified table.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ INDEX_FFS(table index) */</td>
+    <td valign="top"><p class="tab_desc">Causes a fast full index scan to be performed rather
+    than a full table scan. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ MERGE_AJ(table) */</td>
+    <td valign="top"><p class="tab_desc">Transforms a <code>NOT IN</code> subquery into a
+    merge anti-join to access the specified table. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ MERGE_SJ(table) */</td>
+    <td valign="top"><p class="tab_desc">Transforms a correlated <code>EXISTS</code> subquery
+    into a merge semijoin to access the specified table.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ NO_EXPAND */</td>
+    <td valign="top"><p class="tab_desc">Prevents the optimizer from considering <code>OR</code>
+    expansion for queries having <code>OR</code> or <code>IN</code> conditions in the <code>WHERE</code>
+    clause.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ NO_INDEX(table index) */</td>
+    <td valign="top"><p class="tab_desc">Instructs the optimizer not to consider a scan on the
+    specified index or indexes. If no indexes are specified, the optimizer does not consider a
+    scan on any index defined on the table.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ NOREWRITE */</td>
+    <td valign="top"><p class="tab_desc">Disables query rewrite for the query block,
+    overriding a TRUE setting of the <code>QUERY_REWRITE_ENABLED</code> parameter.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ NO_UNNEST */</td>
+    <td valign="top"><p class="tab_desc">Prohibits the unnesting of the subquery. The hints <code>HASH_SJ,
+    HASH_AJ, MERGE_SJ,</code> and <code>MERGE_AJ</code> take precedence over this hint.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ ORDERED_PREDICATES */</td>
+    <td valign="top"><p class="tab_desc">Forces the optimizer to preserve the order of
+    predicate evaluation (except predicates used in index keys), as specified in the <code>WHERE</code>
+    clause of <code>SELECT</code> statements.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ REWRITE (view [,...]) */</td>
+    <td valign="top"><p class="tab_desc">Enforces query rewrite. If you specify a view list
+    and the list contains an eligible materialized view, Oracle will use that view regardless
+    of the cost. No views outside of the list are considered. If you do not specify a view
+    list, Oracle will search for an eligible materialized view and always use it regardless of
+    the cost.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ ROWID(table) */</td>
+    <td valign="top"><p class="tab_desc">Explicitly chooses a table scan by rowid for the
+    specified table.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ UNNEST */</td>
+    <td valign="top"><p class="tab_desc">Forces the unnesting of the subquery if possible.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ USE_CONCAT */</td>
+    <td valign="top"><p class="tab_desc">Forces combined <code>OR</code> conditions in the <code>WHERE</code>
+    clause of a query to be transformed into a compound query using the <code>UNION ALL</code>
+    set operator. </td>
+  </tr>
+</table>
+
+<h4><a name="Join Orders">Join Orders</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="240" bgColor="#99ccff"><p class="tab_header">Hint Syntax</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Description</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ ORDERED */</td>
+    <td valign="top"><p class="tab_desc">Causes Oracle to join tables in the order in which
+    they appear in the <code>FROM</code> clause. This hint overrides the <code>LEADING</code>
+    hint.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ STAR */</td>
+    <td valign="top"><p class="tab_desc">Forces the large table to be joined last using a
+    nested-loops join on the index.</td>
+  </tr>
+</table>
+
+<h4><a name="Join Operations">Join Operations</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="240" bgColor="#99ccff"><p class="tab_header">Hint Syntax</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Description</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ DRIVING_SITE(table) */</td>
+    <td valign="top"><p class="tab_desc">Forces query execution to be done at a different site
+    from that selected by Oracle.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ LEADING (table) */</td>
+    <td valign="top"><p class="tab_desc">Causes Oracle to use the specified table as the first
+    table in the join order. The <code>ORDERED</code> hint overrides this hint.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ USE_HASH(table) */</td>
+    <td valign="top"><p class="tab_desc">Causes Oracle to join each specified table with
+    another row source with a hash join.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ USE_MERGE(table) */</td>
+    <td valign="top"><p class="tab_desc">Causes Oracle to join each specified table with
+    another row source with a sort-merge join.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ USE_NL(table) */</td>
+    <td valign="top"><p class="tab_desc">Causes Oracle to join each specified table to another
+    row source with a nested-loops join using the specified table as the inner table. </td>
+  </tr>
+</table>
+
+<h4><a name="Parallel Execution">Parallel Execution</a></h4>
+
+<p><strong>Note</strong>: Oracle ignores parallel hints on a temporary table. </p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="240" bgColor="#99ccff"><p class="tab_header">Hint Syntax</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Description</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ APPEND */<br>
+    /*+ NOAPPEND */</td>
+    <td valign="top"><p class="tab_desc">Specifies that data is simply appended (or not) to a
+    table; existing free space is not used. Use these hints only following the <code>INSERT</code>
+    keyword.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ NOPARALLEL(table) */</td>
+    <td valign="top"><p class="tab_desc">Disables parallel scanning of a table, even if the
+    table was created with a <code>PARALLEL</code> clause. Restriction: You cannot parallelize
+    a query involving a nested table. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ PARALLEL(table) */<br>
+    /*+ PARALLEL(table, integer) */</td>
+    <td valign="top"><p class="tab_desc">Lets you specify parallel execution of DML and
+    queries on the table; integer specifies the desired degree of parallelism, which is the
+    number of parallel threads that can be used for the operation. Each parallel thread may
+    use one or two parallel execution servers. If you do not specify <strong><em>integer</em></strong>,
+    Oracle computes a value using the <code>PARALLEL_THREADS_PER_CPU</code> parameter. If no
+    parallel hint is specified, Oracle uses the existing degree of parallelism for the table. <br>
+    <code>DELETE, INSERT,</code> and <code>UPDATE</code> operations are considered for
+    parallelization only if the session is in a <code>PARALLEL DML</code> enabled mode. (Use <code>ALTER
+    SESSION ENABLE PARALLEL DML</code> to enter this mode.) </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ PARALLEL_INDEX */</td>
+    <td valign="top"><p class="tab_desc">Allows you to parallelize fast full index scans for
+    partitioned and nonpartitioned indexes that have the <code>PARALLEL</code> attribute.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ PQ_DISTRIBUTE (table,
+    outer_distribution, inner_distribution) */</td>
+    <td valign="top"><p class="tab_desc">Specifies how rows of joined tables should be
+    distributed between producer and consumer query servers. The four possible distribution
+    methods are <code>NONE, HASH, BROADCAST,</code> and <code>PARTITION</code>. However, only
+    a subset of the combinations of outer and inner distributions are valid. For the permitted
+    combinations of distributions for the outer and inner join tables, see <strong><em>Oracle8i
+    Designing and Tuning for Performance</em></strong>. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ NOPARALLEL_INDEX */</td>
+    <td valign="top"><p class="tab_desc">Overrides a <code>PARALLEL</code> attribute setting
+    on an index. </td>
+  </tr>
+</table>
+
+<h4><a name="Other Hints">Other Hints</a></h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="240" bgColor="#99ccff"><p class="tab_header">Hint Syntax</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Description</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ CACHE */</td>
+    <td valign="top"><p class="tab_desc">Specifies that the blocks retrieved for the table in
+    the hint are placed at the most recently used end of the LRU list in the buffer cache when
+    a full table scan is performed. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ NOCACHE */</td>
+    <td valign="top"><p class="tab_desc">Specifies that the blocks retrieved for this table
+    are placed at the least recently used end of the LRU list in the buffer cache when a full
+    table scan is performed. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ MERGE(table) */</td>
+    <td valign="top"><p class="tab_desc">Causes Oracle to evaluate complex views or subqueries
+    before the surrounding query. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ NO_MERGE(table) */</td>
+    <td valign="top"><p class="tab_desc">Causes Oracle not to merge mergeable views.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ PUSH_JOIN_PRED(table) */</td>
+    <td valign="top"><p class="tab_desc">Causes the optimizer to evaluate, on a cost basis,
+    whether to push individual join predicates into the view. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ NO_PUSH_JOIN_PRED(table) */</td>
+    <td valign="top"><p class="tab_desc">Prevents pushing of a join predicate into the view.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ PUSH_SUBQ */</td>
+    <td valign="top"><p class="tab_desc">Causes nonmerged subqueries to be evaluated at the
+    earliest possible place in the execution plan.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">/*+ STAR_TRANSFORMATION */</td>
+    <td valign="top"><p class="tab_desc">Makes the optimizer use the best plan in which the
+    transformation has been used.</td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<HTML>
+<HEAD>
+<TITLE>EXECUTE (Embedded SQL)</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="EXECUTE (Embedded SQL)">
+</OBJECT>
+<H3>EXECUTE (Embedded SQL)<HR SIZE="3"></H3>
+<P>
+ Use this command to execute a DELETE, INSERT, or UPDATE statement or
+ a PL/SQL block that has been previously prepared with an embedded
+ SQL PREPARE statement.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ EXEC SQL [FOR :host_integer] EXECUTE { statement_name
+                                      | block_name }
+   [ USING {:host_variable [ [INDICATOR] :indicator_variable]
+           [, :host_variable [ [INDICATOR] :indicator_variable] ] ...
+           | DESCRIPTOR descriptor} ]
+ 
+
+ EXECUTE (Anonymous PL/SQL Blocks) (Embedded SQL)
+ ------------------------------------------------
+ 
+ Use this command to embed an anonymous PL/SQL block into an Oracle
+ Precompiler program.
+ 
+ EXEC SQL [AT {db_name | :host_variable} ]
+   EXECUTE pl/sql_block END-EXEC
+ 
+
+ EXECUTE IMMEDIATE (Embedded SQL)
+ --------------------------------
+ 
+ Use this command to prepare and execute a DELETE, INSERT, or UPDATE
+ statement or a PL/SQL block containing no host variables.
+ 
+ EXEC SQL [AT {db_name | :host_variable} ]
+   EXECUTE IMMEDIATE {:host_string | 'text'}
+ 
+</PRE>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

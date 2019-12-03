@@ -1,0 +1,174 @@
+<html>
+
+<head>
+<title>Datatypes</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="CHAR">
+  <param name="Keyword" value="VARCHAR2">
+  <param name="Keyword" value="NCHAR">
+  <param name="Keyword" value="NVARCHAR2">
+  <param name="Keyword" value="NUMBER">
+  <param name="Keyword" value="LONG">
+  <param name="Keyword" value="LONG RAW">
+  <param name="Keyword" value="RAW">
+  <param name="Keyword" value="DATE">
+  <param name="Keyword" value="BLOB">
+  <param name="Keyword" value="CLOB">
+  <param name="Keyword" value="NCLOB">
+  <param name="Keyword" value="BFILE">
+  <param name="Keyword" value="ROWID">
+  <param name="Keyword" value="UROWID">
+  <param name="Keyword" value="CHARACTER">
+  <param name="Keyword" value="CHARACTER VARYING">
+  <param name="Keyword" value="CHAR VARYING">
+  <param name="Keyword" value="VARCHAR">
+  <param name="Keyword" value="NATIONAL CHARACTER">
+  <param name="Keyword" value="NATIONAL CHAR">
+  <param name="Keyword" value="NATIONAL CHARACTER VARYING">
+  <param name="Keyword" value="NATIONAL CHAR VARYING">
+  <param name="Keyword" value="NCHAR VARYING">
+  <param name="Keyword" value="NUMERIC">
+  <param name="Keyword" value="DECIMAL">
+  <param name="Keyword" value="DEC">
+  <param name="Keyword" value="INTEGER">
+  <param name="Keyword" value="INT">
+  <param name="Keyword" value="SMALLINT">
+  <param name="Keyword" value="FLOAT">
+  <param name="Keyword" value="DOUBLE PRECISION">
+  <param name="Keyword" value="REAL">
+</object>
+</p>
+
+<h3>Datatypes</h3>
+
+<hr SIZE="3">
+
+<p>ORACLE accepts the following datatypes:</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">Datatype</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Explanation</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CHAR(<em>size</em>)</td>
+    <td valign="top"><p class="tab_desc">Fixed-length character data of length <em>size</em>
+    bytes. Maximum <em>size</em> is 2000. Default and minimum <em>size</em> is 1 byte. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">VARCHAR2(<em>size</em>)</td>
+    <td valign="top"><p class="tab_desc">Variable-length character string having maximum
+    length <em>size</em> bytes. Maximum <em>size</em> is 4000, and minimum is 1. You must
+    specify a <em>size</em>. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">NCHAR(<em>size</em>)</td>
+    <td valign="top"><p class="tab_desc">Fixed-length character data of length <em>size</em>
+    characters or bytes, depending on the choice of national character set. Maximum <em>size</em>
+    is determined by the number of bytes required to store each character, with an upper limit
+    of 2000 bytes. Default and minimum <em>size</em> is 1 character or 1 byte, depending on
+    the character set. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">NVARCHAR2(<em>size</em>) </td>
+    <td valign="top"><p class="tab_desc">Variable-length character string having maximum
+    length <em>size</em> characters or bytes, depending on the choice of national character
+    set. Maximum <em>size</em> is determined by the number of bytes required to store each
+    character, with an upper limit of 4000 bytes. You must specify a <em>size</em>. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">NUMBER[(<em>precision [,scale]</em>)] </td>
+    <td valign="top"><p class="tab_desc">Number having <em>precision</em> and <em>scale</em>.
+    The <em>precision</em> can range from 1 to 38. The <em>scale</em> can range from -84 to
+    127. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">LONG</td>
+    <td valign="top"><p class="tab_desc">Character data of variable length up to 2 gigabytes.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">LONG RAW</td>
+    <td valign="top"><p class="tab_desc">Raw binary data of variable length up to 2 gigabytes.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">RAW(<em>size</em>)</td>
+    <td valign="top"><p class="tab_desc">Raw binary data of length <em>size</em> bytes.
+    Maximum <em>size</em> is 2000 bytes. You must specify a <em>size</em>.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DATE</td>
+    <td valign="top"><p class="tab_desc">Valid date range from January 1, 4712 BC to December
+    31, 9999 AD.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">BLOB</td>
+    <td valign="top"><p class="tab_desc">A binary large object. Maximum <em>size</em> 4
+    gigabytes.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">CLOB</td>
+    <td valign="top"><p class="tab_desc">A character large object containing single-byte
+    characters. Both fixed-width and variable-width character sets are supported, both using
+    the CHAR database character set. Maximum <em>size</em> is 4 gigabytes.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">NCLOB</td>
+    <td valign="top"><p class="tab_desc">A character large object containing single-byte
+    characters. Both fixed-width and variable-width character sets are supported, both using
+    the NCHAR database character set. Maximum <em>size</em> is 4 gigabytes. Stores national
+    character set data. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">BFILE</td>
+    <td valign="top"><p class="tab_desc">Contains a locator to a large binary file stored
+    outside the database.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ROWID</td>
+    <td valign="top"><p class="tab_desc">Hexadecimal string representing the unique address of
+    a row in its table. This datatype is primarily for values returned by the ROWID
+    pseudocolumn.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">UROWID(<em>size</em>)</td>
+    <td valign="top"><p class="tab_desc">Hexadecimal string representing the logical address
+    of a row of an index-organized table. The optional <em>size</em> is the <em>size</em> of a
+    column of type UROWID. The maximum <em>size</em> and default is 4000 bytes.</td>
+  </tr>
+</table>
+
+<p>The Oracle server accepts the following ANSI-supported datatypes: </p>
+
+<pre>CHARACTER(<em>size</em>)
+CHARACTER VARYING(<em>size</em>)
+CHAR VARYING(<em>size</em>)
+VARCHAR(<em>size</em>)
+NATIONAL CHARACTER(<em>size</em>)
+NATIONAL CHAR(<em>size</em>)
+NATIONAL CHARACTER VARYING (<em>size</em>)
+NATIONAL CHAR VARYING(<em>size</em>)
+NCHAR VARYING(<em>size</em>)
+NUMERIC[<em>(precision [,scale])</em>]
+DECIMAL[<em>(precision [,scale])</em>]
+DEC[<em>(precision [,scale])</em>]
+INTEGER
+INT
+SMALLINT
+FLOAT[(size)]
+DOUBLE PRECISION
+REAL
+</pre>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

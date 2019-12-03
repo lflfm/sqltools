@@ -1,0 +1,26 @@
+CPU used by this session
+recursive calls
+db block gets
+consistent gets
+physical reads
+physical writes
+bytes sent via SQL*Net to client
+bytes received via SQL*Net from client
+SQL*Net roundtrips to/from client
+table fetch by rowid
+table fetch continued row
+table scan blocks gotten
+table scan rows gotten
+table scans (cache partitions)
+table scans (direct read)
+table scans (long tables)
+table scans (rowid ranges)
+table scans (short tables)
+sorts (memory)
+sorts (disk)
+sorts (rows)
+parse count
+parse time cpu
+parse time elapsed
+session pga memory
+session uga memory

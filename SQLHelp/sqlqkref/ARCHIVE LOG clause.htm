@@ -1,0 +1,34 @@
+<HTML>
+<HEAD>
+<TITLE>ARCHIVE LOG clause</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ARCHIVE LOG clause">
+</OBJECT>
+<H3>ARCHIVE LOG clause<HR SIZE="3"></H3>
+<P>
+ Use this command to manually archive redo log file groups or to
+ enable or disable automatic archiving.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ ARCHIVE LOG [THREAD integer]
+   { { SEQUENCE integer
+     | CHANGE integer
+     | CURRENT
+     | GROUP integer
+     | LOGFILE 'filename'
+     | NEXT
+     | ALL
+     | START} [TO 'location']
+   | STOP}
+ 
+</PRE>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

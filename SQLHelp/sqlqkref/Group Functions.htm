@@ -1,0 +1,74 @@
+<html>
+
+<head>
+<title>Group Functions </title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="AVG">
+  <param name="Keyword" value="COUNT">
+  <param name="Keyword" value="COUNT">
+  <param name="Keyword" value="MAX">
+  <param name="Keyword" value="MIN">
+  <param name="Keyword" value="STTDEV">
+  <param name="Keyword" value="SUM">
+  <param name="Keyword" value="VARIANCE">
+</object>
+</p>
+
+<h3>Group Functions</h3>
+
+<hr SIZE="3">
+
+<p>Return a single row based on groups of rows, rather than on single rows</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" bgColor="#99ccff" width="240"><p class="tab_header">Function</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Value Returned</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">AVG([DISTINCT|ALL] <i>n</i>)</td>
+    <td valign="top"><p class="tab_desc">Average value of <i>n</i>, ignoring nulls</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">COUNT([ALL] *)</td>
+    <td valign="top"><p class="tab_desc">Number of rows returned by a query or subquery</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">COUNT([DISTINCT| ALL] <i>expr</i>)</td>
+    <td valign="top"><p class="tab_desc">Number of rows where <i>expr </i>is not null</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">MAX([DISTINCT|ALL] <i>expr</i>)</td>
+    <td valign="top"><p class="tab_desc">Maximum value of <i>expr</i></td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">MIN([DISTINCT|ALL] <i>expr</i>)</td>
+    <td valign="top"><p class="tab_desc">Minimum value of <i>expr</i></td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">STTDEV([DISTINCT|ALL] <i>n</i>)</td>
+    <td valign="top"><p class="tab_desc">Standard deviation of <i>n</i>, ignoring null values</td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">SUM([DISTINCT|ALL] <i>n</i>)</td>
+    <td valign="top"><p class="tab_desc">Sum of values of <i>n</i></td>
+  </tr>
+  <tr>
+    <td valign="top" width="240"><p class="tab_func">VARIANCE ([DISTINCT|ALL] <i>n</i>)</td>
+    <td valign="top"><p class="tab_desc">Variance of n, ignoring null values</td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

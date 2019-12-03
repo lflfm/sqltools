@@ -1,0 +1,31 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE TYPE BODY</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE TYPE BODY">
+    <param name="Keyword" value="TYPE BODY">
+</OBJECT>
+<H3>CREATE TYPE BODY<HR SIZE="3"></H3>
+<P>
+ Use the CREATE TYPE BODY command to define or implement the member
+ methods defined in the object type specification.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ CREATE [OR REPLACE] TYPE BODY [schema.]type_name
+   IS
+     MEMBER {procedure_declaration | function_declaration};
+     [ MEMBER {procedure_declaration | function_declaration}; ] ...
+     [{MAP | ORDER} MEMBER function_declaration;]
+   END;
+ 
+</PRE>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

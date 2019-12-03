@@ -1,0 +1,31 @@
+<HTML>
+<HEAD>
+<TITLE>DECLARE CURSOR (Embedded SQL)</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="DECLARE CURSOR (Embedded SQL)">
+</OBJECT>
+<H3>DECLARE CURSOR (Embedded SQL)<HR SIZE="3"></H3>
+<P>
+ Use this command to declare a cursor, giving it a name and
+ associating it with a SQL statement or a PL/SQL block.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ EXEC SQL [ AT {db_name | :host_variable} ]
+ DECLARE cursor CURSOR FOR { SELECT command
+                           | statement_name
+                           | blockname }
+ 
+</PRE>
+<P>See also:  <A HREF="SELECT.htm">SELECT</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

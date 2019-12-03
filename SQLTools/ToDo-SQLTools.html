@@ -1,0 +1,155 @@
+<html>
+<head></head>
+<body>
+<font face='Verdana' size='3' ><h2>SQLTools 1.4.1 branch 58X</h2>
+<ol>
+<br><li><font color='#000000'><b>New functionality</b></font>
+<ol>
+<li><font color='#000000'>a new sql / sql*plus command parser / performer</font>
+<ol>
+<li>[5] <font color='#000000'>sql*plus commands: describe, connect, ...</font></li>
+<li>[3] <font color='#000000'>TOAD like mode for execution of sql command</font><br><font color='#606060'>[space line as separator for sql statements] </font></li>
+<li><font color='#C0C0C0'><s>parser / performer</s></font><s></s></li>
+<li><font color='#C0C0C0'><s>sql*plus commends: exec, define, undef</s></font><s><br><font color='#c4c4c4'>[define command has been improved significantly] </font></s></li>
+</ol>
+</li>
+<li>[5]  (90%) <font color='#000000'>db grid support for TIMESTAMP, INTERVAL, XMLTIPE, format mask for NUMBER</font><br><font color='#606060'>[Implemented in branch 59, will be available after merging] </font></li>
+<li>[5] <font color='#000000'>export grid data in sql-script format (and sql*loader)</font></li>
+<li>[4] <font color='#000000'>session viewer</font></li>
+</ol>
+</li>
+<br><li><font color='#000000'><b>Improving existing functionality</b></font>
+<ol>
+<li>[7] <font color='#000000'>implement a filter for Object List</font><br><font color='#606060'>[Implementation notes: This is client-side implementation (reg exp).  It should support oracle '_%' and reg exp expressions as well.] </font></li>
+<li>[7] <font color='#000000'>add a input field in the Fidn Object window</font></li>
+<li>[5] <font color='#000000'>cleanup history (from date, from number)</font></li>
+<li>[5] <font color='#000000'>add text document template</font></li>
+<li>[5] <font color='#000000'>hide internal oracle tables/indexes in Object List and ignore them in ExtractDDL</font><br><font color='#606060'>[implement a regexp-based filter which can be changes in &quot;advanced&quot; settings] </font></li>
+<li>[5] <font color='#000000'>handle oracle exception-warning about pasword expiration and add change password dialog</font></li>
+<li>[5] <font color='#000000'>add a list of ignored errors for sql script execution</font></li>
+<li>[5] <font color='#000000'>ask user to create plan_table if it does not exist</font><br><font color='#606060'>[probably we use the latest 10g table format - test it] </font></li>
+<li>[5] <font color='#000000'>info dialog (env)</font></li>
+<li>[5] <font color='#000000'>if a transaction is started by EXPLAIN PLAN, commit it to prevent a commit/rollback request on exit</font></li>
+<li>[5] <font color='#000000'>add "open tnsnames.ora" to tools menu</font></li>
+<li>[4] <font color='#000000'>add posibility to choose name for new documents and rename for already created but not saved</font><br><font color='#606060'>[option to create a new document w/o saving on exit?] </font></li>
+<li>[4] <font color='#000000'>an option to control reset a editor "modified" attribute for text/scripts loaded from db (reverse-engineered)</font></li>
+<li>[4] <font color='#000000'>add command purge recyclebin for 10g</font></li>
+<li>[4] <font color='#000000'>improve grid export menu/commands</font><br><font color='#606060'>[create individual commands for each particular export format instead of the selectior in grid export settings] </font></li>
+<li>[4] <font color='#000000'>reimplemet the object tree for Find Object</font></li>
+<li>[4] <font color='#000000'>extensive testing of compatibility with 7.3 and 8.05</font></li>
+<li>[3] <font color='#000000'>xml/text export for explain plan</font></li>
+<li>[3] <font color='#000000'>next error is too slow because of output log redrawing</font></li>
+<li>[3] <font color='#000000'>ESC in control bar should return focus to the current active mdi window, and maybe close froat control bar</font></li>
+<li>[3] <font color='#000000'>tab for grid navigation</font></li>
+<li>[3] <font color='#000000'>append "create use" template to pl/sql templates</font></li>
+<li>[3] <font color='#000000'>add CSS for grid export in HTML format </font></li>
+</ol>
+</li>
+<br><li><font color='#000000'><b>Bugs</b></font>
+<ol>
+<li>[6] <font color='#000000'>The bug report dialog appears on disconnecting if connection was closed by server</font><br><font color='#606060'>[Probably all oci exceptions should be processed w/o bug reporting because the most of them are raised on server side. ] </font></li>
+<li>[6] <font color='#000000'>copy grid column included exra leading spaces </font></li>
+<li>[6] <font color='#000000'>trigger reverse-engineering fails</font><br><font color='#606060'>[CREATE TABLE owidat (dummy VARCHAR2(1));
+<br>
+<br>CREATE OR REPLACE TRIGGER IDXNOTNULL BEFORE INSERT OR UPDATE ON OWIDAT
+<br>REFERENCING NEW AS NEWFIELD FOR EACH ROW
+<br>BEGIN
+<br>  NULL;
+<br>END;
+<br>/] </font></li>
+<li>[6] <font color='#000000'>CSV export: Excel ignores leading zeros for text columns</font><br><font color='#606060'>[Solution:
+<br>c1,c2,c3
+<br>=&quot;paul&quot;,=&quot;00235&quot;,=&quot;red&quot;
+<br>=&quot;jim&quot;,=&quot;00187&quot;,=&quot;yellow&quot;
+<br>=&quot;sue&quot;,=&quot;00133&quot;,=&quot;green&quot;] </font></li>
+<li>[6] <font color='#000000'>error position fails for function/procedure/package reverse engineering if a procedure header contains '\n'</font></li>
+<li>[5] <font color='#000000'>sql error causes a bug report</font><br><font color='#606060'>[SELECT To_Date(Decode(least(nvl(&quot;NAECHSTE_WP&quot;,
+<br>&gt;to_date('01.01.9999','dd.mm.yyyy'))), to_date('01.01.9999','dd.mm.yyyy'),
+<br>&gt;NULL, least(nvl(&quot;NAECHSTE_WP&quot;, to_date('01.01.9999','dd.mm.yyyy')))),
+<br>&gt;'dd.mm.yyyy') FROM em_transportmittel;] </font></li>
+<li>[5] <font color='#000000'>trigger reverse engineering fails if a trigger name or a column name contains "on"</font></li>
+<li>[5] <font color='#000000'>statement execution takes a while on read-only connection if it's not select</font></li>
+<li>[4] <font color='#000000'>toolbar/control bar windows might be moved out of a visible desktop area</font><br><font color='#606060'>[No way get it back except reset registry] </font></li>
+<li>[4] <font color='#000000'>a very long column (>64K) value may be a cause of slow grid painting and even windows crash </font></li>
+<li>[4] <font color='#000000'>attempt to find (F12) db object by name with ending . ("dbms_job.") causes an pl/sql exception </font></li>
+<li>[4] <font color='#000000'>bug report on regexp search</font><br><font color='#606060'>[SQLTools reported an error while processing a replace operation using
+<br>regexp operators. I have a list of names, in the format
+<br>&lt;tab&gt;'&lt;lastname&gt;, &lt;firstname&gt;'
+<br>I was trying to replace this with a string like:
+<br>Exec tier3fixes.userfromname( '&lt;lastname&gt;, &lt;firstname&gt;' );
+<br>My &quot;Find what&quot; string was: ^\t(*)
+<br>My &quot;Replace with&quot; string was: exec tier3fixes.userfromname( \1 );] </font></li>
+<li>[4] <font color='#000000'>extract ddl fails in 10g</font></li>
+<li>[3] <font color='#000000'>unknown exception on canceling drop table statement</font></li>
+<li>[3] <font color='#000000'>sqltools may fails with "coi8: cannot allocate handle" on some pc</font></li>
+<li>[3] <font color='#000000'>ora-01877: string is too long for internal buffer</font></li>
+<li><font color='#C0C0C0'><s> "Next" and "Previous" in Grid are inverted</s></font><s></s></li>
+<li><font color='#C0C0C0'><s>external authentication does not work</s></font><s></s></li>
+<li><font color='#C0C0C0'><s>some servers may return very long strings due to oracle bug</s></font><s></s></li>
+<li><font color='#C0C0C0'><s>all compilation errors are ignored for Oracle7</s></font><s></s></li>
+<li><font color='#C0C0C0'><s>all compilation errors are ignored after "alter session set current schema"</s></font><s></s></li>
+</ol>
+</li>
+<br><li><font color='#000000'><b>Internal improvements</b></font>
+<ol>
+<li>[5] <font color='#000000'>exception model: add a new base class for application exceptions which will not be traceable</font><br><font color='#606060'>[The cost of StackTrace is too hight, but some application exceptions are a part of normal flow.
+<br>] </font></li>
+</ol>
+</li>
+<br><li><font color='#000000'><b>OpenEditor</b></font>
+<ol>
+<li><font color='#000000'>New functionality</font>
+<ol>
+<li>[5] <font color='#000000'>automatically highlight or underline the matching braces</font></li>
+<li>[5] <font color='#000000'>context menu for toolbars</font></li>
+<li>[5] <font color='#000000'>projects/favorites</font></li>
+<li>[5] <font color='#000000'>history</font></li>
+<li>[5] <font color='#000000'>find in files</font></li>
+<li>[5] <font color='#000000'>open file under cursor</font></li>
+<li>[5] <font color='#000000'>watch and reload changed settings</font></li>
+</ol>
+</li>
+<li><font color='#000000'>Bugs</font>
+<ol>
+<li>[5] <font color='#000000'>add default extension on file save</font></li>
+<li>[5] <font color='#000000'>exception on find match</font><br><font color='#606060'>[SELECT * FROM xis_nt_mo_me#v mo
+<br>  WHERE NOT EXISTS (
+<br>    SELECT * FROM xis_nt_mo_relations
+<br>      WHERE child_id = mo.id
+<br>        AND (relation_rule_id, stereotype_id) IN
+<br>          (SELECT rul_id, rul_ste_id FROM xis_dd_relation_rules#t WHERE rul_name = 'EMS_M_ME')
+<br>    )
+<br>&gt;&gt; EOF &lt;&lt;] </font></li>
+</ol>
+</li>
+</ol>
+</li>
+<br><li><font color='#000000'><b>New functionality for future releases</b></font>
+<ol>
+<li>[5] <font color='#000000'>change copyright before publishing</font></li>
+<li>[5] <font color='#000000'>objects/columns/methods dropdown list</font></li>
+<li>[5] <font color='#000000'>code navigator</font></li>
+<li>[5] <font color='#000000'>object properties control bar</font></li>
+<li>[5] <font color='#000000'>sort for data grid</font></li>
+<li>[5] <font color='#000000'>using dba views when they are available for the current connection</font></li>
+<li>[5] <font color='#000000'>project, sql library</font></li>
+<li>[5] <font color='#000000'>table/view viewer</font></li>
+<li>[5] <font color='#000000'>move sql execution in a backgroud thread</font></li>
+<li>[5] <font color='#000000'>sql*plus like bind variables</font></li>
+<li>[5] <font color='#000000'>table/index partitions in reverse-engineering</font></li>
+<li>[5] <font color='#000000'>Insert/delete/update operation for data grid</font></li>
+<li>[5] <font color='#000000'>support for vss and cvs - automatic check out</font></li>
+<li>[5] <font color='#000000'>implement "find in source"</font><br><font color='#606060'>[&quot;Find in Source&quot; that would search in all DB sources types. After entering the usual search criteria (String to search, whole word, match case,....) and specific criteria (find in all types or selected: procedure, function, pack, trigger, object type, views,...?) a result window could show the list of sources + line numbers that matched the criteria. By clicking on the sources name, an editor window would be automatically open (and why not at the first matching line).] </font></li>
+<li>[4] <font color='#000000'>execute scripts from the command line</font></li>
+<li>[3] <font color='#000000'>multiple connections</font></li>
+<li>[3] <font color='#000000'>select * from object table/view</font></li>
+</ol>
+</li>
+<br><li><font color='#000000'><b>Research</b></font>
+<ol>
+<li>[0] <font color='#000000'>http://www.aquafold.com/screenshots.html</font></li>
+</ol>
+</li>
+</ol>
+</font></body>
+</html>

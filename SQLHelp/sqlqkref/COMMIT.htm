@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<TITLE>COMMIT</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="COMMIT">
+</OBJECT>
+<H3>COMMIT<HR SIZE="3"></H3>
+<P>
+ Use this command to end your current transaction and make permanent
+ all changes performed in the transaction. This command also erases
+ all savepoints in the transaction and releases the transaction's
+ locks.
+</P>
+<P>
+ 
+ You can also use this command to manually commit an in-doubt
+ distributed transaction.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ COMMIT [WORK] [COMMENT 'text' | FORCE 'text' [, integer] ]
+ 
+</PRE>
+<P>See also:  <A HREF="ROLLBACK.htm">ROLLBACK</A>
+, <A HREF="SAVEPOINT.htm">SAVEPOINT</A>
+, <A HREF="SET TRANSACTION.htm">SET TRANSACTION</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

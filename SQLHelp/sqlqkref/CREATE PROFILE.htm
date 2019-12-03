@@ -1,0 +1,51 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE PROFILE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE PROFILE">
+    <param name="Keyword" value="PROFILE">
+</OBJECT>
+<H3>CREATE PROFILE<HR SIZE="3"></H3>
+<P>
+ Use this command to create a profile. A profile is a set of limits
+ on database resources. If you assign the profile to a user, that
+ user cannot exceed these limits.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ CREATE PROFILE profile LIMIT
+   { { SESSION_PER_USER
+     | CPU_PER_SESSION
+     | CPU_PER_CALL
+     | CONNECT_TIME
+     | IDLE_TIME
+     | LOGICAL_READS_PER_SESSION
+     | LOGICAL_READS_PER_CALL
+     | COMPOSITE_LIMIT}
+   { integer | UNLIMITED | DEFAULT}
+   | { PRIVATE_SGA { integer [K | M] | UNLIMITED | DEFAULT} }
+   | FAILED_LOGIN_ATTEMPTS
+   | PASSWORD_LIFETIME
+   | {PASSWORD_REUSE_TIME | PASSWORD_REUSE_MAX}
+   | ACCOUNT_LOCK_TIME
+   | PASSWORD_GRACE_TIME
+   { integer | UNLIMITED | DEFAULT}
+   | PASSWORD_VERIFY_FUNCTION
+   { function | NULL | DEFAULT} }...
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER PROFILE.htm">ALTER PROFILE</A>
+, <A HREF="DROP PROFILE.htm">DROP PROFILE</A>
+, <A HREF="ALTER RESOURCE COST.htm">ALTER RESOURCE COST</A>
+, <A HREF="ALTER SYSTEM.htm">ALTER SYSTEM</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

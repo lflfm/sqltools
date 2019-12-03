@@ -1,0 +1,187 @@
+[OPTIONS]
+Auto Index=Yes
+Compatibility=1.1 or later
+Compiled file=sqltools.chm
+Contents file=sqltools.hhc
+Default topic=about.htm
+Display compile progress=Yes
+Full-text search=Yes
+Index file=sqltools.hhk
+Language=0x409 English (United States)
+
+
+[FILES]
+_sqltools.css
+about.htm
+whatsnew.htm
+whatsnew18.htm
+menu_edit.htm
+menu_file.htm
+menu_help.htm
+menu_view.htm
+menu_search.htm
+menu_text.htm
+menu_window.htm
+sqleditor.htm
+connect_dialog.htm
+connect_dialog_settings.htm
+command_line.htm
+not_implemented.htm
+..\History.txt
+autosave.htm
+launcher.htm
+snapshots_and_workspaces.htm
+init_setup.htm
+oracle_instant_client.htm
+datagrid.htm
+object_viewer.htm
+objects_list.htm
+working_with_svn.htm
+Images\BackupAndAutosavePage.jpg
+Images\sqlt-launcher.jpg
+Images\initial_setup.jpg
+Images\connect_settings.jpg
+Images\workspace_toolbar.jpg
+Images\grid_range_selection.jpg
+Images\grid_drag_and_drop_resul.jpg
+Images\grid_popup_viewer.jpg
+Images\working_with_svn.jpg
+Images\svn_menu_settings.jpg
+Images\object_viewer.jpg
+Images\object_viewer_quick_count.jpg
+
+[ALIAS]
+hidr_mainframe						= sqleditor.htm
+whatsnew                            = whatsnew.htm
+whatsnew18                          = whatsnew18.htm
+about   							= about.htm
+menu_edit							= menu_edit.htm
+menu_file							= menu_file.htm
+menu_help							= menu_help.htm
+menu_view							= menu_view.htm
+menu_text							= menu_text.htm
+menu_window							= menu_window.htm
+hidr_sqltype    					= sqleditor.htm
+hidd_connect_dialog                 = connect_dialog.htm
+hidd_connect_settings               = connect_dialog_settings.htm
+hidd_obj_info_tree                  = object_viewer.htm
+hidd_db_source                      = objects_list.htm
+hidr_datagrid                       = datagrid.htm
+
+hid_file_new                        = menu_file.htm
+hid_file_new_ext                    = menu_file.htm
+hid_file_open                       = menu_file.htm
+hid_file_reload                     = menu_file.htm
+hid_file_close                      = menu_file.htm
+hid_file_close_all                  = menu_file.htm
+hid_file_save                       = menu_file.htm
+hid_file_save_as                    = menu_file.htm
+hid_file_save_all                   = menu_file.htm
+hid_file_sync_location              = menu_file.htm
+hid_edit_file_settings              = menu_file.htm
+hid_edit_print_page_setup           = menu_file.htm
+hid_file_print_setup                = menu_file.htm
+hid_file_print_preview              = menu_file.htm
+hid_file_print                      = menu_file.htm
+hid_file_send_mail                  = menu_file.htm
+hid_file_mru_file1                  = menu_file.htm
+hid_app_exit                        = menu_file.htm
+
+hid_edit_undo                       = menu_edit.htm
+hid_edit_redo                       = menu_edit.htm
+hid_edit_cut                        = menu_edit.htm
+hid_edit_copy                       = menu_edit.htm
+hid_edit_paste                      = menu_edit.htm
+hid_edit_cut_n_append               = menu_edit.htm
+hid_edit_cut_bookmarked             = menu_edit.htm
+hid_edit_copy_n_append              = menu_edit.htm
+hid_edit_copy_bookmarked            = menu_edit.htm
+hid_edit_delete                     = menu_edit.htm
+hid_edit_delete_word_to_right       = menu_edit.htm
+hid_edit_delete_word_to_left        = menu_edit.htm
+hid_edit_delete_line                = menu_edit.htm
+hid_edit_delete_bookmarked          = menu_edit.htm
+hid_edit_select_word                = menu_edit.htm
+hid_edit_select_line                = menu_edit.htm
+hid_edit_select_all                 = menu_edit.htm
+hid_edit_scroll_up                  = menu_edit.htm
+hid_edit_scroll_center              = menu_edit.htm
+hid_edit_scroll_down                = menu_edit.htm
+
+hid_view_file_toolbar               = menu_view.htm
+hid_view_sql_toolbar                = menu_view.htm
+hid_view_connect_toolbar            = menu_view.htm
+hid_sql_obj_viewer                  = menu_view.htm
+hid_sql_db_source                   = menu_view.htm
+hid_file_show_grep_output           = menu_view.htm
+hid_view_file_panel                 = menu_view.htm
+hid_view_workbook                   = menu_view.htm
+hid_view_status_bar                 = menu_view.htm
+
+hid_edit_bkm_get_0                  = menu_search.htm
+hid_edit_bkm_get_1                  = menu_search.htm
+hid_edit_bkm_get_2                  = menu_search.htm
+hid_edit_bkm_get_3                  = menu_search.htm
+hid_edit_bkm_get_4                  = menu_search.htm
+hid_edit_bkm_get_5                  = menu_search.htm
+hid_edit_bkm_get_6                  = menu_search.htm
+hid_edit_bkm_get_7                  = menu_search.htm
+hid_edit_bkm_get_8                  = menu_search.htm
+hid_edit_bkm_get_9                  = menu_search.htm
+hid_edit_bkm_next                   = menu_search.htm
+hid_edit_bkm_prev                   = menu_search.htm
+hid_edit_bkm_remove_all             = menu_search.htm
+hid_edit_bkm_set_0                  = menu_search.htm
+hid_edit_bkm_set_1                  = menu_search.htm
+hid_edit_bkm_set_2                  = menu_search.htm
+hid_edit_bkm_set_3                  = menu_search.htm
+hid_edit_bkm_set_4                  = menu_search.htm
+hid_edit_bkm_set_5                  = menu_search.htm
+hid_edit_bkm_set_6                  = menu_search.htm
+hid_edit_bkm_set_7                  = menu_search.htm
+hid_edit_bkm_set_8                  = menu_search.htm
+hid_edit_bkm_set_9                  = menu_search.htm
+hid_edit_bkm_toggle                 = menu_search.htm
+hid_edit_find                       = menu_search.htm
+hid_edit_find_match                 = menu_search.htm
+hid_edit_find_match_n_select        = menu_search.htm
+hid_edit_find_next                  = menu_search.htm
+hid_edit_find_previous              = menu_search.htm
+hid_edit_goto                       = menu_search.htm
+hid_edit_replace                    = menu_search.htm
+hid_file_find_in_file               = menu_search.htm
+
+hid_edit_stream_sel                 = menu_text.htm
+hid_edit_column_sel                 = menu_text.htm
+hid_edit_toggles_sel                = menu_text.htm
+hid_edit_sort                       = menu_text.htm
+hid_edit_indent                     = menu_text.htm
+hid_edit_undent                     = menu_text.htm
+hid_edit_untabify                   = menu_text.htm
+hid_edit_tabify                     = menu_text.htm
+hid_edit_tabify_leading             = menu_text.htm
+hid_edit_normalize_text             = menu_text.htm
+hid_edit_lower                      = menu_text.htm
+hid_edit_upper                      = menu_text.htm
+hid_edit_capitalize                 = menu_text.htm
+hid_edit_invert_case                = menu_text.htm
+hid_edit_comment                    = menu_text.htm
+hid_edit_uncomment                  = menu_text.htm
+hid_edit_expand_template            = menu_text.htm
+hid_edit_datetime_stamp             = menu_text.htm
+hid_edit_openfileundercursor        = menu_text.htm
+hid_edit_view_white_space           = menu_text.htm
+hid_edit_view_line_numbers          = menu_text.htm
+hid_edit_view_ruler                 = menu_text.htm
+hid_edit_view_column_markers        = menu_text.htm
+hid_edit_view_indent_guide          = menu_text.htm
+                                    
+[MAP]
+#include ..\Resource1.h
+#include HTMLDefines.h
+
+[TEXT POPUPS]
+HTMLDefines.h
+
+[INFOTYPES]
+

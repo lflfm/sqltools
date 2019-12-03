@@ -1,0 +1,63 @@
+# Windows/Borland C++ build tool options
+#
+# The following warnings are disabled in order to compile...
+#
+# Warning W8008 c:\usr\local\Borland\include\vector.h 213: Condition is always false in function __init_aux<const int *>(const int *,const int *,_RW_is_not_integer)
+# Warning W8020 c:\usr\local\Borland\include\istream.h 445: 'std::operator == <T,charT,traits,Distance>(const istream_iterator<T,charT,traits,Distance> &,const istream_iterator<T,charT,traits,Distance> &)' is declared as both external and static
+# Warning W8026 : Functions with exception specifications are not expanded inline
+# Warning W8027 : Functions containing switch are not expanded inline
+# Warning W8084 : Suggest parentheses to clarify precedence in function ...
+# Warning W8066 c:\usr\local\Borland\include\vector.h 214: Unreachable code in function __init_aux<const int *>(const int *,const int *,_RW_is_not_integer)
+#
+# The following warnings are enabled...
+#
+# -wnak	Non-ANSI Keyword Used: 'keyword' (Default OFF) (Note: Use of this option is required for ANSI conformance)
+
+.SUFFIXES:
+
+CC:=BCC32  -Iinclude
+CFLAGS:= -c -w -w! -w-8008 -w-8020 -w-8026 -w-8027 -w-8084 -w-8066 -wnak
+AR:=tlib 
+O:=.obj
+A:=.lib
+SO:=.dll
+PFX:=
+X:=.exe
+
+.SUFFIXES: .c .cpp $(X) .d $(O) $(A) $(SO)
+
+################################################################
+# 	The following incantations are required to generate rules in
+# $(ARG_SRC)/makefile.rules  They could be avoided if pattern rules 
+# of the form:
+#
+#		"%$(O)" : $(ARG_SRC)/%.cpp 
+#
+# matched subproject files - but ATTOW they don't.
+#                                                   arg 02dec99
+################################################################
+
+# Making an object file
+define MKOBJ
+	$(CC) $(CFLAGS) $< -o$(@F)
+	mv $(@F) $(@D)
+endef
+
+# Making an executable file
+#MKEXE=$(CC) $(subst /,\\, $(filter %$(O), $^)) $(subst /,\\, $(filter %$(A), $^)) -n$(subst /,\\,$@)
+MKEXE=$(CC) $(subst /,\\,$(filter %$(O), $^) $(filter %$(A), $^) -n$@)
+
+# Making a Shared Object/DLL
+MKSHARED=
+
+# Making a static library
+MKLIB=$(AR) $(subst /,\\,$@ $(foreach T, $(filter %$(O), $^), -+$(T)))
+
+# Making a dependency file
+define MKDEP
+	echo "$@\\"  > $@ 
+	echo "\$$(ARG_BUILD)/\$$(ARG_PACKAGE)/$(@F:.d=.o)\\" >> $@ 
+	echo "\$$(ARG_BUILD)/\$$(ARG_PACKAGE)/$(@F:.d=.obj)\\" >> $@ 
+	g++ -MM -I $(ARG_SRC)/include $(filter %.cpp, $^) >> $@
+endef
+

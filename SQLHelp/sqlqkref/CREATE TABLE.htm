@@ -1,0 +1,157 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE TABLE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE TABLE">
+    <param name="Keyword" value="TABLE">
+</OBJECT>
+<H3>CREATE TABLE<HR SIZE="3"></H3>
+<P>
+ Use this command to create a table, the basic structure to hold user
+ data, specifying the following information:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+column definitions
+<LI>
+table organization definition
+<LI>
+column definitions using objects
+<LI>
+integrity constraints
+<LI>
+the table's tablespace
+<LI>
+storage characteristics
+<LI>
+an optional cluster
+<LI>
+data from an arbitrary query
+<LI>
+degree of parallelism used to create the table and the default
+      degree of parallelism for queries on the table
+<LI>
+partitioning definitions
+</LI>
+</UL>
+<P>
+ 
+ Use CREATE TABLE to create an object table or a table that uses an
+ object type for a column definition. An object table is a table
+ explicitly defined to hold object instances of a particular type.
+</P>
+<P>
+ 
+ You can also create an object type and then use it in a column when
+ creating a relational table.
+</P>
+<P>
+ 
+ Relational table definition
+</P>
+<PRE>
+   CREATE TABLE [schema.]table
+     [ ( { column datatype [DEFAULT expr] [WITH ROWID]
+           [SCOPE IS [schema.]scope_table_name]
+           [column_constraint] ...
+         | table_constraint | REF (ref_column_name) WITH ROWID
+         | SCOPE FOR (ref_column_name) IS [schema.]scope_table_name }
+      [, { column datatype [DEFAULT expr] [WITH ROWID]
+           [SCOPE IS [schema.]scope_table_name]
+           [column_constraint] ...
+         | table_constraint | REF (ref_column_name) WITH ROWID
+         | SCOPE FOR (ref_column_name) IS
+           [schema.]scope_table_name} ] ...) ]
+     [ { [ ORGANIZATION {HEAP | INDEX}
+           | PCTTHRESHOLD [INCLUDING column_name]
+           [ OVERFLOW [physical_attributes_clause |
+             TABLESPACE tablespace] ...]
+         | physical_attributes_clause
+         | TABLESPACE tablespace
+           | LOB (lob_item [, lob_item ...] ) STORE AS
+             [lob_segname]
+           [ ( TABLESPACE tablespace
+             | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+             | CHUNK integer
+             | PCTVERSION integer
+             | CACHE
+             | NOCACHE LOGGING | NOCACHE NOLOGGING
+             | INDEX [lob_index_name]
+             [ ( TABLESPACE tablespace
+               |  STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+               |  INITRANS integer
+               |  MAXTRANS integer ) ...] ) ]
+           | NESTED TABLE nested_item STORE AS storage_table
+           | {LOGGING | NOLOGGING} ] ...
+         | CLUSTER cluster (column [, column] ...) } ]
+       [ PARALLEL <A HREF="PARALLEL clause.htm">parallel_clause</A>]
+       [ PARTITION BY RANGE (column_list)
+         ( PARTITION [partition_name] VALUES LESS THAN (value_list)
+           [ physical_attributes_clause
+           | TABLESPACE tablespace
+           | {LOGGING | NOLOGGING} ] ) ...]
+       [ ENABLE <A HREF="ENABLE clause.htm">enable_clause</A> | DISABLE <A HREF="DISABLE clause.htm">disable_clause</A>] ...
+         [AS subquery]
+         [CACHE | NOCACHE]
+ 
+ physical_attributes_clause
+   [ PCTFREE integer
+   | PCTUSED integer
+   | INITRANS integer
+   | MAXTRANS integer
+   | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A> ]
+ 
+ Object table definition
+   CREATE TABLE [schema.]table OF [schema.]object_type
+     [ ( [ column | attribute [DEFAULT expr] [WITH ROWID]
+         [ SCOPE IS [schema.]scope_table_name]
+         [column_constraint] ...]
+       | table_constraint | REF (ref_column_name) WITH ROWID
+       | SCOPE FOR (ref_column_name) IS [schema.]scope_table_name
+       [, { column | attribute [DEFAULT expr] [WITH ROWID]
+          [ SCOPE IS [schema.]scope_table_name]
+          [column_constraint] ...
+          | table_constraint | REF (ref_column_name) WITH ROWID
+          | SCOPE FOR (ref_column_name) IS
+            [schema.]scope_table_name} ] ...) ]
+     [ OIDINDEX [index] [( physical_attributes_clause |
+            TABLESPACE tablespace) ...]
+       [ { [ physical_attributes_clause
+           | TABLESPACE tablespace
+           | LOB (lob_item [, lob_item ...]) STORE AS
+             [ lob_segname]
+             [ ( TABLESPACE tablespace
+               | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+               | CHUNK integer
+               | PCTVERSION integer
+               | CACHE
+               | NOCACHE LOGGING | NOCACHE NOLOGGING
+               | INDEX [lob_index_name]
+                 [ ( TABLESPACE tablespace
+                   |  STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+                   |  INITRANS integer
+                   |  MAXTRANS integer ) ] ) ]
+           | NESTED TABLE nested_item STORE AS storage_table
+           | {LOGGING | NOLOGGING} ] ...
+         | CLUSTER cluster (column [, column] ...) } ]
+     [ PARALLEL <A HREF="PARALLEL clause.htm">parallel_clause</A>]
+     [ ENABLE <A HREF="ENABLE clause.htm">enable_clause</A> | DISABLE <A HREF="DISABLE clause.htm">disable_clause</A>] ...
+     [ AS subquery]
+     [ CACHE | NOCACHE]
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER TABLE.htm">ALTER TABLE</A>
+, <A HREF="DROP TABLE.htm">DROP TABLE</A>
+, <A HREF="CREATE CLUSTER.htm">CREATE CLUSTER</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

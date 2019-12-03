@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER USER</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER USER">
+    <param name="Keyword" value="USER">
+</OBJECT>
+<H3>ALTER USER<HR SIZE="3"></H3>
+<P>
+ Use this command to change any of the following characteristics of a
+ database user:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+authentication mechanism of the user
+<LI>
+password
+<LI>
+default tablespace for object creation
+<LI>
+tablespace for temporary segments created for the user
+<LI>
+tablespace access and tablespace quotas
+<LI>
+limits on database resources
+<LI>
+default roles
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ALTER USER user
+   { IDENTIFIED {BY password | EXTERNALLY
+                | GLOBALLY AS 'CN=user'}
+   | DEFAULT TABLESPACE tablespace
+   | TEMPORARY TABLESPACE tablespace
+   | QUOTA { integer [K | M] | UNLIMITED} ON tablespace
+   [ QUOTA { integer [K | M] | UNLIMITED} ON tablespace] ...
+   | PROFILE profile
+   | PASSWORD EXPIRE
+   | ACCOUNT { LOCK | UNLOCK }
+   | DEFAULT ROLE { role [, role] ...
+                  | ALL [EXCEPT role [, role] ...]
+                  | NONE} } ...
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE USER.htm">CREATE USER</A>
+, <A HREF="DROP USER.htm">DROP USER</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

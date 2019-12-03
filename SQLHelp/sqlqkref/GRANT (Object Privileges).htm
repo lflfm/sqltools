@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<TITLE>GRANT (Object Privileges)</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="GRANT (Object Privileges)">
+</OBJECT>
+<H3>GRANT (Object Privileges)<HR SIZE="3"></H3>
+<P>
+ Use this command to grant privileges for a particular object to
+ users and roles. To grant system privileges and roles, use the GRANT
+ command (System Privileges and Roles).
+</P>
+<P>
+ 
+</P>
+<PRE>
+ GRANT
+   { object_priv | ALL [PRIVILEGES] }
+   [ ( column [, column] ...) ]
+   [, { object_priv | ALL [PRIVILEGES] }
+      [ ( column [, column] ...) ] ] ...
+ ON [ schema.| DIRECTORY] object
+ TO { user | role | PUBLIC} ...
+    [ WITH GRANT OPTION]
+ 
+</PRE>
+<P>See also:  <A HREF="GRANT (System Privileges and Roles).htm">GRANT (System Privileges and Roles)</A>
+, <A HREF="REVOKE (Schema Object Privileges).htm">REVOKE (Schema Object Privileges)</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<TITLE>SELECT (Embedded SQL)</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="SELECT (Embedded SQL)">
+</OBJECT>
+<H3>SELECT (Embedded SQL)<HR SIZE="3"></H3>
+<P>
+ Use this command to retrieve data from one or more tables, views, or
+ snapshots, assigning the selected values to host variables.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ EXEC SQL
+   [ AT { dbname | :host_variable } ]
+   SELECT select_list
+ INTO
+   :host_variable [ [ INDICATOR ] :indicator_variable ]
+   [, :host_variable [ [ INDICATOR ] :indicator_variable ] ] ...
+ FROM table _list
+ [ WHERE condition ]
+ [ [ START WITH condition ] CONNECT BY condition
+   | GROUP BY expr [, expr ] ... [ HAVING condition ] ] ...
+ [ { UNION
+   | UNION ALL
+   | INTERSECT
+   | MINUS } SELECT command ]
+ [ ORDER BY
+   { expr | position } [ ASC | DESC ]
+   [, { expr | position } [ ASC | DESC ] ] ...
+   | FOR UPDATE
+     [ OF [ [ schema. ]{ table. | view. } ] column ]
+     [, OF [ [ schema. ]{ table. | view. } ] column ] ...
+     [ NOWAIT ]  ... ]
+ 
+</PRE>
+<P>See also:  <A HREF="SELECT.htm">SELECT</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

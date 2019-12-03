@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE USER</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE USER">
+    <param name="Keyword" value="USER">
+</OBJECT>
+<H3>CREATE USER<HR SIZE="3"></H3>
+<P>
+ Use CREATE USER to create a database user, or an account through
+ which you can log in to the database, and establish the means by
+ which Oracle permits access by the user. You can optionally
+ assign the following properties to the user:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+default tablespace
+<LI>
+temporary tablespace
+<LI>
+quotas for allocating space in tablespaces
+<LI>
+profile containing resource limits
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ CREATE USER user IDENTIFIED {BY password | EXTERNALLY | GLOBALLY AS 'CN=user'}
+   [ DEFAULT TABLESPACE tablespace
+   | TEMPORARY TABLESPACE tablespace
+   | QUOTA { integer [K | M] | UNLIMITED } ON tablespace
+     [ QUOTA { integer [K | M] | UNLIMITED } ON tablespace ] ...
+   | PROFILE profile
+   | PASSWORD EXPIRE
+   | ACCOUNT { LOCK | UNLOCK } ... ]
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER USER.htm">ALTER USER</A>
+, <A HREF="DROP USER.htm">DROP USER</A>
+, <A HREF="CREATE PROFILE.htm">CREATE PROFILE</A>
+, <A HREF="GRANT (Object Privileges).htm">GRANT (Object Privileges)</A>
+, <A HREF="GRANT (System Privileges and Roles).htm">GRANT (System Privileges and Roles)</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

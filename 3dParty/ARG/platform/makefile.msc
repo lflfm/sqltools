@@ -1,0 +1,34 @@
+# Windows/Microsoft C++ build tool options
+#
+.SUFFIXES:
+
+
+CC:=CL -MT -GX -W4 -WX -I $(ARG_SRC)/include -I $(ARG_SRC)/vc_fixes
+CFLAGS:= -c
+AR:=LIB /OUT:
+O:=.obj
+A:=.lib
+X=.exe
+
+.SUFFIXES: .cpp $(X) .d $(O) $(A)
+
+
+# Making an object file
+MKOBJ=$(CC) $(CFLAGS) $< -Fo$@
+
+# Making an executable file
+MKEXE=$(CC) $^ -Fe$@
+
+# Making a DLL
+MKDLL=$(CC) -LD -Fe$@ $^
+
+# Making a static library
+MKLIB=$(AR)$@ $(filter %$(O), $^)
+
+# Making a dependency file
+define MKDEP
+	echo "$@\\"  > $@ 
+	echo "\$$(ARG_BUILD)\\\$$(COMPILER)\\\$$(ARG_PACKAGE)\\$(@F:.d=.o)\\" >> $@ 
+	echo "\$$(ARG_BUILD)\\\$$(COMPILER)\\\$$(ARG_PACKAGE)\\$(@F:.d=.obj)\\" >> $@ 
+	g++ -MM -I $(ARG_SRC)/include $(filter %.cpp, $^) >> $@
+endef

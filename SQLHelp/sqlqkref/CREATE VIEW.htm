@@ -1,0 +1,43 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE VIEW</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE VIEW">
+    <param name="Keyword" value="VIEW">
+</OBJECT>
+<H3>CREATE VIEW<HR SIZE="3"></H3>
+<P>
+ Use this command to define a view, a logical table based on one or
+ more tables or views.
+</P>
+<P>
+ 
+ Use CREATE VIEW to create an object view or a relational view that
+ supports LOB and object datatypes (object types, REFs, nested table,
+ or VARRAY types) on top of the existing view mechanism. An object
+ view is a view with an object identifier that is explicitly defined
+ to hold object instances of a particular type.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ CREATE [OR REPLACE] VIEW [FORCE | NO FORCE] VIEW [schema.]view
+   [ [(alias [alias] ...)]
+   | OF [schema.]type_name WITH OBJECT OID [DEFAULT | 
+   (attribute [, attribute] ...) ] ]
+ AS subquery
+   [WITH [ READ ONLY | CHECK OPTION [CONSTRAINT constraint] ] ]
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER VIEW.htm">ALTER VIEW</A>
+, <A HREF="DROP VIEW.htm">DROP VIEW</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

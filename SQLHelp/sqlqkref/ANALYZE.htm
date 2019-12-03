@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+<TITLE>ANALYZE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ANALYZE">
+</OBJECT>
+<H3>ANALYZE<HR SIZE="3"></H3>
+<P>
+ Use this command to perform one of the following functions on an
+ index or index partition, table or table partition, index-only
+ table, or cluster:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+to collect statistics about the schema object used by the
+      optimizer and store them in the data dictionary
+<LI>
+to delete statistics about the schema object from the data
+      dictionary
+<LI>
+to validate the structure of the schema object
+<LI>
+to identify migrated and chained rows of the table or cluster
+<LI>
+to collect statistics on scalar object attributes
+<LI>
+to validate and update object references (REFs)
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ANALYZE {INDEX | TABLE | CLUSTER}
+         [schema.]{index [PARTITION (partition_name)]
+                   | table [PARTITION (partition_name)]
+                   | cluster}
+   { COMPUTE STATISTICS [FOR for_clause]
+   | ESTIMATE STATISTICS [FOR for_clause]
+                         [SAMPLE integer {ROWS | PERCENT} ]
+   | DELETE STATISTICS
+   | VALIDATE REF UPDATE
+   | VALIDATE STRUCTURE [CASCADE]
+   | LIST CHAINED ROWS [INTO [schema.]table] }
+ 
+ for_clause
+   [ FOR TABLE
+   | FOR ALL [INDEXED] COLUMNS [SIZE integer]
+   | FOR COLUMNS [SIZE integer] column | attribute [SIZE integer]
+                             [column | attribute [SIZE integer] ] ...
+   | FOR ALL [LOCAL] INDEXES]
+ 
+</PRE>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

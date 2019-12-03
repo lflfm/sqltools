@@ -1,0 +1,176 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER TABLE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER TABLE">
+    <param name="Keyword" value="TABLE">
+</OBJECT>
+<H3>ALTER TABLE<HR SIZE="3"></H3>
+<P>
+ Use this command to alter the definition of a table in one of the
+ following ways:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+to add a column
+<LI>
+to add an integrity constraint
+<LI>
+to redefine a column (datatype, size, default value)
+<LI>
+to modify storage characteristics or other parameters
+<LI>
+to modify the real storage attributes of a non-partitioned
+      table or the default attributes of a partitioned table
+<LI>
+to enable, disable, or drop an integrity constraint or trigger
+<LI>
+to explicitly allocate an extent
+<LI>
+to explicitly deallocate the unused space of a table
+<LI>
+to allow or disallow writing to a table
+<LI>
+to modify the degree of parallelism for a table
+<LI>
+to modify the LOGGING/NOLOGGING attributes
+<LI>
+add, modify, split, move, drop, or truncate table partitions
+<LI>
+rename a table or a table partition
+<LI>
+add or modify index-only table characteristics
+<LI>
+add or modify LOB columns
+<LI>
+add or modify object type, nested table type, or VARRAY type
+      column to a table
+<LI>
+add integrity constraints to object type columns
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ALTER TABLE [schema.]table
+   {ADD ( {column datatype [DEFAULT expr] [WITH ROWID]
+          [SCOPE IS [schema.]scope_table_name]
+          [column_constraint] ...}
+        | table_constraint | REF (ref_column_name) WITH ROWID
+        | SCOPE FOR (ref_column_name) IS [schema.]
+          scope_table_name ...) }
+   | MODIFY ( [column [datatype] [DEFAULT expr] 
+              [column_constraint] ...] ...)
+   | [physical_attributes_clause]
+   | {LOB_storage_clause [, LOB_storage_clause...]}
+   | {MODIFY_LOB_storage_clause [, MODIFY_LOB_storage_clause]}
+   | {NESTED_TABLE_storage_clause [, NESTED_TABLE_storage_clause...]}
+   | DROP <A HREF="DROP clause.htm">drop_clause</A>
+   | ALLOCATE EXTENT [ ( {SIZE integer [K | M]
+                         | DATAFILE 'filename'
+                         | INSTANCE integer} ...) ]
+   | DEALLOCATE UNUSED [KEEP integer [K | M] ] ...
+   [ { [ENABLE {enable_clause | TABLE LOCK}
+       | DISABLE {disable_clause | TABLE LOCK} ] ...
+     | [PARALLEL <A HREF="PARALLEL clause.htm">parallel_clause</A>] {NOCACHE | CACHE} }  ]
+   | RENAME TO new_table_name
+   | OVERFLOW {physical_attributes_clause
+              | INCLUDING column_name
+              | ALLOCATE EXTENT
+                [ ( {SIZE integer [K | M]
+                    | DATAFILE filename
+                    | INSTANCE integer} ...) ]
+              | DEALLOCATE UNUSED [KEEP integer [K | M] ] } ...
+   | ADD OVERFLOW [ {physical_attributes_clause
+                    | PCTTHRESHOLD integer
+                    | INCLUDING column_name
+                    | TABLESPACE tablespace} ...]
+   | MODIFY PARTITION partition_name { physical_attributes_clause
+                                     | [LOGGING | NOLOGGING] } ...
+   | MOVE PARTITION partition_name { physical_attributes_clause
+                                   | [LOGGING | NOLOGGING]
+                                   | TABLESPACE tablespace
+                                   | PARALLEL <A HREF="PARALLEL clause.htm">parallel_clause</A>} ...
+   | ADD PARTITION [new_partition_name]
+     VALUES LESS THAN (value_list) { physical_attributes_clause
+                                   | [LOGGING | NOLOGGING]
+                                   | TABLESPACE tablespace } ...
+   | DROP PARTITION partition_name
+   | TRUNCATE PARTITION partition_name [DROP STORAGE | REUSE STORAGE]
+   | SPLIT PARTITION partition_name_old AT (value_list)
+     [INTO ( PARTITION [split_partition_1]
+                       [physical_attributes_clause
+                       | [LOGGING | NOLOGGING]
+                       | TABLESPACE tablespace ] ...
+           , PARTITION [split_partition2]
+                       [physical_attributes_clause
+                       | [LOGGING | NOLOGGING]
+                       | TABLESPACE tablespace ] ...) ]
+           [ PARALLEL <A HREF="PARALLEL clause.htm">parallel_clause</A> ] ...
+   | EXCHANGE PARTITION partition_name
+     WITH TABLE non_partitioned_table_name
+     [{INCLUDING | EXCLUDING} INDEXES]
+     [{WITH | WITHOUT} VALIDATION]
+   | MODIFY PARTITION UNUSABLE LOCAL INDEXES
+   | MODIFY PARTITION REBUILD UNUSABLE LOCAL INDEXES }
+ 
+ physical_attributes_clause
+   [ PCTFREE integer
+   | PCTUSED integer
+   | INITRANS integer
+   | MAXTRANS integer
+   | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A> ]
+ 
+ LOB_storage_clause
+   LOB (lob_item [, lob_item ...]) STORE AS
+       [lob_segname]
+       [( TABLESPACE tablespace
+        | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+        | CHUNK integer
+        | PCTVERSION integer
+        | CACHE
+        | NOCACHE LOGGING | NOCACHE NOLOGGING
+        | INDEX [lob_index_name]
+          [( TABLESPACE tablespace
+          |  STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+          |  INITRANS integer
+          |  MAXTRANS integer ) ] )]
+ 
+ MODIFY_LOB_storage_clause
+   MODIFY LOB (lob_item)
+     ( STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+     | PCTVERSION integer
+     | CACHE
+     | NOCACHE LOGGING | NOCACHE NOLOGGING
+     | ALLOCATE EXTENT [ ( {SIZE integer [K | M]
+                           | DATAFILE 'filename'
+                           | INSTANCE integer} ) ]
+     | DEALLOCATE UNUSED [KEEP integer [K | M] ]
+     | INDEX [lob_index_name]
+       [ ( STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+         | INITRANS integer
+         | MAXTRANS integer
+         | ALLOCATE EXTENT [ ( {SIZE integer [K | M]
+                               | DATAFILE 'filename'
+                               | INSTANCE integer} ) ]
+         | DEALLOCATE UNUSED [KEEP integer [K | M] ] ) ]
+ 
+ NESTED_TABLE_storage_clause
+   NESTED TABLE nested_item STORE AS storage_table
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE TABLE.htm">CREATE TABLE</A>
+, <A HREF="DROP TABLE.htm">DROP TABLE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

@@ -1,0 +1,82 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER SYSTEM</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER SYSTEM">
+    <param name="Keyword" value="SYSTEM">
+</OBJECT>
+<H3>ALTER SYSTEM<HR SIZE="3"></H3>
+<P>
+ Use this command to dynamically alter your Oracle instance in one of
+ the following ways:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+to restrict log ons to Oracle to only those users with
+      RESTRICTED SESSION system privilege
+<LI>
+to clear all data from the shared pool in the System Global
+      Area (SGA)
+<LI>
+to explicitly perform a checkpoint
+<LI>
+to verify access to data files
+<LI>
+to enable or disable resource limits
+<LI>
+to enable or disable global name resolution
+<LI>
+to manage shared server processes or dispatcher processes for
+      the multi-threaded server architecture
+<LI>
+to dynamically change or disable limits or thresholds for 
+      concurrent usage licensing and named user licensing
+<LI>
+to explicitly switch redo log file groups
+<LI>
+to enable distributed recovery in a single-process environment
+<LI>
+to disable distributed recovery
+<LI>
+to manually archive redo log file groups or to enable or
+      disable automatic archiving
+<LI>
+to terminate a session
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ALTER SYSTEM
+   { {ENABLE | DISABLE} RESTRICTED SESSION
+   | FLUSH SHARED_POOL
+   | {CHECKPOINT | CHECK DATAFILES} [GLOBAL | LOCAL]
+   | SET { {RESOURCE_LIMIT | GLOBAL_NAMES} = {TRUE | FALSE}
+           | SCAN_INSTANCES = integer
+           | CACHE_INSTANCES = integer
+           | MTS_SERVERS = integer
+           | MTS_DISPATCHERS = 'protocol, integer'
+           | LICENSE_MAX_SESSIONS = integer
+           | LICENSE_SESSIONS_WARNING = integer
+           | LICENSE_MAX_USERS = integer
+           | REMOTE_DEPENDENCIES_MODE = {TIMESTAMP | SIGNATURE} } ...
+   | SWITCH LOGFILE
+   | {ENABLE | DISABLE} DISTRIBUTED RECOVERY
+   | ARCHIVE LOG archive_log_clause
+   | KILL SESSION 'integer1, integer2'}
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER SESSION.htm">ALTER SESSION</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

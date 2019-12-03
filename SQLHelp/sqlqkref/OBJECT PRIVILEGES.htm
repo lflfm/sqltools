@@ -1,0 +1,220 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>OBJECT PRIVILEGES </title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="ALL [PRIVILEGES]">
+  <param name="Keyword" value="ALTER">
+  <param name="Keyword" value="DELETE">
+  <param name="Keyword" value="INDEX">
+  <param name="Keyword" value="INSERT">
+  <param name="Keyword" value="REFERENCES">
+  <param name="Keyword" value="SELECT">
+  <param name="Keyword" value="UPDATE">
+  <param name="Keyword" value="EXECUTE">
+</object>
+</p>
+
+<h3>OBJECT PRIVILEGES </h3>
+
+<hr SIZE="3">
+
+<p>These privileges apply to specific objects.</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">Object Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ...</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ALL [PRIVILEGES]</td>
+    <td valign="top"><p class="tab_desc">Apply all of the object privileges that can be
+    applied</td>
+  </tr>
+</table>
+
+<h4>TABLE PRIVILEGES</h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">Object Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ...</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ALTER</td>
+    <td valign="top"><p class="tab_desc">Change the table definition with the ALTER TABLE
+    statement</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DELETE</td>
+    <td valign="top"><p class="tab_desc">Remove rows from the table with the DELETE statement <br>
+    <strong>Note</strong>: You must grant the SELECT privilege on the table along with the
+    DELETE privilege </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">INDEX </td>
+    <td valign="top"><p class="tab_desc">Create an index on the table with the CREATE INDEX
+    statement </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">INSERT </td>
+    <td valign="top"><p class="tab_desc">Add new rows to the table with the INSERT statement </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">REFERENCES </td>
+    <td valign="top"><p class="tab_desc">Create a constraint that refers to the table. You
+    cannot grant this privilege to a role </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">SELECT </td>
+    <td valign="top"><p class="tab_desc">Query the table with the SELECT statement </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">UPDATE </td>
+    <td valign="top"><p class="tab_desc">Change data in the table with the UPDATE statement <br>
+    <strong>Note</strong>: You must grant the SELECT privilege on the table along with the
+    UPDATE privilege. </td>
+  </tr>
+</table>
+
+<h4>VIEW PRIVILEGES</h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">Object Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ...</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">DELETE </td>
+    <td valign="top"><p class="tab_desc">Remove rows from the view with the DELETE statement </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">INSERT </td>
+    <td valign="top"><p class="tab_desc">Add new rows to the view with the INSERT statement </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">SELECT </td>
+    <td valign="top"><p class="tab_desc">Query the view with the SELECT statement </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">UPDATE </td>
+    <td valign="top"><p class="tab_desc">Change data in the view with the UPDATE statement </td>
+  </tr>
+</table>
+
+<h4>SEQUENCE PRIVILEGES</h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">Object Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ...</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">ALTER </td>
+    <td valign="top"><p class="tab_desc">Change the sequence definition with the ALTER
+    SEQUENCE statement </td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">SELECT </td>
+    <td valign="top"><p class="tab_desc">Examine and increment values of the sequence with the
+    CURRVAL and NEXTVAL pseudocolumns </td>
+  </tr>
+</table>
+
+<h4>PROCEDURE, FUNCTION, AND PACKAGE PRIVILEGE</h4>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="155" bgColor="#99ccff"><p class="tab_header">Object Privilege</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Allows Grantee To ...</td>
+  </tr>
+  <tr>
+    <td valign="top" width="155"><p class="tab_func">EXECUTE </td>
+    <td valign="top"><p class="tab_desc">Compile the procedure or function or execute it
+    directly, or access any program object declared in the specification of a package </td>
+  </tr>
+</table>
+
+<p>&nbsp;</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="100" bgColor="#99ccff"><p class="tab_header">Object Privilege</td>
+    <td valign="top" bgColor="#99ccff" width="100" align="center"><p class="tab_header">Table</td>
+    <td valign="top" bgColor="#99ccff" width="100" align="center"><p class="tab_header">View</td>
+    <td valign="top" bgColor="#99ccff" width="100" align="center"><p class="tab_header">Sequence</td>
+    <td valign="top" bgColor="#99ccff" width="100" align="center"><p class="tab_header">Procedures,
+    Functions, Packages</td>
+  </tr>
+  <tr>
+    <td valign="top" width="100"><p class="tab_func">ALTER</td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top" width="100"><p class="tab_func">DELETE</td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+  </tr>
+  <tr>
+    <td valign="top" width="100"><p class="tab_func">EXECUTE</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+  </tr>
+  <tr>
+    <td valign="top" width="100"><p class="tab_func">INDEX</td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top" width="100"><p class="tab_func">INSERT</td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top" width="100"><p class="tab_func">REFERENCES</td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top" width="100"><p class="tab_func">SELECT</td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top" width="100"><p class="tab_func">UPDATE</td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func"><font face="Wingdings"><strong>ü</strong></font></td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+    <td valign="top" width="100" align="center"><p class="tab_func">&nbsp;</td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

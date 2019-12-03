@@ -1,0 +1,71 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER TABLESPACE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER TABLESPACE">
+    <param name="Keyword" value="TABLESPACE">
+</OBJECT>
+<H3>ALTER TABLESPACE<HR SIZE="3"></H3>
+<P>
+ Use this command to alter an existing tablespace in one of the
+ following ways:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+to add datafile(s)
+<LI>
+to rename datafiles
+<LI>
+to change default storage parameters
+<LI>
+to take the tablespace online or offline
+<LI>
+to begin or end a backup
+<LI>
+to allow or disallow writing to a tablespace
+<LI>
+to change the default logging attribute of the tablespace
+<LI>
+to change the minimum tablespace extent length
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ALTER TABLESPACE tablespace [LOGGING | NOLOGGING]
+   {ADD DATAFILE 'filespec'
+     [AUTOEXTEND {OFF | ON [NEXT integer [K | M] ]
+                           [MAXSIZE { UNLIMITED
+                                    | integer [K | M] } ] } ]
+   [, 'filespec'
+     [AUTOEXTEND {OFF | ON [NEXT integer [K | M] ]
+                           [MAXSIZE {UNLIMITED
+                                    | integer [K | M] } ] } ] ] ...
+   | RENAME DATAFILE 'filename' [, 'filename'] ...
+     TO 'filename' ['filename'] ...
+   | COALESCE
+   | DEFAULT STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+   | MINIMUM EXTENT integer [K | M]
+   | ONLINE
+   | OFFLINE [NORMAL | TEMPORARY | IMMEDIATE]
+   | {BEGIN | END} BACKUP
+   | READ {ONLY | WRITE}
+   | PERMANENT
+   | TEMPORARY}
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE TABLESPACE.htm">CREATE TABLESPACE</A>
+, <A HREF="DROP TABLESPACE.htm">DROP TABLESPACE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

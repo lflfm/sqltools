@@ -1,0 +1,1 @@
+SELECT 1, subscribers, 2 FROM aq$_queues;

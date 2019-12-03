@@ -1,0 +1,28 @@
+<HTML>
+<HEAD>
+<TITLE>FETCH (Embedded SQL)</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="FETCH (Embedded SQL)">
+</OBJECT>
+<H3>FETCH (Embedded SQL)<HR SIZE="3"></H3>
+<P>
+ Use this command to retrieve one or more rows returned by a query,
+ assigning the select list values to host variables.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ EXEC SQL [FOR :host_integer] FETCH cursor
+   { INTO :host_variable [ [INDICATOR] :indicator_variable]
+       [, :host_variable [ [INDICATOR] :indicator_variable] ] ...
+   | USING DESCRIPTOR descriptor}
+ 
+</PRE>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

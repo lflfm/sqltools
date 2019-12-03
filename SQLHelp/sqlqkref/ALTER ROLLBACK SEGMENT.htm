@@ -1,0 +1,45 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER ROLLBACK SEGMENT</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER ROLLBACK SEGMENT">
+    <param name="Keyword" value="ROLLBACK SEGMENT">
+</OBJECT>
+<H3>ALTER ROLLBACK SEGMENT<HR SIZE="3"></H3>
+<P>
+ Use this command to alter a rollback segment in one of these ways:
+
+</P>
+<UL>
+<LI>
+by bringing it online
+<LI>
+by taking it offline
+<LI>
+by changing its storage characteristics
+<LI>
+by shrinking it to an optimal or given size
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ ALTER ROLLBACK SEGMENT rollback_segment
+   { ONLINE
+   | OFFLINE
+   | STORAGE <A HREF="STORAGE clause.htm">storage_clause</A>
+   | SHRINK [TO integer [K | M] ] }
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE ROLLBACK SEGMENT.htm">CREATE ROLLBACK SEGMENT</A>
+, <A HREF="DROP ROLLBACK SEGMENT.htm">DROP ROLLBACK SEGMENT</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

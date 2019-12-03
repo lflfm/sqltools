@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE PROCEDURE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE PROCEDURE">
+    <param name="Keyword" value="PROCEDURE">
+</OBJECT>
+<H3>CREATE PROCEDURE<HR SIZE="3"></H3>
+<P>
+ Use this command to create a stand-alone stored procedure or to
+ register an external procedure. A procedure is a group of PL/SQL
+ statements that you can call by name.
+</P>
+<P>
+ 
+ An external procedure is a third generation language (3GL) routine
+ stored in a shared library which can be called from SQL or PL/SQL.
+ To call an external procedure, you must provide information in your
+ PL/SQL function about where to find the external procedure, how to
+ call it, and what to pass to it.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ CREATE [OR REPLACE] PROCEDURE [schema.]procedure
+        [ (argument [IN | OUT | IN OUT] datatype
+        [, argument [IN | OUT | IN OUT] datatype] ...) ]
+        {IS|AS} {pl/sql_subprogram_body | external_body}
+ 
+ external_body
+   EXTERNAL LIBRARY [schema.]library_name
+   [NAME external_proc_name]
+   [LANGUAGE language_name]
+   [CALLING STANDARD [C | PASCAL] ]
+   PARAMETERS (external_parameter_list) [WITH CONTEXT]
+ 
+ external_parameter_list
+   { { parameter_name [property]
+     | RETURN property }
+     [ BY REF]
+     [ external_datatype]
+     | CONTEXT }
+   [,{ parameter_name [property]
+     | RETURN property }
+     [BY REF]
+     [external_datatype] ] ...
+ 
+ property
+   INDICATOR | LENGTH | MAXLEN | CHARSETID | CHARSETFORM
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER PROCEDURE.htm">ALTER PROCEDURE</A>
+, <A HREF="DROP PROCEDURE.htm">DROP PROCEDURE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

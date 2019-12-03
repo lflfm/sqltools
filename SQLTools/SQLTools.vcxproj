@@ -1,0 +1,1231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Beta|Win32">
+      <Configuration>Release-Beta</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <RootNamespace>SQLTools</RootNamespace>
+    <SccProjectName />
+    <SccAuxPath />
+    <SccLocalPath />
+    <SccProvider />
+    <Keyword>MFCProj</Keyword>
+    <ProjectGuid>{98654122-FEFE-E2D0-03D6-C4F7A43D5F68}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\_output_\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\_output_\Debug\objs\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\_output_\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\_output_\Release\objs\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">.\..\_output_\Release-Beta\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">.\..\_output_\Release-Beta\objs\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">false</LinkIncremental>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\oracle\OCI\include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\oracle\OCI\lib\MSVC;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\oracle\OCI\include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\oracle\OCI\lib\MSVC;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">..\..\oracle\OCI\include;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">..\..\oracle\OCI\include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">..\..\oracle\OCI\lib\MSVC;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">..\..\oracle\OCI\lib\MSVC;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;..;..\OpenEditor;..\3DPARTY;..\3DPARTY\ARG\include;..\3DPARTY\boost_1_32_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_AFXDLL;BUILD_TYPE=1;TIXML_USE_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>.\..\_output_\Debug\objs/SQLTools.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\..\_output_\Debug\objs/</AssemblerListingLocation>
+      <ObjectFileName>.\..\_output_\Debug\objs/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\_output_\Debug\objs/</ProgramDataBaseFileName>
+      <WarningLevel>Level4</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zm200 /EHa  /wd4996 /wd4812 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>Rpcrt4.lib;version.lib;htmlhelp.lib;imagehlp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\_output_\Debug/SQLTools.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AddModuleNamesToAssembly>%(AddModuleNamesToAssembly)</AddModuleNamesToAssembly>
+      <DelayLoadDLLs>OLEACC.DLL;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\..\_output_\Debug/SQLTools.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>
+      </ImportLibrary>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\..\_output_\Debug/SQLTools.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NOMANIFEST;_DEBUG;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>.;..;../common;../3dParty/PropTree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>.;..;..\OpenEditor;..\3DPARTY;..\3DPARTY\ARG\include;..\3DPARTY\boost_1_32_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;BUILD_TYPE=3;TIXML_USE_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>.\..\_output_\Release\objs/SQLTools.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\..\_output_\Release\objs/</AssemblerListingLocation>
+      <ObjectFileName>.\..\_output_\Release\objs/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\_output_\Release\objs/</ProgramDataBaseFileName>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/MACHINE:I386 /OPT:REF,ICF=3 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>Rpcrt4.lib;version.lib;htmlhelp.lib;imagehlp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\_output_\Release/SQLTools.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <DelayLoadDLLs>OLEACC.DLL;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\..\_output_\Release/SQLTools.pdb</ProgramDatabaseFile>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+      <SubSystem>Windows</SubSystem>
+      <SetChecksum>true</SetChecksum>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\..\_output_\Release/SQLTools.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NOMANIFEST;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>.;..;../common;../3dParty/PropTree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/EHa /Ob0  %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MinSpace</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <AdditionalIncludeDirectories>.;..;..\OpenEditor;..\3DPARTY;..\3DPARTY\ARG\include;..\3DPARTY\boost_1_32_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;BUILD_TYPE=2;TIXML_USE_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/MACHINE:I386 /OPT:REF,ICF=3 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>nafxcw.lib;libcpmt.lib;libcmt.lib;kernel32.lib;user32.lib;gdi32.lib;comdlg32.lib;winspool.lib;advapi32.lib;shell32.lib;comctl32.lib;uuid.lib;OLDNAMES.lib;oledlg.lib;ole32.lib;olepro32.lib;oleaut32.lib;urlmon.lib;wininet.lib;imagehlp.lib;version.lib;htmlhelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <DelayLoadDLLs>OLEACC.DLL;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+      <SubSystem>Windows</SubSystem>
+      <SetChecksum>true</SetChecksum>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\..\_output_\Release/SQLTools.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>.;..;../common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\3dParty\PropTree\PropTree.rh" />
+    <None Include="hlp\autosave.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\datagrid.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\init_setup.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\launcher.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\objects_list.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\object_viewer.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\oracle_instant_client.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\snapshots_and_workspaces.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\whatsnew.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\whatsnew18.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\working_with_svn.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="res\as_list_btn.ico" />
+    <None Include="res\as_report_btn.ico" />
+    <None Include="res\bitmap2.bmp" />
+    <None Include="res\BookletToolbar.bmp" />
+    <None Include="res\connect.bmp" />
+    <None Include="res\db_obj_list.bmp" />
+    <None Include="res\db_obj_state_list.bmp" />
+    <None Include="res\db_obj_state_list_v2.bmp" />
+    <None Include="res\FileToolbar.bmp" />
+    <None Include="res\filter.ico" />
+    <None Include="res\find_files_list.bmp" />
+    <None Include="res\GridPopupToolbar.bmp" />
+    <None Include="res\Horzsize.cur" />
+    <None Include="res\Invalid_btn.ico" />
+    <None Include="res\pane_list.bmp" />
+    <None Include="res\properties.ico" />
+    <None Include="res\Question.ico" />
+    <None Include="res\refresh.ico" />
+    <None Include="res\settings.ico" />
+    <None Include="res\sql_gen_list.bmp" />
+    <None Include="res\SQLDoc.ico" />
+    <None Include="res\SqlToolbar.bmp" />
+    <None Include="res\SQLTools256s.bmp" />
+    <None Include="res\SQLToolsMainFrame.ico" />
+    <None Include="res\toolbar1.bmp" />
+    <None Include="res\valid_btn.ico" />
+    <None Include="res\Vertsize.cur" />
+    <None Include="hlp\sqltools.hhc" />
+    <None Include="hlp\sqltools.hhk" />
+    <CustomBuild Include="hlp\sqltools.hhp">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Making help file...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">start /wait hhc "hlp\sqltools.hhp"
+if not exist "hlp\sqltools.chm" goto :HelpError
+copy "hlp\sqltools.chm" "$(OutDir)sqltools.chm"
+goto :HelpDone
+:HelpError
+echo hlp\sqltools.hhp(1) : error:Problem encountered creating help file
+echo.
+:HelpDone
+echo.
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">hlp\HTMLDefines.h;hlp\afx_hidd_color.htm;hlp\afx_hidd_fileopen.htm;hlp\afx_hidd_filesave.htm;hlp\afx_hidd_find.htm;hlp\afx_hidd_newtypedlg.htm;hlp\afx_hidd_print.htm;hlp\afx_hidd_printdlg.htm;hlp\afx_hidd_printsetup.htm;hlp\afx_hidd_replace.htm;hlp\afx_hidp_default.htm;hlp\afx_hidw_dockbar_top.htm;hlp\afx_hidw_preview_bar.htm;hlp\afx_hidw_status_bar.htm;hlp\afx_hidw_toolbar.htm;hlp\command_line.htm;hlp\hid_app_about.htm;hlp\hid_app_exit.htm;hlp\hid_context_help.htm;hlp\hid_edit_clear.htm;hlp\hid_edit_clear_all.htm;hlp\hid_edit_copy.htm;hlp\hid_edit_cut.htm;hlp\hid_edit_find.htm;hlp\hid_edit_paste.htm;hlp\hid_edit_redo.htm;hlp\hid_edit_repeat.htm;hlp\hid_edit_replace.htm;hlp\hid_edit_undo.htm;hlp\hid_file_close.htm;hlp\hid_file_mru_file1.htm;hlp\hid_file_new.htm;hlp\hid_file_open.htm;hlp\hid_file_page_setup.htm;hlp\hid_file_print.htm;hlp\hid_file_print_preview.htm;hlp\hid_file_print_setup.htm;hlp\hid_file_save.htm;hlp\hid_file_save_as.htm;hlp\hid_file_send_mail.htm;hlp\hid_help_index.htm;hlp\hid_help_using.htm;hlp\hid_ht_caption.htm;hlp\hid_ht_nowhere.htm;hlp\hid_next_pane.htm;hlp\hid_prev_pane.htm;hlp\hid_sc_close.htm;hlp\hid_sc_maximize.htm;hlp\hid_sc_minimize.htm;hlp\hid_sc_move.htm;hlp\hid_sc_nextwindow.htm;hlp\hid_sc_prevwindow.htm;hlp\hid_sc_restore.htm;hlp\hid_sc_size.htm;hlp\hid_sc_tasklist.htm;hlp\hid_view_ruler.htm;hlp\hid_view_status_bar.htm;hlp\hid_view_toolbar.htm;hlp\hid_window_all.htm;hlp\hid_window_arrange.htm;hlp\hid_window_cascade.htm;hlp\hid_window_new.htm;hlp\hid_window_split.htm;hlp\hid_window_tile.htm;hlp\hid_window_tile_horz.htm;hlp\hid_window_tile_vert.htm;hlp\hidd_connect_dialog.htm;hlp\hidd_connect_dialog_settings.htm;hlp\hidr_doc1type.htm;hlp\license.htm;hlp\main_index.htm;hlp\menu_edit.htm;hlp\menu_file.htm;hlp\menu_help.htm;hlp\menu_view.htm;hlp\menu_window.htm;hlp\scrollbars.htm;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)$(ProjectName).chm;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">Making help file...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">start /wait hhc "hlp\sqltools.hhp"
+if not exist "hlp\sqltools.chm" goto :HelpError
+copy "hlp\sqltools.chm" "$(OutDir)sqltools.chm"
+goto :HelpDone
+:HelpError
+echo hlp\sqltools.hhp(1) : error:Problem encountered creating help file
+echo.
+:HelpDone
+echo.
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">hlp\HTMLDefines.h;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">$(OutDir)$(ProjectName).chm;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Making help file...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">start /wait hhc "hlp\sqltools.hhp"
+if not exist "hlp\sqltools.chm" goto :HelpError
+copy "hlp\sqltools.chm" "$(OutDir)sqltools.chm"
+goto :HelpDone
+:HelpError
+echo hlp\sqltools.hhp(1) : error:Problem encountered creating help file
+echo.
+:HelpDone
+echo.
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">hlp\HTMLDefines.h;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)$(ProjectName).chm;%(Outputs)</Outputs>
+    </CustomBuild>
+    <None Include="hlp\_sqltools.css" />
+    <None Include="hlp\about.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\command_line.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\connect_dialog.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\connect_dialog_settings.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\license.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\menu_edit.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\menu_file.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\menu_help.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\menu_search.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\menu_text.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\menu_view.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\menu_window.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\not_implemented.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\sqleditor.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="..\OpenEditor\OEPlsSqlSyntaxImpl.inl" />
+    <None Include="hlp\SQLTools.hpj" />
+    <None Include="SQLTools.reg" />
+    <None Include="Settings\custom.keymap" />
+    <None Include="Settings\default(ms).keymap" />
+    <None Include="Settings\default.keymap" />
+    <None Include="Settings\languages.xml" />
+    <None Include="Settings\schemaddl.xml" />
+    <None Include="Settings\settings.xml" />
+    <None Include="Settings\sqltools.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Settings\templates.xml" />
+    <None Include="History.txt" />
+    <None Include="ReadMe.txt" />
+    <None Include="Settings\sesstat.dat" />
+    <None Include="ToDoNotes.txt" />
+    <None Include="VersionInfo.rh" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\3dParty\PropTree\PropTree.h" />
+    <ClInclude Include="..\3dParty\PropTree\PropTreeInfo.h" />
+    <ClInclude Include="..\3dParty\PropTree\PropTreeItem.h" />
+    <ClInclude Include="..\3dParty\PropTree\PropTreeItemColor.h" />
+    <ClInclude Include="..\3dParty\PropTree\PropTreeItemCombo.h" />
+    <ClInclude Include="..\3dParty\PropTree\PropTreeItemDateTime.h" />
+    <ClInclude Include="..\3dParty\PropTree\PropTreeItemEdit.h" />
+    <ClInclude Include="..\3dParty\PropTree\PropTreeItemStatic.h" />
+    <ClInclude Include="..\3dParty\PropTree\PropTreeList.h" />
+    <ClInclude Include="..\Common\clock64.h" />
+    <ClInclude Include="..\Common\FilenameTemplate.h" />
+    <ClInclude Include="..\Common\RecentFilesListCtrl.h" />
+    <ClInclude Include="..\OpenEditor\FavoritesList.h" />
+    <ClInclude Include="..\OpenEditor\OEWorkspaceManager.h" />
+    <ClInclude Include="..\OpenEditor\OEWorkspacePage.h" />
+    <ClInclude Include="..\OpenEditor\RecentFileList.h" />
+    <ClInclude Include="..\ThreadCommunication\MessageOnlyWindow.h" />
+    <ClInclude Include="..\ThreadCommunication\Singleton.h" />
+    <ClInclude Include="ConnectionTasks.h" />
+    <ClInclude Include="DbBrowser\DBBrowserInvalidObjectList.h" />
+    <ClInclude Include="DbBrowser\FindObjectsTask.h" />
+    <ClInclude Include="FetchWaitDlg.h" />
+    <ClInclude Include="hlp\HTMLDefines.h" />
+    <ClInclude Include="..\3dParty\base64.h" />
+    <ClInclude Include="..\3dParty\MemDC.h" />
+    <ClInclude Include="..\3dParty\ShellContextMenu.h" />
+    <ClInclude Include="..\3dParty\XPTheme.h" />
+    <ClInclude Include="..\3dparty\ModulVer\ModulVer.h" />
+    <ClInclude Include="..\3dparty\ARG\include\arg_shared.h" />
+    <ClInclude Include="..\3dParty\boost_1_32_0\libs\regex\src\primary_transform.hpp" />
+    <ClInclude Include="..\3dparty\CGFileType\cgfiltyp.h" />
+    <ClInclude Include="..\3dparty\DirTreeCtrl\DirTreeCtrl.h" />
+    <ClInclude Include="..\3dparty\DirTreeCtrl\SortStringArray.h" />
+    <ClInclude Include="..\3dparty\FileWatch\FileWatch.h" />
+    <ClInclude Include="..\3dparty\SizeCBar\scbarcf.h" />
+    <ClInclude Include="..\3dparty\SizeCBar\scbarg.h" />
+    <ClInclude Include="..\3dparty\SizeCBar\sizecbar.h" />
+    <ClInclude Include="..\3dparty\WinException\WinException.h" />
+    <ClInclude Include="..\3dParty\CTreePropSheet\PropPageFrame.h" />
+    <ClInclude Include="..\3dParty\CTreePropSheet\PropPageFrameDefault.h" />
+    <ClInclude Include="..\3dParty\CTreePropSheet\TreePropSheet.h" />
+    <ClInclude Include="..\3dParty\ColourPickerXP\ColourPickerXP.h" />
+    <ClInclude Include="..\3dParty\tinyxml\tinystr.h" />
+    <ClInclude Include="..\3dParty\tinyxml\tinyxml.h" />
+    <ClInclude Include="..\3dParty\Cryptography\aes.h" />
+    <ClInclude Include="..\3dParty\Cryptography\aesopt.h" />
+    <ClInclude Include="..\3dParty\Cryptography\fileenc.h" />
+    <ClInclude Include="..\3dParty\Cryptography\hmac.h" />
+    <ClInclude Include="..\3dParty\Cryptography\prng.h" />
+    <ClInclude Include="..\3dParty\Cryptography\pwd2key.h" />
+    <ClInclude Include="..\3dParty\Cryptography\sha1.h" />
+    <ClInclude Include="..\3dParty\TreeCtrlEx\TreeCtrlEx.h" />
+    <ClInclude Include="..\3dParty\CppToolTip\CeXDib.h" />
+    <ClInclude Include="..\3dParty\CppToolTip\PPDrawManager.h" />
+    <ClInclude Include="..\3dParty\CppToolTip\PPHtmlDrawer.h" />
+    <ClInclude Include="..\3dParty\CppToolTip\PPTooltip.h" />
+    <ClInclude Include="..\Common\AppGlobal.h" />
+    <ClInclude Include="..\Common\AppUtilities.h" />
+    <ClInclude Include="..\Common\ConfigFilesLocator.h" />
+    <ClInclude Include="..\Common\CustomShellContextMenu.h" />
+    <ClInclude Include="..\Common\DirSelectDlg.h" />
+    <ClInclude Include="..\Common\DlgDataExt.h" />
+    <ClInclude Include="..\Common\EditWithSelPos.h" />
+    <ClInclude Include="..\Common\ErrorDlg.h" />
+    <ClInclude Include="..\Common\ExceptionHelper.h" />
+    <ClInclude Include="..\Common\FakeRClick.h" />
+    <ClInclude Include="..\Common\Fastmap.h" />
+    <ClInclude Include="..\Common\FilePanelWnd.h" />
+    <ClInclude Include="..\Common\FixedArray.h" />
+    <ClInclude Include="..\Common\FixedString.h" />
+    <ClInclude Include="..\Common\GlobalMutex.h" />
+    <ClInclude Include="..\Common\GUICommandDictionary.h" />
+    <ClInclude Include="..\Common\Handler.h" />
+    <ClInclude Include="..\Common\InputDlg.h" />
+    <ClInclude Include="..\Common\ListCtrlDataProvider.h" />
+    <ClInclude Include="..\Common\ManagedListCtrl.h" />
+    <ClInclude Include="..\Common\ManagedListCtrlFilterDlg.h" />
+    <ClInclude Include="..\Common\MemoryMappedFile.h" />
+    <ClInclude Include="..\Common\NVector.h" />
+    <ClInclude Include="..\Common\OETabCtrl.h" />
+    <ClInclude Include="..\Common\OsException.h" />
+    <ClInclude Include="..\Common\OsInfo.h" />
+    <ClInclude Include="..\Common\PlSqlParser.h" />
+    <ClInclude Include="..\Common\Properties.h" />
+    <ClInclude Include="..\Common\PropertySheetMem.h" />
+    <ClInclude Include="..\Common\QuickArray.h" />
+    <ClInclude Include="..\Common\RecArray.h" />
+    <ClInclude Include="..\Common\SEException.h" />
+    <ClInclude Include="..\Common\SimpleDragDataSource.h" />
+    <ClInclude Include="..\Common\StackTracer.h" />
+    <ClInclude Include="..\Common\StrHelpers.h" />
+    <ClInclude Include="..\Common\TempFilesManager.h" />
+    <ClInclude Include="..\Common\VisualAttributes.h" />
+    <ClInclude Include="..\Common\VisualAttributesPage.h" />
+    <ClInclude Include="..\Common\WorkbookBar.h" />
+    <ClInclude Include="..\Common\WorkbookMDIFrame.h" />
+    <ClInclude Include="..\OpenEditor\OEAutocompleteCtrl.h" />
+    <ClInclude Include="..\OpenEditor\OEBackupPage.h" />
+    <ClInclude Include="..\OpenEditor\OEBlockPage.h" />
+    <ClInclude Include="..\OpenEditor\OEClassPage.h" />
+    <ClInclude Include="..\OpenEditor\OECommonLanguageSupport.h" />
+    <ClInclude Include="..\OpenEditor\OEContext.h" />
+    <ClInclude Include="..\OpenEditor\OEDocManager.h" />
+    <ClInclude Include="..\OpenEditor\OEDocument.h" />
+    <ClInclude Include="..\OpenEditor\OEEditingPage.h" />
+    <ClInclude Include="..\OpenEditor\OEFileInfoDlg.h" />
+    <ClInclude Include="..\OpenEditor\OEFileManagerPage.h" />
+    <ClInclude Include="..\OpenEditor\OEFilePage.h" />
+    <ClInclude Include="..\OpenEditor\OEFindReplaceDlg.h" />
+    <ClInclude Include="..\OpenEditor\OEGeneralPage.h" />
+    <ClInclude Include="..\OpenEditor\OEGoToDialog.h" />
+    <ClInclude Include="..\OpenEditor\OEHelpers.h" />
+    <ClInclude Include="..\OpenEditor\OEHighlighter.h" />
+    <ClInclude Include="..\OpenEditor\OEInsertNumberDlg.h" />
+    <ClInclude Include="..\OpenEditor\OELanguage.h" />
+    <ClInclude Include="..\OpenEditor\OELanguageManager.h" />
+    <ClInclude Include="..\OpenEditor\OELanguageSupport.h" />
+    <ClInclude Include="..\OpenEditor\OELanguageXmlStreamer.h" />
+    <ClInclude Include="..\OpenEditor\OENewFileDlg.h" />
+    <ClInclude Include="..\OpenEditor\OEOverwriteFileDlg.h" />
+    <ClInclude Include="..\OpenEditor\OEPlsSqlParser.h" />
+    <ClInclude Include="..\OpenEditor\OEPlsSqlSupport.h" />
+    <ClInclude Include="..\OpenEditor\OEPlsSqlSyntax.h" />
+    <ClInclude Include="..\OpenEditor\OEPlsSqlSyntaxImpl.h" />
+    <ClInclude Include="..\OpenEditor\OEPlsSqlSyntaxImpl2.h" />
+    <ClInclude Include="..\OpenEditor\OEPrintPageSetup.h" />
+    <ClInclude Include="..\OpenEditor\OEPropPage.h" />
+    <ClInclude Include="..\OpenEditor\OESaveModifiedDlg.h" />
+    <ClInclude Include="..\OpenEditor\OESettings.h" />
+    <ClInclude Include="..\OpenEditor\OESettingsXmlStreamer.h" />
+    <ClInclude Include="..\OpenEditor\OESortDlg.h" />
+    <ClInclude Include="..\OpenEditor\OESplitLinesDlg.h" />
+    <ClInclude Include="..\OpenEditor\OEStorage.h" />
+    <ClInclude Include="..\OpenEditor\OEStreams.h" />
+    <ClInclude Include="..\OpenEditor\OETemplates.h" />
+    <ClInclude Include="..\OpenEditor\OETemplatesDlg.h" />
+    <ClInclude Include="..\OpenEditor\OETemplatesPage.h" />
+    <ClInclude Include="..\OpenEditor\OETemplateXmlStreamer.h" />
+    <ClInclude Include="..\OpenEditor\OEUndo.h" />
+    <ClInclude Include="..\OpenEditor\OEView.h" />
+    <ClInclude Include="..\OpenEditor\OEViewPaintAccessories.h" />
+    <ClInclude Include="..\OpenEditor\resource1.h" />
+    <ClInclude Include="LabelWithWaitBar.h" />
+    <ClInclude Include="OpenGrid\AGridManager.h" />
+    <ClInclude Include="OpenGrid\AGridSource.h" />
+    <ClInclude Include="OpenGrid\CellEditor.h" />
+    <ClInclude Include="OpenGrid\GridManager.h" />
+    <ClInclude Include="OpenGrid\GridSourceBase.h" />
+    <ClInclude Include="OpenGrid\GridView.h" />
+    <ClInclude Include="OpenGrid\GridViewPaintAccessories.h" />
+    <ClInclude Include="OpenGrid\GridWnd.h" />
+    <ClInclude Include="OpenGrid\OCIGridView.h" />
+    <ClInclude Include="OpenGrid\OCISource.h" />
+    <ClInclude Include="OpenGrid\PopupViewer.h" />
+    <ClInclude Include="OpenGrid\StringTable.h" />
+    <ClInclude Include="Oci8\ACursor.h" />
+    <ClInclude Include="OCI8\BCursor.h" />
+    <ClInclude Include="Oci8\Connect.h" />
+    <ClInclude Include="Oci8\Conversions.h" />
+    <ClInclude Include="OCI8\Datatypes.h" />
+    <ClInclude Include="Oci8\SQLFunctionCodes.h" />
+    <ClInclude Include="OCI8\Statement.h" />
+    <ClInclude Include="DbBrowser\DBBrowserClusterList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserCodeList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserConstraintList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserDbLinkList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserGranteeList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserIndexList.h" />
+    <ClInclude Include="DbBrowser\DbBrowserList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserRecyclebinList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserSequenceList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserSynonymList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserTableList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserTriggerList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserTypeList.h" />
+    <ClInclude Include="DbBrowser\DBBrowserViewList.h" />
+    <ClInclude Include="DbBrowser\DbSourceWnd.h" />
+    <ClInclude Include="DbBrowser\DeleteTableDataDlg.h" />
+    <ClInclude Include="DbBrowser\ObjectTree_Builder.h" />
+    <ClInclude Include="DbBrowser\ObjectViewerWnd.h" />
+    <ClInclude Include="DbBrowser\TableTruncateOptionsDlg.h" />
+    <ClInclude Include="DbBrowser\TreeViewer.h" />
+    <ClInclude Include="Dlg\AboutDlg.h" />
+    <ClInclude Include="Dlg\ConfirmationDlg.h" />
+    <ClInclude Include="Dlg\DBSCommonPage.h" />
+    <ClInclude Include="Dlg\DBSTablePage.h" />
+    <ClInclude Include="Dlg\ObjectViewerPage.h" />
+    <ClInclude Include="Dlg\PropGridOutputPage.h" />
+    <ClInclude Include="Dlg\PropGridPage.h" />
+    <ClInclude Include="Dlg\PropHistoryPage.h" />
+    <ClInclude Include="Dlg\PropScriptPage.h" />
+    <ClInclude Include="Dlg\propserverpage.h" />
+    <ClInclude Include="Dlg\SchemaList.h" />
+    <ClInclude Include="MetaDict\Config.h" />
+    <ClInclude Include="MetaDict\Loader.h" />
+    <ClInclude Include="MetaDict\MetaDictionary.h" />
+    <ClInclude Include="MetaDict\MetaObjects.h" />
+    <ClInclude Include="MetaDict\MetaSettings.h" />
+    <ClInclude Include="MetaDict\TextOutput.h" />
+    <ClInclude Include="PropTree\PropTreeCtrl.h" />
+    <ClInclude Include="PropTree\PropTreeCtrl2.h" />
+    <ClInclude Include="ServerBackgroundThread\Thread.h" />
+    <ClInclude Include="ServerBackgroundThread\TaskQueue.h" />
+    <ClInclude Include="SessionCache.h" />
+    <ClInclude Include="SQLUtilities.h" />
+    <ClInclude Include="SQLWorksheet\2PaneSplitter.h" />
+    <ClInclude Include="SQLWorksheet\AutocompleteTemplate.h" />
+    <ClInclude Include="SQLWorksheet\BindGridView.h" />
+    <ClInclude Include="SQLWorksheet\BindParser.h" />
+    <ClInclude Include="SQLWorksheet\BindSource.h" />
+    <ClInclude Include="SQLWorksheet\Booklet.h" />
+    <ClInclude Include="SQLWorksheet\CommandParser.h" />
+    <ClInclude Include="SQLWorksheet\CommandPerformerImpl.h" />
+    <ClInclude Include="SQLWorksheet\DocumentProxy.h" />
+    <ClInclude Include="SQLWorksheet\ErrorLoader.h" />
+    <ClInclude Include="SQLWorksheet\ExecuteTask.h" />
+    <ClInclude Include="SQLWorksheet\ExplainPlanSource.h" />
+    <ClInclude Include="SQLWorksheet\ExplainPlanTextView.h" />
+    <ClInclude Include="SQLWorksheet\ExplainPlanView2.h" />
+    <ClInclude Include="SQLWorksheet\HistoryFileManager.h" />
+    <ClInclude Include="SQLWorksheet\HistorySource.h" />
+    <ClInclude Include="SQLWorksheet\HistoryView.h" />
+    <ClInclude Include="SQLWorksheet\OutputView.h" />
+    <ClInclude Include="SQLWorksheet\PlSqlAnalyser.h" />
+    <ClInclude Include="SQLWorksheet\PlsSqlParser.h" />
+    <ClInclude Include="SQLWorksheet\ScriptAnalyser.h" />
+    <ClInclude Include="SQLWorksheet\SqlDocCreater.h" />
+    <ClInclude Include="SQLWorksheet\SQLWorksheetDoc.h" />
+    <ClInclude Include="SQLWorksheet\StatView.h" />
+    <ClInclude Include="Tools\ExtactSchemaMainPage.h" />
+    <ClInclude Include="Tools\ExtractDDLSettings.h" />
+    <ClInclude Include="Tools\ExtractDDLSettingsXmlStreamer.h" />
+    <ClInclude Include="Tools\ExtractSchemaDlg.h" />
+    <ClInclude Include="Tools\ExtractSchemaFilterPage.h" />
+    <ClInclude Include="Tools\ExtractSchemaHelpers.h" />
+    <ClInclude Include="Tools\ExtractSchemaOptionPage.h" />
+    <ClInclude Include="Tools\TableTransformer.h" />
+    <ClInclude Include="Tools\Grep\GrepDlg.h" />
+    <ClInclude Include="Tools\Grep\GrepThread.h" />
+    <ClInclude Include="Tools\Grep\GrepView.h" />
+    <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="CommandLineParser.h" />
+    <ClInclude Include="ConnectionBar.h" />
+    <ClInclude Include="MainFrm.h" />
+    <CustomBuild Include="Resource.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating map file for help compiler...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="resource1.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating map file for help compiler...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">echo // Generated Help Map file.  Used by SQLTools.HHP. &gt; "hlp\HTMLDefines.h"
+echo. &gt; "hlp\HTMLDefines.h"
+echo // Commands (ID_* and IDM_*) &gt;&gt; "hlp\HTMLDefines.h"
+makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "%(Filename)%(Extension)" &gt;&gt; "hlp\HTMLDefines.h"
+echo. &gt;&gt; "hlp\HTMLDefines.h"
+echo // Prompts (IDP_*) &gt;&gt; "hlp\HTMLDefines.h"
+makehm /h IDP_,HIDP_,0x30000 "%(Filename)%(Extension)" &gt;&gt; "hlp\HTMLDefines.h"
+echo. &gt;&gt; "hlp\HTMLDefines.h"
+echo // Resources (IDR_*) &gt;&gt; "hlp\HTMLDefines.h"
+makehm /h IDR_,HIDR_,0x20000 "%(Filename)%(Extension)" &gt;&gt; "hlp\HTMLDefines.h"
+echo. &gt;&gt; "hlp\HTMLDefines.h"
+echo // Dialogs (IDD_*) &gt;&gt; "hlp\HTMLDefines.h"
+makehm /h IDD_,HIDD_,0x20000 "%(Filename)%(Extension)" &gt;&gt; "hlp\HTMLDefines.h"
+echo. &gt;&gt; "hlp\HTMLDefines.h"
+echo // Frame Controls (IDW_*) &gt;&gt; "hlp\HTMLDefines.h"
+makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(Filename)%(Extension)" &gt;&gt; "hlp\HTMLDefines.h"
+echo // Generated help map for ..\OpenEditor\OpenEditorInc.rh
+echo. &gt;&gt; "hlp\HTMLDefines.h"
+echo // Resources (IDR_*) &gt;&gt; "hlp\HTMLDefines.h"
+makehm /h IDR_,HIDR_,0x20000 "..\OpenEditor\OpenEditorInc.rh" &gt;&gt; "hlp\HTMLDefines.h"
+echo. &gt;&gt; "hlp\HTMLDefines.h"
+echo // Dialogs (IDD_*) &gt;&gt; "hlp\HTMLDefines.h"
+makehm /h IDD_,HIDD_,0x20000 "..\OpenEditor\OpenEditorInc.rh" &gt;&gt; "hlp\HTMLDefines.h"
+echo. &gt;&gt; "hlp\HTMLDefines.h"
+echo // Commands (ID_* and IDM_*) &gt;&gt; "hlp\HTMLDefines.h"
+makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &gt;&gt; "hlp\HTMLDefines.h"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">hlp\HTMLDefines.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="SQLTools.h" />
+    <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="SQLToolsSettings.h" />
+    <ClInclude Include="SQLToolsSettingsXmlStreamer.h" />
+    <ClInclude Include="XmlStreamerBase.h" />
+    <ClInclude Include="ConnectData\ConnectData.h" />
+    <ClInclude Include="ConnectData\ConnectDataXmlStreamer.h" />
+    <ClInclude Include="Dlg\ConnectDlg.h" />
+    <ClInclude Include="Dlg\ConnectSettingsDlg.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\3dParty\base64.cpp" />
+    <ClCompile Include="..\3dParty\PropTree\PropTree.cpp" />
+    <ClCompile Include="..\3dParty\PropTree\PropTreeInfo.cpp" />
+    <ClCompile Include="..\3dParty\PropTree\PropTreeItem.cpp" />
+    <ClCompile Include="..\3dParty\PropTree\PropTreeItemColor.cpp" />
+    <ClCompile Include="..\3dParty\PropTree\PropTreeItemCombo.cpp" />
+    <ClCompile Include="..\3dParty\PropTree\PropTreeItemDateTime.cpp" />
+    <ClCompile Include="..\3dParty\PropTree\PropTreeItemEdit.cpp" />
+    <ClCompile Include="..\3dParty\PropTree\PropTreeItemStatic.cpp" />
+    <ClCompile Include="..\3dParty\PropTree\PropTreeList.cpp" />
+    <ClCompile Include="..\3dParty\ShellContextMenu.cpp" />
+    <ClCompile Include="..\3dParty\XPTheme.cpp" />
+    <ClCompile Include="..\3dparty\ModulVer\ModulVer.cpp" />
+    <ClCompile Include="..\3dparty\ARG\arglib\arg_shared.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\c_regex_traits.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\c_regex_traits_common.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\cpp_regex_traits.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\cregex.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\fileiter.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\instances.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\posix_api.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\regex.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\regex_debug.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\regex_synch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\w32_regex_traits.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\wide_posix_api.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\winstances.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dparty\CGFileType\cgfiltyp.cpp" />
+    <ClCompile Include="..\3dparty\DirTreeCtrl\DirTreeCtrl.cpp" />
+    <ClCompile Include="..\3dparty\DirTreeCtrl\SortStringArray.cpp" />
+    <ClCompile Include="..\3dparty\FileWatch\FileWatch.cpp" />
+    <ClCompile Include="..\3dparty\SizeCBar\scbarcf.cpp" />
+    <ClCompile Include="..\3dparty\SizeCBar\scbarg.cpp" />
+    <ClCompile Include="..\3dparty\SizeCBar\sizecbar.cpp" />
+    <ClCompile Include="..\3dparty\WinException\WinException.cpp" />
+    <ClCompile Include="..\3dParty\CTreePropSheet\PropPageFrame.cpp" />
+    <ClCompile Include="..\3dParty\CTreePropSheet\PropPageFrameDefault.cpp" />
+    <ClCompile Include="..\3dParty\CTreePropSheet\TreePropSheet.cpp" />
+    <ClCompile Include="..\3dParty\ColourPickerXP\ColourPickerXP.cpp" />
+    <ClCompile Include="..\3dParty\tinyxml\tinystr.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\tinyxml\tinyxml.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\tinyxml\tinyxmlerror.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\tinyxml\tinyxmlparser.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level3</WarningLevel>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\Cryptography\aescrypt.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\Cryptography\aeskey.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\Cryptography\aestab.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\Cryptography\fileenc.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\Cryptography\hmac.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\Cryptography\main.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\Cryptography\prng.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\Cryptography\pwd2key.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\Cryptography\sha1.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\TreeCtrlEx\TreeCtrlEx.cpp" />
+    <ClCompile Include="..\3dParty\CppToolTip\CeXDib.cpp" />
+    <ClCompile Include="..\3dParty\CppToolTip\PPDrawManager.cpp" />
+    <ClCompile Include="..\3dParty\CppToolTip\PPHtmlDrawer.cpp" />
+    <ClCompile Include="..\3dParty\CppToolTip\PPTooltip.cpp" />
+    <ClCompile Include="..\Common\AppGlobal.cpp" />
+    <ClCompile Include="..\Common\AppUtilities.cpp" />
+    <ClCompile Include="..\Common\clock64.cpp" />
+    <ClCompile Include="..\Common\ConfigFilesLocator.cpp" />
+    <ClCompile Include="..\Common\CustomShellContextMenu.cpp" />
+    <ClCompile Include="..\Common\DirSelectDlg.cpp" />
+    <ClCompile Include="..\Common\DlgDataExt.cpp" />
+    <ClCompile Include="..\Common\EditWithSelPos.cpp" />
+    <ClCompile Include="..\Common\ErrorDlg.cpp" />
+    <ClCompile Include="..\Common\ExceptionHelper.cpp" />
+    <ClCompile Include="..\Common\FakeRClick.cpp" />
+    <ClCompile Include="..\Common\FilenameTemplate.cpp" />
+    <ClCompile Include="..\Common\FilePanelWnd.cpp" />
+    <ClCompile Include="..\Common\FilePanelWnd2.cpp" />
+    <ClCompile Include="..\Common\FixedString.cpp" />
+    <ClCompile Include="..\Common\GlobalMutex.cpp" />
+    <ClCompile Include="..\Common\GUICommandDictionary.cpp" />
+    <ClCompile Include="..\Common\InputDlg.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\Common\ListCtrlDataProvider.cpp" />
+    <ClCompile Include="..\Common\ManagedListCtrl.cpp" />
+    <ClCompile Include="..\Common\ManagedListCtrlFilterDlg.cpp" />
+    <ClCompile Include="..\Common\MemoryMappedFile.cpp" />
+    <ClCompile Include="..\Common\OETabCtrl.cpp" />
+    <ClCompile Include="..\Common\OsException.cpp" />
+    <ClCompile Include="..\Common\OsInfo.cpp" />
+    <ClCompile Include="..\Common\PlSqlParser.cpp" />
+    <ClCompile Include="..\Common\PropertySheetMem.cpp" />
+    <ClCompile Include="..\Common\QuickArray.cpp" />
+    <ClCompile Include="..\Common\RecArray.cpp" />
+    <ClCompile Include="..\Common\RecentFilesListCtrl.cpp" />
+    <ClCompile Include="..\Common\SEException.cpp" />
+    <ClCompile Include="..\Common\SimpleDragDataSource.cpp" />
+    <ClCompile Include="..\Common\StackTracer.cpp" />
+    <ClCompile Include="..\Common\StrHelpers.cpp" />
+    <ClCompile Include="..\Common\TempFilesManager.cpp" />
+    <ClCompile Include="..\Common\VisualAttributes.cpp" />
+    <ClCompile Include="..\Common\VisualAttributesPage.cpp" />
+    <ClCompile Include="..\Common\WorkbookBar.cpp" />
+    <ClCompile Include="..\Common\WorkbookMDIFrame.cpp" />
+    <ClCompile Include="..\OpenEditor\FavoritesList.cpp" />
+    <ClCompile Include="..\OpenEditor\OEAutocompleteCtrl.cpp" />
+    <ClCompile Include="..\OpenEditor\OEBackupPage.cpp" />
+    <ClCompile Include="..\OpenEditor\OEBlockPage.cpp" />
+    <ClCompile Include="..\OpenEditor\OEClassPage.cpp" />
+    <ClCompile Include="..\OpenEditor\OECommonLanguageSupport.cpp" />
+    <ClCompile Include="..\OpenEditor\OEContext_1.cpp" />
+    <ClCompile Include="..\OpenEditor\OEContext_2.cpp" />
+    <ClCompile Include="..\OpenEditor\OEContext_3.cpp" />
+    <ClCompile Include="..\OpenEditor\OEContext_4.cpp" />
+    <ClCompile Include="..\OpenEditor\OEContext_5.cpp" />
+    <ClCompile Include="..\OpenEditor\OEDocManager.cpp" />
+    <ClCompile Include="..\OpenEditor\OEDocument.cpp" />
+    <ClCompile Include="..\OpenEditor\OEEditingPage.cpp" />
+    <ClCompile Include="..\OpenEditor\OEFileInfoDlg.cpp" />
+    <ClCompile Include="..\OpenEditor\OEFileManagerPage.cpp" />
+    <ClCompile Include="..\OpenEditor\OEFilePage.cpp" />
+    <ClCompile Include="..\OpenEditor\OEFindReplaceDlg.cpp" />
+    <ClCompile Include="..\OpenEditor\OEGeneralPage.cpp" />
+    <ClCompile Include="..\OpenEditor\OEGoToDialog.cpp" />
+    <ClCompile Include="..\OpenEditor\OEHelpers_1.cpp" />
+    <ClCompile Include="..\OpenEditor\OEHelpers_2.cpp" />
+    <ClCompile Include="..\OpenEditor\OEHelpers_3.cpp" />
+    <ClCompile Include="..\OpenEditor\OEHighlighter.cpp" />
+    <ClCompile Include="..\OpenEditor\OEHighlighter_1.cpp" />
+    <ClCompile Include="..\OpenEditor\OEHighlighter_2.cpp" />
+    <ClCompile Include="..\OpenEditor\OEInsertNumberDlg.cpp" />
+    <ClCompile Include="..\OpenEditor\OELanguage.cpp" />
+    <ClCompile Include="..\OpenEditor\OELanguageManager.cpp" />
+    <ClCompile Include="..\OpenEditor\OELanguageXmlStreamer.cpp" />
+    <ClCompile Include="..\OpenEditor\OENewFileDlg.cpp" />
+    <ClCompile Include="..\OpenEditor\OEOverwriteFileDlg.cpp" />
+    <ClCompile Include="..\OpenEditor\OEPlsSqlParser.cpp" />
+    <ClCompile Include="..\OpenEditor\OEPlsSqlSupport.cpp" />
+    <ClCompile Include="..\OpenEditor\OEPlsSqlSyntax.cpp" />
+    <ClCompile Include="..\OpenEditor\OEPlsSqlSyntaxImpl.cpp" />
+    <ClCompile Include="..\OpenEditor\OEPlsSqlSyntaxImpl2.cpp" />
+    <ClCompile Include="..\OpenEditor\OEPrintPageSetup.cpp" />
+    <ClCompile Include="..\OpenEditor\OEPropPage.cpp" />
+    <ClCompile Include="..\OpenEditor\OESaveModifiedDlg.cpp" />
+    <ClCompile Include="..\OpenEditor\OESettings.cpp" />
+    <ClCompile Include="..\OpenEditor\OESettingsXmlStreamer.cpp" />
+    <ClCompile Include="..\OpenEditor\OESortDlg.cpp" />
+    <ClCompile Include="..\OpenEditor\OESplitLinesDlg.cpp" />
+    <ClCompile Include="..\OpenEditor\OEStorage.cpp" />
+    <ClCompile Include="..\OpenEditor\OEStreams.cpp" />
+    <ClCompile Include="..\OpenEditor\OETemplates.cpp" />
+    <ClCompile Include="..\OpenEditor\OETemplatesDlg.cpp" />
+    <ClCompile Include="..\OpenEditor\OETemplatesPage.cpp" />
+    <ClCompile Include="..\OpenEditor\OETemplateXmlStreamer.cpp" />
+    <ClCompile Include="..\OpenEditor\OEUndo.cpp" />
+    <ClCompile Include="..\OpenEditor\OEView_1.cpp" />
+    <ClCompile Include="..\OpenEditor\OEView_2.cpp" />
+    <ClCompile Include="..\OpenEditor\OEView_3.cpp" />
+    <ClCompile Include="..\OpenEditor\OEView_4.cpp" />
+    <ClCompile Include="..\OpenEditor\OEView_5.cpp" />
+    <ClCompile Include="..\OpenEditor\OEView_6.cpp" />
+    <ClCompile Include="..\OpenEditor\OEViewPaintAccessories.cpp" />
+    <ClCompile Include="..\OpenEditor\OEWorkspaceManager.cpp" />
+    <ClCompile Include="..\OpenEditor\OEWorkspacePage.cpp" />
+    <ClCompile Include="..\OpenEditor\RecentFileList.cpp" />
+    <ClCompile Include="..\ThreadCommunication\MessageOnlyWindow.cpp" />
+    <ClCompile Include="ConnectionTasks.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserInvalidObjectList.cpp" />
+    <ClCompile Include="DbBrowser\FindObjectsTask.cpp" />
+    <ClCompile Include="DbBrowser\ObjectTree_Builder_1.cpp" />
+    <ClCompile Include="DbBrowser\ObjectTree_Builder_2.cpp" />
+    <ClCompile Include="DbBrowser\ObjectTree_Builder_3.cpp" />
+    <ClCompile Include="FetchWaitDlg.cpp" />
+    <ClCompile Include="LabelWithWaitBar.cpp" />
+    <ClCompile Include="OpenGrid\AGridSource.cpp" />
+    <ClCompile Include="OpenGrid\CellEditor.cpp" />
+    <ClCompile Include="OpenGrid\GridManager0.cpp" />
+    <ClCompile Include="OpenGrid\GridManager1.cpp" />
+    <ClCompile Include="OpenGrid\GridManager2.cpp" />
+    <ClCompile Include="OpenGrid\GridManager3.cpp" />
+    <ClCompile Include="OpenGrid\GridManager4.cpp" />
+    <ClCompile Include="OpenGrid\GridManager5.cpp" />
+    <ClCompile Include="OpenGrid\GridSourceBase0.cpp" />
+    <ClCompile Include="OpenGrid\GridSourceBase1.cpp" />
+    <ClCompile Include="OpenGrid\GridView.cpp" />
+    <ClCompile Include="OpenGrid\GridViewPaintAccessories.cpp" />
+    <ClCompile Include="OpenGrid\GridWnd.cpp" />
+    <ClCompile Include="OpenGrid\OCIGridView.cpp" />
+    <ClCompile Include="OpenGrid\OCISource.cpp" />
+    <ClCompile Include="OpenGrid\PopupViewer.cpp" />
+    <ClCompile Include="OpenGrid\StringTable.cpp" />
+    <ClCompile Include="Oci8\ACursor.cpp" />
+    <ClCompile Include="OCI8\BCursor.cpp" />
+    <ClCompile Include="Oci8\Connect.cpp" />
+    <ClCompile Include="Oci8\Conversions.cpp" />
+    <ClCompile Include="OCI8\Datatypes.cpp" />
+    <ClCompile Include="Oci8\default_oci_handler.cpp" />
+    <ClCompile Include="Oci8\SQLFunctionCodes.cpp" />
+    <ClCompile Include="OCI8\Statement.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserClusterList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserCodeList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserConstraintList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserDbLinkList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserGranteeList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserIndexList.cpp" />
+    <ClCompile Include="DbBrowser\DbBrowserList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserRecyclebinList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserSequenceList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserSynonymList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserTableList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserTriggerList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserTypeList.cpp" />
+    <ClCompile Include="DbBrowser\DBBrowserViewList.cpp" />
+    <ClCompile Include="DbBrowser\DbSourceWnd.cpp" />
+    <ClCompile Include="DbBrowser\DeleteTableDataDlg.cpp" />
+    <ClCompile Include="DbBrowser\ObjectViewerWnd.cpp" />
+    <ClCompile Include="DbBrowser\TableTruncateOptionsDlg.cpp" />
+    <ClCompile Include="DbBrowser\TreeViewer.cpp" />
+    <ClCompile Include="Dlg\AboutDlg.cpp" />
+    <ClCompile Include="Dlg\ConfirmationDlg.cpp" />
+    <ClCompile Include="Dlg\DBSCommonPage.cpp" />
+    <ClCompile Include="Dlg\DBSTablePage.cpp" />
+    <ClCompile Include="Dlg\ObjectViewerPage.cpp" />
+    <ClCompile Include="Dlg\PropGridOutputPage.cpp" />
+    <ClCompile Include="Dlg\PropGridPage.cpp" />
+    <ClCompile Include="Dlg\PropHistoryPage.cpp" />
+    <ClCompile Include="Dlg\PropScriptPage.cpp" />
+    <ClCompile Include="Dlg\propserverpage.cpp" />
+    <ClCompile Include="Dlg\SchemaList.cpp" />
+    <ClCompile Include="MetaDict\Loader.cpp" />
+    <ClCompile Include="MetaDict\Loader_Cluster.cpp" />
+    <ClCompile Include="MetaDict\Loader_Constraint.cpp" />
+    <ClCompile Include="MetaDict\Loader_DBLink.cpp" />
+    <ClCompile Include="MetaDict\Loader_Grant.cpp" />
+    <ClCompile Include="MetaDict\Loader_Index.cpp" />
+    <ClCompile Include="MetaDict\Loader_PLSCode.cpp" />
+    <ClCompile Include="MetaDict\Loader_Sequence.cpp" />
+    <ClCompile Include="MetaDict\Loader_SnapshotLog.cpp" />
+    <ClCompile Include="MetaDict\Loader_Synonym.cpp" />
+    <ClCompile Include="MetaDict\Loader_Table.cpp" />
+    <ClCompile Include="MetaDict\Loader_Trigger.cpp" />
+    <ClCompile Include="MetaDict\Loader_View.cpp" />
+    <ClCompile Include="MetaDict\MetaDictionary.cpp" />
+    <ClCompile Include="MetaDict\MetaObjects.cpp" />
+    <ClCompile Include="MetaDict\TextOutput.cpp" />
+    <ClCompile Include="PropTree\PropTreeCtrl.cpp" />
+    <ClCompile Include="PropTree\PropTreeCtrl2.cpp" />
+    <ClCompile Include="ServerBackgroundThread\Thread.cpp" />
+    <ClCompile Include="ServerBackgroundThread\TaskQueue.cpp" />
+    <ClCompile Include="SessionCache.cpp" />
+    <ClCompile Include="SQLUtilities.cpp" />
+    <ClCompile Include="SQLWorksheet\2PaneSplitter.cpp" />
+    <ClCompile Include="SQLWorksheet\AutocompleteTemplate.cpp" />
+    <ClCompile Include="SQLWorksheet\BindGridView.cpp" />
+    <ClCompile Include="SQLWorksheet\BindParser.cpp" />
+    <ClCompile Include="SQLWorksheet\BindSource.cpp" />
+    <ClCompile Include="SQLWorksheet\Booklet.cpp" />
+    <ClCompile Include="SQLWorksheet\CommandParser.cpp" />
+    <ClCompile Include="SQLWorksheet\CommandPerformerImpl.cpp" />
+    <ClCompile Include="SQLWorksheet\DocumentProxy.cpp" />
+    <ClCompile Include="SQLWorksheet\ErrorLoader.cpp" />
+    <ClCompile Include="SQLWorksheet\ExecuteTask.cpp" />
+    <ClCompile Include="SQLWorksheet\ExplainPlanSource.cpp" />
+    <ClCompile Include="SQLWorksheet\ExplainPlanTextView.cpp" />
+    <ClCompile Include="SQLWorksheet\ExplainPlanView2.cpp" />
+    <ClCompile Include="SQLWorksheet\HistoryFileManager.cpp" />
+    <ClCompile Include="SQLWorksheet\HistorySource.cpp" />
+    <ClCompile Include="SQLWorksheet\HistoryView.cpp" />
+    <ClCompile Include="SQLWorksheet\OutputView.cpp" />
+    <ClCompile Include="SQLWorksheet\PlSqlAnalyser.cpp" />
+    <ClCompile Include="SQLWorksheet\PlsSqlParser.cpp" />
+    <ClCompile Include="SQLWorksheet\ScriptAnalyser.cpp" />
+    <ClCompile Include="SQLWorksheet\SqlDocCreater.cpp" />
+    <ClCompile Include="SQLWorksheet\SQLWorksheetDoc.cpp" />
+    <ClCompile Include="SQLWorksheet\SQLWorksheetDoc2.cpp" />
+    <ClCompile Include="SQLWorksheet\SQLWorksheetDoc3.cpp" />
+    <ClCompile Include="SQLWorksheet\StatView.cpp" />
+    <ClCompile Include="Tools\ExtactSchemaMainPage.cpp" />
+    <ClCompile Include="Tools\ExtractDDLSettings.cpp" />
+    <ClCompile Include="Tools\ExtractDDLSettingsXmlStreamer.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Tools\ExtractSchemaDlg.cpp" />
+    <ClCompile Include="Tools\ExtractSchemaFilterPage.cpp" />
+    <ClCompile Include="Tools\ExtractSchemaHelpers.cpp" />
+    <ClCompile Include="Tools\ExtractSchemaHelpers2.cpp" />
+    <ClCompile Include="Tools\ExtractSchemaOptionPage.cpp" />
+    <ClCompile Include="Tools\TableTransformer.cpp" />
+    <ClCompile Include="Tools\Grep\GrepDlg.cpp" />
+    <ClCompile Include="Tools\Grep\GrepThread.cpp" />
+    <ClCompile Include="Tools\Grep\GrepView.cpp" />
+    <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="CommandLineParser.cpp" />
+    <ClCompile Include="ConnectionBar.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="SQLTools.cpp" />
+    <ClCompile Include="SQLTools_2.cpp" />
+    <ClCompile Include="SQLTools_3.cpp" />
+    <ClCompile Include="SQLTools_4.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SQLToolsSettings.cpp" />
+    <ClCompile Include="SQLToolsSettingsXmlStreamer.cpp" />
+    <ClCompile Include="XmlStreamerBase.cpp" />
+    <ClCompile Include="ConnectData\ConnectData.cpp" />
+    <ClCompile Include="ConnectData\ConnectData2.cpp" />
+    <ClCompile Include="ConnectData\ConnectData3.cpp" />
+    <ClCompile Include="ConnectData\ConnectDataXmlStreamer.cpp" />
+    <ClCompile Include="Dlg\ConnectDlg.cpp" />
+    <ClCompile Include="Dlg\ConnectSettingsDlg.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\OpenEditor\OpenEditorInc.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
+    </ResourceCompile>
+    <ResourceCompile Include="SQLTools.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Culture Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">0x0000</Culture>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Culture Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">0x0000</Culture>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="res\sqltools.manifest" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="SQLTools.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

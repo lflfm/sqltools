@@ -1,0 +1,65 @@
+<html>
+
+<head>
+<title>Pseudocolumns </title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="CURRVAL">
+  <param name="Keyword" value="NEXTVAL">
+  <param name="Keyword" value="LEVEL">
+  <param name="Keyword" value="ROWID">
+  <param name="Keyword" value="ROWNUM">
+</object>
+</p>
+
+<h3>Pseudocolumns </h3>
+
+<hr SIZE="3">
+
+<p>Pseudocolumns are similar to table columns. You can query any of these pseudocolumns,
+but you cannot change their values with DML statements.</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="184" bgColor="#99ccff"><p class="tab_header">Column name</td>
+    <td valign="top" bgColor="#99ccff"><p class="tab_header">Value</td>
+  </tr>
+  <tr>
+    <td valign="top" width="184"><p class="tab_func"><em>sequence</em>.CURRVAL</td>
+    <td valign="top"><p class="tab_desc">Current value of sequence for the current session
+    (sequence.NEXTVAL must be referenced first.) </td>
+  </tr>
+  <tr>
+    <td valign="top" width="184"><p class="tab_func"><em>sequence</em>.NEXTVAL</td>
+    <td valign="top"><p class="tab_desc">Next value of sequence for the current session</td>
+  </tr>
+  <tr>
+    <td valign="top" width="184"><p class="tab_func">[<em>table</em>.]LEVEL</td>
+    <td valign="top"><p class="tab_desc">1 for a root node, 2 for a child of a root, and so
+    on. Used in the SELECT statement during tree-structured queries.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="184"><p class="tab_func">[<em>table</em>.]ROWID</td>
+    <td valign="top"><p class="tab_desc">Value that uniquely identifies a single row among
+    other rows in the table. ROWID values are of datatype ROWID, not NUMBER or CHAR. </td>
+  </tr>
+  <tr>
+    <td valign="top" width="184"><p class="tab_func">ROWNUM</td>
+    <td valign="top"><p class="tab_desc">Position of a single row among other rows selected by
+    a query. Oracle server selects rows in an arbitrary order and evaluates ROWNUM before
+    sorting rows for an ORDER BY clause. </td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

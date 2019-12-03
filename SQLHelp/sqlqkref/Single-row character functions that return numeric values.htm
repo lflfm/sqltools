@@ -1,0 +1,66 @@
+<html xmlns:o>
+
+<head>
+<title>Single-row character functions that return numeric values</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="ASCII">
+  <param name="Keyword" value="INSTR">
+  <param name="Keyword" value="INSTRB">
+  <param name="Keyword" value="LENGTH">
+  <param name="Keyword" value="LENGTHB">
+</object>
+</p>
+
+<h3>Single-row character functions that return numeric values</h3>
+
+<hr SIZE="3">
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr valign="top">
+    <td width="208" bgColor="#99ccff"><p class="tab_header">Function</td>
+    <td bgColor="#99ccff"><p class="tab_header">Value Returned</td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">ASCII(<i>char</i>) </td>
+    <td><p class="tab_desc">Returns a decimal number equivalent to the value of the first
+    character of <i>char </i>in the database character set. (an ASCII value on ASCII systems).
+    Returns value of first byte in a <span style="mso-spacerun: yes">&nbsp;</span>multibyte
+    character. </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">INSTR(<i>char1</i>,<i>char2</i>[,<i>n</i>[,<i>m</i>]])
+    </td>
+    <td><p class="tab_desc">Position of the <i>m</i>th occurrence of <i>char2 </i>in <i>char1</i>,
+    beginning search at character position <i>n</i>. <i>m </i>and <i>n </i>default to 1.
+    Position is relative to the first character of <i>char1</i>, even if <i>n</i>&gt;1. </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">INSTRB(<i>char1</i>,<i>char2</i>[,<i>n</i>[,<i>m</i>]])
+    </td>
+    <td><p class="tab_desc">Position of the <i>m</i>th occurrence of <i>char2 </i>in <i>char1</i>,
+    beginning search at byte position <i>n</i>. <i>m </i>and <i>n </i>default to 1. Position
+    is relative to the first byte of <i>char1</i>, even if <i>n</i>&gt;1. </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">LENGTH(<i>char</i>) </td>
+    <td><p class="tab_desc">Length of <i>char </i>in characters </td>
+  </tr>
+  <tr valign="top">
+    <td width="208"><p class="tab_func">LENGTHB(<i>char</i>) </td>
+    <td><p class="tab_desc">Length of <i>char </i>in bytes</td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

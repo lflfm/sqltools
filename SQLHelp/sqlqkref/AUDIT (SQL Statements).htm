@@ -1,0 +1,34 @@
+<HTML>
+<HEAD>
+<TITLE>AUDIT (SQL Statements)</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="AUDIT (SQL Statements)">
+</OBJECT>
+<H3>AUDIT (SQL Statements)<HR SIZE="3"></H3>
+<P>
+ Use this command to choose specific SQL statements for auditing in
+ subsequent user sessions. To choose particular schema objects for
+ auditing, use the AUDIT command (Schema Objects).
+</P>
+<P>
+ 
+</P>
+<PRE>
+ AUDIT {statement_opt | system_priv}
+   [, {statement_opt | system_priv} ] ...
+   [BY user [, user] ...]
+   [BY {SESSION | ACCESS} ]
+   [WHENEVER [NOT] SUCCESSFUL]
+ 
+</PRE>
+<P>See also:  <A HREF="AUDIT (Schema Objects).htm">AUDIT (Schema Objects)</A>
+, <A HREF="NOAUDIT (Schema Objects).htm">NOAUDIT (Schema Objects)</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

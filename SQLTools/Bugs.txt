@@ -1,0 +1,6 @@
+1) a new file is always TXT
+3) Parser fails on procedures with parameters 
+
+
+You can find this information or place a bug report at:
+http://sourceforge.net/tracker/?group_id=125592&atid=703030

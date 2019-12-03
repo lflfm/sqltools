@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE SEQUENCE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE SEQUENCE">
+    <param name="Keyword" value="SEQUENCE">
+</OBJECT>
+<H3>CREATE SEQUENCE<HR SIZE="3"></H3>
+<P>
+ Use this command to create a sequence. A sequence is a database
+ object from which multiple users may generate unique integers. You
+ can use sequences to automatically generate primary key values.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ CREATE SEQUENCE [schema.]sequence
+   [ INCREMENT BY integer
+   | START WITH integer
+   | {MAXVALUE integer | NOMAXVALUE}
+   | {MINVALUE integer | NOMINVALUE}
+   | {CYCLE | NOCYCLE}
+   | {CACHE integer | NOCACHE}
+   | {ORDER | NOORDER} ] ...
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER SEQUENCE.htm">ALTER SEQUENCE</A>
+, <A HREF="DROP SEQUENCE.htm">DROP SEQUENCE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

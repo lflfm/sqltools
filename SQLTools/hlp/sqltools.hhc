@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="About SQLTools">
+		<param name="Local" value="about.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="What's new in 1.9">
+		<param name="Local" value="whatsnew.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="What's new in 1.8">
+		<param name="Local" value="whatsnew18.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Initial setup">
+		<param name="Local" value="init_setup.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Command line options">
+		<param name="Local" value="command_line.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Connect Dialog">
+		<param name="Local" value="connect_dialog.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Connect Dialog Settings">
+		<param name="Local" value="connect_dialog_settings.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Autosave">
+		<param name="Local" value="autosave.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Snapshots and Workspaces">
+		<param name="Local" value="snapshots_and_workspaces.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Application launcher">
+		<param name="Local" value="launcher.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Oracle Instant Client">
+		<param name="Local" value="oracle_instant_client.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="SQL Editor">
+		<param name="Local" value="sqleditor.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Data Grid">
+		<param name="Local" value="datagrid.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Object Viewer">
+		<param name="Local" value="object_viewer.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Working  with SVN">
+		<param name="Local" value="working_with_svn.htm">
+		</OBJECT>
+<!--
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Menus">
+		</OBJECT>
+-->
+<!--
+	<UL>
+-->
+<!--
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="File menu commands">
+			<param name="Local" value="menu_file.htm">
+			</OBJECT>
+-->
+<!--
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="View menu commands">
+			<param name="Local" value="menu_edit.htm">
+			</OBJECT>
+-->
+<!--
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="View menu commands">
+			<param name="Local" value="menu_view.htm">
+			</OBJECT>
+-->
+<!--
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Window menu commands">
+			<param name="Local" value="menu_window.htm">
+			</OBJECT>
+-->
+<!--
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Help menu commands">
+			<param name="Local" value="menu_help.htm">
+			</OBJECT>
+-->
+<!--
+	</UL>
+-->
+<!--
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="HOWTO">
+		</OBJECT>
+-->
+<!--
+	<UL>
+-->
+<!--
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Not implemented">
+			<param name="Local" value="not_implemented.htm">
+			</OBJECT>
+-->
+<!--
+	</UL>
+-->
+<!--
+</UL>
+-->
+</BODY></HTML>

@@ -1,0 +1,51 @@
+<HTML>
+<HEAD>
+<TITLE>ALTER PROFILE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="ALTER PROFILE">
+    <param name="Keyword" value="PROFILE">
+</OBJECT>
+<H3>ALTER PROFILE<HR SIZE="3"></H3>
+<P>
+ Use this command to add, modify, or remove a resource limit or
+ password management in a profile.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ ALTER PROFILE profile LIMIT
+   { { SESSIONS_PER_USER
+     | CPU_PER_SESSION
+     | CPU_PER_CALL
+     | CONNECT_TIME
+     | IDLE_TIME
+     | LOGICAL_READS_PER_SESSION
+     | LOGICAL_READS_PER_CALL
+     | COMPOSITE_LIMIT}
+        {integer | UNLIMITED | DEFAULT}
+   | { PRIVATE_SGA { integer [K | M]
+                   | UNLIMITED
+                   | DEFAULT}
+   | FAILED_LOGIN_ATTEMPTS
+   | PASSWORD_LIFETIME
+   | {PASSWORD_REUSE_TIME
+     |PASSWORD_REUSE_MAX}
+   | ACCOUNT_LOCK_TIME
+   | PASSWORD_GRACE_TIME}
+       {integer | UNLIMITED | DEFAULT}
+   | PASSWORD_VERIFY_FUNCTION
+       {function | NULL | DEFAULT} } ...
+ 
+</PRE>
+<P>See also:  <A HREF="CREATE PROFILE.htm">CREATE PROFILE</A>
+, <A HREF="DROP PROFILE.htm">DROP PROFILE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

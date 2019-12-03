@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+<TITLE>SELECT</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="SELECT">
+</OBJECT>
+<H3>SELECT<HR SIZE="3"></H3>
+<P>
+ Use this command to retrieve data from one or more tables, object
+ tables, views, object views, or snapshots.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ SELECT
+   [ DISTINCT | ALL ]
+   { *
+   | { [ schema. ]{ table | view | snapshot } .*
+     | expr [ [ AS ] c_alias ] }
+   [, { [ schema. ]{ table | view | snapshot } .*
+      | expr [ [ AS ] c_alias ] } ] ...
+ FROM
+   { [ schema. ]
+     { table [ PARTITION ( partition_name ) | @dblink ]
+     | [ view | snapshot ] [ @dblink ] }
+   [ t_alias ]
+   | [ THE ] ( subquery )
+   [ t_alias ]
+   | TABLE ( nested_table_column )
+   [ t_alias ] }
+   [, { [ schema. ]
+        { table [ PARTITION ( partition_name ) | @dblink ]
+        | [ view | snapshot ] [ @dblink ] }
+      [ t_alias ]
+      | [ THE ] ( subquery )
+      [ t_alias ]
+      | TABLE ( nested_table_column ) } ] ... 
+   [ WHERE condition ]
+   [ [ START WITH condition ] CONNECT BY condition
+     | GROUP BY expr [, expr] ...
+     [ HAVING CONDITION ] ] ...
+   [ { UNION
+     | UNION ALL
+     | INTERSECT
+     | MINUS } SELECT command ]
+   [ ORDER BY { expr | position | c_alias } [ ASC | DESC ]
+   [, { expr | position | c_alias } [ ASC | DESC ] ] ...
+   | FOR UPDATE
+     [ OF [ [ schema. ]{ table. | view. } ] column
+          [, [ [schema.]{table. | view.} ] column] ...] [NOWAIT]
+ 
+</PRE>
+<P>See also:  <A HREF="DELETE.htm">DELETE</A>
+, <A HREF="EXPLAIN PLAN.htm">EXPLAIN PLAN</A>
+, <A HREF="INSERT.htm">INSERT</A>
+, <A HREF="UPDATE.htm">UPDATE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

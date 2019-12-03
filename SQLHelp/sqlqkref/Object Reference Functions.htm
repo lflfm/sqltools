@@ -1,0 +1,64 @@
+<html>
+
+<head>
+<title>Object Reference Functions </title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="DEREF">
+  <param name="Keyword" value="MAKE_REF">
+  <param name="Keyword" value="REF">
+  <param name="Keyword" value="REFTOHEX">
+  <param name="Keyword" value="VALUE">
+</object>
+</p>
+
+<h3>Object Reference Functions </h3>
+
+<hr SIZE="3">
+
+<p>Manipulate REFs, which are references to objects of specified object types.</p>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td valign="top" width="218" bgColor="#99ccff"><p class="tab_header">Function</td>
+    <td valign="top" bgColor="#99ccff" width="769"><p class="tab_header">Value Returned</td>
+  </tr>
+  <tr>
+    <td valign="top" width="218"><p class="tab_func">DEREF(<em>e</em>)</td>
+    <td valign="top" width="769"><p class="tab_desc">The object reference of argument <em>e</em>.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="218"><p class="tab_func">MAKE_REF(<em>table|view, key[,key]...</em>)</td>
+    <td valign="top" width="769"><p class="tab_desc">Creates a REF to a row of an object view
+    or a row in an object table whose identifier is based on a primary key.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="218"><p class="tab_func">REF(<em>correlation_variable</em>)</td>
+    <td valign="top" width="769"><p class="tab_desc">REF takes as its argument a correlation
+    variable (table alias) associated with a row of an object table or an object view.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="218"><p class="tab_func">REFTOHEX(<em>r</em>)</td>
+    <td valign="top" width="769"><p class="tab_desc">Converts argument <em>r</em> to a
+    character value containing its hexadecimal equivalent.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="218"><p class="tab_func">VALUE(<em>correlation_variable</em>)</td>
+    <td valign="top" width="769"><p class="tab_desc">VALUE takes as its argument a correlation
+    variable (table alias) associated with a row of an object table and returns object
+    instances stored in the object table.</td>
+  </tr>
+</table>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

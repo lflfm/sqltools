@@ -1,0 +1,46 @@
+<HTML>
+<HEAD>
+<TITLE>MERGE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="MERGE">
+</OBJECT>
+<H3>MERGE<HR SIZE="3"></H3>
+<P>
+The MERGE statement is designed to combine multiple operations to reduce the complexity of mixed insert and update operations.
+</P>
+<P>
+
+</P>
+<PRE>
+  MERGE [hint] INTO [schema.]table [t_alias]
+    USING [[schema.]table | view | subquery] t_alias
+      ON ( condition ) [merge_update_clause | merge_insert_clause]
+
+    merge_update_clause:
+
+    WHEN MATCHED THEN
+      UPDATE SET [&lt;column&gt; = [&lt;expr&gt;|DEFAULT][,]]
+        &lt;where_clause&gt;
+      DELETE
+        &lt;where_clause&gt;
+
+    merge_insert_clause:
+
+    WHEN NOT MATCHED THEN INSERT ( &lt;column&gt; [,])
+      VALUES (&lt;expr&gt;|DEFAULT[,])
+        &lt;where_clause&gt;
+</PRE>
+<P>See also:  <A HREF="DELETE.htm">DELETE</A>
+, <A HREF="EXPLAIN PLAN.htm">EXPLAIN PLAN</A>
+, <A HREF="INSERT.htm">INSERT</A>
+, <A HREF="SELECT.htm">SELECT</A>
+, <A HREF="UPDATE.htm">UPDATE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the latest Server SQL Reference.</P>
+</BODY>
+</HTML>

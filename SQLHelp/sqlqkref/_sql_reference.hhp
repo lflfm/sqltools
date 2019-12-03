@@ -1,0 +1,166 @@
+[OPTIONS]
+Auto Index=Yes
+Compatibility=1.1 or later
+Compiled file=..\sqlqkref.chm
+Contents file=_sql_reference.hhc
+Default Window=main
+Default topic=_sql_reference.htm
+Display compile progress=No
+Enhanced decompilation=Yes
+Full-text search=Yes
+Index file=_sql_reference.hhk
+Language=0x409 English (United States)
+
+[WINDOWS]
+main="SQL Quick Reference","_sql_reference.hhc","_sql_reference.hhk","_sql_reference.htm",,,,,,0x42520,,0x380e,,,0x4,,,,,0
+
+
+[FILES]
+_sql_reference.css
+_sql_reference.htm
+ALLOCATE (Embedded SQL).htm
+ALTER CLUSTER.htm
+ALTER DATABASE.htm
+ALTER FUNCTION.htm
+ALTER INDEX.htm
+ALTER PACKAGE.htm
+ALTER PROCEDURE.htm
+ALTER PROFILE.htm
+ALTER RESOURCE COST.htm
+ALTER ROLE.htm
+ALTER ROLLBACK SEGMENT.htm
+ALTER SEQUENCE.htm
+ALTER SESSION.htm
+ALTER SNAPSHOT.htm
+ALTER SNAPSHOT LOG.htm
+ALTER SYSTEM.htm
+ALTER TABLE.htm
+ALTER TABLESPACE.htm
+ALTER TRIGGER.htm
+ALTER TYPE.htm
+ALTER USER.htm
+ALTER VIEW.htm
+ANALYZE.htm
+ARCHIVE LOG clause.htm
+AUDIT (SQL Statements).htm
+AUDIT (Schema Objects).htm
+CLOSE (Embedded SQL).htm
+COMMENT.htm
+COMMIT.htm
+COMMIT (Embedded SQL).htm
+CONNECT (Embedded SQL).htm
+CONSTRAINT clause.htm
+CREATE CLUSTER.htm
+CREATE CONTROLFILE.htm
+CREATE DATABASE.htm
+CREATE DATABASE LINK.htm
+CREATE DIRECTORY.htm
+CREATE FUNCTION.htm
+CREATE INDEX.htm
+CREATE LIBRARY.htm
+CREATE PACKAGE.htm
+CREATE PACKAGE BODY.htm
+CREATE PROCEDURE.htm
+CREATE PROFILE.htm
+CREATE ROLE.htm
+CREATE ROLLBACK SEGMENT.htm
+CREATE SCHEMA.htm
+CREATE SEQUENCE.htm
+CREATE SNAPSHOT.htm
+CREATE SNAPSHOT LOG.htm
+CREATE SYNONYM.htm
+CREATE TABLE.htm
+CREATE TABLESPACE.htm
+CREATE TRIGGER.htm
+CREATE TYPE.htm
+CREATE TYPE BODY.htm
+CREATE USER.htm
+CREATE VIEW.htm
+DEALLOCATE clause.htm
+DECLARE CURSOR (Embedded SQL).htm
+DECLARE DATABASE (Embedded SQL).htm
+DECLARE STATEMENT (Embedded SQL).htm
+DECLARE TABLE (Embedded SQL).htm
+DELETE.htm
+DELETE (Embedded SQL).htm
+DESCRIBE (Embedded SQL).htm
+DISABLE clause.htm
+DROP CLUSTER.htm
+DROP DATABASE LINK.htm
+DROP DIRECTORY.htm
+DROP FUNCTION.htm
+DROP INDEX.htm
+DROP LIBRARY.htm
+DROP PACKAGE.htm
+DROP PROCEDURE.htm
+DROP PROFILE.htm
+DROP ROLE.htm
+DROP ROLLBACK SEGMENT.htm
+DROP SEQUENCE.htm
+DROP SNAPSHOT.htm
+DROP SNAPSHOT LOG.htm
+DROP SYNONYM.htm
+DROP TABLE.htm
+DROP TABLESPACE.htm
+DROP TRIGGER.htm
+DROP TYPE.htm
+DROP TYPE BODY.htm
+DROP USER.htm
+DROP VIEW.htm
+DROP clause.htm
+ENABLE clause.htm
+EXECUTE (Embedded SQL).htm
+EXPLAIN PLAN.htm
+FETCH (Embedded SQL).htm
+Filespec.htm
+GRANT (Object Privileges).htm
+GRANT (System Privileges and Roles).htm
+INSERT.htm
+INSERT (Embedded SQL).htm
+LOCK TABLE.htm
+NOAUDIT (SQL Statements).htm
+NOAUDIT (Schema Objects).htm
+OPEN (Embedded SQL).htm
+PARALLEL clause.htm
+PREPARE (Embedded SQL).htm
+RECOVER clause.htm
+RENAME.htm
+REVOKE (Schema Object Privileges).htm
+REVOKE (System Privileges and Roles).htm
+ROLLBACK.htm
+ROLLBACK (Embedded SQL).htm
+SAVEPOINT.htm
+SAVEPOINT (Embedded SQL).htm
+SELECT.htm
+SELECT (Embedded SQL).htm
+SET CONSTRAINT(S).htm
+SET ROLE.htm
+SET TRANSACTION.htm
+STORAGE clause.htm
+TRUNCATE.htm
+TYPE (Embedded SQL).htm
+UPDATE.htm
+MERGE.htm
+UPDATE (Embedded SQL).htm
+VAR (Embedded SQL).htm
+WHENEVER (Embedded SQL).htm
+Miscellaneous Single-Row Functions.htm
+CAST Expressions.htm
+CASE Expressions.htm
+Conversion Functions.htm
+Single-row character functions that return numeric values.htm
+Single-row character functions that return character values.htm
+Operators.htm
+OBJECT PRIVILEGES.htm
+SYSTEM PRIVILEGES.htm
+Datatypes.htm
+Group Functions.htm
+Pseudocolumns.htm
+Object Reference Functions.htm
+Format Models for TO_CHAR and TO_DATE.htm
+Single-Row Number Functions.htm
+Date Functions.htm
+Hints.htm
+
+[INFOTYPES]
+

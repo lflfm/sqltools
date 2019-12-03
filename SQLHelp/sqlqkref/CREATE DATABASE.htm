@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<TITLE>CREATE DATABASE</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="CREATE DATABASE">
+    <param name="Keyword" value="DATABASE">
+</OBJECT>
+<H3>CREATE DATABASE<HR SIZE="3"></H3>
+<P>
+ Use this command to create a database, making it available for
+ general use, with the following options:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+to establish a maximum number of instances, data files, redo
+      log files groups, or redo log file members
+<LI>
+to specify names and sizes of data files and redo log files
+<LI>
+to choose a mode of use for the redo log
+<LI>
+to specify the national and database character sets
+</LI>
+</UL>
+<P>
+ 
+ Warning: This command prepares a database for initial use and erases
+ any data currently in the specified files. Only use this command
+ when you understand its ramifications.
+</P>
+<P>
+ 
+</P>
+<PRE>
+ CREATE DATABASE [database]
+   { CONTROLFILE REUSE
+   | LOGFILE [GROUP integer] <A HREF="Filespec.htm">filespec</A>
+           [,[GROUP integer] <A HREF="Filespec.htm">filespec</A>] ...
+   | MAXLOGFILES integer
+   | MAXLOGMEMBERS integer
+   | MAXLOGHISTORY integer
+   | MAXDATAFILES integer
+   | MAXINSTANCES integer
+   | {ARCHIVELOG | NOARCHIVELOG}
+   | EXCLUSIVE
+   | CHARACTER SET charset
+   | NATIONAL CHARACTER SET charset
+   | DATAFILE <A HREF="Filespec.htm">filespec</A> [AUTOEXTEND {OFF | ON [NEXT integer [K | M] ]
+                       [MAXSIZE { UNLIMITED | integer [K | M]} ] } ]
+           [, <A HREF="Filespec.htm">filespec</A> [AUTOEXTEND {OFF | ON [NEXT integer [K | M] ]
+                       [MAXSIZE { UNLIMITED | integer [K | M]} ] } ] ] ...} ...
+ 
+</PRE>
+<P>See also:  <A HREF="ALTER DATABASE.htm">ALTER DATABASE</A>
+, <A HREF="CREATE CONTROLFILE.htm">CREATE CONTROLFILE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

@@ -1,0 +1,54 @@
+<HTML>
+<HEAD>
+<TITLE>INSERT</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="INSERT">
+</OBJECT>
+<H3>INSERT<HR SIZE="3"></H3>
+<P>
+ Use INSERT to add rows to:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+a table
+<LI>
+a view's base table
+<LI>
+a partition of a partitioned table
+<LI>
+an object table
+<LI>
+an object view's base table
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ INSERT INTO
+   { [ schema.]{ table [PARTITION (partition_name) | @dblink]
+                | view}
+                [ @dblink]
+                | [THE] (subquery_1) }
+   [ ( column [, column] ...)]
+   { VALUES (expr [expr] ...)
+   | subquery_2 }
+   [ REF INTO data_item]
+ 
+</PRE>
+<P>See also:  <A HREF="DELETE.htm">DELETE</A>
+, <A HREF="EXPLAIN PLAN.htm">EXPLAIN PLAN</A>
+, <A HREF="SELECT.htm">SELECT</A>
+, <A HREF="UPDATE.htm">UPDATE</A>
+
+</P>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

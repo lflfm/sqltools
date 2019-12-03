@@ -1,0 +1,37 @@
+# template makefile for global make procedure.
+#
+# Assumes that the following variables have been set by a wrapper makefile:
+#
+#    ARG_PACKAGES       - the list of packages to be built as part of the project
+#    ARG_COMPILER_CFG   - configuration file for the compiler to be used
+#    ARG_BUILD          - Root of the build tree
+#
+# The following variables may be overridden:
+#
+#    ARG_SRC    - Root of the source code tree (defaults to ./src)
+#    ARG_DOCS   - Root of the documentation tree (defaults to ./doc)
+#
+
+ARG_SRC=.
+ARG_DOCS=./doc
+
+.PHONY: $(ARG_PACKAGES) all clean test manual
+.INTERMEDIATE: manual
+
+all: $(ARG_PACKAGES)
+clean: $(foreach T, $(ARG_PACKAGES), clean_$(T))
+test:  $(foreach T, $(ARG_PACKAGES), test_$(T))
+depend: $(foreach T, $(ARG_PACKAGES), depend_$(T))
+
+
+	
+# Build the reference manual
+manual:
+	mkdir -p $(ARG_DOCS)
+	echo "<HR>Copyright 1999-2000 Alan Griffiths</body></html>" > copyright
+	doxygen $(ARG_SRC)/Doxyfile
+	rm copyright
+
+include platform/$(ARG_COMPILER_CFG)
+include $(foreach T, $(ARG_PACKAGES), $(ARG_SRC)/$(T)/makefile.package makefile.template2)
+

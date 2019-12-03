@@ -1,0 +1,17 @@
+# Dependency rules for the arglib package
+#                                                      Alan Griffiths 02-Jan-00
+
+ARG_PACKAGE:=oxo
+
+IMPLEMENTATION:=\
+$(ARG_PACKAGE)/automaton.cpp\
+$(ARG_PACKAGE)/controller.cpp\
+$(ARG_PACKAGE)/line.cpp\
+$(ARG_PACKAGE)/square.cpp\
+$(ARG_PACKAGE)/board.cpp\
+$(ARG_PACKAGE)/game.cpp
+
+
+TEST_HARNESSES:=
+	
+TOOLS:=$(ARG_PACKAGE)/oxo.cpp

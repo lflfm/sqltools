@@ -1,0 +1,49 @@
+<html>
+
+<head>
+<title>CASE Expressions</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="CASE">
+</object>
+</p>
+
+<h3>CASE Expressions</h3>
+
+<hr SIZE="3">
+
+<pre>
+CASE WHEN <em>condition1</em> THEN <em>expr1</em> [WHEN <em>condition2</em> THEN <em>expr2</em>] ... [ELSE <em>default</em>] END
+</pre>
+
+<p>Oracle searches for the first WHEN ... THEN pair for which <em>condition</em> is true. 
+
+<ul>
+  <li>If Oracle finds such a pair, then the result of the CASE expression is <em>expr N</em>. </li>
+  <li>If Oracle does not find such a pair, <ul>
+      <li>If an ELSE clause is specified, the result of the CASE expression is <em>default</em>. </li>
+      <li>If no ELSE clause is specified, the result of the CASE expression in null. </li>
+    </ul>
+  </li>
+</ul>
+
+<p>At least one occurrence of expr1 or expr2 must be non-null. </p>
+
+<blockquote>
+  <p><strong>Note:</strong> The maximum number of arguments in a CASE expression is 255, and
+  each WHEN ... THEN pair counts as two arguments. To avoid exceeding the limit of 128
+  choices, you can nest CASE expressions. That is expr1 can itself be a CASE expression. </p>
+</blockquote>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

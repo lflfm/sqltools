@@ -1,0 +1,1000 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html dir='ltr'>
+<head>
+<script type="text/javascript">(function() { var a=window;function d(b){this.t={};this.tick=function(c,h,e){var i=e?e:(new Date).getTime();this.t[c]=[i,h]};this.tick("start",null,b)}var f=new d;a.jstiming={Timer:d,load:f};try{a.jstiming.pt=a.external.pageT}catch(g){};function j(b){var c=0;if(b.offsetParent){do c+=b.offsetTop;while(b=b.offsetParent)}return c}a.tickAboveFold=function(b){j(b)<=750&&a.jstiming.load.tick("aft")};var k=false;function l(){if(!k){k=true;a.jstiming.load.tick("firstScrollTime")}}a.addEventListener?a.addEventListener("scroll",l,false):a.attachEvent("onscroll",l); })();</script>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+<meta content='true' name='MSSmartTagsPreventParsing'/>
+<meta content='blogger' name='generator'/>
+<link href='http://www.blogger.com/favicon.ico' rel='icon' type='image/vnd.microsoft.icon'/>
+<link rel="alternate" type="application/atom+xml" title="SQLTools++ development - Atom" href="http://sqltools-plusplus.blogspot.com/feeds/posts/default" />
+<link rel="alternate" type="application/rss+xml" title="SQLTools++ development - RSS" href="http://sqltools-plusplus.blogspot.com/feeds/posts/default?alt=rss" />
+<link rel="service.post" type="application/atom+xml" title="SQLTools++ development - Atom" href="http://www.blogger.com/feeds/1782618391954902258/posts/default" />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.blogger.com/rsd.g?blogID=1782618391954902258" />
+<link rel="me" href="http://www.blogger.com/profile/13463198440639982695" />
+<link rel="openid.server" href="http://www.blogger.com/openid-server.g" />
+<title>SQLTools++ development</title>
+<style id='page-skin-1' type='text/css'><!--
+/*
+* Blogger Template Style
+*
+* Sand Dollar
+* by Jason Sutter
+* Updated by Blogger Team
+*/
+/* Variable definitions
+====================
+<Variable name="textcolor" description="Text Color"
+type="color" default="#000">
+<Variable name="bgcolor" description="Page Background Color"
+type="color" default="#f6f6f6">
+<Variable name="pagetitlecolor" description="Blog Title Color"
+type="color" default="#F5DEB3">
+<Variable name="pagetitlebgcolor" description="Blog Title Background Color"
+type="color" default="#DE7008">
+<Variable name="descriptionColor" description="Blog Description Color"
+type="color" default="#9E5205" />
+<Variable name="descbgcolor" description="Description Background Color"
+type="color" default="#F5E39e">
+<Variable name="titlecolor" description="Post Title Color"
+type="color" default="#9E5205">
+<Variable name="datecolor" description="Date Header Color"
+type="color" default="#777777">
+<Variable name="footercolor" description="Post Footer Color"
+type="color" default="#444444">
+<Variable name="linkcolor" description="Link Color"
+type="color" default="#DE7008">
+<Variable name="footerlinkcolor" description="Post Footer Link Color"
+type="color" default="#968a0a">
+<Variable name="visitedlinkcolor" description="Visited Link Color"
+type="color" default="#DE7008">
+<Variable name="sidebarcolor" description="Sidebar Title Color"
+type="color" default="#B8A80D">
+<Variable name="sidebarlinkcolor" description="Sidebar Link Color"
+type="color" default="#999999">
+<Variable name="bordercolor" description="Border Color"
+type="color" default="#e0ad12">
+<Variable name="bodyfont" description="Text Font"
+type="font"
+default="normal normal 100% 'Trebuchet MS',Trebuchet,Verdana,Sans-Serif">
+<Variable name="headerfont" description="Sidebar Title Font"
+type="font"
+default="normal bold 150% Verdana,Sans-serif">
+<Variable name="dateHeaderFont" description="Date Header Font"
+type="font"
+default="normal bold 105% 'Trebuchet MS',Trebuchet,Verdana,Sans-serif">
+<Variable name="pagetitlefont" description="Blog Title Font"
+type="font" default="normal bold 300% Verdana,Sans-Serif">
+<Variable name="titlefont" description="Post Title Font"
+type="font" default="normal bold 160% Verdana,Sans-Serif">
+<Variable name="startSide" description="Start side in blog language"
+type="automatic" default="left">
+<Variable name="endSide" description="End side in blog language"
+type="automatic" default="right">
+*/
+body {
+margin:0px;
+padding:0px;
+background:#f6f6f6;
+color:#000000;
+font-size: small;
+}
+#outer-wrapper {
+font:normal normal 100% 'Trebuchet MS',Trebuchet,Verdana,Sans-Serif;
+}
+a {
+color:#DE7008;
+}
+a:hover {
+color:#9E5205;
+}
+a img {
+border-width: 0;
+}
+#content-wrapper {
+padding-top: 0;
+padding-right: 1em;
+padding-bottom: 0;
+padding-left: 1em;
+}
+@media all  {
+div#main {
+float:right;
+width:66%;
+padding-top:30px;
+padding-right:0;
+padding-bottom:10px;
+padding-left:1em;
+border-left:dotted 1px #e0ad12;
+word-wrap: break-word; /* fix for long text breaking sidebar float in IE */
+overflow: hidden;     /* fix for long non-text content breaking IE sidebar float */
+}
+div#sidebar {
+margin-top:20px;
+margin-right:0px;
+margin-bottom:0px;
+margin-left:0;
+padding:0px;
+text-align:left;
+float: left;
+width: 31%;
+word-wrap: break-word; /* fix for long text breaking sidebar float in IE */
+overflow: hidden;     /* fix for long non-text content breaking IE sidebar float */
+}
+}
+@media handheld  {
+div#main {
+float:none;
+width:90%;
+}
+div#sidebar {
+padding-top:30px;
+padding-right:7%;
+padding-bottom:10px;
+padding-left:3%;
+}
+}
+#header {
+padding-top:0px;
+padding-right:0px;
+padding-bottom:0px;
+padding-left:0px;
+margin-top:0px;
+margin-right:0px;
+margin-bottom:0px;
+margin-left:0px;
+border-bottom:dotted 1px #e0ad12;
+background:#F5E39e;
+}
+h1 a:link  {
+text-decoration:none;
+color:#F5DEB3
+}
+h1 a:visited  {
+text-decoration:none;
+color:#F5DEB3
+}
+h1,h2,h3 {
+margin: 0;
+}
+h1 {
+padding-top:25px;
+padding-right:0px;
+padding-bottom:10px;
+padding-left:5%;
+color:#F5DEB3;
+background:#DE7008;
+font:normal bold 300% Verdana,Sans-Serif;
+letter-spacing:-2px;
+}
+h3.post-title {
+color:#9E5205;
+font:normal bold 160% Verdana,Sans-Serif;
+letter-spacing:-1px;
+}
+h3.post-title a,
+h3.post-title a:visited {
+color: #9E5205;
+}
+h2.date-header  {
+margin-top:10px;
+margin-right:0px;
+margin-bottom:0px;
+margin-left:0px;
+color:#777777;
+font: normal bold 105% 'Trebuchet MS',Trebuchet,Verdana,Sans-serif;
+}
+h4 {
+color:#aa0033;
+}
+#sidebar h2 {
+color:#B8A80D;
+margin:0px;
+padding:0px;
+font:normal bold 150% Verdana,Sans-serif;
+}
+#sidebar .widget {
+margin-top:0px;
+margin-right:0px;
+margin-bottom:33px;
+margin-left:0px;
+padding-top:0px;
+padding-right:0px;
+padding-bottom:0px;
+padding-left:0px;
+font-size:95%;
+}
+#sidebar ul {
+list-style-type:none;
+padding-left: 0;
+margin-top: 0;
+}
+#sidebar li {
+margin-top:0px;
+margin-right:0px;
+margin-bottom:0px;
+margin-left:0px;
+padding-top:0px;
+padding-right:0px;
+padding-bottom:0px;
+padding-left:0px;
+list-style-type:none;
+font-size:95%;
+}
+.description {
+padding:0px;
+margin-top:7px;
+margin-right:12%;
+margin-bottom:7px;
+margin-left:5%;
+color:#9E5205;
+background:transparent;
+font:bold 100% Verdana,Sans-Serif;
+}
+.post {
+margin-top:0px;
+margin-right:0px;
+margin-bottom:30px;
+margin-left:0px;
+}
+.post strong {
+color:#000000;
+font-weight:bold;
+}
+pre,code {
+color:#999999;
+}
+strike {
+color:#999999;
+}
+.post-footer  {
+padding:0px;
+margin:0px;
+color:#444444;
+font-size:80%;
+}
+.post-footer a {
+border:none;
+color:#968a0a;
+text-decoration:none;
+}
+.post-footer a:hover {
+text-decoration:underline;
+}
+#comments {
+padding:0px;
+font-size:110%;
+font-weight:bold;
+}
+.comment-author {
+margin-top: 10px;
+}
+.comment-body {
+font-size:100%;
+font-weight:normal;
+color:black;
+}
+.comment-footer {
+padding-bottom:20px;
+color:#444444;
+font-size:80%;
+font-weight:normal;
+display:inline;
+margin-right:10px
+}
+.deleted-comment  {
+font-style:italic;
+color:gray;
+}
+.comment-link  {
+margin-left:.6em;
+}
+.profile-textblock {
+clear: both;
+margin-left: 0;
+}
+.profile-img {
+float: left;
+margin-top: 0;
+margin-right: 5px;
+margin-bottom: 5px;
+margin-left: 0;
+border: 2px solid #DE7008;
+}
+#sidebar a:link  {
+color:#999999;
+text-decoration:none;
+}
+#sidebar a:active  {
+color:#ff0000;
+text-decoration:none;
+}
+#sidebar a:visited  {
+color:sidebarlinkcolor;
+text-decoration:none;
+}
+#sidebar a:hover {
+color:#B8A80D;
+text-decoration:none;
+}
+.feed-links {
+clear: both;
+line-height: 2.5em;
+}
+#blog-pager-newer-link {
+float: left;
+}
+#blog-pager-older-link {
+float: right;
+}
+#blog-pager {
+text-align: center;
+}
+.clear {
+clear: both;
+}
+.widget-content {
+margin-top: 0.5em;
+}
+/** Tweaks for layout editor preview */
+body#layout #outer-wrapper {
+margin-top: 0;
+}
+body#layout #main,
+body#layout #sidebar {
+margin-top: 10px;
+padding-top: 0;
+}
+
+--></style>
+<link type='text/css' rel='stylesheet' href='http://www.blogger.com/static/v1/widgets/2300090209-widget_css_bundle.css' /> <link rel="stylesheet" type="text/css" href="http://www.blogger.com/static/v1/v-css/3727950723-blog_controls.css"/>
+ <link rel="stylesheet" type="text/css" href="http://www.blogger.com/dyn-css/authorization.css?targetBlogID=1782618391954902258&zx=c314276a-6932-41a0-b866-adcf3b554054"/>
+<style type="text/css">#navbar-iframe { display:block }
+</style>
+
+</head>
+<body>
+<div class='navbar section' id='navbar'><div class='widget Navbar' id='Navbar1'><script type="text/javascript">
+    function setAttributeOnload(object, attribute, val) {
+      if(window.addEventListener) {
+        window.addEventListener("load",
+          function(){ object[attribute] = val; }, false);
+      } else {
+        window.attachEvent('onload', function(){ object[attribute] = val; });
+      }
+    }
+  </script>
+<iframe src="http://www.blogger.com/navbar.g?targetBlogID=1782618391954902258&amp;blogName=SQLTools%2B%2B+development&amp;publishMode=PUBLISH_MODE_BLOGSPOT&amp;navbarType=BLUE&amp;layoutType=LAYOUTS&amp;homepageUrl=http%3A%2F%2Fsqltools-plusplus.blogspot.com%2F&amp;blogLocale=en_US&amp;searchRoot=http%3A%2F%2Fsqltools-plusplus.blogspot.com%2Fsearch" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" height="30px" width="100%" id="navbar-iframe" title="Blogger Navigation and Search"></iframe>
+<div></div></div></div>
+<div id='outer-wrapper'><div id='wrap2'>
+<!-- skip links for text browsers -->
+<span id='skiplinks' style='display:none;'>
+<a href='#main'>skip to main </a> |
+      <a href='#sidebar'>skip to sidebar</a>
+</span>
+<div id='header-wrapper'>
+<div class='header section' id='header'><div class='widget Header' id='Header1'>
+<div id='header-inner'>
+<div class='titlewrapper'>
+<h1 class='title'>
+SQLTools++ development
+</h1>
+</div>
+<div class='descriptionwrapper'>
+<p class='description'><span>
+</span></p>
+</div>
+</div>
+</div></div>
+</div>
+<div id='content-wrapper'>
+<div id='crosscol-wrapper' style='text-align:center'>
+<div class='crosscol section' id='crosscol'></div>
+</div>
+<div id='main-wrapper'>
+<div class='main section' id='main'><div class='widget Blog' id='Blog1'>
+<div class='blog-posts hfeed'>
+<!-- google_ad_section_start -->
+<h2 class='date-header'>Sunday, November 16, 2008</h2>
+<div class='post hentry uncustomized-post-template'>
+<a name='807390980225647744'></a>
+<h3 class='post-title entry-title'>
+<a href='http://sqltools-plusplus.blogspot.com/2008/11/sqltools-121-rc3-is-out.html'>SQLTools++ 1.21 RC3 is out</a>
+</h3>
+<div class='post-header-line-1'></div>
+<div class='post-body entry-content'>
+Finally, a new release SQLTools++ 1.21 RC3 is out. It's mainly a stability/bug fix release.<br /><br />You can download it from the <a href="http://www.sqltools-plusplus.org:7676/sqltools_pp.html">SQLTools++</a> homepage.<br /><br />Here's a summary of the changes for SQLTools++ Version 1.21RC3:<br /><br />The following features tracked on Sourceforge.net have been added:<br /><br />* 2094823: No connection to ASM instance possible<br />You can connect now to an ASM instance. Although depending on your current settings you get various error messages the connection is no longer rejected but is successfully opened. The same should apply to RDBMS instances not opened. <br /><br />* 1992460: Add "Execute script from cursor position" option<br />Two new options and keyboard shortcuts have been added to the "Script" menu:<br />- Execute from cursor position (Default shortcut Ctrl+Alt+F5)<br />- Execute from cursor position (Halt on errors) (Default shortcut Ctrl+Alt+Shift+F5)<br />These can be used to run a script from the current cursor position and halt on errors, optionally<br />Note that you need to add the following two lines to your "Custom" keymap ("custom.keymap" located in the "Data" subdirectory) if you're using it because the installer never attempts to modify the "Custom" keymap if updating an existing installation:<br />Script.ExecuteFromCursor      Ctrl+Alt+F5<br />Script.ExecuteFromCursorHaltOnErrors Ctrl+Alt+Shift+F5<br /><br />* 1979440: Recognize DROP TYPE/CREATE TYPE operation<br />The type related SQL commands are now recognized and confirmed with appropriate messages (Type created/dropped)<br /><br />* 1919413: Add SQLTools++ on sourceforge link to menu/distribution<br />The installation script now adds a link to the SQLTools++ Sourceforge.net site<br /><br />1916777: (Optionally) do not populate Object List when connecting<br />For users that have to connect using a low bandwidth (e.g. WAN) connection two enhancements have been added:<br />1. If the schema browser is not visible it won't populate any lists initially (which was the case previously)<br />2. You can disable the "Known object cache" feature in the "PlusPlus" settings which will prevent this in-memory cache from being populated when establishing a connection<br /><br />* 1914736: Consider "Load DDL" shortcut (Ctrl+F12) in Object List<br />This feature was already available with the "Development" intermediate build. You can press now the "Load DDL" keyboard shortcut in the "Object List" (Schema Browser). This is the same as performing a double-click or selecting "Load DDL" in the right-mouse button context menu<br /><br />* 1914185: Allow "Copy Query Columns" for empty result set<br />You can copy now the query columns even if the result set is empty<br /><br />The following bugs tracked on Sourceforge.net have been fixed:<br /><br />* 2270076: Snapshot DDL shows incomplete query for large query texts<br />The built-in snapshot DDL generation code is quite basic anyway but additionally showed incomplete query text if the length of the query text was longer than 4000 chars. Now this has been extended to 64k which hopefully is sufficient for most complex queries<br /><br />* 2166142: Known objects are not properly redrawn when settings change<br />If you change settings and the "Known object cache" is enabled then the cache contents are refreshed every time you confirm the settings changes. This refresh was not properly reflected in the editor (Only when moving the cursor the content was redrawn). This has been fixed<br /> <br />* 2062502: Change "Generic Exception" dialog to point to Sourceforge<br />The "Generic" exception dialog now points to the SQLTools++ Sourceforge.net site and bug tracker rather than to the rather unmoderated original SQLTools forum<br /> <br />* 2062499: Stack Overflow in Connect.cpp (429) when connection is lost<br />When a background connection is established (e.g. with statistics or DBMS_XPLAN.DISPLAY_CURSOR enabled) and the connection is lost a nasty "Generic" exception used to show up. This has been fixed and should work now even with these features enabled<br />  <br />* 2032463: Synonyms for remote objects are shown as "INVALID"<br />Synonyms for remote database objects used to be shown with status "INVALID". This has been fixed<br /><br />* 2032446: Known objects followed by a dblink - wrong highlighting<br />If a known object was followed by a dblink the highlighting was incorrect. This has been fixed<br /><br />* 2017327: Extract Schema DDL doesn't use "Use DBMS_METADATA" setting<br />The "Extract Schema DDL" didn't use the "Use DBMS_METADATA" setting of the corresponding setup dialog. This has been fixed<br /><br />* 1991909: Highlighting error in case of comment /* */ followed by *<br />A minor highlighting error when a comment was immediately followed by an asterisk has been fixed<br /><br />* 1988773: Incorrect representation of timestamp type in Object Viewer<br />The TIMESTAMP family related data types were not correctly represented in the Object Viewer window. This has been fixed.<br /><br />* 1988113: Run in external tool while disconnected<br />You get now an appropriate message instead of an screwed up external tool call if you're currenly not connected to a database<br /> <br />* 1949675: Doing describe (F12) with lost connection raises exception<br />Appropriate message shown instead of a "Generic" exception<br /><br />* 1942383: "Use DBMS_METADATA" not saved in Settings dialog<br />Handling of this setting is now similar to the other settings, it used to be inconsistent<br /><br />* 1942045: Editor's backup file error<br />If a backup file cannot be created the actual file save is no longer aborted and you should an explanation why the backup file could not be created<br /><br />* 1941453: Opening *.txt files results in "Language 'NONE' not found"<br />This annoying error has been fixed<br /><br />* 1939328: Length of multibyte character columns incorrectly reported<br />If you have multibyte character columns, e.g. NVARCHARs or multibyte database character sets (e.g. UTF8) then the byte size of the column was shown in the Object Viewer instead of the actual character size. This has been fixed<br /><br />* 1939306: Extended Block information is wrong for lines with TABs<br />TABs should be treated now correctly for the extended information shown when "Enhanced Visuals" is enabled<br /><br />* 1939241: Visual match braces does not work with TAB chars<br />TABs should be treated now correctly for the "match braces" functionality when "Enhanced Visuals" is enabled<br /><br />* 1938706: Object List using list representation - quick filter applied<br />The list representation mode was broken when a quick filter has been applied. The columns were resized to a minimum size so that the content was unreadable<br /><br />* 1928265: Extract Schema DDL: "Type parsing error: invalid header!"<br />Incomplete type definitions lead to this error message sometimes. The handling of these incomplete types has been changed accordingly so that the message should no longer show up<br /><br />* 1927183: DDL generated for deferrable disabled constraint is wrong<br />The keywords for a deferrable disabled constraint used to be in the wrong order. This has been fixed<br /><br />* 1927173: Table Transformation Helper wrong GRANTS with DBMS_METADATA<br />When using the "DBMS_METADATA" package to generate the DDL the GRANTS generated were too many and about unrelated tables. This has been fixed.
+<div style='clear: both;'></div>
+</div>
+<div class='post-footer'>
+<div class='post-footer-line post-footer-line-1'>
+<span class='post-author vcard'>
+Posted by
+<span class='fn'>Randolf</span>
+</span>
+<span class='post-timestamp'>
+at
+<a class='timestamp-link' href='http://sqltools-plusplus.blogspot.com/2008/11/sqltools-121-rc3-is-out.html' rel='bookmark' title='permanent link'><abbr class='published' title='2008-11-16T22:19:00+01:00'>10:19 PM</abbr></a>
+</span>
+<span class='reaction-buttons'>
+</span>
+<span class='star-ratings'>
+</span>
+<span class='post-comment-link'>
+<a class='comment-link' href='https://www.blogger.com/comment.g?blogID=1782618391954902258&postID=807390980225647744' onclick=''>1 comments</a>
+</span>
+<span class='post-backlinks post-comment-link'>
+<a class='comment-link' href='http://sqltools-plusplus.blogspot.com/2008/11/sqltools-121-rc3-is-out.html#links'>Links to this post</a>
+</span>
+<span class='post-icons'>
+<span class='item-action'>
+<a href='http://www.blogger.com/email-post.g?blogID=1782618391954902258&postID=807390980225647744' title='Email Post'>
+<img alt='' class='icon-action' height='13' src='http://www.blogger.com/img/icon18_email.gif' width='18'/>
+</a>
+</span>
+<span class='item-control blog-admin pid-1523383077'>
+<a href='http://www.blogger.com/post-edit.g?blogID=1782618391954902258&postID=807390980225647744' title='Edit Post'>
+<img alt='' class='icon-action' height='18' src='http://www.blogger.com/img/icon18_edit_allbkg.gif' width='18'/>
+</a>
+</span>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-2'>
+<span class='post-labels'>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-3'>
+<span class='post-location'>
+</span>
+</div>
+</div>
+</div>
+<h2 class='date-header'>Wednesday, July 16, 2008</h2>
+<div class='post hentry uncustomized-post-template'>
+<a name='5254582577320653585'></a>
+<h3 class='post-title entry-title'>
+<a href='http://sqltools-plusplus.blogspot.com/2008/07/ongoing-development-of-sqltools.html'>Ongoing development of SQLTools++...</a>
+</h3>
+<div class='post-header-line-1'></div>
+<div class='post-body entry-content'>
+For those out there who might be interested (which I assume are not really that many): I'm currently in the process of fixing all bugs submitted so far and adding some minor features. I'm aiming for releasing a bug fix release 1.21 RC3 when this is done. No clue yet when this will be the case, but I hope it won't take too long.<br /><br />Major changes will be left for the next major release which is probably going to take a significant time before being released as I'm currently quite busy in my job, so there is not much time left to spend on SQLTools++, unfortunately.<br /><br />Regards,<br />Randolf
+<div style='clear: both;'></div>
+</div>
+<div class='post-footer'>
+<div class='post-footer-line post-footer-line-1'>
+<span class='post-author vcard'>
+Posted by
+<span class='fn'>Randolf</span>
+</span>
+<span class='post-timestamp'>
+at
+<a class='timestamp-link' href='http://sqltools-plusplus.blogspot.com/2008/07/ongoing-development-of-sqltools.html' rel='bookmark' title='permanent link'><abbr class='published' title='2008-07-16T23:29:00+02:00'>11:29 PM</abbr></a>
+</span>
+<span class='reaction-buttons'>
+</span>
+<span class='star-ratings'>
+</span>
+<span class='post-comment-link'>
+<a class='comment-link' href='https://www.blogger.com/comment.g?blogID=1782618391954902258&postID=5254582577320653585' onclick=''>9
+comments</a>
+</span>
+<span class='post-backlinks post-comment-link'>
+<a class='comment-link' href='http://sqltools-plusplus.blogspot.com/2008/07/ongoing-development-of-sqltools.html#links'>Links to this post</a>
+</span>
+<span class='post-icons'>
+<span class='item-action'>
+<a href='http://www.blogger.com/email-post.g?blogID=1782618391954902258&postID=5254582577320653585' title='Email Post'>
+<img alt='' class='icon-action' height='13' src='http://www.blogger.com/img/icon18_email.gif' width='18'/>
+</a>
+</span>
+<span class='item-control blog-admin pid-1523383077'>
+<a href='http://www.blogger.com/post-edit.g?blogID=1782618391954902258&postID=5254582577320653585' title='Edit Post'>
+<img alt='' class='icon-action' height='18' src='http://www.blogger.com/img/icon18_edit_allbkg.gif' width='18'/>
+</a>
+</span>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-2'>
+<span class='post-labels'>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-3'>
+<span class='post-location'>
+</span>
+</div>
+</div>
+</div>
+<h2 class='date-header'>Wednesday, April 9, 2008</h2>
+<div class='post hentry uncustomized-post-template'>
+<a name='6248445278282593211'></a>
+<h3 class='post-title entry-title'>
+<a href='http://sqltools-plusplus.blogspot.com/2008/04/homepage-and-sourceforgenet-page.html'>Homepage and Sourceforge.net page updated</a>
+</h3>
+<div class='post-header-line-1'></div>
+<div class='post-body entry-content'>
+I've added a sample screenshot to the SQLTools++ homepage (<a href="http://www.sqltools-plusplus.org:7676/">http://www.sqltools-plusplus.org:7676/</a>) which links to the Sourceforge.net project "Screenshots" page . There you'll find more screenshots showing the look and feel of SQLTools++ if you don't know it yet and are interested in finding out what it is about.<br /><br />In addition the "Documentation" page on Sourceforge.net (<a href="http://sourceforge.net/docman/?group_id=220648">http://sourceforge.net/docman/?group_id=220648</a>) now contains a document that describes the main enhancements of SQLTools++ in comparison to the original SQLTools.
+<div style='clear: both;'></div>
+</div>
+<div class='post-footer'>
+<div class='post-footer-line post-footer-line-1'>
+<span class='post-author vcard'>
+Posted by
+<span class='fn'>Randolf</span>
+</span>
+<span class='post-timestamp'>
+at
+<a class='timestamp-link' href='http://sqltools-plusplus.blogspot.com/2008/04/homepage-and-sourceforgenet-page.html' rel='bookmark' title='permanent link'><abbr class='published' title='2008-04-09T22:48:00+02:00'>10:48 PM</abbr></a>
+</span>
+<span class='reaction-buttons'>
+</span>
+<span class='star-ratings'>
+</span>
+<span class='post-comment-link'>
+<a class='comment-link' href='https://www.blogger.com/comment.g?blogID=1782618391954902258&postID=6248445278282593211' onclick=''>0
+comments</a>
+</span>
+<span class='post-backlinks post-comment-link'>
+<a class='comment-link' href='http://sqltools-plusplus.blogspot.com/2008/04/homepage-and-sourceforgenet-page.html#links'>Links to this post</a>
+</span>
+<span class='post-icons'>
+<span class='item-action'>
+<a href='http://www.blogger.com/email-post.g?blogID=1782618391954902258&postID=6248445278282593211' title='Email Post'>
+<img alt='' class='icon-action' height='13' src='http://www.blogger.com/img/icon18_email.gif' width='18'/>
+</a>
+</span>
+<span class='item-control blog-admin pid-1523383077'>
+<a href='http://www.blogger.com/post-edit.g?blogID=1782618391954902258&postID=6248445278282593211' title='Edit Post'>
+<img alt='' class='icon-action' height='18' src='http://www.blogger.com/img/icon18_edit_allbkg.gif' width='18'/>
+</a>
+</span>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-2'>
+<span class='post-labels'>
+Labels:
+<a href='http://sqltools-plusplus.blogspot.com/search/label/Documentation' rel='tag'>Documentation</a>,
+<a href='http://sqltools-plusplus.blogspot.com/search/label/Screenshots' rel='tag'>Screenshots</a>,
+<a href='http://sqltools-plusplus.blogspot.com/search/label/Sourceforge' rel='tag'>Sourceforge</a>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-3'>
+<span class='post-location'>
+</span>
+</div>
+</div>
+</div>
+<h2 class='date-header'>Friday, March 14, 2008</h2>
+<div class='post hentry uncustomized-post-template'>
+<a name='4641231537078366638'></a>
+<h3 class='post-title entry-title'>
+<a href='http://sqltools-plusplus.blogspot.com/2008/03/sqltools-on-sourceforgenet.html'>SQLTools++ on Sourceforge.net</a>
+</h3>
+<div class='post-header-line-1'></div>
+<div class='post-body entry-content'>
+I was thinking about offering users the opportunity to provide feedback, submit bugs, ask for help, request new features etc. Therefore I had to decide how to do that. The straightforward solution would have been to add a forum and a bug tracker (e.g. bugzilla) to my already existing SQLTools++ homepage.<br /><br />But then I thought there are already sites out there that offer these functions and more. So I opted for an Sourceforge.net project... Back to the roots, the original SQLTools is also hosted there, although no longer maintained.<br /><br />The project request was approved very quickly, so here we are:<br /><br /><a href="http://sourceforge.net/projects/sqlt-pp/">http://sourceforge.net/projects/sqlt-pp/</a><br /><br />Still the Sourceforge team has not managed yet to upload the existing CVS archive to the sourceforge CVS system but apart from that one already can do a lot of things there:<br /><br />- Of course download all the available stuff<br />- Use the "Tracker" feature to submit bugs, request features etc.<br />- Discuss in forums (Currently "Help" and "Open discussion" are available)<br /><br />I think this is quite useful and hope the users out there (are there any? :-)) will be able to benefit from it as well.<br /><br />Best Regards,<br />Randolf
+<div style='clear: both;'></div>
+</div>
+<div class='post-footer'>
+<div class='post-footer-line post-footer-line-1'>
+<span class='post-author vcard'>
+Posted by
+<span class='fn'>Randolf</span>
+</span>
+<span class='post-timestamp'>
+at
+<a class='timestamp-link' href='http://sqltools-plusplus.blogspot.com/2008/03/sqltools-on-sourceforgenet.html' rel='bookmark' title='permanent link'><abbr class='published' title='2008-03-14T23:03:00+01:00'>11:03 PM</abbr></a>
+</span>
+<span class='reaction-buttons'>
+</span>
+<span class='star-ratings'>
+</span>
+<span class='post-comment-link'>
+<a class='comment-link' href='https://www.blogger.com/comment.g?blogID=1782618391954902258&postID=4641231537078366638' onclick=''>2
+comments</a>
+</span>
+<span class='post-backlinks post-comment-link'>
+<a class='comment-link' href='http://sqltools-plusplus.blogspot.com/2008/03/sqltools-on-sourceforgenet.html#links'>Links to this post</a>
+</span>
+<span class='post-icons'>
+<span class='item-action'>
+<a href='http://www.blogger.com/email-post.g?blogID=1782618391954902258&postID=4641231537078366638' title='Email Post'>
+<img alt='' class='icon-action' height='13' src='http://www.blogger.com/img/icon18_email.gif' width='18'/>
+</a>
+</span>
+<span class='item-control blog-admin pid-1523383077'>
+<a href='http://www.blogger.com/post-edit.g?blogID=1782618391954902258&postID=4641231537078366638' title='Edit Post'>
+<img alt='' class='icon-action' height='18' src='http://www.blogger.com/img/icon18_edit_allbkg.gif' width='18'/>
+</a>
+</span>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-2'>
+<span class='post-labels'>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-3'>
+<span class='post-location'>
+</span>
+</div>
+</div>
+</div>
+<h2 class='date-header'>Saturday, March 1, 2008</h2>
+<div class='post hentry uncustomized-post-template'>
+<a name='6337665013850690014'></a>
+<h3 class='post-title entry-title'>
+<a href='http://sqltools-plusplus.blogspot.com/2008/03/sqltools-120-rc3-is-out.html'>SQLTools++ 1.20 RC3 is out</a>
+</h3>
+<div class='post-header-line-1'></div>
+<div class='post-body entry-content'>
+A new release SQLTools++ 1.20 RC3 is out.<br /><br />You can download it from the <a href="http://www.sqltools-plusplus.org:7676/sqltools_pp.html">SQLTools++</a> homepage.<br /><br />Here's a summary of the changes for SQLTools++ Version 1.20RC3:<br /><br />New features:<br /><br />- New major feature: Enhanced editor highlighting<br />* Match braces<br />* Highlight too long identifiers exceeding threshold length (default 30 chars but can be changed in "PlusPlus" settings)<br />* Highlight known user objects for current connection<br />* Show extended information about selected text in status bar<br />Since this is quite beta, all the related new code paths can be disabled in the "PlusPlus" section of the settings ("Enhanced Visuals")<br />- New feature: Auto resize columns after each fetch (analyses only the newly fetched array of rows)<br />- New feature: Added external tool placeholder <sys_privs> which can be empty, " AS SYSOPER" or " AS SYSDBA" to support<br />privileged connections in external tools<br />- New feature: Order columns in Object Viewer for tables by column name, can be selected in PlusPlus Settings dialog<br />             or toggled by using second keyboard shortcut (F12 / Shift+F12 by default)<br /><br />Improvements:<br /><br />- Improvement: Reading NCLOBs is now supported, no longer ORA-24806 error message when attempting to fetch them<br />- Improvement: Double-Click on column header border in Grid autofits column (similar to other windows lists)<br />- Improvement: Appropriate message when not connected to database and attempting to expand a node in Object Viewer<br />- Improvement: Use environment variable ORACLE_HOME if set in environment<br />- Improvement: Use environment variable TNS_ADMIN if set in environment<br />- Improvement: Support TNS entries having multiple aliases assigned delimited by comma<br />- Improvement: Support both synonyms SNAPSHOT (LOG) and MATERIALIZED VIEW (LOG)<br />- Improvement: Do not report ORA-28002 twice if using background connection for statistics or DBMS_XPLAN.DISPLAY_CURSOR<br />- Improvement: More precise information about various data types in Object Viewer: NUMBER, FLOAT, *LOB<br />- Improvement: Set filter to "N/A" if none of the QuickFilters "VALID/INVALID" are selected. This should filter on<br />objects like partitioned indexes that do not have a global status but an individual status for each partition object<br />- Improvement: "Refresh All" in Object List now actually does a "refresh all" resp. marks all tabs for refresh the next time<br />they are used (It didn't do it before, it just did a "refresh" of the current tab).<br />Note that this "Refresh All" also refreshes the "Known object" cache used by the enhanced editor highlighting, so in case<br />you've added/dropped objects you can use this option to refresh the cache used for highlighting<br />- Improvement: All kinds of reverse indexes and function-based bitmap indexes are handled correctly<br />- Improvement: Optionally disable cell selection wraparound in Grid<br /><br />Changes:<br /><br />- Change: No longer set focus to "Plan" pane when performing "Explain plan", use "Switch pane" (default: F6) to set focus<br />if needed<br />- Change: Show execution times that are less than one second as milliseconds<br /><br />Bugfixes:<br /><br />- Fix: Materialized view log handling (drop) fixed in Object List<br />- Fix: Re-enabled "Allow remember manually changed column width" which was broken due to my misunderstanding<br />- Fix: Get DBMS_METADATA DDL for MATERIALIZED VIEW LOG fixed<br />- Fix: If unlimited DBMS_OUTPUT size is selected in settings, apply the changed setting to current connection<br />- Fix: Consistent handling of statistics setting in current session if changing the setting in Settings dialog or in GUI<br />via button<br />- Fix: 9i emulation of DBMS_XPLAN.DISPLAY_CURSOR now also enables the "Refresh" context menu entry<br />- Fix: If "Connection lost" related error is thrown from remote do not close local connection<br />- Fix: Exception no longer raised when clicking in the row header of an empty result set<br />- Fix: Changing VALID/INVALID filters in Object List now invalidates all tabs so that changed filter is applied when<br />activated<br />- Fix: Setting a filter in an Object list tab no longer invalidates all other tabs<br />- Fix: Opening a non-existing document from the most recently used file list no longer raises an Exception<br />- Fix: Re-enabled TAB key in Grid<br />- Fix: "Find in Files" should work again. Correct "GREP.EXE" is now part of the installation package again<br />- Documentation bug: 9i unfortunately does not populate the V$SQL_PLAN_STATISTICS_ALL view if statistics_level is set<br />to default value TYPICAL, therefore you don't get the basic plan info. You only get the view populated if statistics_level<br />is set to ALL. Whereas 10g already mirrors basic plan information from V$SQL_PLAN into V$SQL_PLAN_STATISTICS_ALL in<br />TYPICAL mode<br /><br />Known Issues:<br /><br />- Known Issue: Quoted identifiers (using "<identifier>") potentially are not correctly recognized by new "Known objects"<br />hightlighting since the current tokenizer does treat them as "normal" identifiers and therefore breaks them apart in<br />case of any special character encountered</identifier></sys_privs>
+<div style='clear: both;'></div>
+</div>
+<div class='post-footer'>
+<div class='post-footer-line post-footer-line-1'>
+<span class='post-author vcard'>
+Posted by
+<span class='fn'>Randolf</span>
+</span>
+<span class='post-timestamp'>
+at
+<a class='timestamp-link' href='http://sqltools-plusplus.blogspot.com/2008/03/sqltools-120-rc3-is-out.html' rel='bookmark' title='permanent link'><abbr class='published' title='2008-03-01T22:25:00+01:00'>10:25 PM</abbr></a>
+</span>
+<span class='reaction-buttons'>
+</span>
+<span class='star-ratings'>
+</span>
+<span class='post-comment-link'>
+<a class='comment-link' href='https://www.blogger.com/comment.g?blogID=1782618391954902258&postID=6337665013850690014' onclick=''>2
+comments</a>
+</span>
+<span class='post-backlinks post-comment-link'>
+<a class='comment-link' href='http://sqltools-plusplus.blogspot.com/2008/03/sqltools-120-rc3-is-out.html#links'>Links to this post</a>
+</span>
+<span class='post-icons'>
+<span class='item-action'>
+<a href='http://www.blogger.com/email-post.g?blogID=1782618391954902258&postID=6337665013850690014' title='Email Post'>
+<img alt='' class='icon-action' height='13' src='http://www.blogger.com/img/icon18_email.gif' width='18'/>
+</a>
+</span>
+<span class='item-control blog-admin pid-1523383077'>
+<a href='http://www.blogger.com/post-edit.g?blogID=1782618391954902258&postID=6337665013850690014' title='Edit Post'>
+<img alt='' class='icon-action' height='18' src='http://www.blogger.com/img/icon18_edit_allbkg.gif' width='18'/>
+</a>
+</span>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-2'>
+<span class='post-labels'>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-3'>
+<span class='post-location'>
+</span>
+</div>
+</div>
+</div>
+<h2 class='date-header'>Saturday, December 22, 2007</h2>
+<div class='post hentry uncustomized-post-template'>
+<a name='5446837379965184292'></a>
+<h3 class='post-title entry-title'>
+<a href='http://sqltools-plusplus.blogspot.com/2007/12/sqltools-110-rc2-is-out.html'>SQLTools++ 1.10 RC2 is out</a>
+</h3>
+<div class='post-header-line-1'></div>
+<div class='post-body entry-content'>
+Good news, SQLTools++ 1.10 RC2 is out.<br /><br />You can download it from the <a href="http://www.sqltools-plusplus.org:7676/sqltools_pp.html">SQLTools++</a> homepage.<br /><br />Here's a summary of the changes:<br /><br />SQLTools++ Version 1.10RC2 (22-DEC-2007):<br /><br />Improvements:<br />- Tested with Oracle 11g Server and Client, recognizes 11g as server/client version<br />- 11g session statistics supported<br />- Filter header bars added to connection dialog and schema browser object list, similar to SQLTools 1.5<br />- Freshened GUI look, the initial SQLTools++ release used accidentally the "old" Win9x style<br />- Execute script and halt on errors (new toolbar button)<br />- Execute script in external tool (new toolbar button)<br />- Use optionally DBMS_METADATA to generate DDL (can be used from Server version 9i onwards)<br />- Optionally save all files automatically before executing database operation<br />- Test connection/Reconnect in case you were disconnected from the database, similar to TOAD functionality (new toolbar button)<br />- Schema browser object list supports now Snapshots, Snapshot logs and the Recyclebin in 10g onwards<br />- Index as lookup object supported<br />- DDL generation support for database and DDL triggers<br />- Cleanup of Settings dialog: PlusPlus settings are now in a separate page grouped together<br />- Copy selected entries from schema browser and object viewer separated by newlines using new shortcut Ctrl+Alt+C in addition to the already supported Ctrl+C shortcut<br />- Handle NULL passwords better by offering a separate dialog to enter the missing password<br />- DBMS_OUTPUT now allows max. linesize of 32767 beginning with 10g<br />- Unlimited DBMS_OUTPUT supported in 10g or later<br />- 10g DBMS_XPLAN.DISPLAY_CURSOR emulation now available for Oracle9i, see "Data\display_cursor_9i.sql"<br />You may change the contents of the file to meet your needs, or even save the code in a persistent procedure/package and change the file contents to just call this procedure/package.<br />The file content is re-read each time the DISPLAY_CURSOR functionality is called<br />- MERGE sql statement now recognized and appropriate feedback provided (no. of rows merged)<br />- Popup Editor window can now be closed using the ESC key as shortcut<br />- Handle Oracle error ORA-28002 ("password expires in next <x> days") more gracefully when opening a connection<br />- Check for update on web site with a single click. Although not yet automated, you will be redirected to a web page using the default browser of your system that shows you if there is a newer version available for download.<br />- Customizable settings regarding the "whitespace" and "blank" lines act as statement delimiter in the new "PlusPlus" settings page<br />- Installation cleanup, default settings, files and web links updated<br /><br />Bugfixes:<br />- Fixed issue with background session connection (timing issue while establishing the connection)<br />- Explain plan did not adhere to "whitespace line" setting<br />- Auto-fit columns is now executed even if the column descriptions stay the same (there was a caching active that compared the current columns of the result set with the previous and in case they were the same no resizing took place. I deactivated that comparison because it annoyed me)<br />- Object lookup in Object Viewer for similar object names used previous object in case previous object name is superset (OBJECT_NAME1 vs. OBJECT_NAME) of current object name. Now an exact match is performed<br />- Lookup of partitioned object fails due to unknown object type error message, this has been fixed<br /><br />Known Issues:<br />- Believe it or not, but the DBMS_METADATA package sometimes generates invalid and incomplete DDL. For instance generating the indexes of an table having LOB columns by calling DBMS_METADATA.GET_DEPENDENT_DDL attempts to create the LOB indexes explicitly using an incomplete and invalid CREATE INDEX command.<br />This holds true even for Oracle 11g, nevertheless I doubt that this is something you would dare to call a "feature"... Still I render the option to use DBMS_METADATA as useful.
+<div style='clear: both;'></div>
+</div>
+<div class='post-footer'>
+<div class='post-footer-line post-footer-line-1'>
+<span class='post-author vcard'>
+Posted by
+<span class='fn'>Randolf</span>
+</span>
+<span class='post-timestamp'>
+at
+<a class='timestamp-link' href='http://sqltools-plusplus.blogspot.com/2007/12/sqltools-110-rc2-is-out.html' rel='bookmark' title='permanent link'><abbr class='published' title='2007-12-22T22:57:00+01:00'>10:57 PM</abbr></a>
+</span>
+<span class='reaction-buttons'>
+</span>
+<span class='star-ratings'>
+</span>
+<span class='post-comment-link'>
+<a class='comment-link' href='https://www.blogger.com/comment.g?blogID=1782618391954902258&postID=5446837379965184292' onclick=''>5
+comments</a>
+</span>
+<span class='post-backlinks post-comment-link'>
+<a class='comment-link' href='http://sqltools-plusplus.blogspot.com/2007/12/sqltools-110-rc2-is-out.html#links'>Links to this post</a>
+</span>
+<span class='post-icons'>
+<span class='item-action'>
+<a href='http://www.blogger.com/email-post.g?blogID=1782618391954902258&postID=5446837379965184292' title='Email Post'>
+<img alt='' class='icon-action' height='13' src='http://www.blogger.com/img/icon18_email.gif' width='18'/>
+</a>
+</span>
+<span class='item-control blog-admin pid-1523383077'>
+<a href='http://www.blogger.com/post-edit.g?blogID=1782618391954902258&postID=5446837379965184292' title='Edit Post'>
+<img alt='' class='icon-action' height='18' src='http://www.blogger.com/img/icon18_edit_allbkg.gif' width='18'/>
+</a>
+</span>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-2'>
+<span class='post-labels'>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-3'>
+<span class='post-location'>
+</span>
+</div>
+</div>
+</div>
+<h2 class='date-header'>Wednesday, December 5, 2007</h2>
+<div class='post hentry uncustomized-post-template'>
+<a name='5482440289535207046'></a>
+<h3 class='post-title entry-title'>
+<a href='http://sqltools-plusplus.blogspot.com/2007/12/new-version-110rc2-of-sqltools-underway.html'>New version 1.10RC2 of SQLTools++ underway</a>
+</h3>
+<div class='post-header-line-1'></div>
+<div class='post-body entry-content'>
+Just a few words on the latest development: I've found some time and motivation again and have already added a lot of new features. I hope that the new version will be out soon (which means within the next couple of weeks), but won't promise anything here.<br /><br />Here a list of things that have been added/updated resp. currently being worked on:<br /><br />SQLTools++ Version 1.10RC2<br /><br />Improvements:<br />- Tested with Oracle 11g Server and Client, recognizes 11g as server/client version<br />- 11g session statistics supported<br />- Filter header bars added to connection dialog and schema browser lists, similar to SQLTools 1.5<br />- Schema browser supports now Snapshots, Snapshot logs and the Recyclebin in 10g onwards<br />- Use optionally DBMS_METADATA to extract DDL from database<br />- Execute a script and halt on errors<br />- Execute a script or a selected range in an external tool<br />- Test the connection resp. re-connect in case you've been disconnected from the database, similar to TOAD functionality<br />- Automatically save your files before a database execution takes place<br />- Cleanup of Settings dialog: PlusPlus settings are now in a separate page grouped together<br />- Copy selected rows from schema browser and object viewer separated by newlines using new shortcut Ctrl+Alt+C in addition to the already existing Ctrl+C shortcut<br />- Handle NULL passwords better by offering a separate dialog to enter the missing password<br />- DBMS_OUTPUT now allows max. linesize of 32767 beginning with 10g<br />- Unlimited DBMS_OUTPUT supported on 10g or later<br />- DBMS_XPLAN.DISPLAY_CURSOR emulation now available for Oracle9i, see "Data\display_cursor_9i.sql"<br />You may change the contents of the file to meet your needs, or even save the code in a persistent  procedure/package and change the file contents to just call this procedure/package.<br />The file content is re-read each time the DISPLAY_CURSOR functionality is called<br />- MERGE SQL statement now recognized and appropriate feedback provided (no. of rows merged)<br />- Popup Editor window can now be closed using the ESC key as shortcut<br />- Handle Oracle error ORA-28002 ("password expires in next <x> days") more gracefully<br />- Check for update on web site with a single click. Although not yet automated, you will be redirected to a web page using the default browser of your system that shows you if there is a newer version available for download.<br />- Installation cleanup, default settings, files and web links updated<br /><br />Bugfixes:<br />- Fixed issue with background session connection (timing issue while establishing the connection)<br />- Explain plan did not adhere to "whitespace line" setting<br />- Auto-fit columns is now executed even if the column descriptions stay the same (there was a caching active that compared the current columns of the result set with the previous and in case they were the same no resizing took place. I deactivated that comparison because it annoyed me)</x>
+<div style='clear: both;'></div>
+</div>
+<div class='post-footer'>
+<div class='post-footer-line post-footer-line-1'>
+<span class='post-author vcard'>
+Posted by
+<span class='fn'>Randolf</span>
+</span>
+<span class='post-timestamp'>
+at
+<a class='timestamp-link' href='http://sqltools-plusplus.blogspot.com/2007/12/new-version-110rc2-of-sqltools-underway.html' rel='bookmark' title='permanent link'><abbr class='published' title='2007-12-05T22:38:00+01:00'>10:38 PM</abbr></a>
+</span>
+<span class='reaction-buttons'>
+</span>
+<span class='star-ratings'>
+</span>
+<span class='post-comment-link'>
+<a class='comment-link' href='https://www.blogger.com/comment.g?blogID=1782618391954902258&postID=5482440289535207046' onclick=''>0
+comments</a>
+</span>
+<span class='post-backlinks post-comment-link'>
+<a class='comment-link' href='http://sqltools-plusplus.blogspot.com/2007/12/new-version-110rc2-of-sqltools-underway.html#links'>Links to this post</a>
+</span>
+<span class='post-icons'>
+<span class='item-action'>
+<a href='http://www.blogger.com/email-post.g?blogID=1782618391954902258&postID=5482440289535207046' title='Email Post'>
+<img alt='' class='icon-action' height='13' src='http://www.blogger.com/img/icon18_email.gif' width='18'/>
+</a>
+</span>
+<span class='item-control blog-admin pid-1523383077'>
+<a href='http://www.blogger.com/post-edit.g?blogID=1782618391954902258&postID=5482440289535207046' title='Edit Post'>
+<img alt='' class='icon-action' height='18' src='http://www.blogger.com/img/icon18_edit_allbkg.gif' width='18'/>
+</a>
+</span>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-2'>
+<span class='post-labels'>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-3'>
+<span class='post-location'>
+</span>
+</div>
+</div>
+</div>
+<!-- google_ad_section_end -->
+</div>
+<div class='blog-pager' id='blog-pager'>
+<span id='blog-pager-older-link'>
+<a class='blog-pager-older-link' href='http://sqltools-plusplus.blogspot.com/search?updated-max=2007-12-05T22%3A38%3A00%2B01%3A00&max-results=7' id='Blog1_blog-pager-older-link' title='Older Posts'>Older Posts</a>
+</span>
+</div>
+<div class='clear'></div>
+<div class='blog-feeds'>
+<div class='feed-links'>
+Subscribe to:
+<a class='feed-link' href='http://sqltools-plusplus.blogspot.com/feeds/posts/default' target='_blank' type='application/atom+xml'>Posts (Atom)</a>
+</div>
+</div>
+</div></div>
+</div>
+<div id='sidebar-wrapper'>
+<div class='sidebar section' id='sidebar'><div class='widget BlogArchive' id='BlogArchive1'>
+<h2>Blog Archive</h2>
+<div class='widget-content'>
+<div id='ArchiveList'>
+<div id='BlogArchive1_ArchiveList'>
+<ul>
+<li class='archivedate expanded'>
+<a class='toggle' href='http://sqltools-plusplus.blogspot.com/?widgetType=BlogArchive&widgetId=BlogArchive1&action=toggle&dir=close&toggle=YEARLY-1199142000000&toggleopen=MONTHLY-1225494000000'>
+<span class='zippy toggle-open'>&#9660; </span>
+</a>
+<a class='post-count-link' href='http://sqltools-plusplus.blogspot.com/search?updated-min=2008-01-01T00%3A00%3A00%2B01%3A00&updated-max=2009-01-01T00%3A00%3A00%2B01%3A00&max-results=5'>2008</a>
+<span class='post-count' dir='ltr'>(5)</span>
+<ul>
+<li class='archivedate expanded'>
+<a class='toggle' href='http://sqltools-plusplus.blogspot.com/?widgetType=BlogArchive&widgetId=BlogArchive1&action=toggle&dir=close&toggle=MONTHLY-1225494000000&toggleopen=MONTHLY-1225494000000'>
+<span class='zippy toggle-open'>&#9660; </span>
+</a>
+<a class='post-count-link' href='http://sqltools-plusplus.blogspot.com/2008_11_01_archive.html'>November</a>
+<span class='post-count' dir='ltr'>(1)</span>
+<ul class='posts'>
+<li><a href='http://sqltools-plusplus.blogspot.com/2008/11/sqltools-121-rc3-is-out.html'>SQLTools++ 1.21 RC3 is out</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class='archivedate collapsed'>
+<a class='toggle' href='http://sqltools-plusplus.blogspot.com/?widgetType=BlogArchive&widgetId=BlogArchive1&action=toggle&dir=open&toggle=MONTHLY-1214863200000&toggleopen=MONTHLY-1225494000000'>
+<span class='zippy'>
+
+              &#9658;
+            
+</span>
+</a>
+<a class='post-count-link' href='http://sqltools-plusplus.blogspot.com/2008_07_01_archive.html'>July</a>
+<span class='post-count' dir='ltr'>(1)</span>
+<ul class='posts'>
+<li><a href='http://sqltools-plusplus.blogspot.com/2008/07/ongoing-development-of-sqltools.html'>Ongoing development of SQLTools++...</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class='archivedate collapsed'>
+<a class='toggle' href='http://sqltools-plusplus.blogspot.com/?widgetType=BlogArchive&widgetId=BlogArchive1&action=toggle&dir=open&toggle=MONTHLY-1207000800000&toggleopen=MONTHLY-1225494000000'>
+<span class='zippy'>
+
+              &#9658;
+            
+</span>
+</a>
+<a class='post-count-link' href='http://sqltools-plusplus.blogspot.com/2008_04_01_archive.html'>April</a>
+<span class='post-count' dir='ltr'>(1)</span>
+<ul class='posts'>
+<li><a href='http://sqltools-plusplus.blogspot.com/2008/04/homepage-and-sourceforgenet-page.html'>Homepage and Sourceforge.net page updated</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class='archivedate collapsed'>
+<a class='toggle' href='http://sqltools-plusplus.blogspot.com/?widgetType=BlogArchive&widgetId=BlogArchive1&action=toggle&dir=open&toggle=MONTHLY-1204326000000&toggleopen=MONTHLY-1225494000000'>
+<span class='zippy'>
+
+              &#9658;
+            
+</span>
+</a>
+<a class='post-count-link' href='http://sqltools-plusplus.blogspot.com/2008_03_01_archive.html'>March</a>
+<span class='post-count' dir='ltr'>(2)</span>
+<ul class='posts'>
+<li><a href='http://sqltools-plusplus.blogspot.com/2008/03/sqltools-on-sourceforgenet.html'>SQLTools++ on Sourceforge.net</a></li>
+<li><a href='http://sqltools-plusplus.blogspot.com/2008/03/sqltools-120-rc3-is-out.html'>SQLTools++ 1.20 RC3 is out</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class='archivedate collapsed'>
+<a class='toggle' href='http://sqltools-plusplus.blogspot.com/?widgetType=BlogArchive&widgetId=BlogArchive1&action=toggle&dir=open&toggle=YEARLY-1167606000000&toggleopen=MONTHLY-1225494000000'>
+<span class='zippy'>
+
+              &#9658;
+            
+</span>
+</a>
+<a class='post-count-link' href='http://sqltools-plusplus.blogspot.com/search?updated-min=2007-01-01T00%3A00%3A00%2B01%3A00&updated-max=2008-01-01T00%3A00%3A00%2B01%3A00&max-results=4'>2007</a>
+<span class='post-count' dir='ltr'>(4)</span>
+<ul>
+<li class='archivedate collapsed'>
+<a class='toggle' href='http://sqltools-plusplus.blogspot.com/?widgetType=BlogArchive&widgetId=BlogArchive1&action=toggle&dir=open&toggle=MONTHLY-1196463600000&toggleopen=MONTHLY-1225494000000'>
+<span class='zippy'>
+
+              &#9658;
+            
+</span>
+</a>
+<a class='post-count-link' href='http://sqltools-plusplus.blogspot.com/2007_12_01_archive.html'>December</a>
+<span class='post-count' dir='ltr'>(2)</span>
+<ul class='posts'>
+<li><a href='http://sqltools-plusplus.blogspot.com/2007/12/sqltools-110-rc2-is-out.html'>SQLTools++ 1.10 RC2 is out</a></li>
+<li><a href='http://sqltools-plusplus.blogspot.com/2007/12/new-version-110rc2-of-sqltools-underway.html'>New version 1.10RC2 of SQLTools++ underway</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class='archivedate collapsed'>
+<a class='toggle' href='http://sqltools-plusplus.blogspot.com/?widgetType=BlogArchive&widgetId=BlogArchive1&action=toggle&dir=open&toggle=MONTHLY-1172703600000&toggleopen=MONTHLY-1225494000000'>
+<span class='zippy'>
+
+              &#9658;
+            
+</span>
+</a>
+<a class='post-count-link' href='http://sqltools-plusplus.blogspot.com/2007_03_01_archive.html'>March</a>
+<span class='post-count' dir='ltr'>(2)</span>
+<ul class='posts'>
+<li><a href='http://sqltools-plusplus.blogspot.com/2007/03/whats-next.html'>What&#39;s next...</a></li>
+<li><a href='http://sqltools-plusplus.blogspot.com/2007/03/first-public-release.html'>First public release</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' href='http://www.blogger.com/rearrange?blogID=1782618391954902258&widgetType=BlogArchive&widgetId=BlogArchive1&action=editWidget' onclick='return _WidgetManager._PopupConfig(document.getElementById("BlogArchive1"));' target='configBlogArchive1' title='Edit'>
+<img alt='' height='18' src='http://img1.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div>
+</div><div class='widget Profile' id='Profile1'>
+<h2>About Me</h2>
+<div class='widget-content'>
+<dl class='profile-datablock'>
+<dt class='profile-data'>Randolf Geist</dt>
+<dd class='profile-textblock'>I live in Mannheim, Germany, and spend most of my time working as independent consultant specialised in helping my customers getting the most out of the Oracle database.
+
+I spend my non-working hours with my family, and if time allows for it, I enjoy myself pursuing my hobbies.</dd>
+</dl>
+<a class='profile-link' href='http://www.blogger.com/profile/13463198440639982695'>View my complete profile</a>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' href='http://www.blogger.com/rearrange?blogID=1782618391954902258&widgetType=Profile&widgetId=Profile1&action=editWidget' onclick='return _WidgetManager._PopupConfig(document.getElementById("Profile1"));' target='configProfile1' title='Edit'>
+<img alt='' height='18' src='http://img1.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div>
+</div><div class='widget HTML' id='HTML1'>
+<div class='widget-content'>
+<!-- Start of StatCounter Code -->
+<script language="javascript" type="text/javascript">
+var sc_project=2418217; 
+var sc_invisible=0; 
+var sc_partition=22; 
+var sc_security="3bc57fac"; 
+</script>
+
+<script language="javascript" src="http://www.statcounter.com/counter/counter.js" type="text/javascript"></script><noscript><a href="http://www.statcounter.com/" target="_blank"><img border="0" alt="web tracker" src="http://c23.statcounter.com/counter.php?sc_project=2418217&java=0&security=3bc57fac&invisible=0"/></a> </noscript>
+<!-- End of StatCounter Code -->
+</div>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' href='http://www.blogger.com/rearrange?blogID=1782618391954902258&widgetType=HTML&widgetId=HTML1&action=editWidget' onclick='return _WidgetManager._PopupConfig(document.getElementById("HTML1"));' target='configHTML1' title='Edit'>
+<img alt='' height='18' src='http://img1.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div></div>
+</div>
+<!-- spacer for skins that want sidebar and main to be the same height-->
+<div class='clear'>&#160;</div>
+</div>
+<!-- end content-wrapper -->
+</div></div>
+<!-- end outer-wrapper -->
+<script type="text/javascript" src="http://www.blogger.com/static/v1/widgets/4279243607-widgets.js"></script>
+<script type='text/javascript'>
+_WidgetManager._Init('http://www.blogger.com/rearrange?blogID=1782618391954902258', 'http://sqltools-plusplus.blogspot.com/','1782618391954902258');
+_WidgetManager._SetPageActionUrl('http://www.blogger.com/display?blogID=1782618391954902258', '1hW7S8a2_m-mClKQuryoSZCM9ms:1241772934438');
+_WidgetManager._SetDataContext([{'name': 'blog', 'data': {'title': 'SQLTools++ development', 'pageType': 'index', 'url': 'http://sqltools-plusplus.blogspot.com/', 'homepageUrl': 'http://sqltools-plusplus.blogspot.com/', 'searchLabel': '', 'searchQuery': '', 'pageName': '', 'pageTitle': 'SQLTools++ development', 'encoding': 'UTF-8', 'locale': 'en-US', 'isPrivate': false, 'languageDirection': 'ltr', 'feedLinks': '\74link rel\75\42alternate\42 type\75\42application/atom+xml\42 title\75\42SQLTools++ development - Atom\42 href\75\42http://sqltools-plusplus.blogspot.com/feeds/posts/default\42 /\76\n\74link rel\75\42alternate\42 type\75\42application/rss+xml\42 title\75\42SQLTools++ development - RSS\42 href\75\42http://sqltools-plusplus.blogspot.com/feeds/posts/default?alt\75rss\42 /\76\n\74link rel\75\42service.post\42 type\75\42application/atom+xml\42 title\75\42SQLTools++ development - Atom\42 href\75\42http://www.blogger.com/feeds/1782618391954902258/posts/default\42 /\76\n\74link rel\75\42EditURI\42 type\75\42application/rsd+xml\42 title\75\42RSD\42 href\75\42http://www.blogger.com/rsd.g?blogID\0751782618391954902258\42 /\076', 'meTag': '\74link rel\75\42me\42 href\75\42http://www.blogger.com/profile/13463198440639982695\42 /\76\n', 'openIdOpTag': '\74link rel\75\42openid.server\42 href\75\42http://www.blogger.com/openid-server.g\42 /\76\n', 'latencyHeadScript': '\74script type\75\42text/javascript\42\76(function() { var a\75window;function d(b){this.t\75{};this.tick\75function(c,h,e){var i\75e?e:(new Date).getTime();this.t[c]\75[i,h]};this.tick(\42start\42,null,b)}var f\75new d;a.jstiming\75{Timer:d,load:f};try{a.jstiming.pt\75a.external.pageT}catch(g){};function j(b){var c\0750;if(b.offsetParent){do c+\75b.offsetTop;while(b\75b.offsetParent)}return c}a.tickAboveFold\75function(b){j(b)\74\075750\46\46a.jstiming.load.tick(\42aft\42)};var k\75false;function l(){if(!k){k\75true;a.jstiming.load.tick(\42firstScrollTime\42)}}a.addEventListener?a.addEventListener(\42scroll\42,l,false):a.attachEvent(\42onscroll\42,l); })();\74/script\076'}}]);
+_WidgetManager._SetSystemMarkup({'layout': {'varName': '', 'template': '\74div class\75\47widget-wrap1\47\76\n\74div class\75\47widget-wrap2\47\76\n\74div class\75\47widget-wrap3\47\76\n\74div class\75\47widget-content\47\76\n\74div class\75\47layout-title\47\76\74data:layout-title\76\74/data:layout-title\76\74/div\76\n\74a class\75\47editlink\47 expr:href\75\47data:widget.quickEditUrl\47 expr:onclick\75\47\46quot;return _WidgetManager._PopupConfig(document.getElementById(\\\46quot;\46quot; +       data:widget.instanceId + \46quot;\\\46quot;));\46quot;\47 target\75\47chooseWidget\47\76\74data:edit-link\76\74/data:edit-link\76\74/a\76\n\74/div\76\n\74/div\76\n\74/div\76\n\74/div\076'}, 'quickedit': {'varName': '', 'template': '\74div class\75\47clear\47\76\74/div\76\n\74span class\75\47widget-item-control\47\76\n\74span class\75\47item-control blog-admin\47\76\n\74a class\75\47quickedit\47 expr:href\75\47data:widget.quickEditUrl\47 expr:onclick\75\47\46quot;return _WidgetManager._PopupConfig(document.getElementById(\\\46quot;\46quot; +       data:widget.instanceId + \46quot;\\\46quot;));\46quot;\47 expr:target\75\47\46quot;config\46quot; + data:widget.instanceId\47 expr:title\75\47data:edit-link\47\76\n\74img alt\75\47\47 height\75\04718\47 src\75\47http://img1.blogblog.com/img/icon18_wrench_allbkg.png\47 width\75\04718\47/\76\n\74/a\76\n\74/span\76\n\74/span\76\n\74div class\75\47clear\47\76\74/div\076'}, 'all-head-content': {'varName': 'page', 'template': '\74data:blog.latencyHeadScript\76\74/data:blog.latencyHeadScript\76\n\74meta expr:content\75\47\46quot;text/html; charset\75\46quot; + data:page.encoding\47 http-equiv\75\47Content-Type\47/\76\n\74meta content\75\47true\47 name\75\47MSSmartTagsPreventParsing\47/\76\n\74meta content\75\47blogger\47 name\75\47generator\47/\76\n\74link href\75\47http://www.blogger.com/favicon.ico\47 rel\75\47icon\47 type\75\47image/vnd.microsoft.icon\47/\76\n\74data:blog.feedLinks\76\74/data:blog.feedLinks\76\n\74data:blog.meTag\76\74/data:blog.meTag\76\n\74data:blog.openIdOpTag\76\74/data:blog.openIdOpTag\76\n\74b:if cond\75\47data:page.isPrivate\47\76\n\74meta content\75\47NOINDEX,NOFOLLOW\47 name\75\47robots\47/\76\n\74/b:if\076'}});
+_WidgetManager._RegisterWidget('_BlogArchiveView', new _WidgetInfo('BlogArchive1', 'sidebar',{'main': {'varName': '', 'template': '\74b:if cond\75\47data:title\47\76\n\74h2\76\74data:title\76\74/data:title\76\74/h2\76\n\74/b:if\76\n\74div class\75\47widget-content\47\76\n\74div id\75\47ArchiveList\47\76\n\74div expr:id\75\47data:widget.instanceId + \46quot;_ArchiveList\46quot;\47\76\n\74b:if cond\75\47data:style \75\75 \46quot;HIERARCHY\46quot;\47\76\n\74b:include data\75\47data\47 name\75\47interval\47\76\74/b:include\76\n\74/b:if\76\n\74b:if cond\75\47data:style \75\75 \46quot;FLAT\46quot;\47\76\n\74b:include data\75\47data\47 name\75\47flat\47\76\74/b:include\76\n\74/b:if\76\n\74b:if cond\75\47data:style \75\75 \46quot;MENU\46quot;\47\76\n\74b:include data\75\47data\47 name\75\47menu\47\76\74/b:include\76\n\74/b:if\76\n\74/div\76\n\74/div\76\n\74b:include name\75\47quickedit\47\76\74/b:include\76\n\74/div\076'}, 'flat': {'varName': 'data', 'template': '\74ul\76\n\74b:loop values\75\47data:data\47 var\75\47i\47\76\n\74li class\75\47archivedate\47\76\n\74a expr:href\75\47data:i.url\47\76\74data:i.name\76\74/data:i.name\76\74/a\76 (\74data:i.post-count\76\74/data:i.post-count\76)\n      \74/li\76\n\74/b:loop\76\n\74/ul\076'}, 'menu': {'varName': 'data', 'template': '\74select expr:id\75\47data:widget.instanceId + \46quot;_ArchiveMenu\46quot;\47\76\n\74option value\75\47\47\76\74data:title\76\74/data:title\76\74/option\76\n\74b:loop values\75\47data:data\47 var\75\47i\47\76\n\74option expr:value\75\47data:i.url\47\76\74data:i.name\76\74/data:i.name\76 (\74data:i.post-count\76\74/data:i.post-count\76)\74/option\76\n\74/b:loop\76\n\74/select\076'}, 'interval': {'varName': 'intervalData', 'template': '\74b:loop values\75\47data:intervalData\47 var\75\47i\47\76\n\74ul\76\n\74li expr:class\75\47\46quot;archivedate \46quot; + data:i.expclass\47\76\n\74b:include data\75\47i\47 name\75\47toggle\47\76\74/b:include\76\n\74a class\75\47post-count-link\47 expr:href\75\47data:i.url\47\76\74data:i.name\76\74/data:i.name\76\74/a\76\n\74span class\75\47post-count\47 dir\75\47ltr\47\76(\74data:i.post-count\76\74/data:i.post-count\76)\74/span\76\n\74b:if cond\75\47data:i.data\47\76\n\74b:include data\75\47i.data\47 name\75\47interval\47\76\74/b:include\76\n\74/b:if\76\n\74b:if cond\75\47data:i.posts\47\76\n\74b:include data\75\47i.posts\47 name\75\47posts\47\76\74/b:include\76\n\74/b:if\76\n\74/li\76\n\74/ul\76\n\74/b:loop\076'}, 'toggle': {'varName': 'interval', 'template': '\74b:if cond\75\47data:interval.toggleId\47\76\n\74b:if cond\75\47data:interval.expclass \75\75 \46quot;expanded\46quot;\47\76\n\74a class\75\47toggle\47 expr:href\75\47data:widget.actionUrl + \46quot;\46amp;action\75toggle\46quot; +       \46quot;\46amp;dir\75close\46amp;toggle\75\46quot; + data:interval.toggleId +       \46quot;\46amp;toggleopen\75\46quot; + data:toggleopen\47\76\n\74span class\75\47zippy toggle-open\47\76\46#9660; \74/span\76\n\74/a\76\n\74b:else\76\74/b:else\76\n\74a class\75\47toggle\47 expr:href\75\47data:widget.actionUrl + \46quot;\46amp;action\75toggle\46quot; +         \46quot;\46amp;dir\75open\46amp;toggle\75\46quot; + data:interval.toggleId +         \46quot;\46amp;toggleopen\75\46quot; + data:toggleopen\47\76\n\74span class\75\47zippy\47\76\n\74b:if cond\75\47data:blog.languageDirection \75\75 \46quot;rtl\46quot;\47\76\n              \46#9668;\n            \74b:else\76\74/b:else\76\n              \46#9658;\n            \74/b:if\76\n\74/span\76\n\74/a\76\n\74/b:if\76\n\74/b:if\076'}, 'posts': {'varName': 'posts', 'template': '\74ul class\75\47posts\47\76\n\74b:loop values\75\47data:posts\47 var\75\47i\47\76\n\74li\76\74a expr:href\75\47data:i.url\47\76\74data:i.title\76\74/data:i.title\76\74/a\76\74/li\76\n\74/b:loop\76\n\74/ul\076'}}, document.getElementById('BlogArchive1'), {'languageDirection': 'ltr'}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_ProfileView', new _WidgetInfo('Profile1', 'sidebar',{'main': {'varName': '', 'template': '\74b:if cond\75\47data:title !\75 \46quot;\46quot;\47\76\n\74h2\76\74data:title\76\74/data:title\76\74/h2\76\n\74/b:if\76\n\74div class\75\47widget-content\47\76\n\74b:if cond\75\47data:team \75\75 \46quot;true\46quot;\47\76\n\74ul\76\n\74b:loop values\75\47data:authors\47 var\75\47i\47\76\n\74li\76\74a expr:href\75\47data:i.userUrl\47\76\74data:i.display-name\76\74/data:i.display-name\76\74/a\76\74/li\76\n\74/b:loop\76\n\74/ul\76\n\74b:else\76\74/b:else\76\n\74b:if cond\75\47data:photo.url !\75 \46quot;\46quot;\47\76\n\74a expr:href\75\47data:userUrl\47\76\74img class\75\47profile-img\47 expr:alt\75\47data:photo.alt\47 expr:height\75\47data:photo.height\47 expr:src\75\47data:photo.url\47 expr:width\75\47data:photo.width\47/\76\74/a\76\n\74/b:if\76\n\74dl class\75\47profile-datablock\47\76\n\74dt class\75\47profile-data\47\76\74data:displayname\76\74/data:displayname\76\74/dt\76\n\74b:if cond\75\47data:showlocation \75\75 \46quot;true\46quot;\47\76\n\74dd class\75\47profile-data\47\76\74data:location\76\74/data:location\76\74/dd\76\n\74/b:if\76\n\74b:if cond\75\47data:aboutme !\75 \46quot;\46quot;\47\76\74dd class\75\47profile-textblock\47\76\74data:aboutme\76\74/data:aboutme\76\74/dd\76\74/b:if\76\n\74/dl\76\n\74a class\75\47profile-link\47 expr:href\75\47data:userUrl\47\76\74data:viewProfileMsg\76\74/data:viewProfileMsg\76\74/a\76\n\74/b:if\76\n\74b:include name\75\47quickedit\47\76\74/b:include\76\n\74/div\076'}}, document.getElementById('Profile1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_HTMLView', new _WidgetInfo('HTML1', 'sidebar',{'main': {'varName': '', 'template': '\74b:if cond\75\47data:title !\75 \46quot;\46quot;\47\76\n\74h2 class\75\47title\47\76\74data:title\76\74/data:title\76\74/h2\76\n\74/b:if\76\n\74div class\75\47widget-content\47\76\n\74data:content\76\74/data:content\76\n\74/div\76\n\74b:include name\75\47quickedit\47\76\74/b:include\076'}}, document.getElementById('HTML1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_HeaderView', new _WidgetInfo('Header1', 'header'));
+_WidgetManager._RegisterWidget('_NavbarView', new _WidgetInfo('Navbar1', 'navbar'));
+_WidgetManager._RegisterWidget('_BlogView', new _WidgetInfo('Blog1', 'main'));
+</script>
+</body>
+</html>

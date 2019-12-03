@@ -1,0 +1,45 @@
+<html>
+
+<head>
+<title>CAST Expressions</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="CAST">
+</object>
+</p>
+
+<h3>CAST Expressions</h3>
+
+<hr SIZE="3">
+
+<p>A CAST expression converts one built-in datatype or collection-typed value into another
+built-in datatype or collection-typed value. </p>
+
+<pre>
+CAST({<em>expr</em>} | {(<em>subquery</em>)} | {MULTISET(<em>subquery</em>)} AS <em>type_name</em>)
+</pre>
+
+<p>CAST allows you to convert built-in datatypes or collection-typed values of one type
+into another built-in datatype or collection type. You can cast an unnamed operand (such
+as a date or the result set of a subquery) or a named collection (such as a varray or a
+nested table) into a type-compatible datatype or named collection. The <em>type_name</em>
+must be the name of a built-in datatype or collection type and the <em>operand</em> must
+be a built-in datatype or must evaluate to a collection value. </p>
+
+<p>For the operand, <em>expr</em> can be either a built-in datatype or a collection type,
+and <em>subquery</em> must return a single value of collection type or built-in type.
+MULTISET informs Oracle to take the result set of the subquery and return a collection
+value.</p>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<HTML>
+<HEAD>
+<TITLE>DISABLE clause</TITLE>
+<LINK href="_sql_reference.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<OBJECT type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+    <param name="Keyword" value="DISABLE clause">
+</OBJECT>
+<H3>DISABLE clause<HR SIZE="3"></H3>
+<P>
+ Use this command to disable an integrity constraint or all triggers
+ associated with a table:
+</P>
+<P>
+ 
+</P>
+<UL>
+<LI>
+If you disable an integrity constraint, Oracle does not enforce
+      it. However, disabled integrity constraints appear in the data
+      dictionary along with enabled integrity constraints.
+<LI>
+If you disable a trigger, Oracle does not fire it if its
+      triggering condition is satisfied.
+</LI>
+</UL>
+<P>
+ 
+</P>
+<PRE>
+ DISABLE
+   { { UNIQUE (column [, column] ...)
+     | PRIMARY KEY
+     | CONSTRAINT constraint }
+   [ CASCADE ]
+   | ALL TRIGGERS }
+ 
+</PRE>
+<HR SIZE="1">
+<P class="footer">This SQL Reference is not up-to-date. For detailed information on this command, see the Oracle8i Server SQL Reference.</P>
+</BODY>
+</HTML>

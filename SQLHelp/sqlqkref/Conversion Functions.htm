@@ -1,0 +1,128 @@
+<html>
+
+<head>
+<title>Conversion Functions</title>
+<link href="_sql_reference.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<p>
+<object type="application/x-oleobject"
+classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="Keyword" value="CHARTOROWID">
+  <param name="Keyword" value="CONVERT">
+  <param name="Keyword" value="HEXTORAW">
+  <param name="Keyword" value="RAWTHOHEX">
+  <param name="Keyword" value="ROWIDTOCHAR">
+  <param name="Keyword" value="TO_CHAR">
+  <param name="Keyword" value="TO_DATE">
+  <param name="Keyword" value="TO_LOB">
+  <param name="Keyword" value="TO_MULTI_BYTE">
+  <param name="Keyword" value="TO_NUMBER">
+  <param name="Keyword" value="TO_SINGLE_BYTE">
+  <param name="Keyword" value="TRANSLATE">
+</object>
+</p>
+
+<h3>Conversion Functions</h3>
+
+<hr SIZE="3">
+
+<p ALIGN="LEFT">Convert a value from one datatype to another.<b></p>
+</b>
+
+<table cellSpacing="0" cellPadding="2" border="1" color="#99ccff" width="100%">
+  <tr>
+    <td width="208" bgColor="#99ccff"><p class="tab_header">Function</td>
+    <td bgColor="#99ccff"><p class="tab_header">Value Returned</td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">CHARTOROWID(<i>char</i>)</td>
+    <td valign="top"><p class="tab_desc"><i>char</i>, converted from a CHAR value to a ROWID
+    value</td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">CONVERT(<i>char</i>,<i>
+    dest_char_set[,source_char_set])</i></td>
+    <td valign="top"><p class="tab_desc"><i>char</i>, converted from source_char_set
+    representation to dest_char_set representation</td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">HEXTORAW(<i>char</i>)</td>
+    <td valign="top"><p class="tab_desc"><i>char</i>, converted from a hexadecimal number to a
+    binary RAW value</td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">RAWTHOHEX(<i>raw</i>)</td>
+    <td valign="top"><p class="tab_desc"><i>raw</i>, converted from a binary value of datatype
+    RAW to a hexadecimal number of datatype CHAR</td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">ROWIDTOCHAR (<i>rowid</i>)</td>
+    <td valign="top"><p class="tab_desc"><i>rowid</i>, converted from a ROWID value to a CHAR
+    value.</td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">TO_CHAR (<i>expr</i>[,<i>fmt</i>[,’<i>nls_num_fmt</i>’]])</td>
+    <td valign="top"><p class="tab_desc"><i>expr</i>, converted from a NUMBER or DATE value to
+    a CHAR value in the format specified by <i>fmt</i>. If you omit <i>fmt</i>, ORACLE
+    converts DATE values to default date format and NUMBER values to CHAR values exactly wide
+    enough to hold all significant digits. nls_num_fmt sets the international number-format
+    specifications. In Trusted Oracle, converts values of type MLS or MLS_LABEL to type
+    VARCHAR2.</td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">TO_DATE(<i>char</i>[,<i>fmt</i>[,’<i>nls_lang</i>’]])</td>
+    <td valign="top"><p class="tab_desc"><i>char</i>, converted from a CHAR value in the
+    format fmt to a DATE value. If you omit <i>fmt</i>, char must be in default date format.
+    nls_lang specifies the language used for day and month</td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">TO_LOB (<em>long_column</em>)</td>
+    <td valign="top"><p class="tab_desc">TO_LOB converts LONG or LONG RAW values in the column
+    <em>long_column</em> to LOB values. You can apply this function only to a LONG or LONG RAW
+    column, and only in the SELECT list of a subquery in an INSERT statement . <br>
+    Before using this function, you must create a LOB column to receive the converted LONG
+    values. To convert LONGs, create a CLOB column. To convert LONG RAWs, create a BLOB
+    column. </td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">TO_MULTI_BYTE (<i>char</i>)</td>
+    <td valign="top"><p class="tab_desc"><i>char</i>, with all single-byte characters that
+    have a multibyte equivalent converted to their multibyte form </td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">TO_NUMBER(<i>char</i>[, <i>fmt</i>[,’<i>nls_lang</i>’]])</td>
+    <td valign="top"><p class="tab_desc"><i>char</i>, which is a character value containing a
+    number in the format specified by the optional <i>fmt</i>, converted to a NUMBER value.
+    nls_lang specifies the language used for numeric characters and currency symbols.</td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">TO_SINGLE_BYTE (<i>char</i>)</td>
+    <td valign="top"><p class="tab_desc"><i>char</i>, with all multibyte characters that have
+    a single-byte equivalent converted to their single-byte form </td>
+  </tr>
+  <tr>
+    <td width="298" valign="top"><p class="tab_func">TRANSLATE (<em>text</em> USING
+    {CHAR_CS}|{NCHAR_CS})</td>
+    <td valign="top"><p class="tab_desc">TRANSLATE ... USING converts text into the character
+    set specified for conversions between the database character set and the national
+    character set. <br>
+    The <em>text</em> argument is the expression to be converted. <br>
+    Specifying the USING CHAR_CS argument converts text into the database character set. The
+    output datatype is VARCHAR2. <br>
+    Specifying the USING NCHAR_CS argument converts text into the national character set. The
+    output datatype is NVARCHAR2. </td>
+  </tr>
+</table>
+
+<P>See also:  <A HREF="Format Models for TO_CHAR and TO_DATE.htm">Format Models for TO_CHAR and TO_DATE</A>
+</P>
+
+<hr SIZE="1">
+
+<p class="footer">This SQL Reference is not up-to-date. For detailed information on this
+command, see the Oracle8i Server SQL Reference.</p>
+</body>
+</html>
