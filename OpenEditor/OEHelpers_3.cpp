@@ -45,7 +45,7 @@
 
 #define BOOST_REGEX_NO_LIB
 #define BOOST_REGEX_STATIC_LINK
-#include <boost/regex.hpp>
+#include <boost/cregex.hpp>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -127,7 +127,7 @@ void Searcher::RemoveRef (Storage* context)
         delete this;
 }
 
-void Searcher::SetText (const char* str)
+void Searcher::SetText (const wchar_t* str)
 {
     m_strText = str;
     m_bPatternCompiled = false;
@@ -152,13 +152,13 @@ void Searcher::GetOption (bool& backward, bool& wholeWords, bool& matchCase, boo
     searchAll  = m_bSearchAll;
 }
 
-bool Searcher::isMatched (const char* str, int offset, int len, const DelimitersMap& delim, int& start, int& end) const
+bool Searcher::isMatched (const wchar_t* str, int offset, int len, const DelimitersMap& delim, int& start, int& end) const
 {
     if (!str || offset > len) // workaround for rx bug
     {
         if (offset > 0)
             return false;
-        str = "";
+        str = L"";
         len = 0;
     }
 
@@ -198,11 +198,11 @@ bool Searcher::isMatched (const char* str, int offset, int len, const Delimiters
     return false;
 }
 
-bool Searcher::isMatchedBackward (const char* str, int rlimit, int len, const DelimitersMap& delim, int& start, int& end) const
+bool Searcher::isMatchedBackward (const wchar_t* str, int rlimit, int len, const DelimitersMap& delim, int& start, int& end) const
 {
     if (!str) // workaround for rx bug
     {
-        str = "";
+        str = L"";
         len = 0;
     }
 
@@ -256,7 +256,7 @@ void Searcher::compileExpression () const
 {
     if (!m_bPatternCompiled)
     {
-        string pattern;
+        wstring pattern;
 
         if (m_bRegExpr)
         {
@@ -264,7 +264,7 @@ void Searcher::compileExpression () const
         }
         else
         {
-            string::const_iterator it = m_strText.begin();
+            auto it = m_strText.begin();
             for (; it != m_strText.end(); ++it)
             {
                 switch (*it) // 17/05/2002 bug fix, cannot search for $,[,],^
@@ -285,11 +285,11 @@ void Searcher::compileExpression () const
 
         if (error)
         {
-            char buff[256];
+            wchar_t buff[256];
             buff[0] = 0;
             regerror(error, &m_cxt->pattern, buff, sizeof buff);
 
-            THROW_APP_EXCEPTION(string("Regular expression error:\n") + buff);
+            THROW_APP_EXCEPTION(string("Regular expression error:\n") + Common::str(buff));
         }
     }
 }
@@ -305,11 +305,12 @@ bool Searcher::isSelectionMatched (const FindCtx& ctx) const
     //if (start != end)
     if (ctx.m_line < ctx.m_storage->GetLineCount())
     {
-        int len;
-        const char* str;
-        ctx.m_storage->GetLine(ctx.m_line, str, len);
+        OEStringW lineBuff;
+        ctx.m_storage->GetLineW(ctx.m_line, lineBuff);
+        int len = lineBuff.length();
+        const wchar_t* str = lineBuff.data();
 
-        if (!str) str = ""; // workaround for rx bug
+        if (!str) str = L""; // workaround for rx bug
 
         m_cxt->match[0].rm_so = ctx.m_start;
         m_cxt->match[0].rm_eo = ctx.m_end;
@@ -414,9 +415,10 @@ bool Searcher::Find (FindCtx& ctx) const
                 {
                     for (int i(ctx.m_line); i < nlines; i++)
                     {
-                        int len;
-                        const char* str;
-                        (*it)->GetLine(i, str, len);
+                        OEStringW lineBuff;
+                        (*it)->GetLineW(i, lineBuff);
+                        int len = lineBuff.length();
+                        const wchar_t* str = lineBuff.data();
 
                         if (isMatched(str, llimit, len, delim, ctx.m_start, ctx.m_end))
                         {
@@ -442,9 +444,10 @@ bool Searcher::Find (FindCtx& ctx) const
 
                     for (int i(ctx.m_line); i >= first_line; i--)
                     {
-                        int len;
-                        const char* str;
-                        (*it)->GetLine(i, str, len);
+                        OEStringW lineBuff;
+                        (*it)->GetLineW(i, lineBuff);
+                        int len = lineBuff.length();
+                        const wchar_t* str = lineBuff.data();
 
                         if (rlimit == -1)
                             rlimit = len;
@@ -474,14 +477,15 @@ bool Searcher::Find (FindCtx& ctx) const
 
 bool Searcher::Replace (FindCtx& ctx) const
 {
-    if (strpbrk(ctx.m_text.c_str(), "\n\r") != NULL)
+    if (wcspbrk(ctx.m_text.c_str(), L"\n\r") != NULL)
         THROW_APP_EXCEPTION("Replace error: replace string with <Carriage return> not supporded!");
 
     if (ctx.m_line < ctx.m_storage->GetLineCount())
     {
-        int len;
-        const char* str;
-        ctx.m_storage->GetLine(ctx.m_line, str, len);
+        OEStringW lineBuff;
+        ctx.m_storage->GetLineW(ctx.m_line, lineBuff);
+        int len = lineBuff.length();
+        const wchar_t* str = lineBuff.data();
 
         int _start, _end;
         // check the current selection
@@ -489,27 +493,28 @@ bool Searcher::Replace (FindCtx& ctx) const
         if (isMatched(str, ctx.m_start, len, ctx.m_storage->GetDelimiters(), _start, _end)
         && _start == ctx.m_start && _end == ctx.m_end)
         {
-            string buff;
+            wstring buff;
 
             if (m_bRegExpr)
             {
-                int len;
-                const char* str;
-                ctx.m_storage->GetLine(ctx.m_line, str, len);
+                OEStringW lineBuff2;
+                ctx.m_storage->GetLineW(ctx.m_line, lineBuff2);
+                int len2 = lineBuff2.length();
+                const wchar_t* str2 = lineBuff2.data();
 
-                for (const char* ptr = ctx.m_text.c_str(); *ptr; ptr++)
+                for (const wchar_t* ptr = ctx.m_text.c_str(); *ptr; ptr++)
                 {
-                    if (*ptr == '\\' && ::isdigit(*(ptr+1)))
+                    if (*ptr == '\\' && ::iswdigit(*(ptr+1)))
                     {
-                        char _group[2] = { *(++ptr), 0 }; // 28/07/2002 bug fix, RegExp replace fails on \1...
-                        int group = atoi(_group);
+                        wchar_t _group[2] = { *(++ptr), 0 }; // 28/07/2002 bug fix, RegExp replace fails on \1...
+                        int group = _wtoi(_group);
 
                         if (group < cnRegMatchSize
                         && m_cxt->match[group].rm_so != -1 && m_cxt->match[group].rm_eo != -1)
                         {
-                            _CHECK_AND_THROW_(m_cxt->match[group].rm_so <= len && m_cxt->match[group].rm_eo <= len,
+                            _CHECK_AND_THROW_(m_cxt->match[group].rm_so <= len2 && m_cxt->match[group].rm_eo <= len2,
                                               "Replace error: regular expresion match group failured!");
-                            buff.append(str + m_cxt->match[group].rm_so, m_cxt->match[group].rm_eo - m_cxt->match[group].rm_so);
+                            buff.append(str2 + m_cxt->match[group].rm_so, m_cxt->match[group].rm_eo - m_cxt->match[group].rm_so);
                         }
                     }
                     else
@@ -535,7 +540,7 @@ bool Searcher::Replace (FindCtx& ctx) const
 }
 
 // 09.09.2002 improvement, find/replace batch performance
-int  Searcher::DoBatch (Storage* _storage, const char* text, ESearchBatch mode, Square& last)
+int  Searcher::DoBatch (Storage* _storage, const wchar_t* text, ESearchBatch mode, Square& last)
 {
     ASSERT(_storage);
 

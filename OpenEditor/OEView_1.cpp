@@ -76,7 +76,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace OpenEditor;
 
-static const char g_szClassName[] = "OpenEditorWindow";
+static const WCHAR g_szClassName[] = L"OpenEditorWindow";
 static HCURSOR g_hCurIBeam = ::LoadCursor(NULL, IDC_IBEAM);
 static HCURSOR g_hCurArrow = ::LoadCursor(NULL, IDC_ARROW);
 BOOL COEditorView::m_isOverWriteMode = FALSE;
@@ -107,81 +107,81 @@ inline bool FileExists (LPCSTR filename)
 IMPLEMENT_DYNCREATE(COEditorView, CView)
 
 BEGIN_MESSAGE_MAP(COEditorView, CView)
-	//{{AFX_MSG_MAP(COEditorView)
-	ON_WM_PAINT()
-	ON_WM_CREATE()
-	ON_WM_SIZE()
-	ON_WM_HSCROLL()
-	ON_WM_VSCROLL()
-	ON_WM_SETFOCUS()
-	ON_WM_KILLFOCUS()
-	ON_WM_KEYDOWN()
-	ON_WM_SYSKEYDOWN()
-	ON_WM_MOUSEMOVE()
-	ON_WM_LBUTTONDOWN()
-	ON_WM_LBUTTONUP()
-	//ON_WM_LBUTTONDBLCLK()
-	ON_WM_TIMER()
-	ON_COMMAND(ID_EDIT_COLUMN_SEL, OnEditToggleColumnarSelection)
-	ON_COMMAND(ID_EDIT_STREAM_SEL, OnEditToggleStreamSelection)
+    //{{AFX_MSG_MAP(COEditorView)
+    ON_WM_PAINT()
+    ON_WM_CREATE()
+    ON_WM_SIZE()
+    ON_WM_HSCROLL()
+    ON_WM_VSCROLL()
+    ON_WM_SETFOCUS()
+    ON_WM_KILLFOCUS()
+    ON_WM_KEYDOWN()
+    ON_WM_SYSKEYDOWN()
+    ON_WM_MOUSEMOVE()
+    ON_WM_LBUTTONDOWN()
+    ON_WM_LBUTTONUP()
+    //ON_WM_LBUTTONDBLCLK()
+    ON_WM_TIMER()
+    ON_COMMAND(ID_EDIT_COLUMN_SEL, OnEditToggleColumnarSelection)
+    ON_COMMAND(ID_EDIT_STREAM_SEL, OnEditToggleStreamSelection)
     ON_COMMAND(ID_EDIT_TOGGLES_SEL, OnEditToggleSelectionMode)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_STREAM_SEL, ID_EDIT_COLUMN_SEL, OnUpdate_SelectionType)
-	ON_WM_CHAR()
-	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
-	ON_COMMAND(ID_EDIT_CUT, OnEditCut)
-	ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, OnUpdate_EditCopy)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, OnUpdate_EditPaste)
-	ON_COMMAND(ID_TEST, OnTest)
-	ON_COMMAND(ID_EDIT_UNDO, OnEditUndo)
-	ON_COMMAND(ID_EDIT_REDO, OnEditRedo)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, OnUpdate_EditUndo)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, OnUpdate_EditRedo)
-	ON_COMMAND(ID_EDIT_SELECT_ALL, OnEditSelectAll)
-	ON_COMMAND(ID_EDIT_DELETE_LINE, OnEditDeleteLine)
-	ON_COMMAND(ID_EDIT_DELETE_WORD_TO_LEFT, OnEditDeleteWordToLeft)
-	ON_COMMAND(ID_EDIT_DELETE_WORD_TO_RIGHT, OnEditDeleteWordToRight)
-	ON_COMMAND(ID_EDIT_FIND, OnEditFind)
-	ON_COMMAND(ID_EDIT_REPLACE, OnEditReplace)
-	ON_COMMAND(ID_EDIT_FIND_NEXT, OnEditFindNext)
-	ON_COMMAND(ID_EDIT_FIND_PREVIOUS, OnEditFindPrevious)
-	ON_COMMAND(ID_EDIT_FIND_SELECTED_NEXT, OnEditFindSeletedNext)
-	ON_COMMAND(ID_EDIT_FIND_SELECTED_PREVIOUS, OnEditFindSeletedPrevious)
-	ON_COMMAND(ID_EDIT_BKM_TOGGLE, OnEditBookmarkToggle)
-	ON_COMMAND(ID_EDIT_BKM_NEXT, OnEditBookmarkNext)
-	ON_COMMAND(ID_EDIT_BKM_PREV, OnEditBookmarkPrev)
-	ON_COMMAND(ID_EDIT_BKM_REMOVE_ALL, OnEditBookmarkRemoveAll)
-	ON_WM_CONTEXTMENU()
-	ON_WM_INITMENUPOPUP()
-	ON_UPDATE_COMMAND_UI(ID_EDIT_FIND_NEXT, OnUpdate_EditFindNext)
-	ON_COMMAND(ID_EDIT_LOWER, OnEditLower)
-	ON_COMMAND(ID_EDIT_UPPER, OnEditUpper)
+    ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_STREAM_SEL, ID_EDIT_COLUMN_SEL, OnUpdate_SelectionType)
+    ON_WM_CHAR()
+    ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
+    ON_COMMAND(ID_EDIT_CUT, OnEditCut)
+    ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, OnUpdate_EditCopy)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, OnUpdate_EditPaste)
+    ON_COMMAND(ID_TEST, OnTest)
+    ON_COMMAND(ID_EDIT_UNDO, OnEditUndo)
+    ON_COMMAND(ID_EDIT_REDO, OnEditRedo)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, OnUpdate_EditUndo)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, OnUpdate_EditRedo)
+    ON_COMMAND(ID_EDIT_SELECT_ALL, OnEditSelectAll)
+    ON_COMMAND(ID_EDIT_DELETE_LINE, OnEditDeleteLine)
+    ON_COMMAND(ID_EDIT_DELETE_WORD_TO_LEFT, OnEditDeleteWordToLeft)
+    ON_COMMAND(ID_EDIT_DELETE_WORD_TO_RIGHT, OnEditDeleteWordToRight)
+    ON_COMMAND(ID_EDIT_FIND, OnEditFind)
+    ON_COMMAND(ID_EDIT_REPLACE, OnEditReplace)
+    ON_COMMAND(ID_EDIT_FIND_NEXT, OnEditFindNext)
+    ON_COMMAND(ID_EDIT_FIND_PREVIOUS, OnEditFindPrevious)
+    ON_COMMAND(ID_EDIT_FIND_SELECTED_NEXT, OnEditFindSeletedNext)
+    ON_COMMAND(ID_EDIT_FIND_SELECTED_PREVIOUS, OnEditFindSeletedPrevious)
+    ON_COMMAND(ID_EDIT_BKM_TOGGLE, OnEditBookmarkToggle)
+    ON_COMMAND(ID_EDIT_BKM_NEXT, OnEditBookmarkNext)
+    ON_COMMAND(ID_EDIT_BKM_PREV, OnEditBookmarkPrev)
+    ON_COMMAND(ID_EDIT_BKM_REMOVE_ALL, OnEditBookmarkRemoveAll)
+    ON_WM_CONTEXTMENU()
+    ON_WM_INITMENUPOPUP()
+    ON_UPDATE_COMMAND_UI(ID_EDIT_FIND_NEXT, OnUpdate_EditFindNext)
+    ON_COMMAND(ID_EDIT_LOWER, OnEditLower)
+    ON_COMMAND(ID_EDIT_UPPER, OnEditUpper)
     ON_COMMAND(ID_EDIT_CAPITALIZE, OnEditCapitalize)
     ON_COMMAND(ID_EDIT_INVERT_CASE, OnEditInvertCase)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_TABIFY, OnUpdate_SelectionOperation)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_TABIFY, OnUpdate_SelectionOperation)
     ON_UPDATE_COMMAND_UI(ID_EDIT_TABIFY_LEADING, OnUpdate_SelectionOperation)
-	ON_COMMAND(ID_EDIT_TABIFY, OnBlockTabify)
+    ON_COMMAND(ID_EDIT_TABIFY, OnBlockTabify)
     ON_COMMAND(ID_EDIT_TABIFY_LEADING, OnBlockTabifyLeading)
-	ON_COMMAND(ID_EDIT_UNTABIFY, OnBlockUntabify)
-	ON_COMMAND(ID_EDIT_INDENT, OnEditIndent)
-	ON_COMMAND(ID_EDIT_UNDENT, OnEditUndent)
-	ON_COMMAND(ID_EDIT_SORT, OnEditSort)
-	ON_COMMAND(ID_EDIT_FIND_MATCH, OnEditFindMatch)
-	ON_COMMAND(ID_EDIT_FIND_MATCH_N_SELECT, OnEditFindMatchAndSelect)
-	ON_COMMAND(ID_EDIT_COMMENT, OnEditComment)
-	ON_COMMAND(ID_EDIT_UNCOMMENT, OnEditUncomment)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_COMMENT, OnUpdate_CommentUncomment)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_UNCOMMENT, OnUpdate_CommentUncomment)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, OnUpdate_SelectionOperation)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_FIND_PREVIOUS, OnUpdate_EditFindNext)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_UNTABIFY, OnUpdate_SelectionOperation)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_UNDENT, OnUpdate_SelectionOperation)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_INDENT, OnUpdate_SelectionOperation)
-	ON_COMMAND(ID_EDIT_GOTO, OnEditGoto)
-	//}}AFX_MSG_MAP
-	ON_UPDATE_COMMAND_UI(ID_INDICATOR_POS,        OnUpdate_Pos)
-	ON_UPDATE_COMMAND_UI(ID_INDICATOR_SCROLL_POS, OnUpdate_ScrollPos)
-	ON_UPDATE_COMMAND_UI(ID_INDICATOR_OVR,        OnUpdate_Mode)
+    ON_COMMAND(ID_EDIT_UNTABIFY, OnBlockUntabify)
+    ON_COMMAND(ID_EDIT_INDENT, OnEditIndent)
+    ON_COMMAND(ID_EDIT_UNDENT, OnEditUndent)
+    ON_COMMAND(ID_EDIT_SORT, OnEditSort)
+    ON_COMMAND(ID_EDIT_FIND_MATCH, OnEditFindMatch)
+    ON_COMMAND(ID_EDIT_FIND_MATCH_N_SELECT, OnEditFindMatchAndSelect)
+    ON_COMMAND(ID_EDIT_COMMENT, OnEditComment)
+    ON_COMMAND(ID_EDIT_UNCOMMENT, OnEditUncomment)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_COMMENT, OnUpdate_CommentUncomment)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_UNCOMMENT, OnUpdate_CommentUncomment)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, OnUpdate_SelectionOperation)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_FIND_PREVIOUS, OnUpdate_EditFindNext)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_UNTABIFY, OnUpdate_SelectionOperation)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_UNDENT, OnUpdate_SelectionOperation)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_INDENT, OnUpdate_SelectionOperation)
+    ON_COMMAND(ID_EDIT_GOTO, OnEditGoto)
+    //}}AFX_MSG_MAP
+    ON_UPDATE_COMMAND_UI(ID_INDICATOR_POS,        OnUpdate_Pos)
+    ON_UPDATE_COMMAND_UI(ID_INDICATOR_SCROLL_POS, OnUpdate_ScrollPos)
+    ON_UPDATE_COMMAND_UI(ID_INDICATOR_OVR,        OnUpdate_Mode)
     ON_UPDATE_COMMAND_UI(ID_INDICATOR_BLOCK_TYPE, OnUpdate_BlockType)
     ON_UPDATE_COMMAND_UI(ID_INDICATOR_CUR_CHAR,   OnUpdate_CurChar)
     // Random bookmark commands
@@ -192,10 +192,10 @@ BEGIN_MESSAGE_MAP(COEditorView, CView)
     ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BKM_GET_0, ID_EDIT_BKM_GET_9, OnUpdate_GetRandomBookmark)
     */
     ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_BKM_NEXT, ID_EDIT_BKM_REMOVE_ALL, OnUpdate_BookmarkGroupRO)
-	// Standard printing commands
-	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
+    // Standard printing commands
+    ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
+    ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
+    ON_COMMAND(ID_FILE_PRINT_PREVIEW, OnFilePrintPreview) // FRM
     ON_COMMAND(ID_EDIT_SCROLL_UP,     OnEditScrollUp    )
     ON_COMMAND(ID_EDIT_SCROLL_DOWN,   OnEditScrollDown  )
     ON_COMMAND(ID_EDIT_SCROLL_CENTER, OnEditScrollCenter)
@@ -204,11 +204,11 @@ BEGIN_MESSAGE_MAP(COEditorView, CView)
     ON_COMMAND(ID_EDIT_OPENFILEUNDERCURSOR, OnOpenFileUnderCursor)
     
     ON_COMMAND(ID_EDIT_CUT_N_APPEND, OnEditCutAndAppend)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_CUT_N_APPEND,  OnUpdate_SelectionOperation)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_CUT_N_APPEND,  OnUpdate_SelectionOperation)
     ON_COMMAND(ID_EDIT_CUT_BOOKMARKED, OnEditCutBookmarked)
     ON_UPDATE_COMMAND_UI(ID_EDIT_CUT_BOOKMARKED, OnUpdate_BookmarkGroup)
     ON_COMMAND(ID_EDIT_COPY_N_APPEND, OnEditCopyAndAppend)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_COPY_N_APPEND, OnUpdate_EditCopy)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_COPY_N_APPEND, OnUpdate_EditCopy)
     ON_COMMAND(ID_EDIT_COPY_BOOKMARKED, OnEditCopyBookmarked)
     ON_UPDATE_COMMAND_UI(ID_EDIT_COPY_BOOKMARKED, OnUpdate_BookmarkGroupRO)
     ON_COMMAND(ID_EDIT_DELETE_BOOKMARKED, OnEditDeleteBookmarked)
@@ -255,12 +255,12 @@ BEGIN_MESSAGE_MAP(COEditorView, CView)
     ON_UPDATE_COMMAND_UI(ID_EDIT_REPLACE,               OnUpdate_NotInReadOnly)
     ON_UPDATE_COMMAND_UI(ID_EDIT_EXPAND_TEMPLATE,       OnUpdate_NotInReadOnly)
     ON_UPDATE_COMMAND_UI(ID_EDIT_DELETE,                OnUpdate_NotInReadOnly)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_DELETE_LINE,           OnUpdate_NotInReadOnly)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_DELETE_WORD_TO_LEFT,   OnUpdate_NotInReadOnly)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_DELETE_WORD_TO_RIGHT,  OnUpdate_NotInReadOnly)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_DELETE_LINE,           OnUpdate_NotInReadOnly)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_DELETE_WORD_TO_LEFT,   OnUpdate_NotInReadOnly)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_DELETE_WORD_TO_RIGHT,  OnUpdate_NotInReadOnly)
     ON_UPDATE_COMMAND_UI(ID_EDIT_DUP_LINE_OR_SELECTION, OnUpdate_NotInReadOnly)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_LOWER,                 OnUpdate_NotInReadOnly)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_UPPER,                 OnUpdate_NotInReadOnly)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_LOWER,                 OnUpdate_NotInReadOnly)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_UPPER,                 OnUpdate_NotInReadOnly)
     ON_UPDATE_COMMAND_UI(ID_EDIT_CAPITALIZE,            OnUpdate_NotInReadOnly)
     ON_UPDATE_COMMAND_UI(ID_EDIT_INVERT_CASE,           OnUpdate_NotInReadOnly)
     ON_UPDATE_COMMAND_UI(ID_EDIT_NORMALIZE_TEXT,        OnUpdate_NotInReadOnly)
@@ -298,7 +298,7 @@ COEditorView::COEditorView ()
     m_syntaxGutter = true;
 
     if (!m_AltColumnarTextFormat)
-        m_AltColumnarTextFormat = RegisterClipboardFormat("OpenEditor.ColumnarText");
+        m_AltColumnarTextFormat = RegisterClipboardFormat(L"OpenEditor.ColumnarText");
 }
 
 COEditorView::~COEditorView ()
@@ -464,35 +464,35 @@ void COEditorView::OnInitialUpdate ()
     OnSize(SIZE_RESTORED, rect.right, rect.bottom);
 
     AdjustCaretPosition();
-	Invalidate(FALSE);
+    Invalidate(FALSE);
 }
 
 BOOL COEditorView::PreCreateWindow (CREATESTRUCT& cs)
 {
-	WNDCLASS wndClass;
-	BOOL bRes = CView::PreCreateWindow(cs);
-	HINSTANCE hInstance = AfxGetInstanceHandle();
+    WNDCLASS wndClass;
+    BOOL bRes = CView::PreCreateWindow(cs);
+    HINSTANCE hInstance = AfxGetInstanceHandle();
 
-	// see if the class already exists
-	if (!::GetClassInfo(hInstance, g_szClassName, &wndClass))
+    // see if the class already exists
+    if (!::GetClassInfo(hInstance, g_szClassName, &wndClass))
     {
-		// get default stuff
-		::GetClassInfo(hInstance, cs.lpszClass, &wndClass);
-		wndClass.lpszClassName = g_szClassName;
-		wndClass.style &= ~(CS_OWNDC | CS_CLASSDC | CS_PARENTDC);
+        // get default stuff
+        ::GetClassInfo(hInstance, cs.lpszClass, &wndClass);
+        wndClass.lpszClassName = g_szClassName;
+        wndClass.style &= ~(CS_OWNDC | CS_CLASSDC | CS_PARENTDC);
         wndClass.style &= ~(CS_HREDRAW | CS_VREDRAW);
         //2016.06.15 improvement, mouse selectin by words
-		//wndClass.style |= CS_DBLCLKS /*| CS_OWNDC*/;
-		wndClass.style &= ~CS_DBLCLKS;
+        //wndClass.style |= CS_DBLCLKS /*| CS_OWNDC*/;
+        wndClass.style &= ~CS_DBLCLKS;
         wndClass.hbrBackground = 0;
         wndClass.hCursor = 0;
-		// register a new class
-		if (!AfxRegisterClass(&wndClass))
-			AfxThrowResourceException();
-	}
+        // register a new class
+        if (!AfxRegisterClass(&wndClass))
+            AfxThrowResourceException();
+    }
     cs.lpszClass = g_szClassName;
 
-	return bRes;
+    return bRes;
 }
 
 LRESULT COEditorView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
@@ -516,7 +516,7 @@ BOOL COEditorView::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINF
         && m_autocompleteList.IsActive()) 
             m_autocompleteList.HideControl();
 
-	    return CView::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
+        return CView::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
     }
     _OE_DEFAULT_HANDLER_;
 
@@ -528,30 +528,30 @@ BOOL COEditorView::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINF
 
 int COEditorView::OnCreate (LPCREATESTRUCT lpCreateStruct)
 {
-	if (CView::OnCreate(lpCreateStruct) == -1)
-		return -1;
+    if (CView::OnCreate(lpCreateStruct) == -1)
+        return -1;
 
     m_DropTaget.Register(this);// for Drag & Drop
 
-	return 0;
+    return 0;
 }
 
 void COEditorView::OnSize (UINT nType, int cx, int cy)
 {
-	CView::OnSize(nType, cx, cy);
-	DoSize(nType, cx, cy);
+    CView::OnSize(nType, cx, cy);
+    DoSize(nType, cx, cy);
 //    char buff[80];
-//    _snprintf(buff, sizeof(buff), "editor size x=%d,y=%d (chars)", m_Rulers[0].m_Count, m_Rulers[1].m_Count);
+//    _snprintf(buff, sizeof(buff)/sizeof(buff[0]), "editor size x=%d,y=%d (chars)", m_Rulers[0].m_Count, m_Rulers[1].m_Count);
 //    Global::SetStatusText(buff, TRUE);
 }
 
 void COEditorView::DoHScroll (UINT nSBCode, BOOL keyboard)
 {
     SCROLLINFO scrollInfo;
-	scrollInfo.cbSize = sizeof(scrollInfo);
-	scrollInfo.fMask = SIF_TRACKPOS;
+    scrollInfo.cbSize = sizeof(scrollInfo);
+    scrollInfo.fMask = SIF_TRACKPOS;
 
-	GetScrollInfo(SB_HORZ, &scrollInfo);
+    GetScrollInfo(SB_HORZ, &scrollInfo);
 
     if(m_bAttached 
     && m_Rulers[0].OnScroll(nSBCode, scrollInfo.nTrackPos, m_nMaxLineLength - 1, GetSettings().GetCursorBeyondEOL()))
@@ -569,10 +569,10 @@ void COEditorView::DoHScroll (UINT nSBCode, BOOL keyboard)
 void COEditorView::DoVScroll (UINT nSBCode, BOOL keyboard)
 {
     SCROLLINFO scrollInfo;
-	scrollInfo.cbSize = sizeof(scrollInfo);
-	scrollInfo.fMask = SIF_TRACKPOS;
+    scrollInfo.cbSize = sizeof(scrollInfo);
+    scrollInfo.fMask = SIF_TRACKPOS;
 
-	GetScrollInfo(SB_VERT, &scrollInfo);
+    GetScrollInfo(SB_VERT, &scrollInfo);
 
     if(m_bAttached 
     && m_Rulers[1].OnScroll(nSBCode, scrollInfo.nTrackPos, GetLineCount() - 1, GetSettings().GetCursorBeyondEOF()))
@@ -639,14 +639,14 @@ void COEditorView::ShowCaret (bool show, bool dont_destroy_caret)
 
 void COEditorView::OnSetFocus (CWnd* pOldWnd)
 {
-	CView::OnSetFocus(pOldWnd);
+    CView::OnSetFocus(pOldWnd);
 
     ShowCaret(TRUE);
 }
 
 void COEditorView::OnKillFocus (CWnd* pNewWnd)
 {
-	CView::OnKillFocus(pNewWnd);
+    CView::OnKillFocus(pNewWnd);
 
     ShowCaret(FALSE);
 }
@@ -820,12 +820,12 @@ void COEditorView::OnKeyDown (UINT nChar, UINT nRepCnt, UINT nFlags)
         if (_alt && GetBlockMode() != ebtColumn) // convert to columnar mode
             SetBlockMode(ebtColumn, true);
 
-		SelectByCursor(prevPos);
+        SelectByCursor(prevPos);
     }
     else
     {
         if (clearSelection && !IsSelectionEmpty())
-		    ClearSelection(true);
+            ClearSelection(true);
     }
 
     AdjustCaretPosition();
@@ -884,9 +884,9 @@ void COEditorView::OnChar (UINT nChar, UINT nRepCnt, UINT /*nFlags*/)
         }
 
         if (m_isOverWriteMode)
-            Overwrite(static_cast<char>(nChar));
+            Overwrite(static_cast<wchar_t>(nChar));
         else
-            Insert(static_cast<char>(nChar));
+            Insert(static_cast<wchar_t>(nChar));
         break;
 
     case '\t':
@@ -932,7 +932,7 @@ void COEditorView::OnChar (UINT nChar, UINT nRepCnt, UINT /*nFlags*/)
 
      // it's processed already.
     case VK_ESCAPE:
-	case VK_BACK:
+    case VK_BACK:
         break;
 
      // control characters are not supported
@@ -1058,7 +1058,7 @@ void COEditorView::OnLButtonDownImpl (UINT nFlags, CPoint point)
             // probably columnar selection would be nice here?
 
             if (!IsSelectionEmpty())
-			    ClearSelection(true);
+                ClearSelection(true);
 
             pos.line = GetCursorLine();
             MoveTo(pos);
@@ -1072,7 +1072,7 @@ void COEditorView::OnLButtonDownImpl (UINT nFlags, CPoint point)
             if (point.x < m_Rulers[0].m_Indent)
                 m_nMouseSelStartLine = pos.line;
 
-		    SelectLine(pos.line);
+            SelectLine(pos.line);
         }
         else
         {
@@ -1106,7 +1106,7 @@ void COEditorView::OnLButtonDownImpl (UINT nFlags, CPoint point)
                     m_nMouseSelStartLine = pos.line;
 
                 if (!IsSelectionEmpty())
-			        ClearSelection(true);
+                    ClearSelection(true);
 
                 MoveTo(pos);
             }
@@ -1154,9 +1154,9 @@ void COEditorView::OnLButtonDblClkImpl (UINT /*nFlags*/, CPoint point)
 
     if (point.y >= m_Rulers[1].m_Indent && point.x >= m_Rulers[0].m_Indent)
     {
-	    ClearSelection(true);
+        ClearSelection(true);
 
-	    Square selection;
+        Square selection;
         Position pos = MouseToPos(point);
 
         // 24.03.2003 improvement, MouseSelectionDelimiters has been added (hidden) which influences on double click selection behavior
@@ -1261,7 +1261,9 @@ void COEditorView::OnUpdate_Pos (CCmdUI* pCmdUI)
         m_posCache = pos;
         m_selCache = blk;
 
-        char buff[80]; buff[sizeof(buff)-1] = 0;
+        WCHAR buff[80]; 
+        const int buff_size = sizeof(buff)/sizeof(buff[0]);
+        buff[buff_size-1] = 0;
         //_snprintf(buff, sizeof(buff)-1, " Ln: %d, Col: %d", pos.line + 1, pos.column + 1);
 
         // 2011.09.13 improved cursor position / selection indicator has been borrowed from sqltools++
@@ -1289,7 +1291,7 @@ void COEditorView::OnUpdate_Pos (CCmdUI* pCmdUI)
                     }
                 }
 
-                _snprintf(buff, sizeof(buff)-1, " Ln: %d, Col: %d [RxC: %dx%d, Sz: %d]", 
+                _snwprintf(buff, buff_size-1, L" Ln: %d, Col: %d [RxC: %dx%d, Sz: %d]", 
                         pos.line + 1, 
                         pos.column + 1,
                         blk.end.line - blk.start.line + 1,
@@ -1315,7 +1317,7 @@ void COEditorView::OnUpdate_Pos (CCmdUI* pCmdUI)
                 {
                     if (i >= GetLineCount())
                         break;
-                    GetLine(i, currentLine, currentLineLength);
+                    GetLineA(i, currentLine, currentLineLength);
                     if ((i == blk.start.line) && (i == blk.end.line))
                     {
                         bLastCharStartLine = false;
@@ -1335,7 +1337,7 @@ void COEditorView::OnUpdate_Pos (CCmdUI* pCmdUI)
                         nChars += currentLineLength;
                 }
 
-                _snprintf(buff, sizeof(buff)-1, " Ln: %d, Col: %d [R: %d, Sz: %d]", 
+                _snwprintf(buff, buff_size-1, L" Ln: %d, Col: %d [R: %d, Sz: %d]", 
                         pos.line + 1, 
                         pos.column + 1,
                         blk.end.line - blk.start.line + ((blk.end.column > 0 && ! bLastCharStartLine) ? 1 : 0),
@@ -1343,7 +1345,7 @@ void COEditorView::OnUpdate_Pos (CCmdUI* pCmdUI)
             }
         }
         else
-            _snprintf(buff, sizeof(buff)-1, " Ln: %d, Col: %d", pos.line + 1, pos.column + 1);
+            _snwprintf(buff, buff_size-1, L" Ln: %d, Col: %d", pos.line + 1, pos.column + 1);
 
         pCmdUI->SetText(buff);
     }
@@ -1372,8 +1374,9 @@ void COEditorView::OnUpdate_Pos (CCmdUI* pCmdUI)
             GetSelection(selection);
             if (selection.start.line == selection.end.line)
             {
-                string text;
+                std::wstring text;
                 GetBlock(text);
+
                 if (m_highlightedText != text 
                 && !Common::is_blank_line(text.c_str(), text.size()))
                 {
@@ -1404,8 +1407,10 @@ void COEditorView::HighlightBraces ()
 
 void COEditorView::OnUpdate_ScrollPos (CCmdUI* pCmdUI)
 {
-    char buff[80]; buff[sizeof(buff)-1] = 0;
-    _snprintf(buff, sizeof(buff)-1, " Top: %d, Left: %d", m_Rulers[1].m_Topmost + 1, m_Rulers[0].m_Topmost + 1);
+    WCHAR buff[80]; 
+    const int buff_size = sizeof(buff)/sizeof(buff[0]);
+    buff[buff_size-1] = 0;
+    _snwprintf(buff, buff_size-1, L" Top: %d, Left: %d", m_Rulers[1].m_Topmost + 1, m_Rulers[0].m_Topmost + 1);
     pCmdUI->SetText(buff);
     pCmdUI->Enable(TRUE);
 }
@@ -1413,7 +1418,7 @@ void COEditorView::OnUpdate_ScrollPos (CCmdUI* pCmdUI)
 void COEditorView::OnUpdate_BlockType (CCmdUI* pCmdUI)
 {
     pCmdUI->SetText(GetBlockMode() == ebtColumn 
-        ? (IsAltColumnarMode() ? " Sel: Alt-Column " : " Sel: Columnar ") : " Sel: Stream ");
+        ? (IsAltColumnarMode() ? L" Sel: Alt-Column " : L" Sel: Columnar ") : L" Sel: Stream ");
     pCmdUI->Enable(TRUE);
 }
 
@@ -1425,30 +1430,60 @@ void COEditorView::OnUpdate_CurChar (CCmdUI* pCmdUI)
     if (m_curCharCache.pos != pos)
     {
         m_curCharCache.pos = pos;
-        m_curCharCache.message = " Chr: ";
+        m_curCharCache.message = L" Chr: ";
 
         if (pos.line < GetLineCount()
         && pos.column < GetLineLength(pos.line))
         {
-            int len;
-            char buff[80];
-            const char* str;
-            GetLine(pos.line, str, len);
+            std::wstring message = L" Chr: ";
+            wchar_t buff[80];
+            
+            OEStringW lineBuff;
+            GetLineW(pos.line, lineBuff);
+            int len = lineBuff.length();
+            const wchar_t* str = lineBuff.data();
+
             int inx = pos2inx(str, len, pos.column);
-            if (isprint(str[inx]))
+            if (iswprint(str[inx])) // because cannot convert signle byte to utf16
             {
-                m_curCharCache.message += '\'';
-                m_curCharCache.message += str[inx];
+                message += '\'';
+                message += str[inx];
             }
             else
             {
-                m_curCharCache.message += "\'?";
+                message += L"\'?";
             }
-            int iChr = 0xFF&((int)str[inx]);
-            m_curCharCache.message += "'=0x";
-            m_curCharCache.message += itoa(iChr, buff, 16);
-            m_curCharCache.message += "=";
-            m_curCharCache.message += itoa(iChr, buff, 10);
+            
+
+            if (GetDocument()->GetSaveEncodingCodepage() == CP_UTF16)
+            {
+                int iChr = str[inx];
+                message += L"'=x";
+                message += _itow(iChr, buff, 16);
+                message += L"=";
+                message += _itow(iChr, buff, 10);
+            }
+            else
+            {
+                int codepage = GetDocument()->GetEncodingCodepage();
+
+                char chrBuff[10];
+                int chrSize = WideCharToMultiByte(codepage, 0, str + inx, 1, chrBuff, sizeof(chrBuff)/sizeof(chrBuff[0]), 0, 0);
+                if (chrSize > 0)
+                {
+                    message += L"'=x";
+                    for (int i = 0; i < chrSize; ++i)
+                        message += _itow((unsigned char)chrBuff[i], buff, 16);
+
+                    if (chrSize == 1)
+                    {
+                        message += L"=";
+                        message += _itow((unsigned char)chrBuff[0], buff, 10);
+                    }
+                }
+            }
+
+            m_curCharCache.message = message;
         }
     }
 
@@ -1492,7 +1527,7 @@ void COEditorView::OnUpdate_SelectionType (CCmdUI* pCmdUI)
     }
 }
 
-void COEditorView::DoEditCopy (const string& buff, bool append)
+void COEditorView::DoEditCopy (const std::wstring& buff, bool append)
 {
     if (::OpenClipboard(NULL))
     {
@@ -1502,23 +1537,23 @@ void COEditorView::DoEditCopy (const string& buff, bool append)
 
         if (buff.size())
         {
-            HGLOBAL hDataSrc = ::GetClipboardData(CF_TEXT);
-            const char* src = hDataSrc ? (const char*)::GlobalLock(hDataSrc) : NULL;
-            size_t length = src ? strlen(src) : 0; 
+            HGLOBAL hDataSrc = ::GetClipboardData(CF_UNICODETEXT);
+            const wchar_t* src = hDataSrc ? (const wchar_t*)::GlobalLock(hDataSrc) : NULL;
+            size_t length = src ? wcslen(src) : 0; 
             
-            HGLOBAL hDataDest = ::GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, length + buff.size() + 1);
+            HGLOBAL hDataDest = ::GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, (length + buff.size() + 1) * sizeof(wchar_t));
             if (hDataDest)
             {
-                char* dest = (char*)::GlobalLock(hDataDest);
+                wchar_t* dest = (wchar_t*)::GlobalLock(hDataDest);
                 if (dest) 
                 {
-                    if (src) memcpy(dest, src, length);
-                    memcpy(dest + length, buff.c_str(), buff.size() + 1);
+                    if (src) memcpy(dest, src, length * sizeof(wchar_t));
+                    memcpy(dest + length, buff.c_str(), (buff.size() + 1) * sizeof(wchar_t));
                 }
                 if (hDataSrc) ::GlobalUnlock(hDataSrc);
                 ::GlobalUnlock(hDataDest);
                 ::EmptyClipboard();
-                ::SetClipboardData(CF_TEXT, hDataDest);
+                ::SetClipboardData(CF_UNICODETEXT, hDataDest);
             }
         }
 
@@ -1540,7 +1575,7 @@ void COEditorView::OnEditCopy()
     {
         CWaitCursor wait;
 
-        string buff;
+        std::wstring buff;
         GetBlock(buff);
         DoEditCopy(buff);
     }
@@ -1566,14 +1601,14 @@ void COEditorView::OnEditPaste()
     RETURN_IF_LOCKED
 
     if (::OpenClipboard(NULL))
-	{
-        HGLOBAL hData = ::GetClipboardData(CF_TEXT);
+    {
+        HGLOBAL hData = ::GetClipboardData(CF_UNICODETEXT);
 
         if (hData != NULL)
-		{
-            char* src = (char*)::GlobalLock(hData);
-			if (src)
-			{
+        {
+            wchar_t* src = (wchar_t*)::GlobalLock(hData);
+            if (src)
+            {
                 if (!IsSelectionEmpty())
                 {
                     Square blkPos;
@@ -1599,17 +1634,21 @@ void COEditorView::OnEditPaste()
                 if (isAltColumnarText && GetBlockMode() != ebtColumn)
                     SetBlockMode(ebtColumn, true);
 
-                string text, info;
+                std::string info;
                 Common::AppGetClipboardText(info, CF_PRIVATEFIRST);
                 if (info == "{code}")
+                {
+                    std::wstring text;
                     AlignCodeFragment(src, text);
-
-				InsertBlock(text.empty() ? src : text.c_str());
-			}
+                    InsertBlock(text.c_str());
+                }
+                else
+                    InsertBlock(src);
+            }
             ::GlobalUnlock(hData); // handle passible exceptions from block above!!!
-		}
+        }
         ::CloseClipboard();
-	}
+    }
 }
 
 void COEditorView::OnUpdate_EditCopy (CCmdUI* pCmdUI)
@@ -1619,7 +1658,7 @@ void COEditorView::OnUpdate_EditCopy (CCmdUI* pCmdUI)
 
 void COEditorView::OnUpdate_EditPaste (CCmdUI* pCmdUI)
 {
-	pCmdUI->Enable(!IsLocked() && IsClipboardFormatAvailable(CF_TEXT));
+    pCmdUI->Enable(!IsLocked() && IsClipboardFormatAvailable(CF_UNICODETEXT));
 }
 
 void COEditorView::OnEditUndo ()
@@ -1684,7 +1723,7 @@ void COEditorView::OnEditDeleteWordToRight()
 
 void COEditorView::OnEditFind()
 {
-    string buff;
+    std::wstring buff;
     Square sqr;
 
     GetBlockOrWordUnderCursor(buff, sqr, true/*onlyOneLine*/);
@@ -1697,7 +1736,7 @@ void COEditorView::OnEditReplace()
 {
     RETURN_IF_LOCKED
 
-    string buff;
+    std::wstring buff;
     Square sqr;
 
     if (GetBlockOrWordUnderCursor(buff, sqr, true/*onlyOneLine*/))
@@ -1709,13 +1748,13 @@ void COEditorView::OnEditReplace()
 void COEditorView::OnEditFindNext()
 {
     COEditorView* pView;
-	RepeadSearch(esdDown, pView);
+    RepeadSearch(esdDown, pView);
 }
 
 void COEditorView::OnEditFindPrevious()
 {
     COEditorView* pView;
-	RepeadSearch(esdUp, pView);
+    RepeadSearch(esdUp, pView);
 }
 
 void COEditorView::OnEditFindSeletedNext()
@@ -1724,13 +1763,13 @@ void COEditorView::OnEditFindSeletedNext()
     GetSelection(sqr);
     if (sqr.start.line == sqr.end.line)
     {
-        string buff;
+        std::wstring buff;
         GetBlockOrWordUnderCursor(buff, sqr, true/*onlyOneLine*/);
         if (!buff.empty())
         {
             SetSearchText(buff.c_str());
             COEditorView* pView;
-	        RepeadSearch(esdDown, pView);
+            RepeadSearch(esdDown, pView);
         }
     }
 }
@@ -1741,13 +1780,13 @@ void COEditorView::OnEditFindSeletedPrevious()
     GetSelection(sqr);
     if (sqr.start.line == sqr.end.line)
     {
-        string buff;
+        std::wstring buff;
         GetBlockOrWordUnderCursor(buff, sqr, true/*onlyOneLine*/);
         if (!buff.empty())
         {
             SetSearchText(buff.c_str());
             COEditorView* pView;
-	        RepeadSearch(esdUp, pView);
+            RepeadSearch(esdUp, pView);
         }
     }
 }
@@ -1819,14 +1858,14 @@ bool COEditorView::RepeadSearch (SearchDirection direction, COEditorView*& pView
                 Global::SetStatusText("Passed the beginning of the file.");
                 if (CFindReplaceDlg::m_MessageOnEOF) {
                     moveAfterEnd = 
-                        (AfxMessageBox("Passed the beginning of the file.\nMove to the end?",
+                        (AfxMessageBox(L"Passed the beginning of the file.\nMove to the end?",
                             MB_YESNO|MB_ICONQUESTION) == IDYES);
                 }
             } else {// esdDown
                 Global::SetStatusText("Passed the end of the file.");
                 if (CFindReplaceDlg::m_MessageOnEOF) {
                     moveAfterEnd = 
-                        (AfxMessageBox("Passed the end of the file.\nMove to the beginning?",
+                        (AfxMessageBox(L"Passed the end of the file.\nMove to the beginning?",
                         // MB_OKCANCEL because the key <Cancel> does not work with MB_YESNO
                             MB_OKCANCEL|MB_ICONQUESTION) == IDOK); 
                 }
@@ -1854,11 +1893,11 @@ bool COEditorView::RepeadSearch (SearchDirection direction, COEditorView*& pView
         return true;
     }
 
-    string message("Cannot find the string \'");
+    CString message("Cannot find the string \'");
     message += GetSearchText();
     message += "\'.";
-    Global::SetStatusText(message.c_str());
-    AfxMessageBox(message.c_str());
+    Global::SetStatusText(message);
+    AfxMessageBox(message);
 
     if (direction == esdDown && backward || direction == esdUp && !backward)
         SetBackwardSearch(backward);
@@ -2019,7 +2058,7 @@ void COEditorView::OnContextMenu (CWnd*, CPoint point)
                 Position pos = MouseToPos(pt);
         
                 if (!IsSelectionEmpty())
-			        ClearSelection(true);
+                    ClearSelection(true);
 
                 MoveTo(pos);
             }
@@ -2040,10 +2079,14 @@ void COEditorView::OnContextMenu (CWnd*, CPoint point)
 
     CString path = GetDocument()->GetPathName();
 
-    if ((0xFF00 & GetKeyState(VK_SHIFT)) && ::PathFileExists(path))
+    bool prop = GetSettings().GetFileManagerShellContexMenuProperties();
+    bool git  = GetSettings().GetFileManagerShellContexMenuTortoiseGIT();
+    bool svn  = GetSettings().GetFileManagerShellContexMenuTortoiseSVN();
+
+    if ((prop || git || svn) && (0xFF00 & GetKeyState(VK_SHIFT)) && ::PathFileExists(path))
     {
-        if (UINT idCommand = CustomShellContextMenu(this, point, path, pPopup, GetSettings().GetFileManagerShellContexMenuFilter().c_str()).ShowContextMenu())
-		    SendMessage(WM_COMMAND, idCommand, 0);
+        if (UINT idCommand = CustomShellContextMenu(this, point, path, pPopup, prop, git, svn).ShowContextMenu())
+            SendMessage(WM_COMMAND, idCommand, 0);
     }
     else
         pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
@@ -2059,7 +2102,7 @@ void COEditorView::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu
         flag = (IsLocked() || IsSelectionEmpty()) ? MF_BYCOMMAND|MF_GRAYED : MF_BYCOMMAND|MF_ENABLED;
         pPopupMenu->EnableMenuItem(ID_EDIT_CUT, flag);
 
-        flag = (IsLocked() || !IsClipboardFormatAvailable(CF_TEXT)) ? MF_BYCOMMAND|MF_GRAYED : MF_BYCOMMAND|MF_ENABLED;
+        flag = (IsLocked() || !IsClipboardFormatAvailable(CF_UNICODETEXT)) ? MF_BYCOMMAND|MF_GRAYED : MF_BYCOMMAND|MF_ENABLED;
         pPopupMenu->EnableMenuItem(ID_EDIT_PASTE, flag);
 
         flag = (!CanUndo()) ? MF_BYCOMMAND|MF_GRAYED : MF_BYCOMMAND|MF_ENABLED;
@@ -2076,7 +2119,7 @@ void COEditorView::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu
         pPopupMenu->EnableMenuItem(ID_EDIT_REPLACE, flag);
     }
     else
-	    CView::OnInitMenuPopup(pPopupMenu, nIndex, bSysMenu);
+        CView::OnInitMenuPopup(pPopupMenu, nIndex, bSysMenu);
 }
 
 void COEditorView::OnUpdate_EditFindNext(CCmdUI* pCmdUI)
@@ -2293,7 +2336,7 @@ void COEditorView::DoCommentText (bool comment)
 
     if (selected && blkMode == ebtColumn)
     {
-        AfxMessageBox("The comment/uncomment operation currently supports only stream selection.", MB_OK|MB_ICONSTOP);
+        AfxMessageBox(L"The comment/uncomment operation currently supports only stream selection.", MB_OK|MB_ICONSTOP);
         return;
     }
 
@@ -2303,7 +2346,7 @@ void COEditorView::DoCommentText (bool comment)
         
         if (lang->GetEndLineComment().empty())
         {
-            AfxMessageBox((std::string("Line comment string has not been defined for language \"") 
+            AfxMessageBox(Common::wstr(std::string("Line comment string has not been defined for language \"") 
                 + lang->GetName() + "\".").c_str(), MB_OK|MB_ICONSTOP);
             return;
         }
@@ -2311,7 +2354,7 @@ void COEditorView::DoCommentText (bool comment)
         if (selected)
             ConvertSelectionToLines();
         else
-		    SelectLine(pos.line);
+            SelectLine(pos.line);
 
         if (comment)
             ScanAndReplaceText(CommentText, false);
@@ -2326,19 +2369,19 @@ void COEditorView::DoCommentText (bool comment)
     }
     catch (const std::logic_error& x) // language not found
     {
-        AfxMessageBox((std::string("Cannot comment/uncomment the selection.\n") + x.what()).c_str(), MB_OK|MB_ICONSTOP);
+        AfxMessageBox(Common::wstr(std::string("Cannot comment/uncomment the selection.\n") + x.what()).c_str(), MB_OK|MB_ICONSTOP);
         return;
     }
 }
 
-bool COEditorView::CommentText (const OpenEditor::EditContext& context, std::string& str)
+bool COEditorView::CommentText (const OpenEditor::EditContext& context, std::wstring& str)
 {
-    std::string lineComment =
+    std::wstring lineComment = Common::wstr(
         LanguagesCollection::Find(context.GetSettings().GetLanguage())
-            ->GetEndLineComment();
+            ->GetEndLineComment());
 
     // skip spaces and tabs
-    for (int i = 0, len = str.size(); isspace(str[i]) && i < len; i++)
+    for (int i = 0, len = str.size(); iswspace(str[i]) && i < len; i++)
         ;
 
     // comment line
@@ -2348,19 +2391,19 @@ bool COEditorView::CommentText (const OpenEditor::EditContext& context, std::str
     return true;
 }
 
-bool COEditorView::UncommentText (const OpenEditor::EditContext& context, std::string& str)
+bool COEditorView::UncommentText (const OpenEditor::EditContext& context, std::wstring& str)
 {
-    std::string lineComment =
+    std::wstring lineComment = Common::wstr(
         LanguagesCollection::Find(context.GetSettings().GetLanguage())
-            ->GetEndLineComment();
+            ->GetEndLineComment());
 
     // skip spaces and tabs
-    for (int i = 0, len = str.size(); isspace(str[i]) && i < len; i++)
+    for (int i = 0, len = str.size(); iswspace(str[i]) && i < len; i++)
         ;
 
 
     if (!str.empty() && i < len 
-    && !strncmp(str.c_str() + i, lineComment.c_str(), lineComment.length()))
+    && !wcsncmp(str.c_str() + i, lineComment.c_str(), lineComment.length()))
         str.erase(i, lineComment.length());
 
     return true;
@@ -2377,7 +2420,7 @@ void COEditorView::OnEditGoto()
     dlg.m_WhereFrom = whereFrom;
     dlg.m_WhereTo = (dlg.m_WhereFrom == 0) ? pos.line + 1 : 0;
     dlg.m_InfoString.Format(
-        "There are %u lines in the file. The current line is %u.",
+        L"There are %u lines in the file. The current line is %u.",
         GetLineCount(), pos.line + 1);
 
     if (dlg.DoModal() == IDOK)
@@ -2476,7 +2519,7 @@ void COEditorView::OnEditCreateTemplate ()
 {
     RETURN_IF_LOCKED
 
-    string text;
+    std::wstring text;
     {
         Square blk;
         GetSelection(blk);
@@ -2496,7 +2539,7 @@ void COEditorView::OnEditCreateTemplate ()
 void COEditorView::OnOpenFileUnderCursor ()
 {
     Square tmp_sqr;
-    string cursor_filename;
+    std::wstring cursor_filename;
     CString curr_path;
     bool file_exists=false;
 
@@ -2510,26 +2553,29 @@ void COEditorView::OnOpenFileUnderCursor ()
         return;
     
     if(cursor_filename.length() > MAX_PATH) 
-        THROW_APP_EXCEPTION(string("File name is too long: \"") + cursor_filename + "\"");
+        THROW_APP_EXCEPTION("File name is too long: \"" + Common::str(cursor_filename) + "\"");
 
     // search in the current path directory
     if (GetSettings().GetWorkDirFollowsDocument())
     {
         curr_path = GetDocument()->GetPathName();
-        if (LPSTR file = ::PathFindFileName(curr_path.GetBuffer()))
+        if (LPTSTR file = ::PathFindFileName(curr_path.GetBuffer()))
             *file = 0;
         curr_path.ReleaseBuffer();
         curr_path += cursor_filename.c_str();
-        file_exists = FileExists(curr_path);
+        file_exists = PathFileExists(curr_path);
     }
     else
     {
         // do we really need a full path?
-        getcwd(curr_path.GetBuffer(MAX_PATH+1), MAX_PATH);
-        curr_path.ReleaseBuffer();
-        curr_path += "\\";
-        curr_path += cursor_filename.c_str();
-        file_exists = FileExists(curr_path);
+        //getcwd(curr_path.GetBuffer(MAX_PATH+1), MAX_PATH);
+        if (GetCurrentDirectory(MAX_PATH, curr_path.GetBuffer(MAX_PATH+1)) > 0)
+        {
+            curr_path.ReleaseBuffer();
+            curr_path += "\\";
+            curr_path += cursor_filename.c_str();
+            file_exists = PathFileExists(curr_path);
+        }
     }
 
     // TODO: this behaviour has to be documented because it's not usual (actually I'm not sure)
@@ -2544,11 +2590,11 @@ void COEditorView::OnOpenFileUnderCursor ()
             if(CDocument* pDoc = doc_templ->GetNextDoc(doc_pos)) 
             {
                 curr_path = pDoc->GetPathName();
-                if (LPSTR file = ::PathFindFileName(curr_path.GetBuffer()))
+                if (LPTSTR file = ::PathFindFileName(curr_path.GetBuffer()))
                     *file = 0;
                 curr_path.ReleaseBuffer();
                 curr_path += cursor_filename.c_str();
-                if (FileExists(curr_path))
+                if (PathFileExists(curr_path))
                 {
                     file_exists = true;
                     break;
@@ -2561,9 +2607,9 @@ void COEditorView::OnOpenFileUnderCursor ()
     if (!file_exists)
     {
         CString env_path;
-        env_path.GetEnvironmentVariable("PATH");
+        env_path.GetEnvironmentVariable(L"PATH");
         int curPos = 0;
-        curr_path = env_path.Tokenize(";", curPos);
+        curr_path = env_path.Tokenize(L";", curPos);
         while (!curr_path.IsEmpty()) 
         {
             if (curr_path.GetAt(curr_path.GetLength()-1) != '\\')
@@ -2571,19 +2617,19 @@ void COEditorView::OnOpenFileUnderCursor ()
 
             curr_path += cursor_filename.c_str();
 
-            if (FileExists(curr_path))
+            if (PathFileExists(curr_path))
             {
                 file_exists = true;
                 break;
             }
-            curr_path = env_path.Tokenize(";", curPos);
+            curr_path = env_path.Tokenize(L";", curPos);
         }
     }
 
     if(file_exists == true) 
         AfxGetApp()->OpenDocumentFile(curr_path);
     else 
-        THROW_APP_EXCEPTION(string("Cannot find file: \"") + cursor_filename + "\"");
+        THROW_APP_EXCEPTION("Cannot find file: \"" + Common::str(cursor_filename) + "\"");
 }    
 
 void COEditorView::MoveToBottom ()
@@ -2608,14 +2654,14 @@ void COEditorView::MoveToAndCenter (Position pos)
         OnEditScrollCenter();
 }
 
-void COEditorView::GetBlock (string& str, const Square* sqr) const
+void COEditorView::GetBlock (std::wstring& str, const Square* sqr) const
 {
     CWaitCursor wait;
 
     EditContext::GetBlock(str, sqr);
 }
 
-void COEditorView::InsertBlock (const char* str, bool hideSelection, bool putSelInUndo)
+void COEditorView::InsertBlock (const wchar_t* str, bool hideSelection, bool putSelInUndo)
 {
     CWaitCursor wait;
 
@@ -2668,7 +2714,7 @@ void COEditorView::OnEditCopyAndAppend ()
     {
         CWaitCursor wait;
 
-        string buff;
+        std::wstring buff;
         GetBlock(buff);
         DoEditCopy(buff, true);
     }
@@ -2686,7 +2732,7 @@ void COEditorView::OnEditCopyBookmarked ()
 {
     CWaitCursor wait;
 
-    string buff;
+    std::wstring buff;
     CopyBookmarkedLines(buff);
     DoEditCopy(buff);
 }
@@ -2702,7 +2748,7 @@ void COEditorView::OnEditDeleteBookmarked ()
 
 void COEditorView::OnEditSelectWord ()
 {
-	Square selection;
+    Square selection;
     if (WordFromPoint(GetPosition(), selection))
     {
         MoveTo(selection.end);
@@ -2719,23 +2765,23 @@ void COEditorView::OnEditSelectLine ()
 BOOL COEditorView::OnMouseWheel(UINT /*nFlags*/, short zDelta, CPoint /*pt*/)
 {
     SCROLLINFO scrollInfo;
-	scrollInfo.cbSize = sizeof(scrollInfo);
-	scrollInfo.fMask = SIF_TRACKPOS;
+    scrollInfo.cbSize = sizeof(scrollInfo);
+    scrollInfo.fMask = SIF_TRACKPOS;
 
-	GetScrollInfo(SB_VERT, &scrollInfo);
+    GetScrollInfo(SB_VERT, &scrollInfo);
 
     if (scrollInfo.nMax >= (int)scrollInfo.nPage)
     {
         if (!m_uWheelScrollLines)
-	        ::SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, &m_uWheelScrollLines, 0);
+            ::SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, &m_uWheelScrollLines, 0);
 
-	    if (m_uWheelScrollLines == WHEEL_PAGESCROLL)
-	    {
+        if (m_uWheelScrollLines == WHEEL_PAGESCROLL)
+        {
             DoVScroll(zDelta > 0 ? SB_PAGEDOWN : SB_PAGEUP, TRUE);
-	    }
+        }
         else
         {
-		    int nToScroll = ::MulDiv(zDelta, m_uWheelScrollLines, WHEEL_DELTA);
+            int nToScroll = ::MulDiv(zDelta, m_uWheelScrollLines, WHEEL_DELTA);
 
             if (zDelta > 0)
                 while (nToScroll--)
@@ -2747,7 +2793,7 @@ BOOL COEditorView::OnMouseWheel(UINT /*nFlags*/, short zDelta, CPoint /*pt*/)
     }
 
     return FALSE;
-	//return CView::OnMouseWheel(nFlags, zDelta, pt);
+    //return CView::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 void COEditorView::OnSettingChange (UINT, LPCTSTR)
@@ -2784,11 +2830,11 @@ void COEditorView::OnEditDatetimeStamp()
         time_t t = time(0);
         if (const tm* lt = localtime(&t)) 
         {
-            char buff[80];
-            strftime(buff, sizeof buff, format.c_str(), lt);
-            buff[sizeof(buff)-1] = 0;
+            wchar_t buff[80];
+            wcsftime(buff, sizeof buff, Common::wstr(format).c_str(), lt);
+            buff[sizeof(buff)/sizeof(buff[0])-1] = 0;
 
-            if (strlen(buff) > 0)
+            if (wcslen(buff) > 0)
             {
                 UndoGroup undGroup(*this);
 
@@ -2800,10 +2846,10 @@ void COEditorView::OnEditDatetimeStamp()
             }
         }
         else
-            AfxMessageBox("Datetime stamp failed. Unknown reason.", MB_OK|MB_ICONSTOP);
+            AfxMessageBox(L"Datetime stamp failed. Unknown reason.", MB_OK|MB_ICONSTOP);
     }
     else
-        AfxMessageBox("Datetime stamp failed. Empty format string.", MB_OK|MB_ICONSTOP);
+        AfxMessageBox(L"Datetime stamp failed. Empty format string.", MB_OK|MB_ICONSTOP);
 }
 
 void COEditorView::OnEditJoinLines ()
@@ -2818,11 +2864,11 @@ void COEditorView::OnEditJoinLines ()
         GetSelection(blk);
         blk.normalize();
 
-        string text, buff;
+        std::wstring text, buff;
         GetBlock(text);
-        const char* textPtr = text.c_str();
+        const wchar_t* textPtr = text.c_str();
 
-        std::ostringstream out;
+        std::wostringstream out;
         DelimitersMap space(" \t\n\r");
         
         bool spaceNeeded = false;
@@ -2868,17 +2914,22 @@ struct SplitLineContext
 {
     DelimitersMap m_newLineAfterDelim;
     DelimitersMap m_spaceChar;
-    Fastmap<bool> m_controlChar;
+    FastmapW<bool> m_controlChar;
     int m_dontChangeBetween_Index;
-    Fastmap<int> m_dontChangeBetween_OpenBraces;  // contains brace index for initialized and -1 for empty entries
-    Fastmap<int> m_dontChangeBetween_ClosingBraces; // contains brace index for initialized and -1 for empty entries
-    Fastmap<int> m_ignoreNewLineAfterBetween_IndexMap;  // contains brace index for initialized and -1 for empty entries
-    Fastmap<int> m_ignoreNewLineAfterBetween_OpenBraces;  // contains brace index for initialized and -1 for empty entries
-    Fastmap<int> m_ignoreNewLineAfterBetween_ClosingBraces;  // contains brace index for initialized and -1 for empty entries
+    FastmapW<int> m_dontChangeBetween_OpenBraces;  // contains brace index for initialized and -1 for empty entries
+    FastmapW<int> m_dontChangeBetween_ClosingBraces; // contains brace index for initialized and -1 for empty entries
+    FastmapW<int> m_ignoreNewLineAfterBetween_OpenBraces;  // contains brace index for initialized and -1 for empty entries
+    FastmapW<int> m_ignoreNewLineAfterBetween_ClosingBraces;  // contains brace index for initialized and -1 for empty entries
+    std::map<int, int> m_ignoreNewLineAfterBetween_IndexMap;
     bool m_firstLine, m_skippingNewLineAfter;
 
     SplitLineContext (const OESplitLinesDlg& dlg)
-        : m_spaceChar(" \t\n\r")
+        : m_spaceChar(" \t\n\r"),
+        m_controlChar(false),
+        m_dontChangeBetween_OpenBraces(-1),
+        m_dontChangeBetween_ClosingBraces(-1),
+        m_ignoreNewLineAfterBetween_OpenBraces(-1),
+        m_ignoreNewLineAfterBetween_ClosingBraces(-1)
     {
         m_dontChangeBetween_Index = -1;
         m_firstLine = true;
@@ -2886,37 +2937,28 @@ struct SplitLineContext
 
         if (dlg.m_bAdvancedOptions)
         {
-            m_newLineAfterDelim.Set(dlg.m_sInsertNewLineAfter.c_str());
+            m_newLineAfterDelim.Set(Common::str(dlg.m_sInsertNewLineAfter).c_str());
 
-            for (unsigned int i = 0; i < m_dontChangeBetween_OpenBraces._size(); ++i)
-                m_dontChangeBetween_OpenBraces[i] = -1;
-            for (unsigned int i = 0; i < m_dontChangeBetween_ClosingBraces._size(); ++i)
-                m_dontChangeBetween_ClosingBraces[i] = -1;
-            for (unsigned int i = 0; i < m_ignoreNewLineAfterBetween_OpenBraces._size(); ++i)
-                m_ignoreNewLineAfterBetween_OpenBraces[i] = -1;
-            for (unsigned int i = 0; i < m_ignoreNewLineAfterBetween_ClosingBraces._size(); ++i)
-                m_ignoreNewLineAfterBetween_ClosingBraces[i] = -1;
-
-            std::vector<std::pair<char,char> > dontChaneBeetwen;
+            std::vector<std::pair<wchar_t,wchar_t> > dontChaneBeetwen;
             dlg.GetDontChaneBeetwen(dontChaneBeetwen);
             for (unsigned char i = 0; i < min<unsigned int>(UCHAR_MAX, dontChaneBeetwen.size()); ++i)
             {
-                m_controlChar[dontChaneBeetwen[i].first ] = true;
-                m_controlChar[dontChaneBeetwen[i].second] = true;
+                m_controlChar.assign(dontChaneBeetwen[i].first,  true);
+                m_controlChar.assign(dontChaneBeetwen[i].second, true);
 
-                m_dontChangeBetween_OpenBraces[dontChaneBeetwen[i].first ] = i;
-                m_dontChangeBetween_ClosingBraces[dontChaneBeetwen[i].second] = i;
+                m_dontChangeBetween_OpenBraces   .assign(dontChaneBeetwen[i].first,  i);
+                m_dontChangeBetween_ClosingBraces.assign(dontChaneBeetwen[i].second, i);
             }
 
-            std::vector<std::pair<char,char> > ignoreForceNewLine;
+            std::vector<std::pair<wchar_t,wchar_t> > ignoreForceNewLine;
             dlg.GetIgnoreForceNewLine(ignoreForceNewLine);
             for (unsigned char i = 0; i < min<unsigned int>(UCHAR_MAX, ignoreForceNewLine.size()); ++i)
             {
-                m_controlChar[ignoreForceNewLine[i].first ] = true;
-                m_controlChar[ignoreForceNewLine[i].second] = true;
+                m_controlChar.assign(ignoreForceNewLine[i].first , true);
+                m_controlChar.assign(ignoreForceNewLine[i].second, true);
 
-                m_ignoreNewLineAfterBetween_OpenBraces[ignoreForceNewLine[i].first ] = i;
-                m_ignoreNewLineAfterBetween_ClosingBraces[ignoreForceNewLine[i].second] = i;
+                m_ignoreNewLineAfterBetween_OpenBraces   .assign(ignoreForceNewLine[i].first , i);
+                m_ignoreNewLineAfterBetween_ClosingBraces.assign(ignoreForceNewLine[i].second, i);
             }
         }
     }
@@ -2924,18 +2966,7 @@ struct SplitLineContext
     bool IsLiteral () const { return (m_dontChangeBetween_Index != -1) ? true : false; }
     bool IsSkippingNewLineAfter () const { return m_skippingNewLineAfter; }
 
-    void recalcSkippingNewLineAfter ()
-    {
-        m_skippingNewLineAfter = false;
-        for (unsigned int i = 0; i < min<unsigned int>(UCHAR_MAX, m_ignoreNewLineAfterBetween_IndexMap._size()); ++i)
-            if (m_ignoreNewLineAfterBetween_IndexMap[i] != 0)
-            {
-                m_skippingNewLineAfter = true;
-                break;
-            }
-    }
-
-    void scanChar (char ch)
+    void scanChar (wchar_t ch)
     {
         if (m_controlChar[ch])
         {
@@ -2953,17 +2984,31 @@ struct SplitLineContext
             if (m_dontChangeBetween_Index == -1)
             {
                 int index = m_ignoreNewLineAfterBetween_ClosingBraces[ch];
-                if (index != -1 && m_ignoreNewLineAfterBetween_IndexMap[index] > 0)
+
+                if (index != -1) 
                 {
-                    --m_ignoreNewLineAfterBetween_IndexMap[index];
-                    recalcSkippingNewLineAfter();
+                    auto it = m_ignoreNewLineAfterBetween_IndexMap.find(index);
+                    if (it != m_ignoreNewLineAfterBetween_IndexMap.end())
+                    {
+                        if (--it->second <= 0)
+                        {
+                            m_ignoreNewLineAfterBetween_IndexMap.erase(it);
+                            if (m_ignoreNewLineAfterBetween_IndexMap.empty())
+                                m_skippingNewLineAfter = false;
+                        }
+                    }
                 }
                 else
                 {
-                    int index = m_ignoreNewLineAfterBetween_OpenBraces[ch];
+                    index = m_ignoreNewLineAfterBetween_OpenBraces[ch];
                     if (index != -1)
                     {
-                        ++m_ignoreNewLineAfterBetween_IndexMap[index];
+                        auto it = m_ignoreNewLineAfterBetween_IndexMap.find(index);
+                        if (it != m_ignoreNewLineAfterBetween_IndexMap.end())
+                            ++it->second;
+                        else
+                            m_ignoreNewLineAfterBetween_IndexMap[index] = 1;
+
                         m_skippingNewLineAfter = true;
                     }
                 }
@@ -2971,7 +3016,7 @@ struct SplitLineContext
         }
     }
 
-    bool GetWord (const char*& textPtr, std::string& buff, bool& newLineAfter)
+    bool GetWord (const wchar_t*& textPtr, std::wstring& buff, bool& newLineAfter)
     {
         buff.clear();
         newLineAfter = false;
@@ -3033,13 +3078,13 @@ void COEditorView::OnEditSplitLine ()
 
         CWaitCursor wait;
 
-        string text, buff;
+        std::wstring text, buff;
         GetBlock(text);
-        const char* textPtr = text.c_str();
+        const wchar_t* textPtr = text.c_str();
         
-        std::ostringstream out;
+        std::wostringstream out;
 
-        std::string indent(leftMarging - 1, ' ');
+        std::wstring indent(leftMarging - 1, ' ');
 
         bool newLineAfter  = false;
         bool spaceNeeded   = false;
@@ -3102,7 +3147,7 @@ void COEditorView::OnEditSplitLine ()
         InsertBlock(out.str().c_str(), false, true);
 
         if (splitLineContext.IsLiteral())
-            AfxMessageBox("Incomplete string literal appears in the selected text.\t", MB_OK|MB_ICONEXCLAMATION);
+            AfxMessageBox(L"Incomplete string literal appears in the selected text.\t", MB_OK|MB_ICONEXCLAMATION);
     }
 }
 
@@ -3153,8 +3198,8 @@ void COEditorView::OnEditColumnInsert ()
     RETURN_IF_LOCKED
 
     Common::CInputDlg dlg;
-    dlg.m_title = "Insert/Fill Columns";
-    dlg.m_prompt = "Value to insert into every selected line:";
+    dlg.m_title = L"Insert/Fill Columns";
+    dlg.m_prompt = L"Value to insert into every selected line:";
 
     if (dlg.DoModal() == IDOK)
     {
@@ -3209,7 +3254,7 @@ void COEditorView::OnEditColumnInsertNumber ()
         blk.normalize();
         blk.normalize_columns();
 
-        std::ostringstream out;  
+        std::wostringstream out;  
         out << std::setbase(!dlg.m_nNumberFormat ? 10 : 16);
 
         int number = dlg.m_nFirstNumber;
@@ -3222,7 +3267,7 @@ void COEditorView::OnEditColumnInsertNumber ()
             {
                 int len = 0;
                 const char* str = 0;
-                if (line < lines) GetLine(line, str, len);
+                if (line < lines) GetLineA(line, str, len);
                 if (!str || !len || Common::is_blank_line(str, len))
                     continue;
             }
@@ -3230,18 +3275,18 @@ void COEditorView::OnEditColumnInsertNumber ()
             out << number;
             width = max<int>(width, out.str().size());
             number += dlg.m_nIncrement;
-            out.str(string());
+            out.str(std::wstring());
         }
 
         number = dlg.m_nFirstNumber;
-        char filler = dlg.m_bLeadingZeros ? '0' : ' ';
+        wchar_t filler = dlg.m_bLeadingZeros ? '0' : ' ';
         for (int line = 0; line <= blk.end.line - blk.start.line; ++line)
         {
             if (dlg.m_bSkipEmptyLines)
             {
                 int len = 0;
                 const char* str = 0;
-                if (line < lines) GetLine(line, str, len);
+                if (line < lines) GetLineA(line, str, len);
                 if (!str || !len || Common::is_blank_line(str, len))
                 {
                     out << std::endl;
@@ -3343,11 +3388,10 @@ void COEditorView::OnEditDupLineOrSelection ()
     {
         if (pos.line < GetLineCount())
         {
-            int len;
-            const char* str;
-            GetLine(pos.line, str, len);
-            string buffer(str, len);
-            buffer += '\n';
+            OEStringW lineBuff;
+            GetLineW(pos.line, lineBuff);
+            lineBuff.append('\n');
+            lineBuff.append(0);
 
             UndoGroup undoGroup(*this);
             PushInUndoStack(pos);
@@ -3356,7 +3400,7 @@ void COEditorView::OnEditDupLineOrSelection ()
             pos.column = 0;
             ++pos.line;
             MoveTo(pos, true);
-            InsertBlock(buffer.c_str(), false, true);
+            InsertBlock(lineBuff.data(), false, true);
         }
     } 
     else if (GetBlockMode() == ebtStream) 
@@ -3365,7 +3409,7 @@ void COEditorView::OnEditDupLineOrSelection ()
         PushInUndoStack(pos);
         PushInUndoStack(GetBlockMode(), IsAltColumnarMode(), orgBlkPos);
 
-        string buffer;
+        std::wstring buffer;
         GetBlock(buffer, &orgBlkPos);
         InsertBlock(buffer.c_str(), false, true);
         if (!(orgBlkPos.start < orgBlkPos.end))
@@ -3406,3 +3450,7 @@ void COEditorView::OnIdleUpdateCmdUI ()
         pDoc->UpdateTitle();
 }
 
+void COEditorView::OnFilePrintPreview () // FRM
+{
+    AFXPrintPreview (this);
+}

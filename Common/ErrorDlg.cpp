@@ -20,12 +20,14 @@
 #include <afxdlgs.h>
 #include <string>
 #include <sstream>
-#include "COMMON\ErrorDlg.h"
+#include "ErrorDlg.h"
+#include "MyUtf.h"
+#include "AppUtilities.h"
 
 // from Winuser.h
 #define OIC_HAND 32513
 
-    static HANDLE hStopIcon = NULL;
+    string CErrorDlg::m_extraInfo;
 
 using namespace std;
 
@@ -34,17 +36,40 @@ CErrorDlg::CErrorDlg (LPCSTR text, LPCSTR reportPrefix)
 : CDialog(CErrorDlg::IDD),
 m_reportPrefix(reportPrefix)
 {
-    string buff;
-    istringstream i(text);
-
-    while (getline(i, buff))
     {
-        m_text += buff.c_str();
-        m_text += "\r\n";
+        string buff;
+        istringstream i(text);
+
+        while (getline(i, buff))
+        {
+#ifdef UNICODE
+            m_text += Common::wstr(buff).c_str(); // from utf-8 to ucs2
+#else
+            m_text += buff.c_str();
+#endif
+            m_text += "\r\n";
+        }
     }
 
-    if (!hStopIcon)
-        hStopIcon = LoadImage(NULL, MAKEINTRESOURCE(OIC_HAND), IMAGE_ICON, 0, 0, LR_SHARED);
+    if (!m_extraInfo.empty())
+    {
+        m_text += "\r\n";
+        m_text += "\r\n";
+
+        string buff;
+        istringstream i(m_extraInfo);
+
+        while (getline(i, buff))
+        {
+#ifdef UNICODE
+            m_text += Common::wstr(buff).c_str(); // from utf-8 to ucs2
+#else
+            m_text += buff.c_str();
+#endif
+            m_text += "\r\n";
+        }
+    }
+    m_extraInfo.clear();
 }
 
 void CErrorDlg::DoDataExchange(CDataExchange* pDX)
@@ -65,32 +90,33 @@ BOOL CErrorDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
 
-    ::SendMessage(::GetDlgItem(m_hWnd, IDC_ERR_STOP), STM_SETIMAGE, IMAGE_ICON, (LPARAM)hStopIcon);
+    HICON hIcon = LoadIcon(NULL, IDI_ERROR);
+    SetIcon(hIcon, FALSE);
 
     return TRUE;
 }
 
 void CErrorDlg::OnBnClicked_ErrSave()
 {
-	CFileDialog dlgFile(FALSE, NULL, NULL,
-		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT/* | OFN_EXPLORER*/ | OFN_ENABLESIZING,
-		NULL, NULL, 0);
+    CFileDialog dlgFile(FALSE, NULL, NULL,
+        OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT/* | OFN_EXPLORER*/ | OFN_ENABLESIZING,
+        NULL, NULL, 0);
 
-	CString strFilter;
-	// append the "*.TXT" TXT files filter
-	strFilter += "TXT Files (*.*)";
-	strFilter += (TCHAR)'\0';   // next string please
-	strFilter += _T("*.TXT");
-	strFilter += (TCHAR)'\0';   // last string
-	// append the "*.*" all files filter
-	strFilter += "All Files (*.*)";
-	strFilter += (TCHAR)'\0';   // next string please
-	strFilter += _T("*.*");
-	strFilter += (TCHAR)'\0';   // last string
+    CString strFilter;
+    // append the "*.TXT" TXT files filter
+    strFilter += "TXT Files (*.*)";
+    strFilter += (TCHAR)'\0';   // next string please
+    strFilter += _T("*.TXT");
+    strFilter += (TCHAR)'\0';   // last string
+    // append the "*.*" all files filter
+    strFilter += "All Files (*.*)";
+    strFilter += (TCHAR)'\0';   // next string please
+    strFilter += _T("*.*");
+    strFilter += (TCHAR)'\0';   // last string
     strFilter += '\0'; // close
 
-	dlgFile.m_ofn.lpstrFilter   = strFilter;
-	dlgFile.m_ofn.lpstrTitle   = "Save bug report";
+    dlgFile.m_ofn.lpstrFilter   = strFilter;
+    dlgFile.m_ofn.lpstrTitle   = L"Save bug report";
 
     CString fileName = m_reportPrefix;
     fileName += "_";
@@ -103,7 +129,7 @@ void CErrorDlg::OnBnClicked_ErrSave()
     fileName += ".txt";
 
     dlgFile.m_ofn.nMaxFile = _MAX_PATH;
-	dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(dlgFile.m_ofn.nMaxFile);
+    dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(dlgFile.m_ofn.nMaxFile);
     fileName.ReleaseBuffer();
 
     if (dlgFile.DoModal() == IDOK)
@@ -112,8 +138,13 @@ void CErrorDlg::OnBnClicked_ErrSave()
 
         if (hFile != INVALID_HANDLE_VALUE)
         {
+#ifdef UNICODE
+            string buffer = Common::str(m_text); // saving in utf-8
+#else
+            string buffer = m_text; 
+#endif
             DWORD written;
-            WriteFile(hFile, (LPCSTR)m_text, m_text.GetLength(), &written, 0);
+            WriteFile(hFile, buffer.c_str(), buffer.size(), &written, 0);
             CloseHandle(hFile);
         }
     }
@@ -126,21 +157,7 @@ void CErrorDlg::OnBnClicked_ErrCopy()
         ::EmptyClipboard();
 
         if (!m_text.IsEmpty())
-        {
-            unsigned int size = m_text.GetLength() + 1;
-            HGLOBAL hDataDest = ::GlobalAlloc(GMEM_MOVEABLE, size);
-            if (hDataDest)
-            {
-                char* dest = (char*)::GlobalLock(hDataDest);
-                if (dest)
-                {
-                    memcpy(dest, (LPCSTR)m_text, size);
-                    dest[size-1] = 0;
-                }
-                ::GlobalUnlock(hDataDest);
-                ::SetClipboardData(CF_TEXT, hDataDest);
-            }
-        }
+            Common::AppSetClipboardText(m_text, m_text.GetLength());
 
         ::CloseClipboard();
     }

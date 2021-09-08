@@ -17,7 +17,7 @@
 */
 
 #include "stdafx.h"
-#include <COMMON/QuickArray.h>
+#include "QuickArray.h"
 
 namespace Common 
 {
@@ -26,23 +26,23 @@ namespace Common
     {
         size_t size = m_size + extra;
 
-	    if (m_capacity < size)
-	    {
+        if (m_capacity < size)
+        {
             size_t capacity = 0;
-			size_t growBy = m_growBy;
+            size_t growBy = m_growBy;
 
-			if (!growBy)
-			{
-				// heuristically determine growth when nGrowBy == 0
-				//  (this avoids heap fragmentation in many situations)
-				growBy = m_size / 8;
-				growBy = (growBy < 4) ? 4 : ((growBy > 1024) ? 1024 : growBy);
-			}
+            if (!growBy)
+            {
+                // heuristically determine growth when nGrowBy == 0
+                //  (this avoids heap fragmentation in many situations)
+                growBy = m_size / 8;
+                growBy = (growBy < 4) ? 4 : ((growBy > 1024) ? 1024 : growBy);
+            }
 
-			if (size < (m_capacity + growBy))
-				capacity = m_capacity + growBy;  // granularity
-			else
-				capacity = size;  // no slush
+            if (size < (m_capacity + growBy))
+                capacity = m_capacity + growBy;  // granularity
+            else
+                capacity = size;  // no slush
 
             char* data = new char[capacity * elemSize];
 #ifdef _MFC_VER
@@ -59,7 +59,7 @@ namespace Common
 
             m_data = data;
             m_capacity = capacity;
-	    }
+        }
     }
 
     void FakeArray::init (size_t elemSize, size_t items) 

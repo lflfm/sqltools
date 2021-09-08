@@ -22,6 +22,7 @@
 #include "GrepView.h"
 #include "GrepThread.h"
 #include "SQLWorksheet/SQLWorksheetDoc.h"
+#include <iomanip>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,10 +35,10 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(CGrepView, CTreeCtrl)
 
 CGrepView::CGrepView()
-: m_nCounter(0),
-m_pThread(0),
+: m_pThread(0),
 m_evRun(FALSE, TRUE),
-m_evAbort(FALSE, TRUE)
+m_evAbort(FALSE, TRUE),
+m_initialInfoItem(NULL)
 {
 }
 
@@ -49,7 +50,6 @@ CGrepView::~CGrepView()
             TerminateThread(m_pThread->m_hThread, 0);
     } _DESTRUCTOR_HANDLER_;
 }
-
 
 BEGIN_MESSAGE_MAP(CGrepView, CTreeCtrl)
     //{{AFX_MSG_MAP(CGrepView)
@@ -73,7 +73,7 @@ BOOL CGrepView::Create (CWnd* pFrameWnd)
     return CTreeCtrl::Create(WS_CHILD|WS_VISIBLE, rect, pFrameWnd, 1);
 }
 
-int CGrepView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int CGrepView::OnCreate (LPCREATESTRUCT lpCreateStruct)
 {
 	if (CTreeCtrl::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -83,8 +83,9 @@ int CGrepView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     // older versions of Windows* (NT 3.51 for instance)
 	// fail with DEFAULT_GUI_FONT
     if (!(HFONT)font)
-    	if (!font.CreateStockObject(DEFAULT_GUI_FONT))
-    		if (!font.CreatePointFont(80, "MS Sans Serif")) return -1;
+    	if (!font.CreatePointFont(80, L"Courier New")) return -1;
+    	//if (!font.CreateStockObject(DEFAULT_GUI_FONT))
+    		//if (!font.CreatePointFont(80, L"MS Sans Serif")) return -1;
 
     SetFont(&font);
 
@@ -116,8 +117,39 @@ void CGrepView::OnContextMenu (CWnd*, CPoint point)
     CMenu* pPopup = menu.GetSubMenu(0);
     ASSERT(pPopup != NULL);
 
-    if (!IsRunning ())
-        menu.EnableMenuItem(ID_GREP_BREAK, MF_BYCOMMAND|MF_GRAYED);
+    BOOL openFileEnabled = FALSE;
+    if (point.x != -1 && point.y != -1)
+    {
+        CPoint pt(point);
+        ScreenToClient(&pt);
+        UINT nHitFlags;
+        HTREEITEM hItem = HitTest(pt, &nHitFlags);
+        if (nHitFlags & TVHT_ONITEM)
+        {
+            int index = GetItemData(hItem);
+            if (index >= 0)
+                openFileEnabled = TRUE;
+
+            SelectItem(hItem);
+        }
+    }
+    else
+    {
+        if (HTREEITEM hItem = GetSelectedItem()) 
+        {
+            int index = GetItemData(hItem);
+            if (index >= 0)
+                openFileEnabled = TRUE;
+            CRect rect;
+            GetItemRect(hItem, &rect, TRUE);
+            point.x = rect.left;
+            point.y = rect.bottom;
+            ClientToScreen(&point);
+        }
+    }
+
+    menu.EnableMenuItem(ID_GREP_OPEN_FILE, openFileEnabled ? MF_BYCOMMAND|MF_ENABLED : MF_BYCOMMAND|MF_GRAYED);
+    menu.EnableMenuItem(ID_GREP_BREAK, IsRunning() ? MF_BYCOMMAND|MF_ENABLED : MF_BYCOMMAND|MF_GRAYED);
 
     pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 }
@@ -150,21 +182,11 @@ void CGrepView::EndProcess ()
 
 void CGrepView::OnEndProcess ()
 {
-    BOOL bAbort = IsAbort();
+    //BOOL bAbort = IsAbort();
 
     m_pThread = 0;
     m_evRun.ResetEvent();
     m_evAbort.ResetEvent();
-
-    CString strTitle;
-
-    if (m_nCounter)
-        strTitle.Format("Found %d occurrence(s)", m_nCounter);
-
-    AddEntry(m_nCounter ? strTitle : "No matches found", TRUE, TRUE);
-
-    if (bAbort)
-        AddEntry("Canceled", TRUE, TRUE);
 
     Invalidate();
     UpdateWindow();
@@ -173,102 +195,152 @@ void CGrepView::OnEndProcess ()
 void CGrepView::ClearContent ()
 {
     CWaitCursor wait;
-    m_nCounter = 0;
-    m_strLastFileName.Empty();
+
+    {
+        CSingleLock lk(&m_criticalSection, TRUE); 
+        m_foundItems.clear();
+        m_initialInfo.clear();
+        m_initialInfoItem = NULL;
+    }
+
     LockWindowUpdate();
     DeleteAllItems();
     UnlockWindowUpdate();
 }
 
-#pragma warning (push)
-#pragma warning (disable : 4706)
-void CGrepView::AddEntry (const char* szEntry, BOOL bExpanded, BOOL bInfoOnly)
+HTREEITEM CGrepView::addInfo (const std::wstring& text, bool error)
 {
-    ASSERT(szEntry && (isalpha(szEntry[0]) || szEntry[0] == '\\'));
-
-    if (WaitForSingleObject(m_evAbort, 0) == WAIT_OBJECT_0) return;
-
     TV_INSERTSTRUCT	TVStruct;
     TVStruct.hParent      = TVI_ROOT;
     TVStruct.hInsertAfter = TVI_LAST;
     TVStruct.item.mask    = TVIF_TEXT | TVIF_CHILDREN | TVIF_STATE
-                        | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+                          | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
     TVStruct.item.state     =
-    TVStruct.item.stateMask = bExpanded ? TVIS_EXPANDED : 0;
+    TVStruct.item.stateMask = 0;
 
-    if (bInfoOnly)
+    TVStruct.item.pszText   = (LPWSTR)text.c_str();
+    TVStruct.item.mask     |= TVIF_PARAM;
+    TVStruct.item.cChildren = 0;
+    TVStruct.item.iImage    = TVStruct.item.iSelectedImage = !error ? 1 : 3;
+    TVStruct.item.lParam    = -1;
+
+    return InsertItem(&TVStruct);
+}
+
+void CGrepView::AddInitialInfo (const std::wstring& info)
+{
+    m_initialInfo = info;
+    m_initialInfoItem = addInfo(info, false);
+    SelectItem(m_initialInfoItem);
+}
+
+void CGrepView::AddInfo (const std::wstring& info)
+{
+    addInfo(info, false);
+}
+
+void CGrepView::AddError (const std::wstring& error)
+{
+    addInfo(error, true);
+}
+
+void CGrepView::AddFoundMatch (const std::wstring& path, const std::wstring& text, int line, int start, int end, int matchingLines, int totalMatchingLines, bool expanded, bool inMemory)
+{
+    CSingleLock lk(&m_criticalSection, TRUE); 
+
+    HTREEITEM hFileItem = NULL;
+    TV_INSERTSTRUCT	TVStruct;
+    TVStruct.hParent      = TVI_ROOT;
+    TVStruct.hInsertAfter = TVI_LAST;
+    TVStruct.item.mask    = TVIF_TEXT | TVIF_CHILDREN | TVIF_STATE
+                          | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+    TVStruct.item.state     =
+    TVStruct.item.stateMask = expanded ? TVIS_EXPANDED : 0;
+
+    bool parentInserted = false;
+    if (m_foundItems.empty() || m_foundItems.rbegin()->path != path)
     {
-        TVStruct.item.pszText   = (char*)szEntry;
-        TVStruct.item.mask     |= TVIF_PARAM;
-        TVStruct.item.cChildren = 0;
-        TVStruct.item.iImage    = TVStruct.item.iSelectedImage = 1;
-        TVStruct.item.lParam    = 1;
-        InsertItem(&TVStruct);
-        m_hLastItem = NULL;
+        TVStruct.item.pszText   = (LPWSTR)path.c_str();
+        TVStruct.item.cChildren = 1;
+        TVStruct.item.iImage    = TVStruct.item.iSelectedImage = !inMemory ? 0 : 4;
+        hFileItem = InsertItem(&TVStruct);
+        parentInserted = true;
     }
     else
     {
-        const char* pszFirstColon, * pszSecondColon;
-        if ((pszFirstColon = strchr(szEntry, ':'))
-        && (pszFirstColon = strchr(pszFirstColon + 1, ':'))
-        && (pszSecondColon = strchr(pszFirstColon + 1,  ':')))
-        {
-            CString strFileName(szEntry, pszFirstColon - szEntry);
+        hFileItem = GetParentItem(m_foundItems.rbegin()->hitem);
+    }
 
-            if (m_strLastFileName != strFileName)
-            {
-                TVStruct.item.pszText   = (char*)(const char*)strFileName;
-                TVStruct.item.cChildren = 1;
-                TVStruct.item.iImage    = TVStruct.item.iSelectedImage = 0;
-                m_hLastItem = InsertItem(&TVStruct);
-                m_strLastFileName = strFileName;
-            }
+    {
+        std::wostringstream out;
+        out << std::setw(3) << (line + 1) << L"(" << std::setw(2) << (start + 1) << L"):" << text;
+        std::wstring buffer = out.str();
 
-            TVStruct.hParent      = m_hLastItem;
-            TVStruct.item.mask    = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-            TVStruct.item.iImage  = TVStruct.item.iSelectedImage = 2;
-            TVStruct.item.pszText = (char*)pszFirstColon + 1;
-            InsertItem(&TVStruct);
+        TVStruct.hParent      = hFileItem;
+        TVStruct.item.mask    = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+        TVStruct.item.iImage  = TVStruct.item.iSelectedImage = 2;
+        TVStruct.item.pszText = (LPWSTR)buffer.c_str();
+        HTREEITEM hItem = InsertItem(&TVStruct);
 
-            m_nCounter++;
-        }
+        m_foundItems.push_back(found_item { hItem, path, text, line, start, end });
+        SetItemData(hItem, m_foundItems.size() - 1);
+    }
 
-  }
+    {
+        std::wostringstream out;
+        out << path << L" (" << matchingLines << ((inMemory) ? L" matches in memory)" : L" matches)");
+        std::wstring buffer = out.str();
+        SetItemText(hFileItem, buffer.c_str());
+        if (parentInserted)
+            SetItemData(hFileItem, m_foundItems.size() - 1);
+    }
+
+    if (m_initialInfoItem)
+    {
+        std::wostringstream out;
+        out << m_initialInfo << L" (" << totalMatchingLines << " matches)";
+        std::wstring buffer = out.str();
+        SetItemText(m_initialInfoItem, buffer.c_str());
+    }
+
 }
-#pragma warning (pop)
 
 void CGrepView::OnOpenFile ()
 {
-    HTREEITEM hItem = GetSelectedItem();
-
-    if (hItem && !GetItemData(hItem))
+    if (HTREEITEM hItem = GetSelectedItem()) 
     {
-        HTREEITEM hParent = GetParentItem(hItem);
+        int index = GetItemData(hItem);
 
-        int nLine = 0;
-        CString strFile;
-        if (hParent != TVGN_ROOT)
+        if (index >= 0)
         {
-            strFile = GetItemText(hParent);
-            CString strBuffer = GetItemText(hItem);
-            char* pszBuffer = strBuffer.LockBuffer();
-            char* pszLineEnd = strchr(pszBuffer, ':');
-            if (pszLineEnd)
+            CSingleLock lk(&m_criticalSection, TRUE); 
+
+            if ((unsigned int)index < m_foundItems.size())
             {
-                *pszLineEnd = 0;
-                nLine = atoi(pszBuffer);
-                ASSERT(nLine);
+                const found_item& item = m_foundItems.at(index);
+
+                CDocument* pDocument = AfxGetApp()->OpenDocumentFile(item.path.c_str());
+
+                if (pDocument
+                && pDocument->IsKindOf(RUNTIME_CLASS(CPLSWorksheetDoc)))
+                {
+                    COEditorView* editor = ((CPLSWorksheetDoc*)pDocument)->GetEditorView();
+                    
+                    OpenEditor::Position pos;
+                    pos.line = item.line;
+                    pos.column = item.start;
+                    editor->MoveToAndCenter(pos);
+
+                    OpenEditor::Square selection;
+                    selection.start.line   = item.line;
+                    selection.start.column = editor->InxToPos(item.line, item.start);
+                    selection.end.line     = item.line;
+                    selection.end.column   = editor->InxToPos(item.line, item.end);
+                    editor->SetSelection(selection);
+                }
             }
         }
-        else
-            strFile = GetItemText(hItem);
-
-        CDocument* pDocument = AfxGetApp()->OpenDocumentFile(strFile);
-
-        if (pDocument
-        && pDocument->IsKindOf(RUNTIME_CLASS(CPLSWorksheetDoc)))
-            ((CPLSWorksheetDoc*)pDocument)->GoTo(nLine-1);
-  }
+    }
 }
 
 void CGrepView::OnExpandAll (UINT uCode)
@@ -306,7 +378,7 @@ void CGrepView::OnClear ()
     ClearContent();
 }
 
-void CGrepView::OnLButtonDblClk(UINT nFlags, CPoint point)
+void CGrepView::OnLButtonDblClk (UINT nFlags, CPoint point)
 {
     UINT uFlags;
     HitTest(point, &uFlags);
@@ -316,3 +388,41 @@ void CGrepView::OnLButtonDblClk(UINT nFlags, CPoint point)
     else
 	    CTreeCtrl::OnLButtonDblClk(nFlags, point);
 }
+
+LRESULT CGrepView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
+{
+    try { EXCEPTION_FRAME;
+
+        return CTreeCtrl::WindowProc(message, wParam, lParam);
+    }
+    _COMMON_DEFAULT_HANDLER_
+
+    return 0;
+}
+
+BOOL CGrepView::PreTranslateMessage(MSG* pMsg)
+{
+    if (pMsg->message == WM_KEYDOWN)
+    {
+
+        switch( pMsg->wParam ) 
+        {
+        case VK_RETURN:
+            try { EXCEPTION_FRAME;
+
+	            OnOpenFile();
+            }
+            _COMMON_DEFAULT_HANDLER_
+            return TRUE;
+        case VK_ESCAPE:
+            if (CWnd* pWnd = AfxGetMainWnd())
+                if (CMDIFrameWnd* pFrame = DYNAMIC_DOWNCAST(CMDIFrameWnd, pWnd))
+                    if (CMDIChildWnd* pMDIChild = pFrame->MDIGetActive())
+                        pMDIChild->SetFocus();
+            return TRUE;
+        }
+    }
+
+    return CTreeCtrl::PreTranslateMessage(pMsg);
+}
+

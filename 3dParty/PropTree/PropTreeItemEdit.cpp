@@ -104,7 +104,7 @@ void CPropTreeItemEdit::SetValueFormat(ValueFormat nFormat)
 
 
 // Retrieve the item's attribute value
-LPCSTR CPropTreeItemEdit::GetItemValue () const
+LPCTSTR CPropTreeItemEdit::GetItemValue () const
 {
 	return m_sEdit;
 }
@@ -122,7 +122,7 @@ void CPropTreeItemEdit::GetItemValue (double& val) const
 }
 
 // Set the item's attribute value
-void CPropTreeItemEdit::SetItemValue (LPCSTR str)
+void CPropTreeItemEdit::SetItemValue (LPCTSTR str)
 {
 	m_nFormat = ValueFormatText;
     m_sEdit = str;

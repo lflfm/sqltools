@@ -40,7 +40,7 @@ public:
 	virtual ~LabelWithWaitBar ();
 
     const CString GetText() const                   { return m_text; }
-    void SetText (LPCSTR pText, COLORREF color);
+    void SetText (LPCTSTR pText, COLORREF color);
     void AlignLeft ()                               { m_nTextPosition = DT_LEFT; }
     void AlignCenter ()                             { m_nTextPosition = DT_CENTER; }
     void StartAnimation (bool);

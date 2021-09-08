@@ -66,7 +66,7 @@ namespace OpenEditor
 
             Entry () { minLength = curLine = curPos = 0; image =-1; modified = true; deleted = false; }
 
-            bool operator == (const string& uuid) const { return this->uuid == uuid; }
+            bool operator == (const string& _uuid) const { return this->uuid == _uuid; }
         };
 
         virtual bool ExpandKeyword (int index, string& text, Position& pos);

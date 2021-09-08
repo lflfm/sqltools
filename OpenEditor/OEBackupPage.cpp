@@ -24,12 +24,13 @@
 #include <Common/DirSelectDlg.h>
 #include <Common/DlgDataExt.h>
 #include "OpenEditor/OEBackupPage.h"
+#include "COMMON/MyUtf.h"
 
-static LPCSTR cszDefaultFolder = "<Default location>";
+static LPCTSTR cszDefaultFolder = L"<Default location>";
 
 
 COEBackupPage::COEBackupPage (SettingsManager& manager)
-	: CPropertyPage(COEBackupPage::IDD)
+    : CPropertyPage(COEBackupPage::IDD)
     , m_manager(manager)
     , m_WorkspaceAutosaveInterval(0)
     , m_WorkspaceAutosaveFileLimit(0)
@@ -38,6 +39,8 @@ COEBackupPage::COEBackupPage (SettingsManager& manager)
     , m_FileBackupFolderMaxSize(0)
     , m_FileBackupSpaceManagment(false)
 {
+    m_psp.dwFlags &= ~PSP_HASHELP;
+
     const OpenEditor::GlobalSettingsPtr settings = m_manager.GetGlobalSettings();
 
     m_BackupName         = settings->GetFileBackupName().c_str();
@@ -121,14 +124,14 @@ BOOL COEBackupPage::OnApply()
 
         OpenEditor::GlobalSettingsPtr settings = m_manager.GetGlobalSettings();
         
-        settings->SetFileBackupName((LPCSTR)m_BackupName, false /*notify*/);
+        settings->SetFileBackupName(Common::str(m_BackupName), false /*notify*/);
 
-        CString backupFolder = m_BackupDirectory == cszDefaultFolder ? "" : m_BackupDirectory;
+        CString backupFolder = m_BackupDirectory == cszDefaultFolder ? L"" : m_BackupDirectory;
 
         if (!backupFolder.IsEmpty() && !PathFileExists(backupFolder))
         {
             MessageBeep((UINT)-1);
-            if (AfxMessageBox("The backup folder \"" + backupFolder + "\" does not exist!\n\nWould you like to reset it to defult?", MB_ICONEXCLAMATION|MB_YESNO) == IDYES)
+            if (AfxMessageBox(L"The backup folder \"" + backupFolder + L"\" does not exist!\n\nWould you like to reset it to defult?", MB_ICONEXCLAMATION|MB_YESNO) == IDYES)
             {
                 m_BackupDirectory = cszDefaultFolder;
                 backupFolder.Empty();
@@ -137,7 +140,7 @@ BOOL COEBackupPage::OnApply()
                 return FALSE;
         }
 
-        settings->SetFileBackupDirectoryV2((LPCSTR)backupFolder, false /*notify*/);
+        settings->SetFileBackupDirectoryV2(Common::str(backupFolder), false /*notify*/);
         
         switch (m_BackupMethod)
         {
@@ -156,7 +159,7 @@ BOOL COEBackupPage::OnApply()
     }
     _OE_DEFAULT_HANDLER_;
 
-	return TRUE;
+    return TRUE;
 }
 
 void COEBackupPage::OnUpdateData()
@@ -166,10 +169,10 @@ void COEBackupPage::OnUpdateData()
 
 void COEBackupPage::OnBnClicked_FileBackupDirChange()
 {
-    Common::CDirSelectDlg dirDlg("Choose the folder for saving backups:", this, m_BackupDirectory != cszDefaultFolder ? m_BackupDirectory : "");
+    Common::CDirSelectDlg dirDlg(L"Choose the folder for saving backups:", this, m_BackupDirectory != cszDefaultFolder ? m_BackupDirectory : L"");
 
     if (dirDlg.DoModal() == IDOK) 
-	{
+    {
         dirDlg.GetPath(m_BackupDirectory);
         UpdateData(FALSE);
     }

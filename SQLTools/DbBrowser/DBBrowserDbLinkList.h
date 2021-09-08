@@ -57,22 +57,22 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case 0: return "Db Link";
-            case 1: return "Username";
-            case 2: return "Host";
+            case 0: return L"Db Link";
+            case 1: return L"Username";
+            case 2: return L"Host";
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case 0: return getStr(data(row).db_link );
             case 1: return getStr(data(row).username);   
             case 2: return getStr(data(row).host    );
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {

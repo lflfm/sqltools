@@ -33,7 +33,7 @@ TempFilesManager::~TempFilesManager ()
     _DESTRUCTOR_HANDLER_;
 }
 
-void TempFilesManager::push (const string& file)
+void TempFilesManager::push (const wstring& file)
 {
     while (m_files.size() > 1024)
         pop();
@@ -47,18 +47,22 @@ void TempFilesManager::pop ()
     m_files.pop_front();
 }
 
-std::string TempFilesManager::CreateFile (const char* ext)
+std::wstring TempFilesManager::CreateFile (const wchar_t* ext)
 {
     size_t size = GetTempPath(0, 0);
-    string file, path(size-1, '_');
-    GetTempPath(path.length()+1, const_cast<char*>(path.data()));
+    wstring file, path(size-1, '_');
+    GetTempPath(path.length()+1, const_cast<wchar_t*>(path.data()));
+
     if (!path.empty() && *path.rbegin() != '\\') path += '\\';
 
     for (int i = 0; i < 1024; i++)
     {
-        char buff[80]; buff[sizeof(buff)-1] = 0;
+        wchar_t buff[80]; 
+        const int buff_size = sizeof(buff)/sizeof(buff[0]);
+
+        buff[buff_size-1] = 0;
         static int fileIndex = 0;
-        _snprintf(buff, sizeof(buff)-1, "SQLT%04d.", ++fileIndex);
+        _snwprintf(buff, buff_size-1, L"SQLT%04d.", ++fileIndex);
         file = path + buff + ext;
 
         HANDLE hFile = ::CreateFile(

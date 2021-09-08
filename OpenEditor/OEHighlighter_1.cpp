@@ -45,17 +45,17 @@ void CPlusPlusHighlighter::Init (const VisualAttributesSet& set_)
     m_preprocessorAttrs = set_.FindByName("Preprocessor");
 }
 
-void CPlusPlusHighlighter::NextLine (const char* currentLine, int currentLineLength)
+void CPlusPlusHighlighter::NextLine (const wchar_t* currentLine, int currentLineLength)
 {
     m_includeDirective = false;
     m_openBrace = 0;
     CommonHighlighter::NextLine(currentLine, currentLineLength);
 }
 
-void CPlusPlusHighlighter::NextWord (const char* str, int len, int pos)
+void CPlusPlusHighlighter::NextWord (const wchar_t* str, int len, int pos)
 {
-    if (m_isStartLine && len == (sizeof("#include") - 1)
-    && !strncmp(str, "#include", len))
+    if (m_isStartLine && len == (sizeof(L"#include") - 1)
+    && !wcsncmp(str, L"#include", len))
         m_includeDirective = true;
 
     if (m_openBrace)
@@ -99,7 +99,7 @@ void PlSqlHighlighter::Init (const VisualAttributesSet& set_)
         }
 }
 
-void PlSqlHighlighter::NextLine (const char* currentLine, int currentLineLength)
+void PlSqlHighlighter::NextLine (const wchar_t* currentLine, int currentLineLength)
 {
     if (m_openBrace)
     {
@@ -111,17 +111,17 @@ void PlSqlHighlighter::NextLine (const char* currentLine, int currentLineLength)
     CommonHighlighter::NextLine(currentLine, currentLineLength);
 
     if (m_isStartLine && !(m_seqOf & eStringGroup))
-	{
-		for (int i = 0; i < currentLineLength; i++)
-			if (currentLine[i] == '@')
-			{
-				m_openBrace = '@';
-				m_current = m_fileNameAttrs;
-				break;
-			}
-			else if (!(currentLine[i] == ' ' || currentLine[i] == '\t'))
-				break;
-	}
+    {
+        for (int i = 0; i < currentLineLength; i++)
+            if (currentLine[i] == '@')
+            {
+                m_openBrace = '@';
+                m_current = m_fileNameAttrs;
+                break;
+            }
+            else if (!(currentLine[i] == ' ' || currentLine[i] == '\t'))
+                break;
+    }
 }
 
 bool PlSqlHighlighter::IsPlainText()
@@ -132,7 +132,7 @@ bool PlSqlHighlighter::IsPlainText()
     return CommonHighlighter::IsPlainText(); 
 }
 
-void PlSqlHighlighter::NextWord (const char* str, int len, int pos)
+void PlSqlHighlighter::NextWord (const wchar_t* str, int len, int pos)
 {
     switch (m_openBrace)
     {
@@ -174,7 +174,7 @@ void PlSqlHighlighter::NextWord (const char* str, int len, int pos)
         switch (*str)
         {
         case ':':
-            if ((str + 1) == (m_currentLine + m_currentLineLength) || !isalnum(str[1]))
+            if ((str + 1) == (m_currentLine + m_currentLineLength) || !iswalnum(str[1]))
                 break;
             m_current = m_bindVarAttrs;
             m_openBrace = *str;
@@ -193,7 +193,7 @@ void PlSqlHighlighter::NextWord (const char* str, int len, int pos)
         case 's':
             if (m_isStartLine 
                 && len >= 3 && len <= 5 // 2015.10.07 bug fix, incorrect highlithing ins stated with 's'
-                && !strnicmp(str, "spool", len)
+                && !wcsnicmp(str, L"spool", len)
             )
                 m_openBrace = 's';
         }
@@ -203,18 +203,18 @@ void PlSqlHighlighter::NextWord (const char* str, int len, int pos)
 }
 
 
-bool PlSqlHighlighter::IsKeyword (const char* str, int len, string& keyword)
+bool PlSqlHighlighter::IsKeyword (const wchar_t* str, int len, std::wstring& keyword)
 {
-    string key(str, len);
+    std::wstring key(str, len);
 
     if (!m_caseSensiteve)
-        for (string::iterator it = key.begin(); it != key.end(); ++it)
-            *it = toupper(*it);
+        for (auto it = key.begin(); it != key.end(); ++it)
+            *it = towupper(*it);
 
     LanguageKeywordMapConstIterator
         it = m_LanguageKeywordMap->find(key);
 
-	if (it != m_LanguageKeywordMap->end()
+    if (it != m_LanguageKeywordMap->end()
     && it->second.groupIndex != m_userObjectsGroup ) // do not want to NORMALIZE user objects!
     {
         keyword = it->second.keyword;
@@ -234,7 +234,7 @@ void SqrHighlighter::Init (const VisualAttributesSet& set_)
     m_preprocessorAttrs = set_.FindByName("Preprocessor");
 }
 
-void SqrHighlighter::NextWord (const char* str, int len, int pos)
+void SqrHighlighter::NextWord (const wchar_t* str, int len, int pos)
 {
     CommonHighlighter::NextWord(str, len, pos);
 
@@ -243,7 +243,7 @@ void SqrHighlighter::NextWord (const char* str, int len, int pos)
         switch (*str)
         {
         case '#':
-            if (!strnicmp(str, "#debug", sizeof("#debug")-1))
+            if (!wcsnicmp(str, L"#debug", sizeof(L"#debug")-1))
             {
                 m_current = m_preprocessorAttrs;
                 break;
@@ -271,13 +271,13 @@ void ShellHighlighter::Init (const VisualAttributesSet& set_)
     m_substAttrs = set_.FindByName("Substitution");
 }
 
-void ShellHighlighter::NextLine (const char* currentLine, int currentLineLength)
+void ShellHighlighter::NextLine (const wchar_t* currentLine, int currentLineLength)
 {
     m_isBraceToken = m_isSubstitution = false;
     CommonHighlighter::NextLine(currentLine, currentLineLength);
 }
 
-void ShellHighlighter::NextWord (const char* str, int len, int pos)
+void ShellHighlighter::NextWord (const wchar_t* str, int len, int pos)
 {
     if (m_isSubstitution)
     {
@@ -319,7 +319,7 @@ void PerlHighlighter::Init (const VisualAttributesSet& set_)
     m_vartAttrs = set_.FindByName("Variables");
 }
 
-void PerlHighlighter::NextWord (const char* str, int len, int pos)
+void PerlHighlighter::NextWord (const wchar_t* str, int len, int pos)
 {
     if (m_variable) 
     {
@@ -337,7 +337,7 @@ void PerlHighlighter::NextWord (const char* str, int len, int pos)
         case '%':   //Hash
         case '&':   //Anonymous subroutine
         case '*':   //Typeglob 
-            if (!(len > 1 && isalpha(str[1]))) break;
+            if (!(len > 1 && iswalpha(str[1]))) break;
 
         case '$':   //Scalar
         case '@':   //List

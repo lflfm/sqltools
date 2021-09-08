@@ -26,6 +26,7 @@
 #include "COMMON\StrHelpers.h"
 #include "COMMON\AppGlobal.h"
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace OraMetaDict;
 using namespace Common;
@@ -65,6 +66,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 Common::Substitutor subst;
                 OCI8::EServerVersion servVer = connect.GetVersion();
                 subst.AddPair("<RULE>", (servVer < OCI8::esvServer10X) ? "/*+RULE*/" : "");

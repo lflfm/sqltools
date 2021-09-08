@@ -44,9 +44,10 @@ int EditContext::adjustPosByTab (int line, int column, bool next) const
 
     if (line < GetLineCount())
     {
-        int len;
-        const char* ptr;
-        GetLine(line, ptr, len);
+        OEStringW lineBuff;
+        GetLineW(line, lineBuff);
+        int len = lineBuff.length();
+        const wchar_t* ptr = lineBuff.data();
 
         int adjCol = 0;
         int tabSpacing = GetTabSpacing();
@@ -82,14 +83,12 @@ int EditContext::inx2pos (int line, int inx) const
 {
     _CHECK_ALL_PTR_;
 
-    int len;
-    const char* str;
-    GetLine(line, str, len);
-
-    return inx2pos(str, len, inx);
+    OEStringW str;
+    GetLineW(line, str);
+    return inx2pos(str.data(), str.length(), inx);
 }
 
-int EditContext::inx2pos (const char* ptr, int len, int inx) const
+int EditContext::inx2pos (const wchar_t* ptr, int len, int inx) const
 {
     _CHECK_ALL_PTR_;
 
@@ -122,11 +121,9 @@ int EditContext::pos2inx (int line, int pos, bool virt_spaces) const
 
     if (line < m_pStorage->GetLineCount())
     {
-        int len;
-        const char* str;
-        GetLine(line, str, len);
-
-        return pos2inx(str, len, pos, virt_spaces);
+        OEStringW str;
+        GetLineW(line, str);
+        return pos2inx(str.data(), str.length(), pos, virt_spaces);
     }
     else
     {
@@ -135,7 +132,7 @@ int EditContext::pos2inx (int line, int pos, bool virt_spaces) const
     }
 }
 
-int EditContext::pos2inx (const char* ptr, int len, int _pos, bool virt_spaces) const
+int EditContext::pos2inx (const wchar_t* ptr, int len, int _pos, bool virt_spaces) const
 {
     _CHECK_ALL_PTR_;
 
@@ -189,21 +186,21 @@ bool EditContext::adjustCursorPosition ()
     return false;
 }
 
-void EditContext::line2buff (int line, int start, int end, string& buff, bool fill) const
+void EditContext::line2buff (int line, int start, int end, std::wstring& result, bool fill) const
 {
     int appended = 0;
 
     if (line < GetLineCount())
     {
-        int len;
-        const char* str;
-        GetLine(line, str, len);
+        OEStringW lineBuff;
+        GetLineW(line, lineBuff);
+        int len = lineBuff.length();
+        const wchar_t* str = lineBuff.data();
 
-        string buff2;
+        std::wstring buff2;
         if (fill)
         {
-            buff2.assign(str, len);
-            untabify(buff2, 0, GetTabSpacing(), false);
+            untabify(str, len, buff2, 0, GetTabSpacing(), false);
             str = buff2.c_str();
             len = buff2.length();
         }
@@ -213,44 +210,43 @@ void EditContext::line2buff (int line, int start, int end, string& buff, bool fi
             int _start = pos2inx(str, len, start, false);
             int _end   = pos2inx(str, len, end, false);
             appended = _end - _start;
-            buff.append(str + _start, _end - _start);
+            result.append(str + _start, _end - _start);
         }
     }
 
     if (fill)
         for (int i(appended); i < (end - start); i++)
-            buff += ' ';
+            result += ' ';
 }
 
-bool EditContext::getLine (std::istringstream& io, string& buff, bool& with_CR)
+bool EditContext::getLine (const wchar_t* str, int& position, std::wstring& line, bool& cr)
 {
-    char chr;
-    bool ret_val = false;
+    bool retVal = false;
     
-    buff.erase();
-    with_CR = false;
+    line.erase();
+    cr = false;
 
-    while (io.get(chr))
+    while (str[position])
     {
-        ret_val = true;
+        retVal = true;
 
-        switch (chr)
+        switch (str[position])
         {
         case '\r':
-            io.get(chr);
-            if (chr != '\n') 
-                io.putback(chr);
+            if (str[position + 1] == '\n') 
+                position++;
         case '\n':
-            with_CR = true;
+            position++;
+            cr = true;
             break;
         }
 
-        if (with_CR) break;
+        if (cr) break;
 
-        buff += chr;
+        line += str[position++];
     }
 
-    return ret_val;
+    return retVal;
 }
 
 };

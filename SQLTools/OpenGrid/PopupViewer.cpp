@@ -27,6 +27,7 @@
 #include "COMMON\VisualAttributes.h"
 #include "COMMON/GUICommandDictionary.h"
 #include "GridView.h"
+#include <regex>
 
 #include <MultiMon.h>
 extern "C" {
@@ -110,7 +111,7 @@ int GridPopupEdit::OnCreate (LPCREATESTRUCT lpCreateStruct)
               0,
               0, ANSI_CHARSET,//DEFAULT_CHARSET,
               OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH,
-              "Courier New"
+              L"Courier New"
             );
     }
 
@@ -167,24 +168,24 @@ void GridPopupEdit::OnContextMenu (CWnd* , CPoint pos)
     mii.cbSize = MENUITEMINFO_OLD_SIZE;  // 07.04.2003 bug fix, no menu shortcut labels on Win95,... because of SDK incompatibility
     mii.fMask  = MIIM_SUBMENU | MIIM_DATA | MIIM_ID | MIIM_TYPE;
 
-    char buffer[MENU_ITEM_TEXT_SIZE];
+    wchar_t buffer[MENU_ITEM_TEXT_SIZE];
     mii.dwTypeData = buffer;
-    mii.cch = sizeof buffer;
+    mii.cch = sizeof(buffer)/sizeof(buffer[0]);
 
     if (pPopup->GetMenuItemInfo(ID_GRIDPOPUP_CLOSE, &mii))
     {
-        string menuText = buffer;
+        std::wstring menuText = buffer;
 
         if (menuText.find('\t') != string::npos)
-            menuText += "; ";
+            menuText += L"; ";
         else
-            menuText += "\t";
+            menuText += L"\t";
 
-        menuText += "ESC";
+        menuText += L"ESC";
 
-        strcpy(buffer, menuText.c_str());
+        wcsncpy(buffer, menuText.c_str(), sizeof(buffer)/sizeof(buffer[0]));
 
-        mii.cch = menuText.size() + 1;
+        mii.cch = wcsnlen(buffer, sizeof(buffer)/sizeof(buffer[0]));  // TODO: test
 
         pPopup->SetMenuItemInfo(ID_GRIDPOPUP_CLOSE, &mii);
     }
@@ -207,7 +208,7 @@ void GridPopupEdit::OnGridPopupClose()
 ///////////////////////////////////////////////////////////////////////////////
 // PopupFrameWnd
 
-void HtmlView::LoadHTMLfromString (const string& html)
+void HtmlView::LoadHTMLfromString (const std::wstring& wtext, const std::string& text)
 {
     HRESULT hr;
     void* pHTML = NULL;
@@ -215,9 +216,27 @@ void HtmlView::LoadHTMLfromString (const string& html)
     IStream* pHTMLStream = NULL;
     IPersistStreamInit* pPersistStreamInit = NULL;
 
-    HGLOBAL hHTML = GlobalAlloc(GPTR, html.size());
+    std::regex pattern("([[:space:]]*)((<!DOCTYPE html>)|(<html>))", std::regex_constants::icase|std::regex_constants::extended);
+    std::smatch match;
+
+    int size = 0;
+    const void* data = 0;
+    string buffer;
+
+    if (std::regex_search(text, match, pattern)) // pass HTML as unicode
+    {
+        size = wtext.size() * sizeof(wchar_t);
+        data = wtext.c_str();
+    }
+    else // pass XML as utf-8 otherwise HtmlView does not show the text
+    {
+        size = text.size() * sizeof(char);
+        data = text.c_str();
+    }
+
+    HGLOBAL hHTML = GlobalAlloc(GPTR, size);
     pHTML = GlobalLock(hHTML);
-    memcpy(pHTML, html.c_str(), html.size());
+    memcpy(pHTML, data, size);
     GlobalUnlock(hHTML);
 
     hr = CreateStreamOnHGlobal(hHTML, TRUE, &pHTMLStream);
@@ -253,6 +272,19 @@ void HtmlView::LoadHTMLfromString (const string& html)
         pHTMLStream->Release();
     }
 
+    //{
+    //    IHTMLDocument2* doc =(IHTMLDocument2*)GetHtmlDocument();
+    //    if (doc) 
+    //    {
+    //        CComBSTR old;
+    //        doc->get_charset(&old);
+    //        doc->put_charset(CComBSTR("utf-8"));
+    //        doc->put_defaultCharset(CComBSTR("utf-8"));
+    //        doc->get_charset(&old);
+    //        old = "";
+    //    }
+    //}
+
     return;
 }
 
@@ -277,10 +309,10 @@ void HtmlView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 ///////////////////////////////////////////////////////////////////////////////
 // PopupFrameWnd
 
-const char* cszSection = "GridPopup";
-const char* cszWP = "WP";
-const char* cszTab = "Tab";
-const char* cszWordWrap = "WordWrap";
+const wchar_t* cszSection  = L"GridPopup";
+const wchar_t* cszWP       = L"WP";
+const wchar_t* cszTab      = L"Tab";
+const wchar_t* cszWordWrap = L"WordWrap";
 
 PopupFrameWnd*  PopupFrameWnd::m_theOne = 0;
 CWnd*           PopupFrameWnd::m_lastClient = 0;
@@ -339,17 +371,17 @@ void PopupFrameWnd::ShowPopup (CWnd* client, const string& text)
 
         DWORD style = WS_POPUPWINDOW|WS_CAPTION|WS_THICKFRAME|WS_MAXIMIZEBOX|WS_MINIMIZEBOX;
         
-        LPCSTR pszClassName = AfxRegisterWndClass(CS_VREDRAW | CS_HREDRAW,
+        LPCTSTR pszClassName = AfxRegisterWndClass(CS_VREDRAW | CS_HREDRAW,
           ::LoadCursor(NULL, IDC_ARROW),
           (HBRUSH) ::GetStockObject(WHITE_BRUSH),
           AfxGetApp()->LoadIcon(IDR_MAINFRAME)
         );
 
-        if (!m_theOne->CreateEx(0, pszClassName, "Grid Popup Viewer", style, rect, AfxGetMainWnd(), 0)) 
+        if (!m_theOne->CreateEx(0, pszClassName, L"Grid Popup Viewer", style, rect, AfxGetMainWnd(), 0)) 
         {
             delete m_theOne;
             m_theOne = 0;
-            AfxMessageBox("Failed to create \"Grid Popup Viewer\"!", MB_OK|MB_ICONERROR);
+            AfxMessageBox(L"Failed to create \"Grid Popup Viewer\"!", MB_OK|MB_ICONERROR);
             AfxThrowUserException();
 	    }
 
@@ -421,7 +453,7 @@ void PopupFrameWnd::SetEditorWordWrap (bool bWordWrap)
     if (!m_EditBox.Create(nStyle, theRect, this, (UINT)IDC_STATIC)) 
     {
         MessageBeep((UINT)-1);
-        AfxMessageBox("Failed to re-create the edit control!", MB_OK|MB_ICONSTOP);
+        AfxMessageBox(L"Failed to re-create the edit control!", MB_OK|MB_ICONSTOP);
 	}
 
     m_EditBox.SetWindowText(theText);
@@ -430,11 +462,13 @@ void PopupFrameWnd::SetEditorWordWrap (bool bWordWrap)
 
 void PopupFrameWnd::SetPopupText (const std::string& text)
 { 
+    std::wstring wtext = Common::wstr(text);
+
     if (m_EditBox.m_hWnd) 
-        m_EditBox.SetWindowText(text.c_str()); 
+        m_EditBox.SetWindowText(wtext.c_str()); 
 
     if (m_hmlViewer.m_hWnd) 
-        m_hmlViewer.LoadHTMLfromString(text.c_str());
+        m_hmlViewer.LoadHTMLfromString(wtext, text);
 }
 
 void PopupFrameWnd::ResoreLastWindowPlacement ()
@@ -470,14 +504,14 @@ void PopupFrameWnd::OnSetFocus (CWnd *)
         int   idCommand; // command to be sent when button pressed
         BYTE  fsState;   // button state--see below
         BYTE  fsStyle;   // button style--see below
-        const char* szString;  // label string
+        const wchar_t* szString;  // label string
     } 
     g_buttons[] =
     {
-        {  0, ID_GRIDPOPUP_TEXT,     TBSTATE_ENABLED|TBSTATE_CHECKED, BTNS_GROUP/*|BTNS_SHOWTEXT*/, "Text"  },
-        {  1, ID_GRIDPOPUP_HTML,     TBSTATE_ENABLED, BTNS_GROUP/*|BTNS_SHOWTEXT*/, "Html"   },
+        {  0, ID_GRIDPOPUP_TEXT,     TBSTATE_ENABLED|TBSTATE_CHECKED, BTNS_GROUP/*|BTNS_SHOWTEXT*/, L"Text"  },
+        {  1, ID_GRIDPOPUP_HTML,     TBSTATE_ENABLED, BTNS_GROUP/*|BTNS_SHOWTEXT*/,                 L"Html"   },
         { -1,  0, 0, BTNS_SEP, 0 },
-        {  2, ID_GRIDPOPUP_WORDWRAP, TBSTATE_ENABLED|TBSTATE_CHECKED, BTNS_CHECK/*|BTNS_SHOWTEXT*/, "Wordwrap"   },
+        {  2, ID_GRIDPOPUP_WORDWRAP, TBSTATE_ENABLED|TBSTATE_CHECKED, BTNS_CHECK/*|BTNS_SHOWTEXT*/, L"Wordwrap"   },
         //{ -1,  0, 0, BTNS_SEP, 0 },
     };
 
@@ -529,7 +563,7 @@ int PopupFrameWnd::OnCreate (LPCREATESTRUCT lpCreateStruct)
     if (!m_EditBox.Create(nStyle, CFrameWnd::rectDefault, this, (UINT)IDC_STATIC)) 
 	    return -1;
 
-    LPCSTR pszClassName = AfxRegisterWndClass(CS_VREDRAW | CS_HREDRAW);
+    LPCTSTR pszClassName = AfxRegisterWndClass(CS_VREDRAW | CS_HREDRAW);
     if (!m_hmlViewer.Create(pszClassName, NULL, WS_CHILD|WS_VISIBLE, CFrameWnd::rectDefault, this, (UINT)IDC_STATIC)) 
 	    return -1;
 

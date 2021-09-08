@@ -22,19 +22,19 @@
 #if BUILD_TYPE == 1
 #define SQLTOOLS_BUILD_TYPE     " (debug build)"
 #elif BUILD_TYPE == 2
-#define SQLTOOLS_BUILD_TYPE     " (built with debug info)"
+#define SQLTOOLS_BUILD_TYPE     " (Unoptomized)"
 #else
 #define SQLTOOLS_BUILD_TYPE
 #endif
 
-#define SQLTOOLS_COPYRIGHT      "Copyright © 1997-2016 Aleksey Kochetov\r\n"\
+#define SQLTOOLS_COPYRIGHT      "Copyright © 1997-2021 Aleksey Kochetov\r\n"\
                                 "Contributors: Tomasz Drzewiecki, Ken Clubok,\r\n"\
                                 "many improvements taken from SQLTools++ by Randolf Geist"
 
-#define SQLTOOLS_BUILD		    15
-#define SQLTOOLS_BUILD_S        "15"
-#define SQLTOOLS_RELEASE_STR    "SQLTools 1.9"
+#define SQLTOOLS_BUILD		    14
+#define SQLTOOLS_BUILD_S        "14"
+#define SQLTOOLS_RELEASE_STR    "SQLTools 2"
 #define SQLTOOLS_BUILD_STR      " build " SQLTOOLS_BUILD_S
 #define SQLTOOLS_VERSION        SQLTOOLS_RELEASE_STR SQLTOOLS_BUILD_STR SQLTOOLS_BUILD_TYPE
-#define SQLTOOLS_VERSION_ID     1, 9, 0, SQLTOOLS_BUILD
-#define SQLTOOLS_VERSION_STR    "1, 9, 0, " SQLTOOLS_BUILD_S
+#define SQLTOOLS_VERSION_ID     2, 0, 0, SQLTOOLS_BUILD
+#define SQLTOOLS_VERSION_STR    "2, 0, 0, " SQLTOOLS_BUILD_S

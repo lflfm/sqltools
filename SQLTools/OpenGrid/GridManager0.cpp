@@ -238,7 +238,7 @@ bool GridRuler::IsCurrentFullVisible () const
         GetDataArea(data);
         GetCurrentLoc(curr);
 
-        return (curr[0] < data[0] || curr[1] > data[1]) ? false : true;
+        return (curr[0] < data[0] || curr[1]-1 > data[1]) ? false : true; // ignoring 1px difference on the right/bottom
     }
     return false;
 }

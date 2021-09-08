@@ -28,6 +28,7 @@
 #include "OCI8/ACursor.h"
 #include "OCI8/BCursor.h"
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace OraMetaDict;
 using namespace ServerBackgroundThread;
@@ -92,6 +93,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 50, 196);
                 cur.Prepare(cszTablesSttm);
                 cur.Bind(":owner", m_schema.c_str());
@@ -117,7 +120,10 @@ END_MESSAGE_MAP()
                 vector<string>::const_iterator it = m_tables.begin();
 
                 for (; it != m_tables.end(); ++it)
-                    ::SendMessage(m_hwndTableList, CB_ADDSTRING, 0, (LPARAM)it->c_str());
+                {
+                    wstring buff = Common::wstr(*it);
+                    ::SendMessage(m_hwndTableList, CB_ADDSTRING, 0, (LPARAM)buff.c_str());
+                }
 
                 if (((int)::SendMessage(m_hwndTableList, CB_GETCOUNT, 0, 0)) > 0)
                 {
@@ -137,7 +143,7 @@ void CTableTransformer::OnSelChangeSchema()
         UpdateData();
         m_wndTableList.ResetContent();
 
-        BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_PopulateTableList(m_wndTableList, (LPCSTR)m_strSchema)));
+        BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_PopulateTableList(m_wndTableList, Common::str(m_strSchema))));
 
         ::EnableWindow(::GetDlgItem(m_hWnd, IDOK), FALSE);
     }
@@ -148,7 +154,7 @@ void CTableTransformer::OnSchemaListLoaded (NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
     OnSelChangeSchema();
 
-    m_wndTableList.SelectString(0, AfxGetApp()->GetProfileString("TableTransformer", "TableName"));
+    m_wndTableList.SelectString(0, AfxGetApp()->GetProfileString(L"TableTransformer", L"TableName"));
 
     *pResult = 0;
 }
@@ -159,7 +165,7 @@ BOOL CTableTransformer::OnInitDialog()
 
     //OnSelChangeSchema();
 
-    m_wndTableList.SelectString(0, AfxGetApp()->GetProfileString("TableTransformer", "TableName"));
+    m_wndTableList.SelectString(0, AfxGetApp()->GetProfileString(L"TableTransformer", L"TableName"));
 
 	return TRUE;
 }
@@ -220,6 +226,8 @@ void generate_unique_name (OciConnect& connect,
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 Dictionary dict;
                 Loader loader(connect, dict);
                 loader.Init();
@@ -482,7 +490,7 @@ void generate_unique_name (OciConnect& connect,
                         ASSERT_KINDOF(CPLSWorksheetDoc, pDoc);
 
                         pDoc->SetText(m_text.c_str(), m_text.length());
-                        pDoc->SetTitle(("Transform " + m_table).c_str());
+                        pDoc->SetTitle(Common::wstr("Transform " + m_table).c_str());
 
                         // 22.03.2004 bug fix, CreareAs file property is ignored for "Open In Editor", "Query", etc (always in Unix format)
                         pDoc->DefaultFileFormat();
@@ -496,12 +504,12 @@ void generate_unique_name (OciConnect& connect,
 void CTableTransformer::OnOK()
 {
     UpdateData();
-    AfxGetApp()->WriteProfileString("TableTransformer", "TableName", m_strTable);
+    AfxGetApp()->WriteProfileString(L"TableTransformer", L"TableName", m_strTable);
 
 	_ASSERTE(!m_strSchema.IsEmpty() || !m_strTable.IsEmpty());
 
     if (!m_strSchema.IsEmpty() && !m_strTable.IsEmpty())
-        BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_LoadTableForTransformation((LPCSTR)m_strSchema, (LPCSTR)m_strTable)));
+        BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_LoadTableForTransformation(Common::str(m_strSchema), Common::str(m_strTable))));
 
 	CDialog::OnOK();
 }

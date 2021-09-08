@@ -1,6 +1,45 @@
-Read more about 1.9 in the forum http://www.sqltools.net/cgi-bin/yabb25/YaBB.pl?num=1316484769/67#67
+ATTENTION: Version 2.0 was temporarily removed because of a bug. Sorry for inconvenience. 
+           Working on the fix.
 
-STABLE BUILD
+ History
+~~~~~~~~~
+
+Version 2.0 build 12 (2021-02-21)
+    Improvements:
+    - The program partially supports Unicode/UTF now. The editor works with European languages w/o any issues 
+      but eastern characters are not supported mainly because the Windows monospaced fonts are actually not 
+      fixed-width for those code pages. The data grid, on other hand, should handle any texts.
+    - New docking window framework
+      The control panels like "File Panel", "History", "Open Files", "Object Viewer" can be docked more easily, 
+      as well as stacked in tabs. Additionally panels can "Auto hide" in the docking mode. The window tab control 
+      workbook is more functional and nicer than in the version 1.9.
+    - The external grep program was replaced with the internal implementation which is faster and more functional. 
+    Bug fixes for earlier 2.0 version:
+    - Autocmpletion for table columns and procedure fails with the timeout error.
+    - Tortoise Git menu does not appear in the file context menu 
+    - Hanging on attempt to send email
+
+Version 1.9 build 18 (2018-12-06)
+    Bug fixes:
+    - when a line is having only spaces, 'Trim Trailing Space / Ctrl + K, R" is not trimming any space.
+      same issue for "Trim Leading Spaces / Ctrl+K, O"
+
+Version 1.9 build 17 (2018-11-30)
+    Improvements:
+    -- adde two new commands to move between open files in the order of woorkbook tabs
+        Window.NextWindow             Ctrl+PgDown
+        Window.PrevWindow             Ctrl+PgUp
+    - added Copy "Text" column to the Output context menu
+    - added the toolbar button to enable/disable readonly session
+    Bug fixes:
+    - stop using hint RULE with unknown Oracle versions
+    - The "Copy all" command formated "plain text" is missing a end-of-line in the last line.
+      probably other copy commands have to be revised but I'll do that in the unicode version
+
+Version 1.9 build 16 (2018-03-30)
+    Bug fixes:
+    - compatibility with WinXp
+    - compatibility with non enterprise version of 8i
 
 Version 1.9 build 15 (2018-02-25)
     Improvements:

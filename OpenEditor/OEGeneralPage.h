@@ -32,33 +32,39 @@
 class COEGeneralPage : public CPropertyPage
 {
 public:
-	COEGeneralPage (SettingsManager& manager);
-	virtual ~COEGeneralPage();
+    COEGeneralPage (SettingsManager& manager);
+    virtual ~COEGeneralPage();
 
 // Dialog Data
-	enum { IDD = IDD_OE_GENERAL };
+    enum { IDD = IDD_OE_GENERAL };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	afx_msg void ShowWarningAfterExitAndRestart();
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    afx_msg void ShowWarningAfterExitAndRestart();
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 public:
     SettingsManager& m_manager;
     BOOL m_AllowMultipleInstances;
     BOOL m_NewDocOnStartup;
-    BOOL m_MaximizeFirstDocument;
     BOOL m_WorkDirFollowsDoc;
-    BOOL m_SaveCursPosAndBookmarks;
     BOOL m_SaveMainWindowPosition;
-    BOOL m_DoubleClickCloseTab;
-    BOOL m_UseIniFile;
-
-	virtual BOOL OnApply();
+    UINT m_Encoding;
+    BOOL m_AsciiAsUft8;
     CString m_keymapLayout;
     CString m_locale;
-
     static const char* m_keymapLayoutList;
+    BOOL m_MDITabsOnTop;
+    BOOL m_MDITabsAutoColor;
+    BOOL m_MDITabsDocumentMenuButton;
+    BOOL m_MDITabsActiveTabCloseButton;
+    BOOL m_MDITabs3DLook;
+    BOOL m_MDITabsCtrlTabSwitchesToPrevActive;
+
+    virtual BOOL OnInitDialog();
+    virtual BOOL OnApply();
+
+    afx_msg void OnSelChangeUncoding ();
 };
 
 #endif//__OEGeneralPage_h__

@@ -49,12 +49,13 @@ BOOL CManagedListCtrlFilterDlg::OnInitDialog()
         m_filterImage.Create(IDB_MLIST_FILTER, 12, 20, RGB(0,255,0));
         m_columnList.SetImageList(&m_filterImage);
 
-        m_operationList.AddString("Contains");
-        m_operationList.AddString("Starts with");
-        m_operationList.AddString("Exactly matches");
+        m_operationList.AddString(L"Contains");
+        m_operationList.AddString(L"Starts with");
+        m_operationList.AddString(L"Exactly matches");
+        m_operationList.AddString(L"Not contain");
         m_operationList.SetCurSel(0);
 
-        std::vector<std::string> headers; 
+        std::vector<std::wstring> headers; 
         m_listCtrlManager.GetColumnHeaders(headers);
 
         COMBOBOXEXITEM item;
@@ -62,11 +63,11 @@ BOOL CManagedListCtrlFilterDlg::OnInitDialog()
         item.mask = CBEIF_TEXT;
         item.mask |= CBEIF_IMAGE|CBEIF_SELECTEDIMAGE;
 
-        std::vector<std::string>::const_iterator it = headers.begin();
+        auto it = headers.begin();
         for (; it != headers.end(); ++it)
         {
             item.iSelectedImage = item.iImage = !item.iItem ? 0 : 1;
-            item.pszText = (LPSTR)it->c_str();
+            item.pszText = (LPWSTR)it->c_str();
             m_columnList.InsertItem(&item);
             ++item.iItem;
         }
@@ -163,15 +164,15 @@ void CManagedListCtrlFilterDlg::OnCbnSelChange_ColList()
         UpdateData(TRUE);
         m_filter.at(m_filterColumn).value = m_value;
         m_filter.at(m_filterColumn).operation 
-            = static_cast <Common::ListCtrlManager::EFilterOperation>(m_operation);
+            = static_cast <ListCtrlManager::EFilterOperation>(m_operation);
         
         int col = m_columnList.GetCurSel();
         m_valueList.ResetContent();
 
-        std::set<std::string> values; 
+        std::set<std::wstring> values; 
         m_listCtrlManager.GetColumnValues(col, values);
 
-        std::set<std::string>::const_iterator it = values.begin();
+        auto it = values.begin();
         for (; it != values.end(); ++it)
             m_valueList.AddString(it->c_str());
 
@@ -211,7 +212,7 @@ void CManagedListCtrlFilterDlg::OnBnClicked_Apply ()
         UpdateData(TRUE);
         m_filter.at(m_filterColumn).value = m_value;
         m_filter.at(m_filterColumn).operation 
-            = static_cast <Common::ListCtrlManager::EFilterOperation>(m_operation);
+            = static_cast <ListCtrlManager::EFilterOperation>(m_operation);
         m_listCtrlManager.SetFilter(m_filter);
     }
     _COMMON_DEFAULT_HANDLER_
@@ -224,7 +225,7 @@ void CManagedListCtrlFilterDlg::OnOK()
         CDialog::OnOK();
         m_filter.at(m_filterColumn).value = m_value;
         m_filter.at(m_filterColumn).operation 
-            = static_cast <Common::ListCtrlManager::EFilterOperation>(m_operation);
+            = static_cast <ListCtrlManager::EFilterOperation>(m_operation);
         m_listCtrlManager.SetFilter(m_filter);
     }
     _COMMON_DEFAULT_HANDLER_

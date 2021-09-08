@@ -43,6 +43,10 @@ struct COEViewPaintAccessories
     COLORREF m_TextBackground;
     COLORREF m_SelTextForeground;
     COLORREF m_SelTextBackground;
+
+    CPen     m_TextForegroundPen;
+    CPen     m_SelTextForegroundPen;
+
     CPen     m_BmkPen;
     CBrush   m_BmkBrush;
     COLORREF m_BmkBackground;
@@ -72,7 +76,7 @@ struct COEViewPaintAccessories
 
     COEViewPaintAccessories ();
 
-    CFont* SelectFont (CDC& dc, int font)
+    CFont* SelectFontEx (CDC& dc, int font)
     {
         dc.SetTextCharacterExtra(m_FontCharacterExtra[font]);
         return dc.SelectObject(&m_Fonts[font]);
@@ -80,7 +84,7 @@ struct COEViewPaintAccessories
 
     CFont* SelectTextFont (CDC& dc)
     {
-        return SelectFont(dc, m_TextFont);
+        return SelectFontEx(dc, m_TextFont);
     }
 
     void OnSettingsChanged (CWnd*, const OpenEditor::VisualAttributesSet& set);

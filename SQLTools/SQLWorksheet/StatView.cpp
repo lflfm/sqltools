@@ -30,6 +30,7 @@
 #include <OpenGrid/GridSourceBase.h>
 #include "ServerBackgroundThread\TaskQueue.h"
 #include "ThreadCommunication/MessageOnlyWindow.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace ServerBackgroundThread;
 
@@ -59,7 +60,7 @@ void StatSet::Load ()
     //path += "\\sesstat.dat";
 
 	string text;
-	if (!AppLoadTextFromResources("SESSTAT.DAT", RT_HTML, text) || text.empty())
+	if (!AppLoadTextFromResources(L"SESSTAT.DAT", RT_HTML, text) || text.empty())
         THROW_APP_EXCEPTION("Cannot load SESSTAT.DAT from resources");
 
     m_StatNames.clear();
@@ -251,13 +252,14 @@ set<CStatView*> CStatView::m_GridFamily;
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
                 StatGauge::m_theGauge.Open(connect);
             }
             catch (const OciException& x)
             {
                 m_failure = true;
                 MessageBeep(MB_ICONHAND);
-                AfxMessageBox((x == 942) ? cszStatNotAvailable : x.what());
+                AfxMessageBox(Common::wstr((x == 942) ? cszStatNotAvailable : x.what()).c_str());
             }
 
             m_names = StatGauge::m_theGauge.GetStatNames();

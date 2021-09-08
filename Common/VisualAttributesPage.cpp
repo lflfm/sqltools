@@ -24,8 +24,9 @@
 
 #include "stdafx.h"
 #include "resource.h"
-#include <COMMON/ExceptionHelper.h>
-#include "COMMON/VisualAttributesPage.h"
+#include "ExceptionHelper.h"
+#include "VisualAttributesPage.h"
+#include "MyUtf.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -94,14 +95,14 @@ static char THIS_FILE[] = __FILE__;
             LPLOGFONT /*lpLogFont*/, LPTEXTMETRIC lpTextMetric, INT nFontType, LPVOID lpData
         )
     {
-        char buff[64];
+        WCHAR buff[64*2];
         INT nPointSize;
         CComboBox& cb = *((CComboBox*)lpData);
 
         if (nFontType & RASTER_FONTTYPE)
         {
             nPointSize = VisualAttribute::PixelToPoint(lpTextMetric->tmHeight - lpTextMetric->tmInternalLeading);
-            itoa(nPointSize, buff, 10);
+            _itow(nPointSize, buff, 10);
 
             if (cb.FindStringExact(0, buff) == -1)
                 cb.AddString(buff);
@@ -111,7 +112,7 @@ static char THIS_FILE[] = __FILE__;
         {
             for (int i(8); i < 25; i++)
             {
-                itoa(i, buff, 10);
+                _itow(i, buff, 10);
 
                 if (cb.FindStringExact(0, buff) == -1)
                     cb.AddString(buff);
@@ -131,7 +132,7 @@ m_pFont(0)
 {
     m_psp.dwFlags &= ~PSP_HASHELP;
     //{{AFX_DATA_INIT(CVisualAttributesPage)
-	//}}AFX_DATA_INIT
+    //}}AFX_DATA_INIT
 }
 
 CVisualAttributesPage::CVisualAttributesPage(const vector<VisualAttributesSet*>& data, LPCSTR name)
@@ -142,7 +143,7 @@ m_className(name)
 {
     m_psp.dwFlags &= ~PSP_HASHELP;
     //{{AFX_DATA_INIT(CVisualAttributesPage)
-	//}}AFX_DATA_INIT
+    //}}AFX_DATA_INIT
 }
 
 CVisualAttributesPage::~CVisualAttributesPage()
@@ -161,32 +162,32 @@ void CVisualAttributesPage::Init (const vector<VisualAttributesSet*>& data)
 
 void CVisualAttributesPage::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertyPage::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CVisualAttributesPage)
-	DDX_Control(pDX, IDC_PFC_SAMPLE, m_Sample);
-	DDX_Control(pDX, IDC_PFC_FONT_UNDERLINE, m_FontUnderline);
-	DDX_Control(pDX, IDC_PFC_FONT_SIZE, m_FontSize);
-	DDX_Control(pDX, IDC_PFC_FONT_ITALIC, m_FontItalic);
-	DDX_Control(pDX, IDC_PFC_FONT_BOLD, m_FontBold);
-	DDX_Control(pDX, IDC_PFC_FOREGROUND, m_Foreground);
-	DDX_Control(pDX, IDC_PFC_BACKGROUND, m_Background);
-	DDX_Control(pDX, IDC_PFC_CATEGORY, m_Categories);
-	DDX_Control(pDX, IDC_PFC_FONT_NAME, m_FontName);
-	//}}AFX_DATA_MAP
+    CPropertyPage::DoDataExchange(pDX);
+    //{{AFX_DATA_MAP(CVisualAttributesPage)
+    DDX_Control(pDX, IDC_PFC_SAMPLE, m_Sample);
+    DDX_Control(pDX, IDC_PFC_FONT_UNDERLINE, m_FontUnderline);
+    DDX_Control(pDX, IDC_PFC_FONT_SIZE, m_FontSize);
+    DDX_Control(pDX, IDC_PFC_FONT_ITALIC, m_FontItalic);
+    DDX_Control(pDX, IDC_PFC_FONT_BOLD, m_FontBold);
+    DDX_Control(pDX, IDC_PFC_FOREGROUND, m_Foreground);
+    DDX_Control(pDX, IDC_PFC_BACKGROUND, m_Background);
+    DDX_Control(pDX, IDC_PFC_CATEGORY, m_Categories);
+    DDX_Control(pDX, IDC_PFC_FONT_NAME, m_FontName);
+    //}}AFX_DATA_MAP
 }
 
 
 BEGIN_MESSAGE_MAP(CVisualAttributesPage, CPropertyPage)
-	//{{AFX_MSG_MAP(CVisualAttributesPage)
-	ON_NOTIFY(TVN_SELCHANGED, IDC_PFC_CATEGORY, OnSelChangedOnCategory)
-	ON_BN_CLICKED(IDC_PFC_FONT_BOLD, OnFontChanged)
-	ON_WM_CTLCOLOR()
-	ON_BN_CLICKED(IDC_PFC_FONT_ITALIC, OnFontChanged)
-	ON_CBN_SELCHANGE(IDC_PFC_FONT_NAME, OnFontChanged)
-	ON_CBN_SELCHANGE(IDC_PFC_FONT_SIZE, OnFontChanged)
-	ON_BN_CLICKED(IDC_PFC_FONT_UNDERLINE, OnFontChanged)
+    //{{AFX_MSG_MAP(CVisualAttributesPage)
+    ON_NOTIFY(TVN_SELCHANGED, IDC_PFC_CATEGORY, OnSelChangedOnCategory)
+    ON_BN_CLICKED(IDC_PFC_FONT_BOLD, OnFontChanged)
+    ON_WM_CTLCOLOR()
+    ON_BN_CLICKED(IDC_PFC_FONT_ITALIC, OnFontChanged)
+    ON_CBN_SELCHANGE(IDC_PFC_FONT_NAME, OnFontChanged)
+    ON_CBN_SELCHANGE(IDC_PFC_FONT_SIZE, OnFontChanged)
+    ON_BN_CLICKED(IDC_PFC_FONT_UNDERLINE, OnFontChanged)
     ON_MESSAGE(CPN_SELCHANGE, OnColorChanged)
-	//}}AFX_MSG_MAP
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -205,10 +206,10 @@ LRESULT CVisualAttributesPage::WindowProc(UINT message, WPARAM wParam, LPARAM lP
 
 BOOL CVisualAttributesPage::OnInitDialog()
 {
-	CPropertyPage::OnInitDialog();
+    CPropertyPage::OnInitDialog();
 
-	m_Foreground.SetDefaultText(_T(""));
-	m_Background.SetDefaultText(_T(""));
+    m_Foreground.SetDefaultText(_T(""));
+    m_Background.SetDefaultText(_T(""));
 
     // fill a tree control
     //m_Categories.SetIndent(0);
@@ -235,15 +236,17 @@ BOOL CVisualAttributesPage::OnInitDialog()
         } else {
             item.item.mask = TVIF_TEXT;
         }
-        item.item.pszText = const_cast<char*>(vaset.GetName());
+        std::wstring buffer = wstr(vaset.GetName());
+        item.item.pszText = const_cast<TCHAR*>(buffer.c_str());
         item.hParent      = m_Categories.InsertItem(&item);
 
 
         for (int k = 0, kcount = vaset.GetCount(); k < kcount; k++)
         {
+            buffer = wstr(vaset.GetName(k));
             m_vasetsMap[&vaset[k]] = &vaset;
             item.item.mask    = TVIF_TEXT|TVIF_PARAM;
-            item.item.pszText = const_cast<char*>(vaset.GetName(k));
+            item.item.pszText = const_cast<WCHAR*>(buffer.c_str());
             item.item.lParam  = reinterpret_cast<long>(&vaset[k]);
             HTREEITEM hItem = m_Categories.InsertItem(&item);
             if (selIndex == i && !k)
@@ -255,12 +258,12 @@ BOOL CVisualAttributesPage::OnInitDialog()
 
     ShowAttribute();
 
-	return TRUE;
+    return TRUE;
 }
 
 HBRUSH CVisualAttributesPage::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	HBRUSH hbr = CPropertyPage::OnCtlColor(pDC, pWnd, nCtlColor);
+    HBRUSH hbr = CPropertyPage::OnCtlColor(pDC, pWnd, nCtlColor);
 
     if (*pWnd == m_Sample)
     {
@@ -277,7 +280,7 @@ HBRUSH CVisualAttributesPage::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
             hbr = brush;
         }
     }
-	return hbr;
+    return hbr;
 }
 
 const VisualAttribute* CVisualAttributesPage::GetBaseAttribute (const VisualAttribute* attr)
@@ -348,29 +351,29 @@ void CVisualAttributesPage::ShowAttribute ()
     {
         m_FontName.     ResetContent();
         m_FontSize.     ResetContent();
-	    m_FontBold.     SetCheck(FALSE);
-	    m_FontItalic.   SetCheck(FALSE);
-	    m_FontUnderline.SetCheck(FALSE);
+        m_FontBold.     SetCheck(FALSE);
+        m_FontItalic.   SetCheck(FALSE);
+        m_FontUnderline.SetCheck(FALSE);
 
-	    m_FontName.     EnableWindow(FALSE);
-	    m_FontSize.     EnableWindow(FALSE);
-	    m_FontBold.     EnableWindow(FALSE);
-	    m_FontItalic.   EnableWindow(FALSE);
-	    m_FontUnderline.EnableWindow(FALSE);
-	    m_Foreground.   EnableWindow(FALSE);
-	    m_Background.   EnableWindow(FALSE);
-	    m_Sample.       EnableWindow(FALSE);
+        m_FontName.     EnableWindow(FALSE);
+        m_FontSize.     EnableWindow(FALSE);
+        m_FontBold.     EnableWindow(FALSE);
+        m_FontItalic.   EnableWindow(FALSE);
+        m_FontUnderline.EnableWindow(FALSE);
+        m_Foreground.   EnableWindow(FALSE);
+        m_Background.   EnableWindow(FALSE);
+        m_Sample.       EnableWindow(FALSE);
     }
     else
     {
-	    m_FontName.     EnableWindow(curr->m_Mask & vaoFontName);
-	    m_FontSize.     EnableWindow(curr->m_Mask & vaoFontSize);
-	    m_FontBold.     EnableWindow(curr->m_Mask & vaoFontBold);
-	    m_FontItalic.   EnableWindow(curr->m_Mask & vaoFontItalic);
-	    m_FontUnderline.EnableWindow(curr->m_Mask & vaoFontUnderline);
+        m_FontName.     EnableWindow(curr->m_Mask & vaoFontName);
+        m_FontSize.     EnableWindow(curr->m_Mask & vaoFontSize);
+        m_FontBold.     EnableWindow(curr->m_Mask & vaoFontBold);
+        m_FontItalic.   EnableWindow(curr->m_Mask & vaoFontItalic);
+        m_FontUnderline.EnableWindow(curr->m_Mask & vaoFontUnderline);
 
-	    m_Foreground.EnableWindow(curr->m_Mask & vaoForeground);
-	    m_Background.EnableWindow(curr->m_Mask & vaoBackground);
+        m_Foreground.EnableWindow(curr->m_Mask & vaoForeground);
+        m_Background.EnableWindow(curr->m_Mask & vaoBackground);
 
         m_Sample.EnableWindow(TRUE);
 
@@ -391,14 +394,14 @@ void CVisualAttributesPage::ShowFont (const VisualAttribute& attr)
     else
         ::EnumFonts(CWindowDC(this), NULL, (FONTENUMPROC)enumFontsFunc, (LPARAM)&m_FontName);
 
-    int index = m_FontName.FindStringExact(0, attr.m_FontName.c_str());
+    int index = m_FontName.FindStringExact(0, wstr(attr.m_FontName).c_str());
     m_FontName.SetCurSel((index !=  CB_ERR) ? index : -1);
 
     m_FontSize.ResetContent();
-    EnumFonts(CWindowDC(this), attr.m_FontName.c_str(), (FONTENUMPROC)enumFontSizesFunc, (LPARAM)&m_FontSize);
+    EnumFonts(CWindowDC(this), wstr(attr.m_FontName).c_str(), (FONTENUMPROC)enumFontSizesFunc, (LPARAM)&m_FontSize);
 
-    char buff[64];
-    itoa(attr.m_FontSize, buff, 10);
+    TCHAR buff[64*2];
+    _itow(attr.m_FontSize, buff, 10);
     index = m_FontSize.FindStringExact(0, buff);
     m_FontSize.SetCurSel((index != CB_ERR) ? index : -1);
 
@@ -421,7 +424,7 @@ void CVisualAttributesPage::SetFont (const VisualAttribute& attr)
 void CVisualAttributesPage::OnSelChangedOnCategory (NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
     ShowAttribute();
-	*pResult = 0;
+    *pResult = 0;
 }
 
 void CVisualAttributesPage::OnFontChanged()
@@ -437,7 +440,7 @@ void CVisualAttributesPage::OnFontChanged()
         if (inx != CB_ERR)
         {
             m_FontName.GetLBText(inx, buff);
-            curr->m_FontName = buff;
+            curr->m_FontName = str(buff);
         }
 
         inx = m_FontSize.GetCurSel();
@@ -445,7 +448,7 @@ void CVisualAttributesPage::OnFontChanged()
         if (inx != CB_ERR)
         {
             m_FontSize.GetLBText(inx, buff);
-            curr->m_FontSize = atoi(buff);
+            curr->m_FontSize = _wtoi(buff);
         }
 
         curr->m_FontBold      = m_FontBold.GetCheck() ? true : false;

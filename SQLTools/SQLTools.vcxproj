@@ -5,16 +5,12 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-Beta|Win32">
-      <Configuration>Release-Beta</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Template|Win32">
-      <Configuration>Template</Configuration>
+    <ProjectConfiguration Include="Unoptimized|Win32">
+      <Configuration>Unoptimized</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -25,34 +21,39 @@
     <SccLocalPath />
     <SccProvider />
     <Keyword>MFCProj</Keyword>
-    <ProjectGuid>{98654122-FEFE-E2D0-03D6-C4F7A43D5F68}</ProjectGuid>
+    <ProjectGuid>{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>SQLTools</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseOfMfc>Static</UseOfMfc>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Static</UseOfMfc>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
@@ -65,25 +66,25 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\_output_\Debug\objs\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\_output_\Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">.\..\_output_\Unoptimized\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\_output_\Release\objs\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">.\..\_output_\Unoptimized\objs\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">.\..\_output_\Release-Beta\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">.\..\_output_\Release-Beta\objs\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">false</LinkIncremental>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\oracle\OCI\include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\oracle\OCI\lib\MSVC;$(LibraryPath)</LibraryPath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\oracle\OCI\include;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">..\..\oracle\OCI\include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\oracle\OCI\lib\MSVC;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">..\..\oracle\OCI\lib\MSVC;$(LibraryPath)</LibraryPath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">..\..\oracle\OCI\include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">..\..\oracle\OCI\include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">..\..\oracle\OCI\lib\MSVC;$(LibraryPath)</LibraryPath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">..\..\oracle\OCI\lib\MSVC;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..;..\OpenEditor;..\3DPARTY;..\3DPARTY\ARG\include;..\3DPARTY\boost_1_32_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_AFXDLL;BUILD_TYPE=1;TIXML_USE_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;..;..\OpenEditor;..\3DPARTY;..\3DPARTY\ARG\include;..\3DPARTY\boost_1_65_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DINKUMWARE_CE;WIN32;_DEBUG;_WINDOWS;_AFXDLL;BUILD_TYPE=1;TIXML_USE_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>
       </ExceptionHandling>
@@ -128,7 +129,7 @@
     <ResourceCompile>
       <PreprocessorDefinitions>NOMANIFEST;_DEBUG;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>.;..;../common;../3dParty/PropTree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;../common;../3dParty/PropTree;../openeditor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -140,7 +141,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>.;..;..\OpenEditor;..\3DPARTY;..\3DPARTY\ARG\include;..\3DPARTY\boost_1_32_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;..\OpenEditor;..\3DPARTY;..\3DPARTY\ARG\include;..\3DPARTY\boost_1_65_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;BUILD_TYPE=3;TIXML_USE_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>
@@ -171,6 +172,65 @@
       <DelayLoadDLLs>OLEACC.DLL;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\..\_output_\Release/SQLTools.pdb</ProgramDatabaseFile>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+      <SubSystem>Windows</SubSystem>
+      <SetChecksum>true</SetChecksum>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\..\_output_\Release/SQLTools.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NOMANIFEST;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>.;..;../common;../3dParty/PropTree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>.;..;..\OpenEditor;..\3DPARTY;..\3DPARTY\ARG\include;..\3DPARTY\boost_1_65_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;BUILD_TYPE=2;TIXML_USE_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>.\..\_output_\Unoptimized\objs/SQLTools.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\..\_output_\Unoptimized\objs/</AssemblerListingLocation>
+      <ObjectFileName>.\..\_output_\Unoptimized\objs/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\_output_\Unoptimized\objs/</ProgramDataBaseFileName>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/MACHINE:I386 /OPT:REF,ICF=3 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>Rpcrt4.lib;version.lib;htmlhelp.lib;imagehlp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\_output_\Unoptimized/SQLTools.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <DelayLoadDLLs>OLEACC.DLL;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\..\_output_\Unoptimized/SQLTools.pdb</ProgramDatabaseFile>
       <StripPrivateSymbols>
       </StripPrivateSymbols>
       <GenerateMapFile>true</GenerateMapFile>
@@ -243,10 +303,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="..\3dParty\PropTree\PropTree.rh" />
+    <None Include="..\Common\DirSelectDlg.dlg" />
+    <None Include="..\Common\ManagedListCtrlFilterDlg.aps" />
+    <None Include="..\Common\ManagedListCtrlFilterDlg.rh" />
     <None Include="hlp\autosave.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="hlp\datagrid.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\file_find.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="hlp\init_setup.htm">
@@ -271,6 +337,9 @@
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="hlp\whatsnew18.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="hlp\whatsnew19.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="hlp\working_with_svn.htm">
@@ -333,6 +402,7 @@ echo.
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">hlp\HTMLDefines.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">$(OutDir)$(ProjectName).chm;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Making help file...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">Making help file...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">start /wait hhc "hlp\sqltools.hhp"
 if not exist "hlp\sqltools.chm" goto :HelpError
 copy "hlp\sqltools.chm" "$(OutDir)sqltools.chm"
@@ -343,8 +413,20 @@ echo.
 :HelpDone
 echo.
 </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">start /wait hhc "hlp\sqltools.hhp"
+if not exist "hlp\sqltools.chm" goto :HelpError
+copy "hlp\sqltools.chm" "$(OutDir)sqltools.chm"
+goto :HelpDone
+:HelpError
+echo hlp\sqltools.hhp(1) : error:Problem encountered creating help file
+echo.
+:HelpDone
+echo.
+</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">hlp\HTMLDefines.h;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">hlp\HTMLDefines.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)$(ProjectName).chm;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">$(OutDir)$(ProjectName).chm;%(Outputs)</Outputs>
     </CustomBuild>
     <None Include="hlp\_sqltools.css" />
     <None Include="hlp\about.htm">
@@ -409,6 +491,7 @@ echo.
     <None Include="VersionInfo.rh" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\3dParty\boost_1_65_1\libs\regex\src\internals.hpp" />
     <ClInclude Include="..\3dParty\PropTree\PropTree.h" />
     <ClInclude Include="..\3dParty\PropTree\PropTreeInfo.h" />
     <ClInclude Include="..\3dParty\PropTree\PropTreeItem.h" />
@@ -418,15 +501,62 @@ echo.
     <ClInclude Include="..\3dParty\PropTree\PropTreeItemEdit.h" />
     <ClInclude Include="..\3dParty\PropTree\PropTreeItemStatic.h" />
     <ClInclude Include="..\3dParty\PropTree\PropTreeList.h" />
+    <ClInclude Include="..\3dParty\TextEncodingDetect\text_encoding_detect.h" />
+    <ClInclude Include="..\Common\AppGlobal.h" />
+    <ClInclude Include="..\Common\AppUtilities.h" />
     <ClInclude Include="..\Common\clock64.h" />
+    <ClInclude Include="..\Common\ConfigFilesLocator.h" />
+    <ClInclude Include="..\Common\CustomShellContextMenu.h" />
+    <ClInclude Include="..\Common\DirSelectDlg.h" />
+    <ClInclude Include="..\Common\DlgDataExt.h" />
+    <ClInclude Include="..\Common\DockableContainer.h" />
+    <ClInclude Include="..\Common\EditWithSelPos.h" />
+    <ClInclude Include="..\Common\ErrorDlg.h" />
+    <ClInclude Include="..\Common\ExceptionHelper.h" />
+    <ClInclude Include="..\Common\FakeRClick.h" />
+    <ClInclude Include="..\Common\Fastmap.h" />
+    <ClInclude Include="..\Common\FileExplorerWnd.h" />
     <ClInclude Include="..\Common\FilenameTemplate.h" />
+    <ClInclude Include="..\Common\FixedArray.h" />
+    <ClInclude Include="..\Common\GlobalMutex.h" />
+    <ClInclude Include="..\Common\GUICommandDictionary.h" />
+    <ClInclude Include="..\Common\Handler.h" />
+    <ClInclude Include="..\Common\InputDlg.h" />
+    <ClInclude Include="..\Common\ListCtrlDataProvider.h" />
+    <ClInclude Include="..\Common\ManagedListCtrl.h" />
+    <ClInclude Include="..\Common\ManagedListCtrlFilterDlg.h" />
+    <ClInclude Include="..\Common\MemoryMappedFile.h" />
+    <ClInclude Include="..\Common\MyUtf.h" />
+    <ClInclude Include="..\Common\NVector.h" />
+    <ClInclude Include="..\Common\OEString.h" />
+    <ClInclude Include="..\Common\OETabCtrl.h" />
+    <ClInclude Include="..\Common\OsException.h" />
+    <ClInclude Include="..\Common\OsInfo.h" />
+    <ClInclude Include="..\Common\PlSqlParser.h" />
+    <ClInclude Include="..\Common\Properties.h" />
+    <ClInclude Include="..\Common\PropertySheetMem.h" />
+    <ClInclude Include="..\Common\QuickArray.h" />
+    <ClInclude Include="..\Common\RecArray.h" />
     <ClInclude Include="..\Common\RecentFilesListCtrl.h" />
+    <ClInclude Include="..\Common\RecentFileWnd.h" />
+    <ClInclude Include="..\Common\SEException.h" />
+    <ClInclude Include="..\Common\SimpleDragDataSource.h" />
+    <ClInclude Include="..\Common\StackTracer.h" />
+    <ClInclude Include="..\Common\StrHelpers.h" />
+    <ClInclude Include="..\Common\TempFilesManager.h" />
+    <ClInclude Include="..\Common\VisualAttributes.h" />
+    <ClInclude Include="..\Common\VisualAttributesPage.h" />
+    <ClInclude Include="..\Common\WorkbookMDIFrame.h" />
     <ClInclude Include="..\OpenEditor\FavoritesList.h" />
     <ClInclude Include="..\OpenEditor\OEWorkspaceManager.h" />
     <ClInclude Include="..\OpenEditor\OEWorkspacePage.h" />
     <ClInclude Include="..\OpenEditor\RecentFileList.h" />
+    <ClInclude Include="..\OpenEditor\TiXmlUtils.h" />
+    <ClInclude Include="..\OpenEditor\WindowsCodepage.h" />
     <ClInclude Include="..\ThreadCommunication\MessageOnlyWindow.h" />
     <ClInclude Include="..\ThreadCommunication\Singleton.h" />
+    <ClInclude Include="ActivePrimeExecutionNote.h" />
+    <ClInclude Include="ConnectionButton.h" />
     <ClInclude Include="ConnectionTasks.h" />
     <ClInclude Include="DbBrowser\DBBrowserInvalidObjectList.h" />
     <ClInclude Include="DbBrowser\FindObjectsTask.h" />
@@ -438,14 +568,10 @@ echo.
     <ClInclude Include="..\3dParty\XPTheme.h" />
     <ClInclude Include="..\3dparty\ModulVer\ModulVer.h" />
     <ClInclude Include="..\3dparty\ARG\include\arg_shared.h" />
-    <ClInclude Include="..\3dParty\boost_1_32_0\libs\regex\src\primary_transform.hpp" />
     <ClInclude Include="..\3dparty\CGFileType\cgfiltyp.h" />
     <ClInclude Include="..\3dparty\DirTreeCtrl\DirTreeCtrl.h" />
     <ClInclude Include="..\3dparty\DirTreeCtrl\SortStringArray.h" />
     <ClInclude Include="..\3dparty\FileWatch\FileWatch.h" />
-    <ClInclude Include="..\3dparty\SizeCBar\scbarcf.h" />
-    <ClInclude Include="..\3dparty\SizeCBar\scbarg.h" />
-    <ClInclude Include="..\3dparty\SizeCBar\sizecbar.h" />
     <ClInclude Include="..\3dparty\WinException\WinException.h" />
     <ClInclude Include="..\3dParty\CTreePropSheet\PropPageFrame.h" />
     <ClInclude Include="..\3dParty\CTreePropSheet\PropPageFrameDefault.h" />
@@ -465,46 +591,6 @@ echo.
     <ClInclude Include="..\3dParty\CppToolTip\PPDrawManager.h" />
     <ClInclude Include="..\3dParty\CppToolTip\PPHtmlDrawer.h" />
     <ClInclude Include="..\3dParty\CppToolTip\PPTooltip.h" />
-    <ClInclude Include="..\Common\AppGlobal.h" />
-    <ClInclude Include="..\Common\AppUtilities.h" />
-    <ClInclude Include="..\Common\ConfigFilesLocator.h" />
-    <ClInclude Include="..\Common\CustomShellContextMenu.h" />
-    <ClInclude Include="..\Common\DirSelectDlg.h" />
-    <ClInclude Include="..\Common\DlgDataExt.h" />
-    <ClInclude Include="..\Common\EditWithSelPos.h" />
-    <ClInclude Include="..\Common\ErrorDlg.h" />
-    <ClInclude Include="..\Common\ExceptionHelper.h" />
-    <ClInclude Include="..\Common\FakeRClick.h" />
-    <ClInclude Include="..\Common\Fastmap.h" />
-    <ClInclude Include="..\Common\FilePanelWnd.h" />
-    <ClInclude Include="..\Common\FixedArray.h" />
-    <ClInclude Include="..\Common\FixedString.h" />
-    <ClInclude Include="..\Common\GlobalMutex.h" />
-    <ClInclude Include="..\Common\GUICommandDictionary.h" />
-    <ClInclude Include="..\Common\Handler.h" />
-    <ClInclude Include="..\Common\InputDlg.h" />
-    <ClInclude Include="..\Common\ListCtrlDataProvider.h" />
-    <ClInclude Include="..\Common\ManagedListCtrl.h" />
-    <ClInclude Include="..\Common\ManagedListCtrlFilterDlg.h" />
-    <ClInclude Include="..\Common\MemoryMappedFile.h" />
-    <ClInclude Include="..\Common\NVector.h" />
-    <ClInclude Include="..\Common\OETabCtrl.h" />
-    <ClInclude Include="..\Common\OsException.h" />
-    <ClInclude Include="..\Common\OsInfo.h" />
-    <ClInclude Include="..\Common\PlSqlParser.h" />
-    <ClInclude Include="..\Common\Properties.h" />
-    <ClInclude Include="..\Common\PropertySheetMem.h" />
-    <ClInclude Include="..\Common\QuickArray.h" />
-    <ClInclude Include="..\Common\RecArray.h" />
-    <ClInclude Include="..\Common\SEException.h" />
-    <ClInclude Include="..\Common\SimpleDragDataSource.h" />
-    <ClInclude Include="..\Common\StackTracer.h" />
-    <ClInclude Include="..\Common\StrHelpers.h" />
-    <ClInclude Include="..\Common\TempFilesManager.h" />
-    <ClInclude Include="..\Common\VisualAttributes.h" />
-    <ClInclude Include="..\Common\VisualAttributesPage.h" />
-    <ClInclude Include="..\Common\WorkbookBar.h" />
-    <ClInclude Include="..\Common\WorkbookMDIFrame.h" />
     <ClInclude Include="..\OpenEditor\OEAutocompleteCtrl.h" />
     <ClInclude Include="..\OpenEditor\OEBackupPage.h" />
     <ClInclude Include="..\OpenEditor\OEBlockPage.h" />
@@ -542,7 +628,6 @@ echo.
     <ClInclude Include="..\OpenEditor\OESortDlg.h" />
     <ClInclude Include="..\OpenEditor\OESplitLinesDlg.h" />
     <ClInclude Include="..\OpenEditor\OEStorage.h" />
-    <ClInclude Include="..\OpenEditor\OEStreams.h" />
     <ClInclude Include="..\OpenEditor\OETemplates.h" />
     <ClInclude Include="..\OpenEditor\OETemplatesDlg.h" />
     <ClInclude Include="..\OpenEditor\OETemplatesPage.h" />
@@ -552,6 +637,7 @@ echo.
     <ClInclude Include="..\OpenEditor\OEViewPaintAccessories.h" />
     <ClInclude Include="..\OpenEditor\resource1.h" />
     <ClInclude Include="LabelWithWaitBar.h" />
+    <ClInclude Include="OpenFilesWnd.h" />
     <ClInclude Include="OpenGrid\AGridManager.h" />
     <ClInclude Include="OpenGrid\AGridSource.h" />
     <ClInclude Include="OpenGrid\CellEditor.h" />
@@ -645,6 +731,8 @@ echo.
     <ClInclude Include="Tools\ExtractSchemaFilterPage.h" />
     <ClInclude Include="Tools\ExtractSchemaHelpers.h" />
     <ClInclude Include="Tools\ExtractSchemaOptionPage.h" />
+    <ClInclude Include="Tools\Grep\GrepImplementation.h" />
+    <ClInclude Include="Tools\Grep\GrepImplementationInMemory.h" />
     <ClInclude Include="Tools\TableTransformer.h" />
     <ClInclude Include="Tools\Grep\GrepDlg.h" />
     <ClInclude Include="Tools\Grep\GrepThread.h" />
@@ -702,6 +790,92 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\3dParty\base64.cpp" />
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\cpp_regex_traits.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\cregex.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\c_regex_traits.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\fileiter.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\icu.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\instances.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\posix_api.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\regex.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\regex_debug.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\regex_raw_buffer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\regex_traits_defaults.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\static_mutex.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\usinstances.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\w32_regex_traits.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\wc_regex_traits.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\wide_posix_api.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\winstances.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\3dParty\PropTree\PropTree.cpp" />
     <ClCompile Include="..\3dParty\PropTree\PropTreeInfo.cpp" />
     <ClCompile Include="..\3dParty\PropTree\PropTreeItem.cpp" />
@@ -712,6 +886,12 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
     <ClCompile Include="..\3dParty\PropTree\PropTreeItemStatic.cpp" />
     <ClCompile Include="..\3dParty\PropTree\PropTreeList.cpp" />
     <ClCompile Include="..\3dParty\ShellContextMenu.cpp" />
+    <ClCompile Include="..\3dParty\TextEncodingDetect\text_encoding_detect.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\3dParty\XPTheme.cpp" />
     <ClCompile Include="..\3dparty\ModulVer\ModulVer.cpp" />
     <ClCompile Include="..\3dparty\ARG\arglib\arg_shared.cpp">
@@ -721,118 +901,19 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\c_regex_traits.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\c_regex_traits_common.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
+    <ClCompile Include="..\3dparty\CGFileType\cgfiltyp.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\cpp_regex_traits.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\cregex.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\fileiter.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\instances.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\posix_api.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\regex.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\regex_debug.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\regex_synch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\w32_regex_traits.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\wide_posix_api.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\winstances.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3dparty\CGFileType\cgfiltyp.cpp" />
     <ClCompile Include="..\3dparty\DirTreeCtrl\DirTreeCtrl.cpp" />
     <ClCompile Include="..\3dparty\DirTreeCtrl\SortStringArray.cpp" />
     <ClCompile Include="..\3dparty\FileWatch\FileWatch.cpp" />
-    <ClCompile Include="..\3dparty\SizeCBar\scbarcf.cpp" />
-    <ClCompile Include="..\3dparty\SizeCBar\scbarg.cpp" />
-    <ClCompile Include="..\3dparty\SizeCBar\sizecbar.cpp" />
     <ClCompile Include="..\3dparty\WinException\WinException.cpp" />
     <ClCompile Include="..\3dParty\CTreePropSheet\PropPageFrame.cpp" />
     <ClCompile Include="..\3dParty\CTreePropSheet\PropPageFrameDefault.cpp" />
@@ -845,6 +926,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
+      </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\tinyxml\tinyxml.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -853,6 +936,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
+      </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\tinyxml\tinyxmlerror.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -860,6 +945,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\tinyxml\tinyxmlparser.cpp">
@@ -870,6 +957,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
+      </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\Cryptography\aescrypt.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -877,6 +966,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\Cryptography\aeskey.c">
@@ -886,6 +977,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
+      </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\Cryptography\aestab.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -893,6 +986,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\Cryptography\fileenc.c">
@@ -902,6 +997,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
+      </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\Cryptography\hmac.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -910,11 +1007,14 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
+      </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\Cryptography\main.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\3dParty\Cryptography\prng.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -922,6 +1022,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\Cryptography\pwd2key.c">
@@ -931,6 +1033,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
+      </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\Cryptography\sha1.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -938,6 +1042,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\3dParty\TreeCtrlEx\TreeCtrlEx.cpp" />
@@ -952,25 +1058,23 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
     <ClCompile Include="..\Common\CustomShellContextMenu.cpp" />
     <ClCompile Include="..\Common\DirSelectDlg.cpp" />
     <ClCompile Include="..\Common\DlgDataExt.cpp" />
+    <ClCompile Include="..\Common\DockableContainer.cpp" />
     <ClCompile Include="..\Common\EditWithSelPos.cpp" />
     <ClCompile Include="..\Common\ErrorDlg.cpp" />
     <ClCompile Include="..\Common\ExceptionHelper.cpp" />
     <ClCompile Include="..\Common\FakeRClick.cpp" />
+    <ClCompile Include="..\Common\FileExplorerWnd.cpp" />
+    <ClCompile Include="..\Common\FileExplorerWnd2.cpp" />
     <ClCompile Include="..\Common\FilenameTemplate.cpp" />
-    <ClCompile Include="..\Common\FilePanelWnd.cpp" />
-    <ClCompile Include="..\Common\FilePanelWnd2.cpp" />
-    <ClCompile Include="..\Common\FixedString.cpp" />
     <ClCompile Include="..\Common\GlobalMutex.cpp" />
     <ClCompile Include="..\Common\GUICommandDictionary.cpp" />
-    <ClCompile Include="..\Common\InputDlg.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-    </ClCompile>
+    <ClCompile Include="..\Common\InputDlg.cpp" />
     <ClCompile Include="..\Common\ListCtrlDataProvider.cpp" />
     <ClCompile Include="..\Common\ManagedListCtrl.cpp" />
     <ClCompile Include="..\Common\ManagedListCtrlFilterDlg.cpp" />
     <ClCompile Include="..\Common\MemoryMappedFile.cpp" />
+    <ClCompile Include="..\Common\MyUtf.cpp" />
+    <ClCompile Include="..\Common\OEString.cpp" />
     <ClCompile Include="..\Common\OETabCtrl.cpp" />
     <ClCompile Include="..\Common\OsException.cpp" />
     <ClCompile Include="..\Common\OsInfo.cpp" />
@@ -979,6 +1083,7 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
     <ClCompile Include="..\Common\QuickArray.cpp" />
     <ClCompile Include="..\Common\RecArray.cpp" />
     <ClCompile Include="..\Common\RecentFilesListCtrl.cpp" />
+    <ClCompile Include="..\Common\RecentFileWnd.cpp" />
     <ClCompile Include="..\Common\SEException.cpp" />
     <ClCompile Include="..\Common\SimpleDragDataSource.cpp" />
     <ClCompile Include="..\Common\StackTracer.cpp" />
@@ -986,7 +1091,6 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
     <ClCompile Include="..\Common\TempFilesManager.cpp" />
     <ClCompile Include="..\Common\VisualAttributes.cpp" />
     <ClCompile Include="..\Common\VisualAttributesPage.cpp" />
-    <ClCompile Include="..\Common\WorkbookBar.cpp" />
     <ClCompile Include="..\Common\WorkbookMDIFrame.cpp" />
     <ClCompile Include="..\OpenEditor\FavoritesList.cpp" />
     <ClCompile Include="..\OpenEditor\OEAutocompleteCtrl.cpp" />
@@ -1033,7 +1137,6 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
     <ClCompile Include="..\OpenEditor\OESortDlg.cpp" />
     <ClCompile Include="..\OpenEditor\OESplitLinesDlg.cpp" />
     <ClCompile Include="..\OpenEditor\OEStorage.cpp" />
-    <ClCompile Include="..\OpenEditor\OEStreams.cpp" />
     <ClCompile Include="..\OpenEditor\OETemplates.cpp" />
     <ClCompile Include="..\OpenEditor\OETemplatesDlg.cpp" />
     <ClCompile Include="..\OpenEditor\OETemplatesPage.cpp" />
@@ -1046,10 +1149,20 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
     <ClCompile Include="..\OpenEditor\OEView_5.cpp" />
     <ClCompile Include="..\OpenEditor\OEView_6.cpp" />
     <ClCompile Include="..\OpenEditor\OEViewPaintAccessories.cpp" />
+    <ClCompile Include="..\OpenEditor\OEView_7.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\OpenEditor\OEWorkspaceManager.cpp" />
     <ClCompile Include="..\OpenEditor\OEWorkspacePage.cpp" />
     <ClCompile Include="..\OpenEditor\RecentFileList.cpp" />
+    <ClCompile Include="..\OpenEditor\TiXmlUtils.cpp" />
+    <ClCompile Include="..\OpenEditor\WindowsCodepage.cpp" />
     <ClCompile Include="..\ThreadCommunication\MessageOnlyWindow.cpp" />
+    <ClCompile Include="ConnectionButton.cpp" />
     <ClCompile Include="ConnectionTasks.cpp" />
     <ClCompile Include="DbBrowser\DBBrowserInvalidObjectList.cpp" />
     <ClCompile Include="DbBrowser\FindObjectsTask.cpp" />
@@ -1058,6 +1171,7 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
     <ClCompile Include="DbBrowser\ObjectTree_Builder_3.cpp" />
     <ClCompile Include="FetchWaitDlg.cpp" />
     <ClCompile Include="LabelWithWaitBar.cpp" />
+    <ClCompile Include="OpenFilesWnd.cpp" />
     <ClCompile Include="OpenGrid\AGridSource.cpp" />
     <ClCompile Include="OpenGrid\CellEditor.cpp" />
     <ClCompile Include="OpenGrid\GridManager0.cpp" />
@@ -1167,6 +1281,7 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="Tools\ExtractSchemaDlg.cpp" />
     <ClCompile Include="Tools\ExtractSchemaFilterPage.cpp" />
@@ -1189,8 +1304,8 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
     </ClCompile>
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SQLToolsSettings.cpp" />
     <ClCompile Include="SQLToolsSettingsXmlStreamer.cpp" />
@@ -1203,22 +1318,33 @@ makehm /h ID_,HID_,0x10000 IDM_,HIDM_,0x10000 "..\OpenEditor\OpenEditorInc.rh" &
     <ClCompile Include="Dlg\ConnectSettingsDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="..\Common\ManagedListCtrlFilterDlg.rc" />
     <ResourceCompile Include="..\OpenEditor\OpenEditorInc.rc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <ResourceCompile Include="SQLTools.rc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Culture Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">0x0000</Culture>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release-Beta|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Culture Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">0x0000</Culture>
+      <Culture Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">0x0000</Culture>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="res\sqltools.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Common\ManagedListCtrlFilterDlg-1.bmp" />
+    <Image Include="res\ConnectToolbar.bmp" />
+    <Image Include="res\FindInFiles.ico" />
+    <Image Include="res\ObjectList.ico" />
+    <Image Include="res\ObjectViewer.ico" />
+    <Image Include="res\OpenFiles.ico" />
+    <Image Include="res\properti.ico" />
+    <Image Include="res\SqlDescribe.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

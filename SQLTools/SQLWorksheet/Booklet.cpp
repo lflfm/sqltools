@@ -44,8 +44,8 @@ IMPLEMENT_DYNCREATE(CBooklet, CView)
 
     const int   PIN_IMAGE_ID = 17;
     const int   PIN_UNIMAGE_ID = 18;
-    const char* PIN_IMAGE_TEXT = "Disable auto switching panes";
-    const char* PIN_UNIMAGE_TEXT = "Enable auto switching panes";
+    const wchar_t* PIN_IMAGE_TEXT   = L"Disable auto switching panes";
+    const wchar_t* PIN_UNIMAGE_TEXT = L"Enable auto switching panes";
 
     struct 
     {
@@ -53,41 +53,39 @@ IMPLEMENT_DYNCREATE(CBooklet, CView)
         int   idCommand; // command to be sent when button pressed
         BYTE  fsState;   // button state--see below
         BYTE  fsStyle;   // button style--see below
-        const char* szString;  // label string
+        const wchar_t* szString;  // label string
     } 
     g_buttons[] =
     {
         { PIN_IMAGE_ID, ID_BOOKLET_PIN, TBSTATE_ENABLED, TBSTYLE_CHECK, PIN_IMAGE_TEXT },
         { 0,  0, 0, TBSTYLE_SEP, 0 },
-        { 0,  ID_BOOKLET_RESULT,     TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT, "Result    " },
-        { 1,  ID_BOOKLET_STATISTICS, TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT, "Statistics" },
-        { 2,  ID_BOOKLET_SQL_PLAN,   TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT|TBSTYLE_DROPDOWN, "Plan      " },
-        { 3,  ID_BOOKLET_OUTPUT,     TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT, "Output    " },
-        { 4,  ID_BOOKLET_HISTORY,    TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT, "History   " },
-		{ 5,  ID_BOOKLET_BINDS,	     TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT, "Binds" },
+        { 0,  ID_BOOKLET_RESULT,     TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT, L"Result    " },
+        { 1,  ID_BOOKLET_STATISTICS, TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT, L"Statistics" },
+        { 2,  ID_BOOKLET_SQL_PLAN,   TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT|TBSTYLE_DROPDOWN, L"Plan      " },
+        { 3,  ID_BOOKLET_OUTPUT,     TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT, L"Output    " },
+        { 4,  ID_BOOKLET_HISTORY,    TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT, L"History   " },
+		{ 5,  ID_BOOKLET_BINDS,	     TBSTATE_ENABLED, TBSTYLE_CHECKGROUP|BTNS_SHOWTEXT, L"Binds" },
         { 0,  0, 0, TBSTYLE_SEP, 0 },
-        { 6,  ID_GRID_ROTATE,  TBSTATE_ENABLED,    TBSTYLE_BUTTON,  "Rotate grid"   },
+        { 6,  ID_GRID_ROTATE,  TBSTATE_ENABLED,    TBSTYLE_BUTTON,  L"Rotate grid"   },
         
-//        { 6,  ID_GRID_DATA_FIT,         TBSTATE_ENABLED,    TBSTYLE_BUTTON,  "Size Columns to Data"   },
-//        { 7,  ID_GRID_HEADER_FIT,       TBSTATE_ENABLED,    TBSTYLE_BUTTON,  "Size Columns to Headers"   },
-        { 7,  ID_OCIGRID_DATA_FIT,        TBSTATE_ENABLED,    TBSTYLE_BUTTON,  "Size Columns to Data"   },
-        { 8,  ID_OCIGRID_COLS_TO_HEADERS, TBSTATE_ENABLED,    TBSTYLE_BUTTON,  "Size Columns to Headers"   },
+        { 7,  ID_OCIGRID_DATA_FIT,        TBSTATE_ENABLED,    TBSTYLE_BUTTON,  L"Size Columns to Data"   },
+        { 8,  ID_OCIGRID_COLS_TO_HEADERS, TBSTATE_ENABLED,    TBSTYLE_BUTTON,  L"Size Columns to Headers"   },
 
         { 0,  0, 0, TBSTYLE_SEP, 0 },
-        { 9,  ID_GRID_MOVE_HOME,        TBSTATE_ENABLED,    TBSTYLE_BUTTON, "The Home"      },
-        { 10,  ID_GRID_MOVE_PGUP,        TBSTATE_ENABLED,    TBSTYLE_BUTTON, "Page Up"       },
-        { 11, ID_GRID_MOVE_UP,          TBSTATE_ENABLED,    TBSTYLE_BUTTON, "Previous"      },
-        { 12, ID_GRID_MOVE_DOWN,        TBSTATE_ENABLED,    TBSTYLE_BUTTON, "Next"          },
-        { 13, ID_GRID_MOVE_PGDOWN,      TBSTATE_ENABLED,    TBSTYLE_BUTTON, "Page Down"     },
-        { 14, ID_GRID_MOVE_END,         TBSTATE_ENABLED,    TBSTYLE_BUTTON, "The End"       },
+        { 9,  ID_GRID_MOVE_HOME,        TBSTATE_ENABLED,    TBSTYLE_BUTTON, L"The Home"      },
+        { 10, ID_GRID_MOVE_PGUP,        TBSTATE_ENABLED,    TBSTYLE_BUTTON, L"Page Up"       },
+        { 11, ID_GRID_MOVE_UP,          TBSTATE_ENABLED,    TBSTYLE_BUTTON, L"Previous"      },
+        { 12, ID_GRID_MOVE_DOWN,        TBSTATE_ENABLED,    TBSTYLE_BUTTON, L"Next"          },
+        { 13, ID_GRID_MOVE_PGDOWN,      TBSTATE_ENABLED,    TBSTYLE_BUTTON, L"Page Down"     },
+        { 14, ID_GRID_MOVE_END,         TBSTATE_ENABLED,    TBSTYLE_BUTTON, L"The End"       },
         { 0,  0, 0, TBSTYLE_SEP, 0 },
-        { 21, ID_GRID_CLEAR_RECORDS,            TBSTATE_ENABLED,    TBSTYLE_BUTTON, "Clear rows from current grid"   },
+        { 21, ID_GRID_CLEAR_RECORDS,            TBSTATE_ENABLED,    TBSTYLE_BUTTON, L"Clear rows from current grid"   },
         { 0,  0, 0, TBSTYLE_SEP, 0 },
-//        { 14, ID_GRID_EXPORT,           TBSTATE_ENABLED,    BTNS_DROPDOWN,  "Export data"   },
-        { 19, ID_GRID_OPEN_WITH_IE,     TBSTATE_ENABLED,    TBSTYLE_BUTTON, "Open with default HTML viewer..."  },
-        { 20, ID_GRID_OPEN_WITH_EXCEL,  TBSTATE_ENABLED,    TBSTYLE_BUTTON, "Open with default CSV viewer..."   },
+//        { 14, ID_GRID_EXPORT,           TBSTATE_ENABLED,    BTNS_DROPDOWN,  L"Export data"   },
+        { 19, ID_GRID_OPEN_WITH_IE,     TBSTATE_ENABLED,    TBSTYLE_BUTTON, L"Open with default HTML viewer..."  },
+        { 20, ID_GRID_OPEN_WITH_EXCEL,  TBSTATE_ENABLED,    TBSTYLE_BUTTON, L"Open with default CSV viewer..."   },
         { 0,  0, 0, TBSTYLE_SEP, 0 },
-        { 16, ID_GRID_SETTINGS,         TBSTATE_ENABLED,    TBSTYLE_BUTTON, "Settings..."   },
+        { 16, ID_GRID_SETTINGS,         TBSTATE_ENABLED,    TBSTYLE_BUTTON, L"Settings..."   },
     };
 
 //TBSTYLE_DROPDOWN
@@ -243,7 +241,7 @@ int CBooklet::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
         if (g_buttons[i].szString)
         {
-            btnInfo.pszText = const_cast<char*>(g_buttons[i].szString);
+            btnInfo.pszText = const_cast<wchar_t*>(g_buttons[i].szString);
             m_toolbar.SetButtonInfo(i, &btnInfo);
         }
     }
@@ -283,7 +281,7 @@ void CBooklet::OnPin ()
     info.cbSize = sizeof(info);
     info.dwMask = TBIF_IMAGE|TBIF_TEXT;
     info.iImage  = !m_tabPinned ? PIN_IMAGE_ID : PIN_UNIMAGE_ID;
-    info.pszText = const_cast<char*>(!m_tabPinned ? PIN_IMAGE_TEXT : PIN_UNIMAGE_TEXT);
+    info.pszText = const_cast<wchar_t*>(!m_tabPinned ? PIN_IMAGE_TEXT : PIN_UNIMAGE_TEXT);
     m_toolbar.SetButtonInfo(ID_BOOKLET_PIN, &info);
 }
 
@@ -346,7 +344,7 @@ void CBooklet::OnInitialUpdate()
             || !m_pDocument->m_BookletFamily[i]->CreateEx(0, NULL, NULL, dwStyleDefault, CRect(0,0,0,0), this, AFX_IDW_PANE_FIRST + 1 + i))
             {
                 MessageBeep((UINT)-1);
-                AfxMessageBox("Fatal error: cannoct create a child window.");
+                AfxMessageBox(L"Fatal error: cannoct create a child window.");
                 AfxThrowUserException( );
             }
 
@@ -427,8 +425,8 @@ void CBooklet::OnPlanDropDown (NMHDR* pNMHDR, LRESULT* lResult)
         CMenu menu;
         menu.CreatePopupMenu();
 
-        menu.AppendMenu(MF_STRING,  ID_BOOKLET_SQL_PLAN_TEXT, "&Plain Text");
-        menu.AppendMenu(MF_STRING,  ID_BOOKLET_SQL_PLAN_TREE, "&Tree");
+        menu.AppendMenu(MF_STRING,  ID_BOOKLET_SQL_PLAN_TEXT, L"&Plain Text");
+        menu.AppendMenu(MF_STRING,  ID_BOOKLET_SQL_PLAN_TREE, L"&Tree");
 
         {
             bool textPlan = false;

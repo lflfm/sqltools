@@ -28,6 +28,7 @@
 #include "OpenEditor/OEView.h"
 #include "OpenEditor/OEAutocompleteCtrl.h"
 #include "OpenEditor/OEDocument.h"
+#include "COMMON/MyUtf.h"
 
 
 #ifdef _AFXDLL
@@ -56,11 +57,11 @@ const int MIN_HEIGHT = 240;
 const int KEY_WIDTH  = 100;
 const int NAME_WIDTH = 200;
 
-const char* cszSection   = "AutocompleteCtrl";
-const char* cszWidth     = "Width";
-const char* cszHeight    = "Height";
-const char* cszKeyWidth  = "KeyWidth";
-const char* cszNameWidth = "NameWidth";
+LPCWSTR cszSection   = L"AutocompleteCtrl";
+LPCWSTR cszWidth     = L"Width";
+LPCWSTR cszHeight    = L"Height";
+LPCWSTR cszKeyWidth  = L"KeyWidth";
+LPCWSTR cszNameWidth = L"NameWidth";
 
 using namespace OpenEditor;
 
@@ -176,7 +177,7 @@ void COEAutocompleteCtrl::CheckMatch (bool init)
     if (pEditor && pEditor->IsKindOf(RUNTIME_CLASS(COEditorView)))
     {
         bool resetSelecetion = false;
-        std::string substring;
+        std::wstring substring;
         Square selection;
 
         if (pEditor->GetBlockOrWordUnderCursor(substring, selection, false))
@@ -186,7 +187,7 @@ void COEAutocompleteCtrl::CheckMatch (bool init)
                 resetSelecetion = true;
 
             // selection must not contain delemiters
-            for (std::string::const_iterator it = substring.begin(); it != substring.end(); ++it)
+            for (auto it = substring.begin(); it != substring.end(); ++it)
                 if (pEditor->GetDelimiters()[*it]) 
                 {
                     resetSelecetion = true;
@@ -222,7 +223,7 @@ void COEAutocompleteCtrl::CheckMatch (bool init)
             }
             EnsureVisible(index, FALSE);
  
-            UINT state = (substring.length() && !strnicmp(substring.c_str(), GetItemText(index, 0), substring.length())) 
+            UINT state = (substring.length() && !wcsnicmp(substring.c_str(), GetItemText(index, 0), substring.length())) 
                  ? LVIS_FOCUSED|LVIS_SELECTED : LVIS_FOCUSED;
             
             SetItemState(index, state, state);
@@ -281,10 +282,10 @@ BOOL COEAutocompleteCtrl::Create ()
     BOOL retVal = CWnd::CreateEx(
         WS_EX_PALETTEWINDOW|WS_EX_WINDOWEDGE,
         WC_LISTVIEW, 
-        "OEAutocompleteCtrl",
+        L"OEAutocompleteCtrl",
         WS_POPUP|WS_THICKFRAME
         |LVS_REPORT|LVS_SINGLESEL|LVS_SORTASCENDING|LVS_NOSORTHEADER, 
-		0, 0, 
+        0, 0, 
         AfxGetApp()->GetProfileInt(cszSection, cszWidth, MIN_WIDTH), 
         AfxGetApp()->GetProfileInt(cszSection, cszHeight, MIN_HEIGHT), 
         AfxGetMainWnd()->m_hWnd, 0, 0);
@@ -294,7 +295,7 @@ BOOL COEAutocompleteCtrl::Create ()
     {
         lvcolumn.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
         lvcolumn.fmt = LVCFMT_LEFT;
-        lvcolumn.pszText = !i ? "Key" : "Name";
+        lvcolumn.pszText = !i ? L"Key" : L"Name";
         lvcolumn.iSubItem = i;
         if (!i) lvcolumn.cx = AfxGetApp()->GetProfileInt(cszSection, cszKeyWidth,  KEY_WIDTH);
         else    lvcolumn.cx = AfxGetApp()->GetProfileInt(cszSection, cszNameWidth, NAME_WIDTH);
@@ -335,9 +336,9 @@ void COEAutocompleteCtrl::Populate ()
     if (!tmpl.get() || !tmpl->GetCount())
     {
         AfxMessageBox(
-            (std::string("Template \"") + pEditor->GetSettings().GetName() + "\" is empty."
-                "\n\nYou should populate it before using."
-                "\n\nOn \"Config\" menu, click \"Settings...\" item\t\nand choose \"Templates\" tab.").c_str(), 
+            (std::wstring(L"Template \"") + Common::wstr(pEditor->GetSettings().GetName()) + L"\" is empty."
+                L"\n\nYou should populate it before using."
+                L"\n\nOn \"Config\" menu, click \"Settings...\" item\t\nand choose \"Templates\" tab.").c_str(), 
             MB_ICONEXCLAMATION);
         return;
     }
@@ -346,14 +347,17 @@ void COEAutocompleteCtrl::Populate ()
 
     DeleteAllItems();
 
+    std::wstring buffer;
     if (CHeaderCtrl* header = GetHeaderCtrl())
     {
         HDITEM item;
         memset(&item, 0, sizeof(item));
         item.mask = HDI_TEXT;
-        item.pszText = const_cast<LPSTR>(tmpl->GetKeyColumnHeader().c_str());
+        buffer = Common::wstr(tmpl->GetKeyColumnHeader());
+        item.pszText = const_cast<LPWSTR>(buffer.c_str());
         header->SetItem(0, &item);
-        item.pszText = const_cast<LPSTR>(tmpl->GetNameColumnHeader().c_str());
+        buffer = Common::wstr(tmpl->GetNameColumnHeader());
+        item.pszText = const_cast<LPWSTR>(buffer.c_str());
         header->SetItem(1, &item);
     }
     
@@ -368,9 +372,10 @@ void COEAutocompleteCtrl::Populate ()
         item.iSubItem = 0;
         item.mask = (m_imageListId != (UINT)-1) ? LVIF_TEXT|LVIF_PARAM|LVIF_IMAGE : LVIF_TEXT|LVIF_PARAM;
         item.iImage = it->image;
-        item.pszText = (LPSTR)it->keyword.c_str(); 
+        buffer = Common::wstr(it->keyword);
+        item.pszText = (LPWSTR)buffer.c_str(); 
         item.iItem = InsertItem(&item);
-        SetItemText(item.iItem, 1, (LPSTR)it->name.c_str());
+        SetItemText(item.iItem, 1, (LPWSTR)Common::wstr(it->name).c_str());
     }
 
     if (i > 0)
@@ -436,7 +441,7 @@ void COEAutocompleteCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void COEAutocompleteCtrl::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-    if (isalnum((char)nChar) || nChar == VK_BACK || nChar == '_')
+    if (iswalnum((wchar_t)nChar) || nChar == VK_BACK || nChar == '_')
     {
         if (m_hwndEditor && ::IsWindow(m_hwndEditor))
         {
@@ -482,7 +487,7 @@ void COEAutocompleteCtrl::OnNMRClk(NMHDR *pNMHDR, LRESULT *pResult)
         {
             CMenu menu;
             menu.CreatePopupMenu();
-            menu.AppendMenu(MF_STRING, 777, "Modify");
+            menu.AppendMenu(MF_STRING, 777, L"Modify");
 
             CPoint point;
             GetCursorPos(&point);

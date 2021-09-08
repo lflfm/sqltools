@@ -10,8 +10,12 @@
 		<param name="Local" value="about.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="What's new in 1.9">
+		<param name="Name" value="What's new in 2.0">
 		<param name="Local" value="whatsnew.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="What's new in 1.9">
+		<param name="Local" value="whatsnew19.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="What's new in 1.8">
@@ -62,7 +66,11 @@
 		<param name="Local" value="object_viewer.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Working  with SVN">
+		<param name="Name" value="Find in Files">
+		<param name="Local" value="file_find.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Working with GIT and SVN">
 		<param name="Local" value="working_with_svn.htm">
 		</OBJECT>
 <!--

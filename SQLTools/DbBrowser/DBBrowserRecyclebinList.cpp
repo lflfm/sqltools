@@ -26,6 +26,7 @@
 #include "COMMON\InputDlg.h"
 #include "Dlg\ConfirmationDlg.h"
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace OraMetaDict;
 using namespace Common;
@@ -98,6 +99,8 @@ END_MESSAGE_MAP()
 
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 50, 196);
                 cur.Prepare(csz_sttm);
                 cur.Bind(":owner", m_schema.c_str());
@@ -176,12 +179,12 @@ void DBBrowserRecyclebinList::ExtendContexMenu (CMenu* pMenu)
         if (m_data.at(*it).can_purge == "YES")  purgeFlags = MF_STRING; 
     }
 
-    pMenu->AppendMenu(MF_STRING,        ID_DS_REFRESH,         "&Refresh");
+    pMenu->AppendMenu(MF_STRING,        ID_DS_REFRESH,                L"&Refresh");
     pMenu->AppendMenu(MF_SEPARATOR);
-    pMenu->AppendMenu(flashbackFlags,   ID_DS_FLASHBACK,       "&Flushback");
-    pMenu->AppendMenu(purgeFlags,       ID_EDIT_DELETE_WORD_TO_RIGHT, "&Purge");
+    pMenu->AppendMenu(flashbackFlags,   ID_DS_FLASHBACK,              L"&Flushback");
+    pMenu->AppendMenu(purgeFlags,       ID_EDIT_DELETE_WORD_TO_RIGHT, L"&Purge");
     pMenu->AppendMenu(MF_SEPARATOR);
-    pMenu->AppendMenu(MF_STRING,        ID_DS_PURGE_ALL,       "&Purge All");
+    pMenu->AppendMenu(MF_STRING,        ID_DS_PURGE_ALL,              L"&Purge All");
     pMenu->AppendMenu(MF_SEPARATOR);
 }
 
@@ -209,6 +212,8 @@ void DBBrowserRecyclebinList::ExtendContexMenu (CMenu* pMenu)
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 connect.ExecuteStatement(m_statement.c_str());
             }
             catch (const OciException& x)
@@ -263,7 +268,7 @@ void DBBrowserRecyclebinList::OnPurge ()
                 purgeIt = true;
             else
             {
-                dlg.m_strText.Format("Are you sure you want to purge \"%s\"?", GetObjectName(*it));
+                dlg.m_strText.Format(L"Are you sure you want to purge \"%s\"?", Common::wstr(GetObjectName(*it)).c_str());
                 int retVal = dlg.DoModal();
                 SetFocus();
 
@@ -306,6 +311,8 @@ void DBBrowserRecyclebinList::OnPurge ()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 //TODO#TEST: re-test
                 //TODO: check what should be used user or schema?
                 string user, schema;
@@ -313,13 +320,13 @@ void DBBrowserRecyclebinList::OnPurge ()
 
                 if (m_schema == user)
                 {
-                    if (AfxMessageBox("Are you sure you want to PURGE RECYCLEBIN?", MB_YESNO|MB_ICONEXCLAMATION) == IDYES)
+                    if (AfxMessageBox(L"Are you sure you want to PURGE RECYCLEBIN?", MB_YESNO|MB_ICONEXCLAMATION) == IDYES)
                     {
                         connect.ExecuteStatement("PURGE RECYCLEBIN");
                     }
                 }
                 else
-                    AfxMessageBox("PURGE RECYCLEBIN is available only for the current user.", MB_OK|MB_ICONEXCLAMATION);
+                    AfxMessageBox(L"PURGE RECYCLEBIN is available only for the current user.", MB_OK|MB_ICONEXCLAMATION);
             }
             catch (const OciException& x)
             {
@@ -365,6 +372,8 @@ void DBBrowserRecyclebinList::OnPurgeAll()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 connect.ExecuteStatement(m_statement.c_str());
             }
             catch (const OciException& x)
@@ -399,7 +408,7 @@ void DBBrowserRecyclebinList::OnFlashback ()
 {
     try {
         
-        CConfirmationDlg dlg(this);
+        //CConfirmationDlg dlg(this);
 
         std::vector<unsigned int> data;
         GetSelEntries(data);
@@ -411,15 +420,15 @@ void DBBrowserRecyclebinList::OnFlashback ()
                 continue;
 
             CInputDlg dlg;
-            dlg.m_title  = "Flashback to Before Drop";
-            dlg.m_prompt = "Flashback to Name:";
-            dlg.m_value  = m_data.at(*it).original_name;
+            dlg.m_title  = L"Flashback to Before Drop";
+            dlg.m_prompt = L"Flashback to Name:";
+            dlg.m_value  = Common::wstr(m_data.at(*it).original_name);
 
             int retVal = dlg.DoModal();
             SetFocus();
 
             if (retVal == IDOK)
-                BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_ListFlashback(*this, *it, dlg.m_value)));
+                BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_ListFlashback(*this, *it, Common::str(dlg.m_value))));
         }
     }
     catch (CUserException*)
@@ -439,9 +448,9 @@ int DBBrowserRecyclebinList::OnCreate(LPCREATESTRUCT lpCreateStruct)
     GetFilter(filter);
 
     for (int i = 0, n = m_dataAdapter.getColCount(); i < n; ++i)
-        if (!stricmp(m_dataAdapter.getColHeader(i), "can purge"))
+        if (!wcsicmp(m_dataAdapter.getColHeader(i), L"can purge"))
         {
-            filter.at(i).value = "YES";
+            filter.at(i).value = L"YES";
             filter.at(i).operation = ListCtrlManager::EXACT_MATCH;
             SetFilter(filter);
             break;

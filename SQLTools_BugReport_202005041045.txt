@@ -1,0 +1,701 @@
+Please make a post about this problem in the forum:
+	http://www.sqltools.net/cgi-bin/yabb25/YaBB.pl,
+include the stack trace (see below) and optionally a short description
+what were you doing when this problem occurred.
+
+EXCEPTION_ACCESS_VIOLATION
+
+Program: SQLTools 2 build 6
+Location: e:\_cpp\sqlt.20\common\workbookmdiframe.cpp(321).
+Platform: Windows 8 Professional, 00AFBF14 (Build 9200)
+COMCTL32.DLL: 6.10.17763.831
+OCI.DLL: 12.2.0.0
+TNS_ADMIN = C:\Oracle\Middleware\DevInstance\config
+Connected to: 11.2.0.4.0
+
+Stack at the throw point:
+0x77834bd3		USER32	GetMenuItemInfoW() + 0x803
+
+Stack at the catch point:
+0x1114b71		SQLTools	0x94b71
+
+
+CustomShellContextMenu::DoQueryContextMenu in
+calling CShellContextMenu::DoQueryContextMenu...
+MenuFilter::Walk in 002207F7
+MenuFilter::Walk calling GetMenuItemCount 
+MenuFilter::Walk GetMenuItemCount returned 23
+MenuFilter::Walk looping, i = 0
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "open", cmd = 149
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 1
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "edit", cmd = 151
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 2
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "PDF24", cmd = 152
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 3
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk recursive call for submenu... 
+MenuFilter::Walk in 002E09DB
+MenuFilter::Walk calling GetMenuItemCount 
+MenuFilter::Walk GetMenuItemCount returned 6
+MenuFilter::Walk looping, i = 0
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZipCompress", cmd = 136
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 1
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZipCompressEmail", cmd = 137
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 2
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZipCompressTo7z", cmd = 138
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 3
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZipCompressTo7zEmail", cmd = 139
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 4
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZipCompressToZip", cmd = 140
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 5
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZipCompressToZipEmail", cmd = 141
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk out 002E09DB
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZip", cmd = 142
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 4
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk recursive call for submenu... 
+MenuFilter::Walk in 006E083D
+MenuFilter::Walk calling GetMenuItemCount 
+MenuFilter::Walk GetMenuItemCount returned 5
+MenuFilter::Walk looping, i = 0
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZip.ChecksumCRC32", cmd = 144
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 1
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZip.ChecksumCRC64", cmd = 145
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 2
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZip.ChecksumSHA1", cmd = 146
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 3
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZip.ChecksumSHA256", cmd = 147
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 4
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZip.Checksum*", cmd = 148
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk out 006E083D
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "SevenZip.Checksum", cmd = 143
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 5
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "Windows.ModernShare", cmd = 135
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 6
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk recursive call for submenu... 
+MenuFilter::Walk in 00970A2F
+MenuFilter::Walk calling GetMenuItemCount 
+MenuFilter::Walk GetMenuItemCount returned 1
+MenuFilter::Walk looping, i = 0
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk desabling the menu item becausethere is no verb
+MenuFilter::Walk out 00970A2F
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "openas", cmd = 118
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 7
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 8
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_update", cmd = 79
+MenuFilter::Walk looping, i = 9
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_commit", cmd = 80
+MenuFilter::Walk looping, i = 10
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk recursive call for submenu... 
+MenuFilter::Walk in 000B09FD
+MenuFilter::Walk calling GetMenuItemCount 
+MenuFilter::Walk GetMenuItemCount returned 31
+MenuFilter::Walk looping, i = 0
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_diff", cmd = 81
+MenuFilter::Walk looping, i = 1
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_difflater", cmd = 82
+MenuFilter::Walk looping, i = 2
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_diffnow", cmd = 83
+MenuFilter::Walk looping, i = 3
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_prevdiff", cmd = 84
+MenuFilter::Walk looping, i = 4
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_log", cmd = 85
+MenuFilter::Walk looping, i = 5
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_repobrowse", cmd = 86
+MenuFilter::Walk looping, i = 6
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_showchanged", cmd = 87
+MenuFilter::Walk looping, i = 7
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_revisiongraph", cmd = 88
+MenuFilter::Walk looping, i = 8
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 9
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_updateext", cmd = 90
+MenuFilter::Walk looping, i = 10
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_rename", cmd = 91
+MenuFilter::Walk looping, i = 11
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_remove", cmd = 92
+MenuFilter::Walk looping, i = 12
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_revert", cmd = 93
+MenuFilter::Walk looping, i = 13
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_unlock", cmd = 94
+MenuFilter::Walk looping, i = 14
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 15
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_copy", cmd = 96
+MenuFilter::Walk looping, i = 16
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_switch", cmd = 97
+MenuFilter::Walk looping, i = 17
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_merge", cmd = 98
+MenuFilter::Walk looping, i = 18
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 19
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_blame", cmd = 100
+MenuFilter::Walk looping, i = 20
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_copyurl", cmd = 101
+MenuFilter::Walk looping, i = 21
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk recursive call for submenu... 
+MenuFilter::Walk in 010C06D7
+MenuFilter::Walk calling GetMenuItemCount 
+MenuFilter::Walk GetMenuItemCount returned 4
+MenuFilter::Walk looping, i = 0
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk desabling the menu item becausethere is no verb
+MenuFilter::Walk looping, i = 1
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_*.sql", cmd = 103
+MenuFilter::Walk looping, i = 2
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk desabling the menu item becausethere is no verb
+MenuFilter::Walk looping, i = 3
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_*.sql (recursively)", cmd = 105
+MenuFilter::Walk out 010C06D7
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk looping, i = 22
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 23
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_shelve", cmd = 108
+MenuFilter::Walk looping, i = 24
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_unshelve", cmd = 109
+MenuFilter::Walk looping, i = 25
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_createpatch", cmd = 110
+MenuFilter::Walk looping, i = 26
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_properties", cmd = 111
+MenuFilter::Walk looping, i = 27
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 28
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_settings", cmd = 113
+MenuFilter::Walk looping, i = 29
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_help", cmd = 114
+MenuFilter::Walk looping, i = 30
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "tsvn_about", cmd = 115
+MenuFilter::Walk out 000B09FD
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk looping, i = 11
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 12
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "PreviousVersions", cmd = 27
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 13
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 14
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk recursive call for submenu... 
+MenuFilter::Walk in 007C0A09
+MenuFilter::Walk calling GetMenuItemCount 
+MenuFilter::Walk GetMenuItemCount returned 1
+MenuFilter::Walk looping, i = 0
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk desabling the menu item becausethere is no verb
+MenuFilter::Walk out 007C0A09
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk looping, i = 15
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 16
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "cut", cmd = 24
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 17
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "copy", cmd = 25
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 18
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 19
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "link", cmd = 16
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 20
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "delete", cmd = 17
+MenuFilter::Walk the verb is matched, enabling the menu item
+MenuFilter::Walk looping, i = 21
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 22
+MenuFilter::Walk calling GetMenuItemInfo
+MenuFilter::Walk checking the item verb... 
+MenuFilter::Walk the verb = "properties", cmd = 19
+MenuFilter::Walk out 002207F7
+
+MenuFilter::Cleanup in 002207F7
+MenuFilter::Cleanup calling GetMenuItemCount
+MenuFilter::Cleanup GetMenuItemCount returned 23
+MenuFilter::Walk looping, i = 22
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 23
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 21
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 23
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 20
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 23
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 19
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 22
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 18
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 21
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 17
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 21
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 16
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 20
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 15
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 19
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 14
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 19
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup recursive call for submenu... 
+MenuFilter::Cleanup in 007C0A09
+MenuFilter::Cleanup calling GetMenuItemCount
+MenuFilter::Cleanup GetMenuItemCount returned 1
+MenuFilter::Walk looping, i = 0
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 1
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Cleanup calling GetMenuItemCount for the second loop for removing duplicate separators
+MenuFilter::Cleanup GetMenuItemCount returned 0
+MenuFilter::Cleanup out 007C0A09
+MenuFilter::Cleanup the submenu is empty, deleting it 
+MenuFilter::Walk looping, i = 13
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 18
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 12
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 18
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 11
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 17
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 10
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 17
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup recursive call for submenu... 
+MenuFilter::Cleanup in 000B09FD
+MenuFilter::Cleanup calling GetMenuItemCount
+MenuFilter::Cleanup GetMenuItemCount returned 31
+MenuFilter::Walk looping, i = 30
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 29
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 28
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 27
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 26
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 25
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 24
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 23
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 22
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 21
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup recursive call for submenu... 
+MenuFilter::Cleanup in 010C06D7
+MenuFilter::Cleanup calling GetMenuItemCount
+MenuFilter::Cleanup GetMenuItemCount returned 4
+MenuFilter::Walk looping, i = 3
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 4
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 2
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 4
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 1
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 3
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 0
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 3
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Cleanup calling GetMenuItemCount for the second loop for removing duplicate separators
+MenuFilter::Cleanup GetMenuItemCount returned 2
+MenuFilter::Walk looping, i = 1
+MenuFilter::Cleanup calling GetMenuItemInfo for i 1
+MenuFilter::Walk looping, i = 0
+MenuFilter::Cleanup calling GetMenuItemInfo for i 0
+MenuFilter::Cleanup out 010C06D7
+MenuFilter::Walk looping, i = 20
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 19
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 18
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 17
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 16
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 15
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 14
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 13
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 12
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 11
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 10
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 9
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 8
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 7
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 6
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 5
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 4
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 3
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 2
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 1
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 0
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 31
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup calling GetMenuItemCount for the second loop for removing duplicate separators
+MenuFilter::Cleanup GetMenuItemCount returned 31
+MenuFilter::Walk looping, i = 30
+MenuFilter::Cleanup calling GetMenuItemInfo for i 30
+MenuFilter::Walk looping, i = 29
+MenuFilter::Cleanup calling GetMenuItemInfo for i 29
+MenuFilter::Walk looping, i = 28
+MenuFilter::Cleanup calling GetMenuItemInfo for i 28
+MenuFilter::Walk looping, i = 27
+MenuFilter::Cleanup calling GetMenuItemInfo for i 27
+MenuFilter::Cleanup calling GetMenuItemInfo for i - 1 26
+MenuFilter::Walk looping, i = 26
+MenuFilter::Cleanup calling GetMenuItemInfo for i 26
+MenuFilter::Walk looping, i = 25
+MenuFilter::Cleanup calling GetMenuItemInfo for i 25
+MenuFilter::Walk looping, i = 24
+MenuFilter::Cleanup calling GetMenuItemInfo for i 24
+MenuFilter::Walk looping, i = 23
+MenuFilter::Cleanup calling GetMenuItemInfo for i 23
+MenuFilter::Walk looping, i = 22
+MenuFilter::Cleanup calling GetMenuItemInfo for i 22
+MenuFilter::Cleanup calling GetMenuItemInfo for i - 1 21
+MenuFilter::Walk looping, i = 21
+MenuFilter::Cleanup calling GetMenuItemInfo for i 21
+MenuFilter::Walk looping, i = 20
+MenuFilter::Cleanup calling GetMenuItemInfo for i 20
+MenuFilter::Walk looping, i = 19
+MenuFilter::Cleanup calling GetMenuItemInfo for i 19
+MenuFilter::Walk looping, i = 18
+MenuFilter::Cleanup calling GetMenuItemInfo for i 18
+MenuFilter::Cleanup calling GetMenuItemInfo for i - 1 17
+MenuFilter::Walk looping, i = 17
+MenuFilter::Cleanup calling GetMenuItemInfo for i 17
+MenuFilter::Walk looping, i = 16
+MenuFilter::Cleanup calling GetMenuItemInfo for i 16
+MenuFilter::Walk looping, i = 15
+MenuFilter::Cleanup calling GetMenuItemInfo for i 15
+MenuFilter::Walk looping, i = 14
+MenuFilter::Cleanup calling GetMenuItemInfo for i 14
+MenuFilter::Cleanup calling GetMenuItemInfo for i - 1 13
+MenuFilter::Walk looping, i = 13
+MenuFilter::Cleanup calling GetMenuItemInfo for i 13
+MenuFilter::Walk looping, i = 12
+MenuFilter::Cleanup calling GetMenuItemInfo for i 12
+MenuFilter::Walk looping, i = 11
+MenuFilter::Cleanup calling GetMenuItemInfo for i 11
+MenuFilter::Walk looping, i = 10
+MenuFilter::Cleanup calling GetMenuItemInfo for i 10
+MenuFilter::Walk looping, i = 9
+MenuFilter::Cleanup calling GetMenuItemInfo for i 9
+MenuFilter::Walk looping, i = 8
+MenuFilter::Cleanup calling GetMenuItemInfo for i 8
+MenuFilter::Cleanup calling GetMenuItemInfo for i - 1 7
+MenuFilter::Walk looping, i = 7
+MenuFilter::Cleanup calling GetMenuItemInfo for i 7
+MenuFilter::Walk looping, i = 6
+MenuFilter::Cleanup calling GetMenuItemInfo for i 6
+MenuFilter::Walk looping, i = 5
+MenuFilter::Cleanup calling GetMenuItemInfo for i 5
+MenuFilter::Walk looping, i = 4
+MenuFilter::Cleanup calling GetMenuItemInfo for i 4
+MenuFilter::Walk looping, i = 3
+MenuFilter::Cleanup calling GetMenuItemInfo for i 3
+MenuFilter::Walk looping, i = 2
+MenuFilter::Cleanup calling GetMenuItemInfo for i 2
+MenuFilter::Walk looping, i = 1
+MenuFilter::Cleanup calling GetMenuItemInfo for i 1
+MenuFilter::Walk looping, i = 0
+MenuFilter::Cleanup calling GetMenuItemInfo for i 0
+MenuFilter::Cleanup out 000B09FD
+MenuFilter::Walk looping, i = 9
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 17
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 8
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 17
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 7
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 17
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Walk looping, i = 6
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 17
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup recursive call for submenu... 
+MenuFilter::Cleanup in 00970A2F
+MenuFilter::Cleanup calling GetMenuItemCount
+MenuFilter::Cleanup GetMenuItemCount returned 1
+MenuFilter::Walk looping, i = 0
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 1
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Cleanup calling GetMenuItemCount for the second loop for removing duplicate separators
+MenuFilter::Cleanup GetMenuItemCount returned 0
+MenuFilter::Cleanup out 00970A2F
+MenuFilter::Cleanup the submenu is empty, deleting it 
+MenuFilter::Walk looping, i = 5
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 16
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 4
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 15
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup recursive call for submenu... 
+MenuFilter::Cleanup in 006E083D
+MenuFilter::Cleanup calling GetMenuItemCount
+MenuFilter::Cleanup GetMenuItemCount returned 5
+MenuFilter::Walk looping, i = 4
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 5
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 3
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 4
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 2
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 3
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 1
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 2
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 0
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 1
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Cleanup calling GetMenuItemCount for the second loop for removing duplicate separators
+MenuFilter::Cleanup GetMenuItemCount returned 0
+MenuFilter::Cleanup out 006E083D
+MenuFilter::Cleanup the submenu is empty, deleting it 
+MenuFilter::Walk looping, i = 3
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 14
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup recursive call for submenu... 
+MenuFilter::Cleanup in 002E09DB
+MenuFilter::Cleanup calling GetMenuItemCount
+MenuFilter::Cleanup GetMenuItemCount returned 6
+MenuFilter::Walk looping, i = 5
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 6
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 4
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 5
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 3
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 4
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 2
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 3
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 1
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 2
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 0
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 1
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Cleanup calling GetMenuItemCount for the second loop for removing duplicate separators
+MenuFilter::Cleanup GetMenuItemCount returned 0
+MenuFilter::Cleanup out 002E09DB
+MenuFilter::Cleanup the submenu is empty, deleting it 
+MenuFilter::Walk looping, i = 2
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 13
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 1
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 12
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Walk looping, i = 0
+MenuFilter::Cleanup paranoic GetMenuItemCount returned 11
+MenuFilter::Cleanup calling GetMenuItemInfo
+MenuFilter::Cleanup the item is gray, deleting it 
+MenuFilter::Cleanup calling GetMenuItemCount for the second loop for removing duplicate separators
+MenuFilter::Cleanup GetMenuItemCount returned 10
+MenuFilter::Walk looping, i = 9

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "FindObjectsTask.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace std;
 using namespace Common;
@@ -29,10 +30,10 @@ void FindObjectsTask::DoInBackground (OciConnect& connect)
 {
     try
     {
+        ActivePrimeExecutionOnOff onOff;
+
         if (m_names.size() > 0)
             quetyObjectDescriptors(connect, m_names, m_result);
-
-        //Sleep(2000);
     }
     catch (const FindObjectException& x)
     {

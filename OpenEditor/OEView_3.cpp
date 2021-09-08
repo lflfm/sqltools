@@ -462,7 +462,7 @@ void COEditorView::SelectByMouse (CPoint point)
 
         const char* delims = !GetMouseSelectionDelimiters().empty() ? GetMouseSelectionDelimiters().c_str() : 0;
 
-	    Square currWord;
+        Square currWord;
         if (WordOrSpaceFromPoint(pos, currWord, delims))
         {
             currWord.normalize();

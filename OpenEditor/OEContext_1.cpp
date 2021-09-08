@@ -100,10 +100,9 @@ int EditContext::GetLineLength (int line) const
 
     if (line < GetLineCount())
     {
-        int len;
-        const char* ptr;
-        GetLine(line, ptr, len);
-        return EditContext::inx2pos (ptr, len, len);
+        OEStringW str;
+        GetLineW(line, str);
+        return EditContext::inx2pos(str.data(), str.length(), str.length());
     }
 
     return 0;
@@ -160,7 +159,7 @@ bool EditContext::Replace (FindCtx& ctx)
     return retVal;
 }
 
-int EditContext::SearchBatch (const char* text, ESearchBatch mode)
+int EditContext::SearchBatch (const wchar_t* text, ESearchBatch mode)
 {
     _ASSERTE(m_pStorage);
     Square blk;

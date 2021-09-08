@@ -40,24 +40,24 @@ class CVisualAttributesPage : public CPropertyPage
     CString m_className;
 
 public:
-	CVisualAttributesPage ();
-	CVisualAttributesPage (const vector<VisualAttributesSet*>& data, LPCSTR);
-	~CVisualAttributesPage ();
+    CVisualAttributesPage ();
+    CVisualAttributesPage (const vector<VisualAttributesSet*>& data, LPCSTR);
+    ~CVisualAttributesPage ();
 
-	void Init (const vector<VisualAttributesSet*>& data);
+    void Init (const vector<VisualAttributesSet*>& data);
 
-	//{{AFX_DATA(CVisualAttributesPage)
-	enum { IDD = IDD_OE_PROP_FONT_COLORS };
-	CTreeCtrl	m_Categories;
-	CComboBox	m_FontName;
-	CComboBox	m_FontSize;
-	CButton	    m_FontBold;
-	CButton	    m_FontItalic;
-	CButton	    m_FontUnderline;
-	CColourPickerXP m_Foreground;
-	CColourPickerXP m_Background;
-	CStatic	    m_Sample;
-	//}}AFX_DATA
+    //{{AFX_DATA(CVisualAttributesPage)
+    enum { IDD = IDD_OE_PROP_FONT_COLORS };
+    CTreeCtrl	m_Categories;
+    CComboBox	m_FontName;
+    CComboBox	m_FontSize;
+    CButton	    m_FontBold;
+    CButton	    m_FontItalic;
+    CButton	    m_FontUnderline;
+    CColourPickerXP m_Foreground;
+    CColourPickerXP m_Background;
+    CStatic	    m_Sample;
+    //}}AFX_DATA
 
     VisualAttributesSet* GetCurrentAttributesSet ();
     VisualAttribute* GetCurrentAttribute ();
@@ -68,23 +68,23 @@ public:
     void ShowFont (const VisualAttribute&);
     void SetFont (const VisualAttribute&);
 
-	//{{AFX_VIRTUAL(CVisualAttributesPage)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    //{{AFX_VIRTUAL(CVisualAttributesPage)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
     virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 protected:
-	//{{AFX_MSG(CVisualAttributesPage)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnSelChangedOnCategory(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnItemExpandedOnCategory(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnFontChanged();
-	afx_msg void OnColorChanged();
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+    //{{AFX_MSG(CVisualAttributesPage)
+    virtual BOOL OnInitDialog();
+    afx_msg void OnSelChangedOnCategory(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnItemExpandedOnCategory(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnFontChanged();
+    afx_msg void OnColorChanged();
+    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg LRESULT OnColorChanged (WPARAM, LPARAM);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 
 };
 

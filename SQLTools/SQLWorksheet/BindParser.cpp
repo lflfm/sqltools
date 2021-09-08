@@ -1,7 +1,7 @@
 /* 
     This code contributed by Ken Clubok
 
-	SQLTools is a tool for Oracle database developers and DBAs.
+    SQLTools is a tool for Oracle database developers and DBAs.
     Copyright (C) 1997-2005 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 
 
     using std::map;
-	OpenEditor::DelimitersMap m_DelimitersB(" \t\'\"\\()[]{}+-*/.,!?;:=><%|@&^");
+    OpenEditor::DelimitersMap m_DelimitersB(" \t\'\"\\()[]{}+-*/.,!?;:=><%|@&^");
 
 /** @brief Searches SQL for bind variables.
  *
@@ -45,18 +45,18 @@ static char THIS_FILE[] = __FILE__;
  * @arg str: String to search.
  * @arg length: Length of string.
  */
-	bool BindParser::PutLine (int line, const char* str, int length)
+    bool BindParser::PutLine (int line, const char* str, int length)
 {
     Token token;
-	bool isBind = false;
-	bool isBindStart = false;
+    bool isBind = false;
+    bool isBindStart = false;
 
-	for (int offset = 0; offset < length; )
+    for (int offset = 0; offset < length; )
     {
         token = etUNKNOWN;
         token.line = line;
         token.offset = offset;
-		token.length = 0;
+        token.length = 0;
 
         string buffer;
 
@@ -64,32 +64,32 @@ static char THIS_FILE[] = __FILE__;
         {
             // skip white space
             for (; offset < length && isspace(str[offset]); offset++)
-			{
+            {
                 isBind = false;
-				isBindStart = false;
-			}
+                isBindStart = false;
+            }
 
             // check EOL
             if (!(offset < length))
                 break;
 
-			token.offset = offset;
+            token.offset = offset;
             // read string token
             if (m_DelimitersB[str[offset]])
-			{
-				isBind = false;
-				isBindStart = (str[offset] == ':');
+            {
+                isBind = false;
+                isBindStart = (str[offset] == ':');
                 buffer += str[offset++];
-			}
+            }
             else
-			{
-				isBind = isBindStart;
-				isBindStart = false;
+            {
+                isBind = isBindStart;
+                isBindStart = false;
                 for (; offset < length && !m_DelimitersB[str[offset]]; offset++)
                     buffer += toupper(str[offset]);
-			}
+            }
 
-			token.length = buffer.length();
+            token.length = buffer.length();
         }
         else
         {
@@ -99,7 +99,7 @@ static char THIS_FILE[] = __FILE__;
                 m_sequenceOfLength += length - offset;
                 offset = length;
                 m_sequenceOf = eNone;
-				token = m_sequenceToken;
+                token = m_sequenceToken;
                 break;
             case eQuotedString:
                 for (; offset < length; offset++)
@@ -109,7 +109,7 @@ static char THIS_FILE[] = __FILE__;
                     {
                         offset++;
                         m_sequenceOf = eNone;
-						token = m_sequenceToken;
+                        token = m_sequenceToken;
                         break;
                     }
                 }
@@ -122,7 +122,7 @@ static char THIS_FILE[] = __FILE__;
                     {
                         offset++;
                         m_sequenceOf = eNone;
-						token = m_sequenceToken;
+                        token = m_sequenceToken;
                         break;
                     }
                 }
@@ -135,7 +135,7 @@ static char THIS_FILE[] = __FILE__;
                     {
                         offset++;
                         m_sequenceOf = eNone;
-						token = m_sequenceToken;
+                        token = m_sequenceToken;
                         break;
                     }
                 }
@@ -151,40 +151,40 @@ static char THIS_FILE[] = __FILE__;
         }
 
 
-        if (token == etUNKNOWN && !buffer.empty() && m_fastmap[buffer.at(0)])
+        if (token == etUNKNOWN && !buffer.empty())
         {
             std::map<string, int>::const_iterator it = m_tokenMap->find(buffer);
 
             if (it != m_tokenMap->end())
             {
-				token = (EToken)it->second;
+                token = (EToken)it->second;
 
                 switch (token)
                 {
                 case etQUOTE:
                     m_sequenceOf = eQuotedString; // start string accumulation
-					m_sequenceToken = etQUOTED_STRING;
-					m_sequenceToken.line = token.line;
-					m_sequenceToken.offset = token.offset;
-					m_sequenceToken.length = token.length;
+                    m_sequenceToken = etQUOTED_STRING;
+                    m_sequenceToken.line = token.line;
+                    m_sequenceToken.offset = token.offset;
+                    m_sequenceToken.length = token.length;
                     m_sequenceOfLength = 1;
                     break;
                 case etDOUBLE_QUOTE:
                     m_sequenceOf = eDblQuotedString; // start string accumulation
-					m_sequenceToken = etDOUBLE_QUOTED_STRING;
-					m_sequenceToken.line = token.line;
-					m_sequenceToken.offset = token.offset;
-					m_sequenceToken.length = token.length;
+                    m_sequenceToken = etDOUBLE_QUOTED_STRING;
+                    m_sequenceToken.line = token.line;
+                    m_sequenceToken.offset = token.offset;
+                    m_sequenceToken.length = token.length;
                     m_sequenceOfLength = 1;
                     break;
                 case etMINUS:
                     if (str[offset] == '-')
                     {
                         m_sequenceOf = eEndLineComment; // skip line remainer
-						m_sequenceToken = etCOMMENT;
-						m_sequenceToken.line = token.line;
-						m_sequenceToken.offset = token.offset;
-						m_sequenceToken.length = token.length;
+                        m_sequenceToken = etCOMMENT;
+                        m_sequenceToken.line = token.line;
+                        m_sequenceToken.offset = token.offset;
+                        m_sequenceToken.length = token.length;
                         m_sequenceOfLength = 2;
                         offset++;
                     }
@@ -193,10 +193,10 @@ static char THIS_FILE[] = __FILE__;
                     if (str[offset] == '*')
                     {
                         m_sequenceOf = eComment; // skip comment
-						m_sequenceToken = etCOMMENT;
-						m_sequenceToken.line = token.line;
-						m_sequenceToken.offset = token.offset;
-						m_sequenceToken.length = token.length;
+                        m_sequenceToken = etCOMMENT;
+                        m_sequenceToken.line = token.line;
+                        m_sequenceToken.offset = token.offset;
+                        m_sequenceToken.length = token.length;
                         m_sequenceOfLength = 2;
                         offset++;
                     }
@@ -207,12 +207,12 @@ static char THIS_FILE[] = __FILE__;
 
         if (m_sequenceOf == eNone && isBind)
         {
-			m_analyzer->PutToken(token);
+            m_analyzer->PutToken(token);
         }
     }
 
     if (m_sequenceOf == eEndLineComment)
         m_sequenceOf = eNone;
-	
+    
     return true;
 }

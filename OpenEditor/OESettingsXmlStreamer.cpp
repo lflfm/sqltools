@@ -26,6 +26,8 @@
 #include "OpenEditor\OESettingsXmlStreamer.h"
 #include "TinyXml\TinyXml.h"
 #include "COMMON\VisualAttributes.h"
+#include "Common\MyUtf.h"
+#include "TiXmlUtils.h"
 
 #ifdef _AFX
 #ifdef _DEBUG
@@ -57,9 +59,9 @@ namespace OpenEditor
 ///////////////////////////////////////////////////////////////////////////
 // SettingsXmlStreamer
 ///////////////////////////////////////////////////////////////////////////
-SettingsXmlStreamer::SettingsXmlStreamer (const std::string& filename) 
+SettingsXmlStreamer::SettingsXmlStreamer (const std::wstring& filename) 
 : m_filename(filename),
-  m_fileAccessMutex(FALSE, "GNU.OpenEditor.Settings")
+  m_fileAccessMutex(FALSE, L"GNU.OpenEditor.Settings")
 {
 }
 
@@ -68,19 +70,19 @@ void SettingsXmlStreamer::operator >> (SettingsManager& mgr)
     CSingleLock lock(&m_fileAccessMutex);
     BOOL locked = lock.Lock(LOCK_TIMEOUT);
     if (!locked) 
-        THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + m_filename + '"');
+        THROW_APP_EXCEPTION("Cannot get exclusive access to \"" + Common::str(m_filename) + '"');
 
     TiXmlDocument doc;
 
     if (::PathFileExists(m_filename.c_str()))
     {
-        if (!doc.LoadFile(m_filename.c_str()))
-            THROW_APP_EXCEPTION("Cannot parse \"" + m_filename + "\"\nERROR: " + doc.ErrorDesc());
+        if (!TiXmlUtils::LoadFile(doc, m_filename.c_str()))
+            THROW_APP_EXCEPTION("Cannot parse \"" + Common::str(m_filename) + "\"\nERROR: " + doc.ErrorDesc());
     }
     else // no problem - will load settings from resources
     {
-		string xmlText;
-		if (!AppLoadTextFromResources(::PathFindFileName(m_filename.c_str()), RT_HTML, xmlText) || xmlText.empty())
+        string xmlText;
+        if (!AppLoadTextFromResources(::PathFindFileName(m_filename.c_str()), RT_HTML, xmlText) || xmlText.empty())
             THROW_APP_EXCEPTION("Cannot load default settings from resources");
 
         if (!doc.Parse(xmlText.c_str()))
@@ -95,7 +97,7 @@ void SettingsXmlStreamer::operator >> (SettingsManager& mgr)
             if (settingsElem->QueryIntAttribute("MajorVersion", &majorVer) != TIXML_SUCCESS)
                 majorVer = 0;
             if (majorVer != MAJOR_VERSION)
-                THROW_APP_EXCEPTION("Cannot load \""  + m_filename + "\".\nERROR: Unsupported settings version.");
+                THROW_APP_EXCEPTION("Cannot load \""  + Common::str(m_filename) + "\".\nERROR: Unsupported settings version.");
 
             readAwareness(settingsElem, *mgr.GetGlobalSettings());
             if (const TiXmlElement* classesElem = settingsElem->FirstChildElement(CLASSES))
@@ -167,10 +169,10 @@ void SettingsXmlStreamer::operator >> (SettingsManager& mgr)
                 }
             }
             else 
-                THROW_APP_EXCEPTION("\"" + m_filename + "\" does not contain any category.");
+                THROW_APP_EXCEPTION("\"" + Common::str(m_filename) + "\" does not contain any category.");
         }
         else 
-            THROW_APP_EXCEPTION("\"" + m_filename + "\" does not contain settings.");
+            THROW_APP_EXCEPTION("\"" + Common::str(m_filename) + "\" does not contain settings.");
     }
 }
 
@@ -256,7 +258,7 @@ void SettingsXmlStreamer::read (const TiXmlElement* parentElem, const char* elem
 //    rootElem->LinkEndChild(settingsElem.release());
 //    doc.LinkEndChild(rootElem.release());
 //
-//    if (!doc.SaveFile(m_filename.c_str()))
+//    if (!TiXmlUtils::SaveFile(doc, m_filename.c_str()))
 //        THROW_APP_EXCEPTION("Cannot save \"" + m_filename + "\"\nERROR: " + doc.ErrorDesc());
 //}
 
@@ -288,10 +290,10 @@ void SettingsXmlStreamer::read (const TiXmlElement* parentElem, const char* elem
         return elem;
     }
     static
-    void buildNodeMap (TiXmlElement* parentElem, const char* name, map<string, TiXmlElement*>& map)
+    void buildNodeMap (TiXmlElement* parentElem, const char* elemName, map<string, TiXmlElement*>& map)
     {
-        TiXmlElement* elem = parentElem->FirstChildElement(name);
-        for (; elem; elem = elem->NextSiblingElement(name))
+        TiXmlElement* elem = parentElem->FirstChildElement(elemName);
+        for (; elem; elem = elem->NextSiblingElement(elemName))
         {
             if (const char* name = elem->Attribute("Name"))
                 map.insert(make_pair(string(name), elem));
@@ -309,13 +311,13 @@ void SettingsXmlStreamer::operator << (const SettingsManager& mgr)
     CSingleLock lock(&m_fileAccessMutex);
     BOOL locked = lock.Lock(LOCK_TIMEOUT);
     if (!locked) 
-        THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + m_filename + '"');
+        THROW_APP_EXCEPTION("Cannot get exclusive access to \"" + Common::str(m_filename) + '"');
 
     TiXmlDocument doc;
     if (!::PathFileExists(m_filename.c_str()))
         doc.InsertEndChild(TiXmlDeclaration("1.0", ""/*"Windows-1252"*/, "yes"));
-    else if (!doc.LoadFile(m_filename.c_str()))
-        THROW_APP_EXCEPTION("Cannot read \"" + m_filename + "\"\nERROR: " + doc.ErrorDesc());
+    else if (!TiXmlUtils::LoadFile(doc, m_filename.c_str()))
+        THROW_APP_EXCEPTION("Cannot read \"" + Common::str(m_filename) + "\"\nERROR: " + doc.ErrorDesc());
 
     TiXmlNode* rootElem = getNodeSafe(&doc, ROOT_ELEM);
     TiXmlElement* settingsElem = getNodeSafe(rootElem, SETTINGS);
@@ -324,7 +326,7 @@ void SettingsXmlStreamer::operator << (const SettingsManager& mgr)
     if (settingsElem->QueryIntAttribute("MajorVersion", &majorVer) != TIXML_SUCCESS)
         majorVer = MAJOR_VERSION;
     if (majorVer != MAJOR_VERSION)
-        THROW_APP_EXCEPTION("Cannot load \""  + m_filename + "\".\nERROR: Unsupported settings version.");
+        THROW_APP_EXCEPTION("Cannot load \""  + Common::str(m_filename) + "\".\nERROR: Unsupported settings version.");
 
     settingsElem->SetAttribute("MajorVersion", MAJOR_VERSION);
     settingsElem->SetAttribute("MinorVersion", MINOR_VERSION);
@@ -356,8 +358,8 @@ void SettingsXmlStreamer::operator << (const SettingsManager& mgr)
         write(classPtr->GetColumnMarkersSet(), markersElem, COLUMN_MARKER);
     }
 
-    if (!doc.SaveFile(m_filename.c_str()))
-        THROW_APP_EXCEPTION("Cannot save \"" + m_filename + "\"\nERROR: " + doc.ErrorDesc());
+    if (!TiXmlUtils::SaveFile(doc, m_filename.c_str()))
+        THROW_APP_EXCEPTION("Cannot save \"" + Common::str(m_filename) + "\"\nERROR: " + doc.ErrorDesc());
 }
 
 //// This is a straightforward implementation of the method write

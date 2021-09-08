@@ -25,6 +25,7 @@
 #include "OCI8/BCursor.h"
 #include "ServerBackgroundThread\TaskQueue.h"
 #include "COMMON\StrHelpers.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace OraMetaDict;
 using namespace ServerBackgroundThread;
@@ -75,7 +76,7 @@ END_MESSAGE_MAP()
         " pct_used"       
         " FROM sys.all_clusters WHERE owner = :owner";
 
-	struct BackgroundTask_RefreshClusterList 
+    struct BackgroundTask_RefreshClusterList 
         : BackgroundTask_Refresh_Templ<DBBrowserClusterList, ClusterCollection>
     {
         BackgroundTask_RefreshClusterList(DBBrowserClusterList& list) 
@@ -85,6 +86,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 Common::Substitutor subst;
                 OCI8::EServerVersion servVer = connect.GetVersion();
                 subst.AddPair("<RULE>", (servVer < OCI8::esvServer10X) ? "/*+RULE*/" : "");

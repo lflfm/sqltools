@@ -54,7 +54,7 @@ END
 
 IDD_OE_WORKBOOK_BAR DIALOGEX 0, 0, 434, 18
 STYLE DS_SETFONT | WS_CHILD
-FONT 7, "Small Fonts", 0, 0, 0x1
+FONT 7, "Verdana", 0, 0, 0x1
 BEGIN
     CONTROL         "Tab1",IDC_OE_WORKBOOK_TAB,"SysTabControl32",TCS_BUTTONS | TCS_TOOLTIPS | TCS_FOCUSNEVER,1,0,433,16
 END
@@ -160,7 +160,7 @@ BEGIN
     LTEXT           "There are %u lines in the file. The current line is %u.",IDC_OEGT_INFO,7,86,182,8
 END
 
-IDD_OE_GENERAL DIALOGEX 0, 0, 266, 151
+IDD_OE_GENERAL DIALOGEX 0, 0, 267, 215
 STYLE DS_SETFONT | WS_CHILD | WS_CAPTION
 CAPTION "Editor::General"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
@@ -169,23 +169,29 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,7,109,10
     CONTROL         "Open new document on startup",IDC_OE_GEN_NEW_DOC_ON_STARTUP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,20,115,10
-    CONTROL         "Maximize the first open document",IDC_OE_GEN_MAXIMIZE_FIRST_DOC,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,34,121,10
     CONTROL         "Working directory follows active document",IDC_OE_GEN_WORK_DIR_FOLLOWS_DOC,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,49,149,10
-    CONTROL         "Save cursor position and bookmarks on closing document",IDC_OE_GEN_SAVE_CURS_N_BOOKMARKS,
-                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_DISABLED | WS_TABSTOP,8,63,198,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,33,149,10
     CONTROL         "Save main window position on exit",IDC_OE_GEN_SAVE_MAIN_WIN_POS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,76,124,10
-    LTEXT           "Keymap layout:",IDC_STATIC,12,94,49,8
-    COMBOBOX        IDC_OE_GEN_KEYMAP_LAYOUT,68,92,92,115,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Locale:",IDC_STATIC,37,108,24,8
-    COMBOBOX        IDC_OE_GEN_LOCALE,68,106,92,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Locale affects on upper/lower/sort/... operations.",IDC_STATIC,68,124,156,8
-    CONTROL         "Double-Click closes tab",IDC_OE_GEN_TAB_DOUBLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,63,96,10
-    CONTROL         "Use INI file for supplemental settings",IDC_OE_GEN_USE_INI_FILE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,135,199,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,46,124,10
+    LTEXT           "Keymap layout:",IDC_STATIC,21,61,49,8
+    COMBOBOX        IDC_OE_GEN_KEYMAP_LAYOUT,77,59,92,115,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Locale:",IDC_STATIC,46,75,24,8
+    COMBOBOX        IDC_OE_GEN_LOCALE,77,73,92,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Locale affects on upper/lower/sort/... operations.",IDC_STATIC,77,91,156,8
+    LTEXT           "Default encoding :",IDC_STATIC,11,109,59,8
+    COMBOBOX        IDC_OE_GEN_ENCODING,77,108,150,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Open ASCII (7-bit) files as UFT-8",IDC_OE_GEN_ASCII_AS_UTF8,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,77,126,118,10
+    GROUPBOX        "  MDI Tabs  ",IDC_STATIC,7,139,253,68
+    CONTROL         "Tabs on Top",IDC_OE_GEN_TABS_ON_TOP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,150,109,10
+    CONTROL         "Tabs Auto-Color",IDC_OE_GEN_TABS_AUTOCOLOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,164,109,10
+    CONTROL         "Document List button instead of Scroll buttons",IDC_OE_GEN_TABS_LIST_MENU_BUTTON,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,178,168,10
+    CONTROL         "The first Ctrl+Tab switches to the previously active window",IDC_OE_GEN_TABS_CTRL_TAB_SWITCHES_TO_PREV_ACTIVE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,192,227,10
+    CONTROL         "Active Tab has ""Close"" button",IDC_OE_GEN_TABS_CLOSE_BUTTON,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,145,150,109,10
+    CONTROL         "Rectangular Tabs",IDC_OE_GEN_TABS_3D_LOOK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,145,164,109,10
 END
 
 IDD_OE_FILES DIALOGEX 0, 0, 266, 166
@@ -205,9 +211,9 @@ BEGIN
     CONTROL         "&Detect when file is changed outside the editor",IDC_OE_FILE_DETECT_CHANGES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,49,160,10
     CONTROL         "&Auto-load changed files (if not currently modified in the editor)",IDC_OE_FILE_RELOAD_CHANGED,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,63,207,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,62,207,10
     CONTROL         "Autoscroll after reload (if cursor position is on EOF)",IDC_OE_FILE_AUTOSCROLL_AFTER_RELOAD,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,28,76,173,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,28,74,173,10
     CONTROL         "&Overwrite read-only files without confirmation",IDC_OE_FILE_OVERWRITE_READONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,90,155,10
 END
@@ -240,13 +246,14 @@ BEGIN
     CONTROL         "Enable ascii file &preview in tooltips",IDC_OE_FLMGR_PREVIEWINTOOLTIPS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,28,135,10
     EDITTEXT        IDC_OE_FLMGR_PREVIEWLINES,167,27,28,12,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "",IDC_OE_FLMGR_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,187,37,11,14
+    CONTROL         "",IDC_OE_FLMGR_PREVIEWLINES_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,187,37,11,14
     LTEXT           "line(s)",IDC_STATIC,205,29,23,8
-    CONTROL         "Add &Windows context menu items to the file context menu",IDC_OE_FLMGR_SHELLCONTEXMENU,
+    CONTROL         "Add Tortoise &GIT context menu(s) to the file context menu",IDC_OE_FLMGR_TORTOISE_GIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,42,211,10
-    RTEXT           "Shell contex menu &filter:",IDC_STATIC,10,58,80,8,0,WS_EX_RIGHT
-    EDITTEXT        IDC_OE_FLMGR_SHELLCONTEXMENUFILTER,91,57,161,12,ES_AUTOHSCROLL
-    CTEXT           "It is a regular expression to filter shell VERBS. Do not change if you not sure.",IDC_STATIC,16,71,239,11
+    CONTROL         "Add Tortoise &SVN context menu(s) to the file context menu",IDC_OE_FLMGR_TORTOISE_SVN,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,56,240,10
+    CONTROL         "Add &Windows File Property to the file context menu",IDC_OE_FLMGR_FILE_PROPERTIES,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,70,240,10
     GROUPBOX        "  History  ",IDC_STATIC,7,86,253,121
     CONTROL         "Keep editor cursor / scrolling position / bookmarks in the history",IDC_OE_FLMGR_RESTORE_EDITOR_STATE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,96,227,10
@@ -511,16 +518,15 @@ BEGIN
     CONTROL         "Create Quick Sn&apshot",IDC_OESA_USE_WORKSPACE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,109,153,100,10
 END
 
-IDD_ERROR DIALOGEX 0, 0, 277, 162
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ERROR DIALOGEX 0, 0, 379, 194
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "Error"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Save As...",IDC_ERR_SAVE,54,140,50,14
-    PUSHBUTTON      "Copy",IDC_ERR_COPY,114,140,50,14
-    PUSHBUTTON      "Continue",IDCANCEL,174,140,50,14
-    EDITTEXT        IDC_ERR_TEXT,7,7,263,121,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL
-    ICON            "",IDC_ERR_STOP,22,136,21,20,SS_REALSIZEIMAGE
+    DEFPUSHBUTTON   "Save As...",IDC_ERR_SAVE,105,174,50,14
+    PUSHBUTTON      "Copy",IDC_ERR_COPY,165,174,50,14
+    PUSHBUTTON      "Continue",IDCANCEL,225,174,50,14
+    EDITTEXT        IDC_ERR_TEXT,3,3,373,165,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL
 END
 
 IDD_OE_SORT DIALOGEX 0, 0, 198, 121
@@ -812,8 +818,9 @@ BEGIN
     IDD_OE_GENERAL, DIALOG
     BEGIN
         LEFTMARGIN, 7
+        RIGHTMARGIN, 266
         TOPMARGIN, 7
-        BOTTOMMARGIN, 145
+        BOTTOMMARGIN, 209
     END
 
     IDD_OE_FILES, DIALOG
@@ -829,6 +836,10 @@ BEGIN
     IDD_OE_FILE_MANAGER, DIALOG
     BEGIN
         BOTTOMMARGIN, 207
+    END
+
+    IDD_OE_FILE_SETTINGS, DIALOG
+    BEGIN
     END
 
     IDD_OE_FILE_INFO, DIALOG
@@ -886,8 +897,8 @@ BEGIN
     IDD_ERROR, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 270
-        BOTTOMMARGIN, 154
+        RIGHTMARGIN, 372
+        BOTTOMMARGIN, 186
     END
 
     IDD_OE_SORT, DIALOG
@@ -952,6 +963,7 @@ BEGIN
         MENUITEM "Move / &Rename",              ID_FILE_RENAME
         MENUITEM SEPARATOR
         MENUITEM "Copy File Locat&ion",         ID_FILE_COPY_LOCATION
+        MENUITEM "Copy File &Name",             ID_FILE_COPY_NAME
         MENUITEM SEPARATOR
         MENUITEM "File Se&ttings...",           ID_EDIT_FILE_SETTINGS
     END
@@ -1084,6 +1096,25 @@ END
 IDD_OE_EDITING AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_OE_FILES AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_OE_GENERAL AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ERROR AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    50, 100, 0, 0,
+    50, 100, 0, 0,
+    50, 100, 0, 0,
+    0, 0, 100, 100
 END
 
 
@@ -1349,11 +1380,11 @@ BEGIN
                             "Justify the data against the right of your selection"
     ID_EDIT_COLUMN_CENTER_JUSTIFY "Center the data within the selection"
     ID_EDIT_COLUMN_CONVERT_TO_FIX "NA"
+    ID_EDIT_COLUMN_CONVERT_TO_CSV "NA"
 END
 
 STRINGTABLE
 BEGIN
-    ID_EDIT_COLUMN_CONVERT_TO_CSV "NA"
     ID_EDIT_FORMAT_JOIN_LINES "Join multiple lines into one"
     ID_EDIT_FORMAT_SPLIT_LINES 
                             "Split one line into multiple based on a delimiter or string length"
@@ -1378,7 +1409,12 @@ BEGIN
     ID_FILE_SYNC_LOCATION   "Show the active document location in File panel\nGo to the active document location"
     ID_FILE_COPY_LOCATION   "Copy the active document location\nCopy the active document location"
     ID_FILE_RENAME          "Move or Rename the current document\nRename"
+END
+
+STRINGTABLE
+BEGIN
     IDS_RENAME_DIALOG_TITLE "Move / Rename"
+    ID_INDICATOR_ENCODING   "========"
 END
 
 STRINGTABLE
@@ -1400,7 +1436,7 @@ BEGIN
     ID_INDICATOR_FILE_TYPE  " Unix "
     ID_INDICATOR_POS        "=========================="
     ID_INDICATOR_SCROLL_POS "=================="
-    ID_INDICATOR_CUR_CHAR   " Chr: ' '=0x00=000 "
+    ID_INDICATOR_CUR_CHAR   " Chr: ' '=0x000000=000 "
     ID_INDICATOR_WORKSPACE_NAME "=========================="
 END
 

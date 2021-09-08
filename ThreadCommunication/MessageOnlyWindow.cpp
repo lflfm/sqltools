@@ -1,5 +1,5 @@
 /*
-	SQLTools is a tool for Oracle database developers and DBAs.
+    SQLTools is a tool for Oracle database developers and DBAs.
     Copyright (C) 1997-2016 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
@@ -35,7 +35,7 @@ namespace ThreadCommunication
 BOOL MessageOnlyWindow::Create ()
 {
     CString className = AfxRegisterWndClass(NULL);
-    return CreateEx(0, className, "MessageOnlyWindow", 0, 0, 0, 0, 0, HWND_MESSAGE, 0);
+    return CreateEx(0, className, _T("MessageOnlyWindow"), 0, 0, 0, 0, 0, HWND_MESSAGE, 0);
 }
 
 BEGIN_MESSAGE_MAP(MessageOnlyWindow, CWnd)
@@ -67,7 +67,7 @@ LRESULT MessageOnlyWindow::OnNote (WPARAM wParam, LPARAM lParam)
 
                 return 1L;
             }
-	        //_DEFAULT_HANDLER_
+            //_DEFAULT_HANDLER_
             _COMMON_DEFAULT_HANDLER_
         }
 

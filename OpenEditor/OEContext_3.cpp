@@ -64,7 +64,7 @@ namespace OpenEditor
     using namespace std;
 
 
-    void space4insertion (string& buff, int from, int to, bool use_tab, int tab_spacing)
+    void space4insertion (std::wstring& buff, int from, int to, bool use_tab, int tab_spacing)
     {
         _ASSERTE(to - from >= 0);
 
@@ -105,23 +105,13 @@ void EditContext::expandVirtualSpace (int line, int column)
     int length = GetLineLength(line);
     if (column > length)
     {
-        string buff;
+        std::wstring buff;
         space4insertion(buff, length, column, !GetTabExpand(), GetTabSpacing());
         InsertLinePart(line, length, buff.c_str(), buff.length());
     }
 }
 
-//// string mustn't have '\r' or '\n'
-//void EditContext::InsertLine (int line, const char* str, int len)
-//{
-//    if (line)
-//        m_pStorage->ExpandLinesTo(line - 1);
-//
-//    m_pStorage->InsertLine(line, str, len);
-//}
-//
-// string mustn't have '\r' or '\n'
-void EditContext::InsertLinePart (int line, int column, const char* str, int len)
+void EditContext::InsertLinePart (int line, int column, const wchar_t* str, int len)
 {
     expandVirtualSpace(line, column);
     m_pStorage->InsertLinePart(line, !column ? 0 : pos2inx(line, column), str, len);
@@ -154,7 +144,7 @@ void EditContext::DoIndent (bool moveOnly)
     if (!moveOnly && (!GetCursorBeyondEOL()
     || (pos.line < GetLineCount() && pos.column < GetLineLength(pos.line))))
     {
-        string buff;
+        std::wstring buff;
         space4insertion(buff, pos.column, newColumn, !GetTabExpand(), GetTabSpacing());
         InsertLinePart(pos.line, pos.column, buff.c_str(), buff.length());
     }
@@ -194,21 +184,23 @@ void EditContext::DoCarriageReturn ()
         case eiAuto:
             if (m_curPos.line > 0 && m_curPos.line < GetLineCount())
             {
-                int len = 0;
-                const char* str = 0;
+                OEStringW lineBuff;
                 Position pos = GetPosition();
 
                 // 16.03.2003 bug fix, autoindent always uses a previos line as base even the line is empty
-                for (int baseLine = pos.line - 1; baseLine >= 0 && len == 0; baseLine--)
-                    GetLine(baseLine, str, len);
+                for (int baseLine = pos.line - 1; baseLine >= 0 && lineBuff.length() == 0; baseLine--)
+                    GetLineW(baseLine, lineBuff);
 
-                for (int i(0); i < len && isspace(str[i]); i++);
+                int len = lineBuff.length();
+                const wchar_t* str = lineBuff.data();
+
+                for (int i(0); i < len && iswspace(str[i]); i++);
 
                 pos.column = inx2pos(str, len, i);
 
                 if (!(GetCursorBeyondEOL() && GetLineLength(pos.line) == 0))
                 {
-                    string buff;
+                    std::wstring buff;
                     space4insertion(buff, 0, pos.column, !GetTabExpand(), GetTabSpacing());
                     InsertLinePart(pos.line, 0, buff.c_str(), buff.length());
                 }
@@ -222,7 +214,7 @@ void EditContext::DoCarriageReturn ()
     PushInUndoStack(m_curPos);
 }
 
-void EditContext::Insert (char chr)
+void EditContext::Insert (wchar_t chr)
 {
     _CHECK_ALL_PTR_
 
@@ -268,13 +260,13 @@ void EditContext::Backspace ()
 
         int inx = pos2inx(m_curPos.line, m_curPos.column);
 
-        char chr(0);
+        wchar_t chr(0);
         try
         {
-            chr = m_pStorage->GetChar(m_curPos.line, inx-1);
+            chr = m_pStorage->GetCharW(m_curPos.line, inx-1);
             m_pStorage->Delete(m_curPos.line, inx-1);
         }
-		catch (std::out_of_range&) {}
+        catch (std::out_of_range&) {}
 
         if (chr == '\t')
         {
@@ -301,7 +293,7 @@ void EditContext::Backspace ()
     }
 }
 
-void EditContext::Overwrite (char chr)
+void EditContext::Overwrite (wchar_t chr)
 {
     _CHECK_ALL_PTR_
 
@@ -587,7 +579,7 @@ void EditContext::SelectByCursor (Position pos)
         InvalidateLines(old_end_line, m_blkPos.end.line);
 }
 
-void EditContext::GetBlock (string& str, const Square* sqr) const
+void EditContext::GetBlock (std::wstring& str, const Square* sqr) const
 {
     _CHECK_ALL_PTR_
 
@@ -602,8 +594,6 @@ void EditContext::GetBlock (string& str, const Square* sqr) const
     {
         blk.normalize();
 
-        int niLength;
-        const char* pszLine;
         int nLines = GetLineCount();
 
         switch (GetBlockMode())
@@ -615,7 +605,7 @@ void EditContext::GetBlock (string& str, const Square* sqr) const
                     // 03/08/2002 bug fix, block copy is too slow on 10M file
                     // 17/08/2002 bug fix, block copy fails below EOF
                     if (i < nLines) 
-                        reserve += m_pStorage->GetLineLength(i) + (sizeof("\r\n")-1);
+                        reserve += m_pStorage->GetLineLengthW(i) + (sizeof("\r\n")-1);
                     else
                         break;
 
@@ -630,14 +620,15 @@ void EditContext::GetBlock (string& str, const Square* sqr) const
                     line2buff(blk.start.line, blk.start.column, INT_MAX, str);
                     for (int i(blk.start.line + 1); i <= blk.end.line - 1; i++)
                     {
-                        str += "\r\n";
+                        str += L"\r\n";
                         if (i < nLines)
                         {
-                            GetLine(i, pszLine, niLength);
-                            str.append(pszLine, niLength);
+                            OEStringW lineBuff;
+                            GetLineW(i, lineBuff);
+                            str.append(lineBuff.data(), lineBuff.length());
                         }
                     }
-                    str += "\r\n";
+                    str += L"\r\n";
                     line2buff(blk.end.line, 0, blk.end.column, str);
                 }
                 TRACE("Copy Block reserved = %d, actual length = %d\n",  reserve, str.length());
@@ -646,7 +637,7 @@ void EditContext::GetBlock (string& str, const Square* sqr) const
                   && blk.end.column > GetLineLength(blk.end.line))
                 || (blk.end.line >= nLines
                   && blk.end.column > 0))
-                        str += "\r\n";
+                        str += L"\r\n";
             }
             break;
         case ebtColumn:
@@ -659,7 +650,7 @@ void EditContext::GetBlock (string& str, const Square* sqr) const
                 for (int line = blk.start.line; line <= blk.end.line; ++line)
                 {
                     if (line > blk.start.line)
-                        str += "\r\n";
+                        str += L"\r\n";
 
                     line2buff(line, blk.start.column, blk.end.column, str, true);
                 }
@@ -669,12 +660,12 @@ void EditContext::GetBlock (string& str, const Square* sqr) const
     }
 }
 
-void EditContext::InsertBlock (const char* str)
+void EditContext::InsertBlock (const wchar_t* str)
 {
     InsertBlock(str, !GetBlockKeepMarking());
 }
 
-void EditContext::InsertBlock (const char* str, bool hideSelection, bool putSelInUndo)
+void EditContext::InsertBlock (const wchar_t* str, bool hideSelection, bool putSelInUndo)
 {
     _CHECK_ALL_PTR_
 
@@ -691,25 +682,25 @@ void EditContext::InsertBlock (const char* str, bool hideSelection, bool putSelI
     {
     case ebtStream:
         {
-            string buff;
-            istringstream io(str);
-            bool with_CR;
+            std::wstring buff;
+            int position = 0;
+            bool cr;
 
-            if (getLine(io, buff, with_CR))
+            if (getLine(str, position, buff, cr))
             {
-                if (with_CR) 
+                if (cr) 
                     SplitLine(m_curPos.line, m_curPos.column); // multiline selection
 
                 InsertLinePart(m_curPos.line, m_curPos.column, buff.c_str(), buff.length());
 
-                if (with_CR) // multiline selection
+                if (cr) // multiline selection
                 {
-                    StringArray lines(1024, 16 * 1024);
+                    StringArrayW lines(1024, 16 * 1024);
 
                     m_curPos.column = 0;
-                    while (getLine(io, buff, with_CR))
+                    while (getLine(str, position, buff, cr))
                     {
-                        if (with_CR)
+                        if (cr)
                             lines.append().assign(buff.c_str(), buff.length(), true);
                         else
                         {
@@ -737,7 +728,7 @@ void EditContext::InsertBlock (const char* str, bool hideSelection, bool putSelI
     case ebtColumn:
         {
             // fill 0-with selection with a single line text
-            if (str && strlen(str) && !strchr(str, '\n') 
+            if (str && wcslen(str) && !wcschr(str, '\n') 
             && sel.start.line != sel.end.line
             && sel.start.column == sel.end.column)
             {
@@ -748,7 +739,7 @@ void EditContext::InsertBlock (const char* str, bool hideSelection, bool putSelI
                 sel.normalize();
                 sel.normalize_columns();
 
-                int length = strlen(str);
+                int length = wcslen(str);
 
                 Storage::NotificationDisabler disabler(m_pStorage);
 
@@ -780,37 +771,37 @@ void EditContext::InsertBlock (const char* str, bool hideSelection, bool putSelI
                 }
 
                 {
-                    Square sel;
-                    sel.start = sel.end = m_curPos;
-                    for (const char* ptr = str; *ptr; ++ptr)
-                        if (*ptr == '\n') sel.end.line++;
+                    Square sel2;
+                    sel2.start = sel2.end = m_curPos;
+                    for (const wchar_t* ptr = str; *ptr; ++ptr)
+                        if (*ptr == '\n') sel2.end.line++;
 
-                    UntabifyForColumnarOperation(sel);
+                    UntabifyForColumnarOperation(sel2);
                 }
 
                 Storage::NotificationDisabler disabler(m_pStorage);
 
-                string buff;
-                bool with_CR;
+                wstring buff;
+                bool cr;
                 int width = 0;
                 int tabSize = GetTabSpacing();
                 //calculate block width
                 {
-                    istringstream io(str);
-                    while (getLine(io, buff, with_CR))
+                    int position = 0;
+                    while (getLine(str, position, buff, cr))
                     {
-                        untabify(buff, 0, tabSize, false);
+                        untabify(buff.c_str(), buff.length(), buff, 0, tabSize, false);
                         width = max<int>(width, buff.size());
                     }
                 }
 
                 int lastLineLen = 0;
                 int line = m_curPos.line;
-                istringstream io(str);
+                int position = 0;
                 {
-                    while (getLine(io, buff, with_CR))
+                    while (getLine(str, position, buff, cr))
                     {
-                        untabify(buff, 0, tabSize, false);
+                        untabify(buff.c_str(), buff.length(), buff, 0, tabSize, false);
                         buff.resize(width, ' ');
                         InsertLinePart(line, m_curPos.column, buff.c_str(), buff.length());
                         line++;
@@ -879,7 +870,7 @@ void EditContext::DeleteBlock (bool putSelInUndo)
                         m_pStorage->DeleteLines(sel.start.line + 1, 
                             sel.end.line - sel.start.line - 1);
 
-                    DeleteLinePart(sel.start.line, sel.start.column, FixedString::maxlen);
+                    DeleteLinePart(sel.start.line, sel.start.column, OEStringA::maxlen);
                     expandVirtualSpace(sel.start.line, sel.start.column);
                     DeleteLinePart(sel.start.line + 1, 0, sel.end.column);
                     m_pStorage->MergeLines(sel.start.line);
@@ -898,7 +889,7 @@ void EditContext::DeleteBlock (bool putSelInUndo)
                 Storage::NotificationDisabler disabler(m_pStorage);
 
                 bool deleteSpace = GetColBlockDeleteSpaceAfterMove();
-                string space;
+                std::wstring space;
 
                 if (!deleteSpace)
                     space.resize(sel.end.column > sel.start.column
@@ -965,7 +956,7 @@ void EditContext::UntabifyForColumnarOperation (Square blk)
     SetSelection(orgBlkPos);
 }
 
-void EditContext::ColumnarInsert (char ch)
+void EditContext::ColumnarInsert (wchar_t ch)
 {
     ASSERT(GetBlockMode() == ebtColumn);
 
@@ -976,9 +967,9 @@ void EditContext::ColumnarInsert (char ch)
     Position pos = GetPosition();
 
     int width = blk.end.column - blk.start.column;
-    string text, line(width ? width : 1, ch);
+    wstring text, line(width ? width : 1, ch);
 
-    line += "\r\n";
+    line += L"\r\n";
     for (int i = 0; i < blk.end.line - blk.start.line + 1; i++)
         text.append(line);
 
@@ -1020,10 +1011,10 @@ void EditContext::ColumnarIndent ()
     int nlines = GetLineCount();
     for (int line = blk.start.line; line <= blk.end.line && line < nlines; line++)
     {
-        Position pos; 
-        pos.line = line;
-        pos.column = blk.start.column;
-        MoveTo(pos);
+        Position pos2; 
+        pos2.line = line;
+        pos2.column = blk.start.column;
+        MoveTo(pos2);
         DoIndent(false);
     }
     int offset = GetPosition().column - blk.start.column;
@@ -1055,16 +1046,17 @@ void EditContext::ColumnarUndent ()
     int nlines = GetLineCount();
     for (int line = blk.start.line; line <= blk.end.line && line < nlines; line++)
     {
-        int len;
-        const char* str;
-        GetLine(line, str, len);
+        OEStringW lineBuff;
+        GetLineW(line, lineBuff);
+        int len = lineBuff.length();
+        const wchar_t* str = lineBuff.data();
 
         int indentInx = pos2inx(str, len, blk.start.column, true);
         int newIndentInx = pos2inx(str, len, newIndent, true);
 
         if (newIndentInx < len)
         {
-            for (int i = min(indentInx-1, len-1); newIndentInx <= i && isspace(str[i]); i--) {}
+            for (int i = min(indentInx-1, len-1); newIndentInx <= i && iswspace(str[i]); i--) {}
             newIndent = max<int>(newIndent, inx2pos(str, len, i + 1));
         }
     }
@@ -1168,14 +1160,15 @@ void EditContext::IndentBlock ()
         // 24.10.2004 improvement, indent and undent align each line individually to the neatest indent level
         for (int line = sel.start.line; line < lineLimit; line++)
         {
-            int len;
-            const char* str;
-            GetLine(line, str, len);
+            OEStringW lineBuff;
+            GetLineW(line, lineBuff);
+            int len = lineBuff.length();
+            const wchar_t* str = lineBuff.data();
 
             int indentLevel = -1;
 
             for (int i = 0; i < len; i++)
-                if (!isspace(str[i])) 
+                if (!iswspace(str[i])) 
                 {
                     indentLevel = i;
                     break;
@@ -1186,7 +1179,7 @@ void EditContext::IndentBlock ()
                 indentLevel = inx2pos(str, len, indentLevel);
                 int newIndentLevel = (indentLevel / indentSize + 1) * indentSize;
 
-                string buff;
+                std::wstring buff;
                 space4insertion (buff, indentLevel, newIndentLevel, !GetTabExpand(), GetTabSpacing());
                 InsertLinePart(line, indentLevel, buff.c_str(), buff.length());
 
@@ -1251,14 +1244,15 @@ void EditContext::UndentBlock ()
         // 24.10.2004 improvement, indent and undent align each line individually to the neatest indent level
         for (int line = sel.start.line; line < lineLimit; line++)
         {
-            int len;
-            const char* str;
-            GetLine(line, str, len);
+            OEStringW lineBuff;
+            GetLineW(line, lineBuff);
+            int len = lineBuff.length();
+            const wchar_t* str = lineBuff.data();
 
             int indentLevel = -1;
 
             for (int i = 0; i < len; i++)
-                if (!isspace(str[i])) 
+                if (!iswspace(str[i])) 
                 {
                     indentLevel = i;
                     break;
@@ -1280,7 +1274,7 @@ void EditContext::UndentBlock ()
                 else
                 {
                     ASSERT(newIndentLevel - newTabLevel > 0);
-                    string padding(max(0, newIndentLevel - newTabLevel), ' ');
+                    std::wstring padding(max(0, newIndentLevel - newTabLevel), ' ');
 
                     m_pStorage->ReplaceLinePart(line, 
                         !newTabLevel ? 0 : pos2inx(line, newTabLevel), 
@@ -1334,9 +1328,9 @@ void EditContext::UndentBlock ()
 
     struct LineRef 
     {
-        int m_seq, m_length;
-        const char* m_str;
-        LineRef () : m_seq(0), m_str(0), m_length(0) {}
+        int seq;
+        std::wstring str;
+        LineRef () : seq(0) {}
     };
 
     class SortFunctor
@@ -1354,26 +1348,26 @@ void EditContext::UndentBlock ()
 
         bool least (const LineRef& e1, const LineRef& e2) const
         {
-            int minlen = min(e1.m_length, e2.m_length);
+            int minlen = min(e1.str.length(), e2.str.length());
 
             if (!minlen)
             {
-                if (e1.m_length == e2.m_length)
-                    return e1.m_seq < e2.m_seq ? true : false;
+                if (e1.str.length() == e2.str.length())
+                    return e1.seq < e2.seq ? true : false;
 
-                return e1.m_length < e2.m_length ? true : false;
+                return e1.str.length() < e2.str.length() ? true : false;
             }
 
             int res = m_ctx.mIgnoreCase 
-                ? strnicmp(e1.m_str, e2.m_str, minlen)
-                : strncmp(e1.m_str, e2.m_str, minlen);
+                ? wcsnicmp(e1.str.c_str(), e2.str.c_str(), minlen)
+                : wcsncmp(e1.str.c_str(), e2.str.c_str(), minlen);
             
             if (!res)
             {
-                if (e1.m_length == e2.m_length)
-                    return e1.m_seq < e2.m_seq ? true : false;
+                if (e1.str.length() == e2.str.length())
+                    return e1.seq < e2.seq ? true : false;
 
-                return e1.m_length < e2.m_length ? true : false;
+                return e1.str.length() < e2.str.length() ? true : false;
             }
 
             return res < 0 ? true : false;
@@ -1415,17 +1409,15 @@ void EditContext::Sort (const SortCtx& ctx)
 
     for (unsigned long i = 0; i < lines.size(); i++)
     {
-        int len;
-        const char* str;
-        GetLine(i + start, str, len);
+        OEStringW lineBuff;
+        GetLineW(i + start, lineBuff);
+        int len = lineBuff.length();
+        const wchar_t* str = lineBuff.data();
 
-        lines.at(i).m_seq = i + start;
+        lines.at(i).seq = i + start;
 
         if (keypos < len)
-        {
-            lines[i].m_str = str + keypos;
-            lines[i].m_length = min(len - keypos, keylen);
-        }
+            lines[i].str.assign(str + keypos, min(len - keypos, keylen));
     }
 
     Global::SetStatusText("Sorting...");
@@ -1435,7 +1427,7 @@ void EditContext::Sort (const SortCtx& ctx)
 
     vector<LineRef>::const_iterator it = lines.begin();
     for (int i = 0; it != lines.end(); ++it, i++)
-        order.at(i) = it->m_seq;
+        order.at(i) = it->seq;
 
     Global::SetStatusText("Moving...");
     m_pStorage->Reorder(start, order);
@@ -1447,18 +1439,18 @@ void EditContext::Sort (const SortCtx& ctx)
         Global::SetStatusText("Removing duplicates (it may take more time than sorting)...");
         Storage::NotificationDisabler disabler(m_pStorage);
 
-        int prevLen = 0;
-        const char* prevStr = 0;
+        OEStringW prevStr;
         bool firstCycle = true;
 
         for (int i = start; i < end; i++)
         {
-            int curLen;
-            const char* curStr;
-            GetLine(i, curStr, curLen);
+            OEStringW curStr;
+            GetLineW(i, curStr);
 
-            if (!firstCycle
-            && prevLen == curLen && (!prevLen || !strncmp(prevStr, curStr, prevLen)))
+
+            if (!firstCycle 
+            && prevStr.length() == curStr.length() 
+            && (!prevStr.length() || !wcsncmp(prevStr.data(), curStr.data(), prevStr.length())))
             {
                 m_pStorage->DeleteLine(i--);
                 removedCounter++;
@@ -1467,7 +1459,6 @@ void EditContext::Sort (const SortCtx& ctx)
             else 
             // 30.03.2005 bug fix, sorting does not completely remove duplicate rows if a number of dups is even
             {
-                prevLen = curLen;
                 prevStr = curStr;
                 firstCycle = false;
             }
@@ -1496,7 +1487,7 @@ void EditContext::Sort (const SortCtx& ctx)
     Global::SetStatusText(o.str().c_str());
 }
 
-void EditContext::CopyBookmarkedLines (string& buff) const
+void EditContext::CopyBookmarkedLines (std::wstring& buff) const
 {
     _CHECK_ALL_PTR_
 
@@ -1507,7 +1498,7 @@ void EditContext::CopyBookmarkedLines (string& buff) const
 
     vector<int>::const_iterator it = lines.begin();
     for (; it != lines.end(); ++it)
-        reserve += m_pStorage->GetLineLength(*it) + (sizeof("\r\n")-1);
+        reserve += m_pStorage->GetLineLengthW(*it) + (sizeof("\r\n")-1);
     
     if (reserve)
     {
@@ -1515,11 +1506,10 @@ void EditContext::CopyBookmarkedLines (string& buff) const
         it = lines.begin();
         for (; it != lines.end(); ++it)
         {
-            int len;
-            const char* str;
-            GetLine(*it, str, len);
-            buff.append(str, len);
-            buff += "\r\n";
+            OEStringW lineBuff;
+            GetLineW(*it, lineBuff);
+            buff.append(lineBuff.data(), lineBuff.length());
+            buff += L"\r\n";
         }
     }
 }
@@ -1567,11 +1557,10 @@ void EditContext::RemoveBlankLines (bool excessiveOnly)
     bool is_prev_line_blank = false;
     for (int i = blk.start.line; i < blk.end.line; i++)
     {
-        int len;
-        const char* str;
-        GetLine(i, str, len);
+        OEStringW lineBuff;
+        GetLineW(i, lineBuff);
 
-        bool is_line_blank = Common::is_blank_line(str, len);
+        bool is_line_blank = Common::is_blank_line(lineBuff.data(), lineBuff.length());
 
         if (is_line_blank && (is_prev_line_blank || !excessiveOnly))
             lines.push_back(i);
@@ -1614,16 +1603,8 @@ void EditContext::RemoveBlankLines (bool excessiveOnly)
     }
 }
 
-void EditContext::AlignCodeFragment (const char* str, string& text)
+void EditContext::AlignCodeFragment (const wchar_t* str, std::wstring& text)
 {
-    //EBlockMode orgBlockMode = GetBlockMode();
-    //if (orgBlockMode != ebtStream)
-    //    SetBlockMode(ebtStream);
-
-    //UndoGroup undoGroup(*this);
-    //SetSelection(sqr);
-    //DeleteBlock(false);
-
     if (GetBlockMode() == ebtStream)
     {
         int indent_size = 0;
@@ -1632,15 +1613,17 @@ void EditContext::AlignCodeFragment (const char* str, string& text)
         if (GetPosition().line < GetLineCount())
         {
             // calculate the indent of the current line
-            int len;
-            const char* str;
-            GetLine(GetPosition().line, str, len);
+            OEStringW lineBuff;
+            GetLineW(GetPosition().line, lineBuff);
+            int len = lineBuff.length();
+            const wchar_t* curLineStr = lineBuff.data();
+
             if (len > 0) empty_line = false;
 
             for (int i = 0; i < len; ++i)
-                if (!isspace(str[i]))
+                if (!iswspace(curLineStr[i]))
                     break;
-            indent_size = inx2pos(str, len, i);
+            indent_size = inx2pos(curLineStr, len, i);
         }
 
         // align by the current indent or drop position
@@ -1649,19 +1632,19 @@ void EditContext::AlignCodeFragment (const char* str, string& text)
         else
             indent_size = min(indent_size, GetPosition().column);
 
-        bool with_CR;
-        std::istringstream io(str);
-        std::string line, buffer, indent(indent_size, ' ');
+        std::wstring line, buffer, indent(indent_size, ' ');
         indent.insert(indent.begin(), '\n');
 
-        if (getLine(io, line, with_CR))
+        bool cr;
+        int position = 0;
+        if (getLine(str, position, line, cr))
             buffer += line;
 
-        while (getLine(io, line, with_CR))
+        while (getLine(str, position, line, cr))
         {
             if (!line.empty())
                 buffer += indent + line;
-            else if (with_CR)
+            else if (cr)
                 buffer += '\n';
         }
 
@@ -1674,22 +1657,22 @@ bool EditContext::ExpandTemplate (OpenEditor::TemplatePtr tmpl, int index)
     _CHECK_ALL_PTR_
 
     Square sqr;
-    string buff;
+    std::wstring buff;
     if (index != -1 || GetBlockOrWordUnderCursor(buff, sqr, false))
     {
         Position pos;
-        string text;
+        string textA;
 
         bool expand = false;
         
         if (index != -1)
         {
-            expand = tmpl->ExpandKeyword(index, text, pos);
+            expand = tmpl->ExpandKeyword(index, textA, pos);
             GetSelection(sqr);
         }
         else
         {
-            expand = tmpl->ExpandKeyword(buff, text, pos);
+            expand = tmpl->ExpandKeyword(Common::str(buff), textA, pos);
         }
 
         if (expand)
@@ -1702,9 +1685,10 @@ bool EditContext::ExpandTemplate (OpenEditor::TemplatePtr tmpl, int index)
             SetSelection(sqr);
             DeleteBlock(false);
 
-            AlignCodeFragment(text.c_str(), text);
+            std::wstring textW;
+            AlignCodeFragment(Common::wstr(textA).c_str(), textW);
 
-            InsertBlock(text.c_str(), false, false);
+            InsertBlock(textW.c_str(), false, false);
 
             if (!GetTabExpand()) 
                 ScanAndReplaceText(TabifyLeadingSpaces, false);

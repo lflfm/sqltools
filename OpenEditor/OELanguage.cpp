@@ -39,7 +39,7 @@ void Language::SetLanguageKeywordMap (LanguageKeywordMapPtr keywordMap)
     {
         ASSERT(it->second.groupIndex < (int)m_keywordGroups.size());
         if (it->second.groupIndex < (int)m_keywordGroups.size())
-            m_LanguageKeywordMap->insert(pair<string, LanguageKeyword>(it->first, it->second));
+            m_LanguageKeywordMap->insert(pair<std::wstring, LanguageKeyword>(it->first, it->second));
     }
 }
 

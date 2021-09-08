@@ -61,7 +61,7 @@ void CExplainPlanTextView::OnInitialUpdate()
           0,
           0, ANSI_CHARSET,//DEFAULT_CHARSET,
           OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH,
-          "Courier New"
+          L"Courier New"
         );
 
 	SetFont(&m_Font);

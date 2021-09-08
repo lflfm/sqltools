@@ -33,7 +33,7 @@ class SqlDocCreater
 
     bool m_singleDocument, m_bUseBanner, m_supressGroupByDDL, m_bPackAsWhole, m_objectNameAsTitle;
     int  m_objectCounter, m_nOffset[2];
-    CString m_strOwner, m_strName,
+    CStringA m_strOwner, m_strName,
             m_strType, m_strExt;
 public:
     SqlDocCreater (bool singleDocument, bool useBanner, bool supressGroupByDDL, bool objectNameAsTitle);

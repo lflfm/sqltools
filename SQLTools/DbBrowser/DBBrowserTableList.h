@@ -85,22 +85,22 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case e_table_name           : return "Name"           ; //table_name       
-            case e_table_type           : return "Type"           ; //table_type       
-            case e_compression          : return "Compression"    ; //compression         
-            case e_tablespace_name      : return "Tablespace"     ; //tablespace_name  
-            case e_created              : return "Created"        ; //created
-            case e_last_ddl_time        : return "Modified"       ; //last_ddl_time
-            case e_last_analyzed        : return "Last Analyzed"  ; //last_analyzed    
-            case e_num_rows             : return "Rows"           ;
-            case e_blocks               : return "Blocks"         ;
+            case e_table_name           : return L"Name"           ; //table_name       
+            case e_table_type           : return L"Type"           ; //table_type       
+            case e_compression          : return L"Compression"    ; //compression         
+            case e_tablespace_name      : return L"Tablespace"     ; //tablespace_name  
+            case e_created              : return L"Created"        ; //created
+            case e_last_ddl_time        : return L"Modified"       ; //last_ddl_time
+            case e_last_analyzed        : return L"Last Analyzed"  ; //last_analyzed    
+            case e_num_rows             : return L"Rows"           ;
+            case e_blocks               : return L"Blocks"         ;
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case e_table_name          : return getStr(data(row).table_name          );
             case e_table_type          : return getStr(data(row).table_type          );   
@@ -112,7 +112,7 @@
             case e_num_rows            : return getStr(data(row).num_rows            );
             case e_blocks              : return getStr(data(row).blocks              );
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {

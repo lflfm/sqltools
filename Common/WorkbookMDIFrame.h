@@ -20,91 +20,84 @@
 #ifndef __WorkbookMDIFrame_H__
 #define __WorkbookMDIFrame_H__
 
-#include "FilePanelWnd.h"
-#include "WorkbookBar.h"
+#include "FileExplorerWnd.h"
+#include "RecentFileWnd.h"
 
 
-    class CWorkbookControlBar : public baseCMyBar
-    {
-        afx_msg void OnContextMenu (CWnd*, CPoint);
-        afx_msg void OnCbar_Docking();
-        afx_msg void OnCbar_Hide();
-	    DECLARE_MESSAGE_MAP()
-    };
-
-
-class CWorkbookMDIFrame : public CMDIFrameWnd
+class CWorkbookMDIFrame : public CMDIFrameWndEx
 {
-	DECLARE_DYNCREATE(CWorkbookMDIFrame)
+    DECLARE_DYNCREATE(CWorkbookMDIFrame)
 protected:
-	CWorkbookMDIFrame();
-	virtual ~CWorkbookMDIFrame();
+    CWorkbookMDIFrame();
+    virtual ~CWorkbookMDIFrame();
 
 protected:
-    int IDC_MF_WORKBOOK_BAR;
-    int IDC_MF_FILEPANEL_BAR;
     int IDC_MF_FILEPANEL;
-    const char* m_cszProfileName;
-    const char* m_cszMainFrame;
-    const char* m_cszWP;
+    int IDC_MF_HISTORY;
+    LPCWSTR m_cszProfileName;
+    LPCWSTR m_cszMainFrame;
+    LPCWSTR m_cszWP;
+    BOOL m_MDITabsCtrlTabSwitchesToPrevActive;
 
     HWND m_hActiveChild, m_hLastChild, m_hSkipChild;
     BOOL m_bMDINextSeq;
 
-    BOOL                m_bCloseFileOnTabDblClick;
-    BOOL                m_bSaveMainWinPosition;
-    BOOL                m_bShowed;
     CString             m_strProfileName;
-    CWorkbookBar        m_wndWorkbookBar;
-    CWorkbookControlBar	m_wndFilePanelBar;
-	CFilePanelWnd	    m_wndFilePanel;
-	CFont	            m_font; // default gui font for bar controls
+    FileExplorerWnd     m_wndFilePanel;
+    RecentFileWnd       m_wndRecentFile;
+
+    CFont               m_font; // default gui font for bar controls
     CString             m_defaultFileExtension;
+    bool m_ctxmenuFileProperties, m_ctxmenuTortoiseGit, m_ctxmenuTortoiseSvn;
 
-    int DoCreate (BOOL loadBarState = TRUE);
+    int DoCreate ();
 
-    BOOL VerifyBarState ();
-    BOOL LoadBarState   ();
-    void DockControlBarLeftOf (CControlBar* Bar, CControlBar* LeftOf);
     static bool has_focus (HWND hWndControl);
 
     friend class CMDIChildFrame;
-    void OnCreateChild   (CMDIChildWnd*);
-    void OnDestroyChild  (CMDIChildWnd*);
     void OnActivateChild (CMDIChildWnd*);
-    void OnRenameChild   (CMDIChildWnd*, LPCTSTR);
     int  GetImageByDocument (const CDocument*);
 
-    friend class CFilePanelWnd;
+    friend class OpenFilesWnd;
     void ActivateChild (CMDIChildWnd*);
 
-    afx_msg void OnChangeWorkbookTab (NMHDR* pNMHDR, LRESULT* pResult);
-    afx_msg void OnDblClickOnWorkbookTab (NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnSysCommand (UINT nID, LONG lParam);
 
-protected:
-	DECLARE_MESSAGE_MAP()
 public:
 
-    CFilePanelWnd& GetFilePanelWnd () { return m_wndFilePanel; }
-    const CFilePanelWnd& GetFilePanelWnd () const { return m_wndFilePanel; }
+    FileExplorerWnd& GetFilePanelWnd () { return m_wndFilePanel; }
+    const FileExplorerWnd& GetFilePanelWnd () const { return m_wndFilePanel; }
 
-    void SetCloseFileOnTabDblClick (BOOL closeFileOnTabDblClick) { m_bCloseFileOnTabDblClick = closeFileOnTabDblClick; }
+    RecentFileWnd& GetRecentFileWnd () { return m_wndRecentFile; }
+    RecentFilesListCtrl&  GetRecentFilesListCtrl () { return m_wndRecentFile.GetRecentFilesListCtrl(); }
+
     void SetDefaultFileExtension (const char* ext)  { m_defaultFileExtension = ext; }
-    void GetOrderedChildren (std::vector<CMDIChildWnd*>&) const;
+    void GetOrderedChildren (std::vector<CMDIChildWnd*>&);
+
+    void SetShellContexMenuFileProperties (bool flag) { m_ctxmenuFileProperties = flag; }
+    void SetShellContexMenuTortoiseGit    (bool flag) { m_ctxmenuTortoiseGit = flag; }
+    void SetShellContexMenuTortoiseSvn    (bool flag) { m_ctxmenuTortoiseSvn = flag; }
+
+    void EnsureActiveTabVisible ();
+
+protected:
+    DECLARE_MESSAGE_MAP()
 
     afx_msg void OnClose();
     afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	afx_msg void OnViewWorkbook ();
-	afx_msg void OnUpdateViewWorkbook (CCmdUI* pCmdUI);
     afx_msg void OnViewFilePanel();
+    afx_msg void OnViewHistory();
     afx_msg void OnUpdateViewFilePanel(CCmdUI *pCmdUI);
+    afx_msg void OnUpdateViewHistory(CCmdUI *pCmdUI);
     afx_msg void OnViewFilePanelSync();
-    afx_msg void OnUpdateViewFilePanelSync(CCmdUI *pCmdUI);
-	afx_msg BOOL OnToolTipText(UINT nID, NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg LRESULT OnGetTabToolTip (WPARAM wp, LPARAM lp);
+    afx_msg BOOL OnToolTipText(UINT nID, NMHDR* pNMHDR, LRESULT* pResult);
     virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-	afx_msg void OnLastWindow ();
+    afx_msg void OnLastWindow ();
+    afx_msg void OnPrevWindow ();
+    afx_msg void OnNextWindow ();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
+    virtual BOOL OnShowMDITabContextMenu(CPoint point, DWORD dwAllowedItems, BOOL bTabDrop);
 };
 
 

@@ -32,30 +32,30 @@
 class COEPrintPageSetup : public CDialog
 {
 public:
-	COEPrintPageSetup (OpenEditor::SettingsManager&);
+    COEPrintPageSetup (OpenEditor::SettingsManager&);
 
     OpenEditor::SettingsManager& m_manager;
 
-	BOOL	m_BlackAndWhite, m_LineNumbers;
-	CString m_Header, m_Footer;
+    BOOL	m_BlackAndWhite, m_LineNumbers;
+    std::string m_Header, m_Footer;
     double
         m_LeftMargin, m_RightMargin,
-	    m_TopMargin, m_BottomMargin;
+        m_TopMargin, m_BottomMargin;
 
     //{{AFX_DATA(COEPrintPageSetup)
-	enum { IDD = IDD_OE_PRINT_PAGE_SETUP };
-	//}}AFX_DATA
+    enum { IDD = IDD_OE_PRINT_PAGE_SETUP };
+    //}}AFX_DATA
 
-	//{{AFX_VIRTUAL(COEPrintPageSetup)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	//}}AFX_VIRTUAL
+    //{{AFX_VIRTUAL(COEPrintPageSetup)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);
+    //}}AFX_VIRTUAL
 
 protected:
 
-	//{{AFX_MSG(COEPrintPageSetup)
-	//}}AFX_MSG
-	//DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(COEPrintPageSetup)
+    //}}AFX_MSG
+    //DECLARE_MESSAGE_MAP()
     virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 };
 

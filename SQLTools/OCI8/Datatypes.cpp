@@ -1,6 +1,6 @@
 /* 
 	SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,6 +36,8 @@
 // 08.07.2004 bug fix, Memory corruption on a query with blob columns
 // 07.02.2005 (Ken Clubok) R1105003: Bind variables
 // 13.03.2005 (ak) R1105003: Bind variables
+
+    using namespace std;
 
 namespace OCI8
 {
@@ -127,6 +129,8 @@ void Variable::Bind (Statement& sttm, const char* name)
 {
     OCIBind* bndhp;
 
+    wstring wname = Common::wstr(name);
+
     switch (m_type)
     {
     case SQLT_CLOB:
@@ -134,12 +138,12 @@ void Variable::Bind (Statement& sttm, const char* name)
     case SQLT_BFILEE:
     case SQLT_CFILEE:
         sttm.GetConnect().CHECK(
-            OCIBindByName(sttm.GetOCIStmt(), &bndhp, sttm.GetOCIError(), (OraText*)name, strlen(name),
+            OCIBindByName(sttm.GetOCIStmt(), &bndhp, sttm.GetOCIError(), (OraText*)wname.c_str(), wname.length()*sizeof(wchar_t),
                         &m_buffer, m_size, m_type, &m_indicator, 0, 0, 0, 0, OCI_DEFAULT));
         break;
     default:
         sttm.GetConnect().CHECK(
-            OCIBindByName(sttm.GetOCIStmt(), &bndhp, sttm.GetOCIError(), (OraText*)name, strlen(name),
+            OCIBindByName(sttm.GetOCIStmt(), &bndhp, sttm.GetOCIError(), (OraText*)wname.c_str(), wname.length()*sizeof(wchar_t),
                         m_buffer, m_size, m_type, &m_indicator, 0, 0, 0, 0, OCI_DEFAULT));
         break;
     }
@@ -257,8 +261,10 @@ void RefCursorVariable::Bind (Statement& sttm, const char* name)
 {
     OCIBind* bndhp;
 
+    wstring wname = Common::wstr(name);
+
     sttm.GetConnect().CHECK(
-        OCIBindByName(sttm.GetOCIStmt(), &bndhp, sttm.GetOCIError(), (OraText*)name, strlen(name),
+        OCIBindByName(sttm.GetOCIStmt(), &bndhp, sttm.GetOCIError(), (OraText*)wname.c_str(), wname.length()*sizeof(wchar_t),
                     &m_sttmp, 0, SQLT_RSET, 0, 0, 0, 0, 0, OCI_DEFAULT));
 }
 
@@ -323,28 +329,32 @@ void NativeOciVariable::Define (Statement& sttm, int pos)
 ///////////////////////////////////////////////////////////////////////////////
 
 StringVar::StringVar (int size)
-: Variable(SQLT_LVC, size + sizeof(int))
+: Variable(SQLT_LVC, size * sizeof(wchar_t) + sizeof(int))
 {
 }
 
 StringVar::StringVar (const string& str)
-: Variable(SQLT_LVC, str.size() + sizeof(int))
+: Variable(SQLT_LVC, str.size() * sizeof(wchar_t) + sizeof(int))
 {
     Assign(str.c_str(), str.size());
 }
 
 StringVar::StringVar (const char* str, int size)
-: Variable(SQLT_LVC, (size = (size != -1 ? size : (str ? strlen(str) : 0))) + sizeof(int))
+: Variable(SQLT_LVC, (size = (size != -1 ? size : (str ? strlen(str) : 0))) * sizeof(wchar_t) + sizeof(int))
 {
     Assign(str, size);
 }
 
-void StringVar::Assign (const char* str, int size)
+void StringVar::Assign (const char* _str, int _size)
 {
     ASSERT_EXCEPTION_FRAME;
 
-    if (size == -1)
-        size = strlen(str);
+    if (_size == -1)
+        _size = strlen(_str);
+
+    wstring str = Common::wstr(_str, _size);
+
+    int size = str.length() * sizeof(wchar_t);
 
     if (size)
     {
@@ -353,11 +363,11 @@ void StringVar::Assign (const char* str, int size)
 
         m_indicator = OCI_IND_NOTNULL;
 
-        *(int*)m_buffer = size;
+        *(int*)m_buffer = str.length();
 
         m_size = size + sizeof(int);
 
-        memcpy((char*)m_buffer + sizeof(int), str, size);
+        memcpy((char*)m_buffer + sizeof(int), str.c_str(), size);
     }
     else
     {
@@ -378,12 +388,15 @@ void StringVar::GetString (std::string& strbuff, const std::string& null) const
     {
         // 26.10.2003 workaround for oracle 8.1.6, removed trailing '0' for long columns and trigger text
         int length = *(int*)m_buffer;
+        //int length2 = length;
 
         for (; length > 0; length--)
-            if (((const char*)m_buffer + sizeof(int))[length-1] != 0) 
+            if ( ((const wchar_t*)((char*)m_buffer + sizeof(int)))[length-1] != 0 ) 
                 break;
 
-        strbuff.assign((char*)m_buffer + sizeof(int), length);
+        //strbuff = Common::str((wchar_t*)((char*)m_buffer + sizeof(int)), length2);
+        //_ASSERT(length == length2);
+        strbuff = Common::str((wchar_t*)((char*)m_buffer + sizeof(int)), length);
     }
 }
 
@@ -402,7 +415,7 @@ m_connect(connect)
 NumberVar::NumberVar (Connect& connect, const string& numberFormat)
 : Variable(&m_value, SQLT_VNU, sizeof(m_value)),
 m_connect(connect),
-m_numberFormat(numberFormat)
+m_numberFormat(Common::wstr(numberFormat))
 {
     OCINumberSetZero(m_connect.GetOCIError(), &m_value);
 }
@@ -441,27 +454,27 @@ void NumberVar::GetString (std::string& strbuff, const std::string& null) const
     {
         OraText buffer[256];
         ub4 buffer_size = sizeof(buffer);
-        ub1 fmt_length = (ub1)m_numberFormat.length();
+        ub1 fmt_length = (ub1)m_numberFormat.length() * sizeof(wchar_t);
         const OraText* fmt = fmt_length ? (const OraText*)m_numberFormat.c_str() : 0;
 
         try
         {
             //TODO: improve it - cache it or something else
-            string nls_param;
-            if (!m_connect.GetNlsNumericCharacters().empty())
-            {
-                nls_param = "NLS_NUMERIC_CHARACTERS='";
-                nls_param += m_connect.GetNlsNumericCharacters();
-                nls_param += '\'';
-            }
+            //string nls_param;
+            //if (!m_connect.GetNlsNumericCharacters().empty())
+            //{
+            //    nls_param = "NLS_NUMERIC_CHARACTERS='";
+            //    nls_param += m_connect.GetNlsNumericCharacters();
+            //    nls_param += '\'';
+            //}
 
             m_connect.CHECK(OCINumberToText(m_connect.GetOCIError(), &m_value, 
                 fmt, fmt_length, 
-                (const OraText*)nls_param.c_str(), nls_param.length(),
-                //0/*nls_params*/, 0/*nls_p_length*/,
+                //(const OraText*)nls_param.c_str(), nls_param.length(),
+                0/*nls_params*/, 0/*nls_p_length*/,
                 &buffer_size, buffer));
 
-            strbuff.assign(reinterpret_cast<char*>(buffer), buffer_size);
+            strbuff = Common::str(reinterpret_cast<wchar_t*>(buffer), buffer_size / sizeof(wchar_t));
         }
         catch (const Exception& x)
         {
@@ -501,10 +514,10 @@ m_connect(connect)
 DateVar::DateVar (Connect& connect, const string& dateFormat)
 : Variable(&m_value, SQLT_ODT, sizeof(m_value)),
 m_connect(connect),
-m_dateFormat(dateFormat)
+m_dateFormat(Common::wstr(dateFormat))
 {
     if (m_dateFormat.empty())
-        m_dateFormat = m_connect.GetNlsDateFormat();
+        m_dateFormat = Common::wstr(m_connect.GetNlsDateFormat());
 }
 
 void DateVar::GetString (std::string& strbuff, const std::string& null) const
@@ -513,18 +526,19 @@ void DateVar::GetString (std::string& strbuff, const std::string& null) const
         strbuff = null;
     else
     {
-        OraText buffer[256];
+        wchar_t buffer[256];
         size_t buffer_size = sizeof(buffer);
-        size_t fmt_length = m_dateFormat.length();
-        const OraText* fmt = fmt_length ? (const OraText*)m_dateFormat.c_str() : 0;
+
+        //wstring nlsLanguage = Common::wstr(m_connect.GetNlsLanguage());
 
         m_connect.CHECK(OCIDateToText(m_connect.GetOCIError(), &m_value, 
-            fmt, static_cast<ub1>(fmt_length), 
-            (const OraText*)m_connect.GetNlsLanguage().c_str(), m_connect.GetNlsLanguage().length(),
-            //0/*nls_params*/, 0/*nls_p_length*/,
-            &buffer_size, buffer));
+            (const OraText*)m_dateFormat.c_str(), static_cast<ub1>(m_dateFormat.length() * sizeof(wchar_t)), 
+            //0/*const oratext *fmt*/, 0/*ub1 fmt_length*/, 
+            //(const OraText*)nlsLanguage.c_str(), nlsLanguage.length() * sizeof(wchar_t),
+            0/*nls_params*/, 0/*nls_p_length*/,
+            &buffer_size, (OraText*)buffer));
 
-        strbuff.assign(reinterpret_cast<char*>(buffer), buffer_size);
+        strbuff = Common::str(reinterpret_cast<wchar_t*>(buffer), buffer_size / sizeof(wchar_t));
     }
 }
 
@@ -551,17 +565,17 @@ TimestampVar::TimestampVar (Connect& connect, ESubtype subtype)
 
 TimestampVar::TimestampVar (Connect& connect, ESubtype subtype, const string& dateFormat)
 : NativeOciVariable(connect, static_cast<ub2>(subtype), sqlt_dtype_map(static_cast<ub2>(subtype))),
-m_dateFormat(dateFormat)
+m_dateFormat(Common::wstr(dateFormat))
 {
     if (m_dateFormat.empty())
     {
         switch (subtype)
         {
-        case SQLT_DATE:          m_dateFormat = m_connect.GetNlsDateFormat(); break;
-        case SQLT_TIME:          m_dateFormat = m_connect.GetNlsTimeFormat(); break;
-        case SQLT_TIMESTAMP:     m_dateFormat = m_connect.GetNlsTimestampFormat(); break;
-        case SQLT_TIMESTAMP_TZ:  m_dateFormat = m_connect.GetNlsTimestampTzFormat(); break;
-        case SQLT_TIMESTAMP_LTZ: m_dateFormat = m_connect.GetNlsTimestampTzFormat(); break;
+        case SQLT_DATE:          m_dateFormat = Common::wstr(m_connect.GetNlsDateFormat()); break;
+        case SQLT_TIME:          m_dateFormat = Common::wstr(m_connect.GetNlsTimeFormat()); break;
+        case SQLT_TIMESTAMP:     m_dateFormat = Common::wstr(m_connect.GetNlsTimestampFormat()); break;
+        case SQLT_TIMESTAMP_TZ:  m_dateFormat = Common::wstr(m_connect.GetNlsTimestampTzFormat()); break;
+        case SQLT_TIMESTAMP_LTZ: m_dateFormat = Common::wstr(m_connect.GetNlsTimestampTzFormat()); break;
         }
     }
 }
@@ -572,18 +586,18 @@ void TimestampVar::GetString (std::string& strbuff, const std::string& null) con
         strbuff = null;
     else
     {
-        char buffer[256];
+        wchar_t buffer[256];
         size_t buffer_size = sizeof(buffer);
         size_t fmt_length = m_dateFormat.length();
-        const char* fmt = fmt_length ? m_dateFormat.c_str() : 0;
+        const wchar_t* fmt = fmt_length ? m_dateFormat.c_str() : 0;
 
         m_connect.DateTimeToText((const OCIDateTime*)m_buffer, 
-            fmt, fmt_length, 0/*fsprec*/, 
-            m_connect.GetNlsLanguage().c_str(), m_connect.GetNlsLanguage().length(),
-            //0/*lang_name*/, 0/*lang_length*/,
+            fmt, fmt_length * sizeof(wchar_t), 0/*fsprec*/, 
+            //m_connect.GetNlsLanguage().c_str(), m_connect.GetNlsLanguage().length(),
+            0/*lang_name*/, 0/*lang_length*/,
             buffer, &buffer_size);
 
-        strbuff.assign(buffer, buffer_size);
+        strbuff = Common::str(buffer, buffer_size /  sizeof(wchar_t));
     }
 }
 
@@ -611,12 +625,12 @@ void IntervalVar::GetString (std::string& strbuff, const std::string& null) cons
         strbuff = null;
     else
     {
-        char buffer[256];
-        size_t resultlen;
+        wchar_t buffer[256];
+        size_t result_byte_size;
 
-        m_connect.IntervalToText((const OCIInterval*)m_buffer, 0/*lfprec*/, 2/*fsprec*/, buffer, sizeof(buffer), &resultlen);
+        m_connect.IntervalToText((const OCIInterval*)m_buffer, 0/*lfprec*/, 2/*fsprec*/, buffer, sizeof(buffer), &result_byte_size);
 
-        strbuff.assign(buffer, resultlen);
+        strbuff = Common::str(buffer, result_byte_size / sizeof(wchar_t));
     }
 }
 
@@ -662,27 +676,28 @@ int LobVar::getLobLength () const
     return length;
 }
 
-void LobVar::getString (char* strbuff, int buffsize) const
+void LobVar::getString (char* strbuff, int buffsize, ub2 csid) const
 {
     ASSERT_EXCEPTION_FRAME;
 
     int len = getLobLength();
+    int char_size = (csid == OCI_UTF16ID) ? sizeof(wchar_t) : sizeof(char);
 
-    if (len >= buffsize)
+    if (char_size * len >= buffsize)
         _RAISE(Exception(0, "OCI8::LobVar::GetString(): String buffer overflow!"));
 
     if (!IsNull())
     {
 	    ub4 offset = 1;
-	    ub4 readsize = buffsize;
+	    ub4 readsize = len;
 
         m_connect.CHECK(
             OCILobRead(m_connect.GetOCISvcCtx(), m_connect.GetOCIError(), (OCILobLocator*)m_buffer,
-                      &readsize, offset, strbuff, (ub4)buffsize, 0, 0, 0, (ub1)m_charForm)
+                      &readsize, offset, strbuff, (ub4)buffsize, 0, 0,  csid, (ub1)m_charForm)
             );
     }
 
-    strbuff[len] = 0;
+    //strbuff[char_size * len] = 0;
 }
 
 //void LobVar::makeTemporary (ub1 lobtype)
@@ -700,8 +715,12 @@ void LobVar::GetString (std::string& strbuff, const std::string& null) const
         strbuff = null;
     else
     {
-        strbuff.resize(getLobLength());
-        getString(const_cast<char*>(strbuff.c_str()), strbuff.size()+1);
+        std::wstring wbuff;
+        wbuff.resize(getLobLength()+1);
+        getString((char*)(wbuff.c_str()), sizeof(wchar_t) * wbuff.size(), OCI_UTF16ID);
+        strbuff = Common::str(wbuff);
+        if (strbuff.size() > 0 && *strbuff.rbegin() == 0)
+            strbuff.erase(strbuff.size()-1);
     }
 }
 
@@ -737,8 +756,9 @@ void BLobVar::GetString (std::string& strbuff, const std::string& null) const
         strbuff = null;
     else
     {
-        string bin_data;
-        LobVar::GetString(bin_data, null);
+        std::string bin_data;
+        bin_data.resize(getLobLength()+1);
+        getString((char*)(bin_data.c_str()), bin_data.size(), 0);
         
         ostringstream out;
         out << std::hex << std::setfill('0');
@@ -846,7 +866,7 @@ void HostArray::Assign (int inx, long val)
     Assign(inx, &val, sizeof(val));
 }
 
-const char* HostArray::At (int inx) const
+const void* HostArray::At (int inx) const
 {
     ASSERT_EXCEPTION_FRAME;
 
@@ -878,8 +898,9 @@ void HostArray::Bind (Statement& sttm, int pos)
 void HostArray::Bind (Statement& sttm, const char* name)
 {
     OCIBind* bndhp;
+    wstring wname = Common::wstr(name);
     sttm.GetConnect().CHECK(
-        OCIBindByName(sttm.GetOCIStmt(), &bndhp, sttm.GetOCIError(), (OraText*)name, strlen(name),
+        OCIBindByName(sttm.GetOCIStmt(), &bndhp, sttm.GetOCIError(), (OraText*)wname.c_str(), wname.length()*sizeof(wchar_t),
                        m_buffer, m_elm_buff_size, m_type, m_indicators,
                        m_sizes, 0, m_count, &m_cur_count, OCI_DEFAULT));
 }
@@ -889,7 +910,7 @@ void HostArray::Bind (Statement& sttm, const char* name)
 ///////////////////////////////////////////////////////////////////////////////
 
 StringArray::StringArray (int size, int count)
-: HostArray(SQLT_LVC, size + sizeof(int), count)
+: HostArray(SQLT_LVC, sizeof(wchar_t) * size + sizeof(int), count)
 {
 }
 
@@ -901,12 +922,15 @@ void StringArray::GetString (int inx, std::string& strbuff, const std::string& n
     {
         // 26.10.2003 workaround for oracle 8.1.6, removed trailing '0' for long columns and trigger text
         int length = *(int*)At(inx);
+        //int length2 = length;
 
         for (; length > 0; length--)
-            if ((at(inx) + sizeof(int))[length-1] != 0) 
+            if ( ((const wchar_t*)((const char*)at(inx) + sizeof(int)))[length-1] != 0 ) 
                 break;
 
-        strbuff.assign(At(inx) + sizeof(int), length);
+        //strbuff = Common::str((wchar_t*)(at(inx) + sizeof(int)), length2);
+        //_ASSERT(length == length2);
+        strbuff = Common::str((wchar_t*)((const char*)at(inx) + sizeof(int)), length);
     }
 }
 
@@ -939,7 +963,7 @@ double StringArray::ToDouble (int, double) const
 ///////////////////////////////////////////////////////////////////////////////
 
 NumberArray::NumberArray (int count)
-: HostArray(SQLT_STR, 41, count)
+: HostArray(SQLT_STR, sizeof(wchar_t) * 41, count)
 {
 }
 
@@ -948,7 +972,7 @@ void NumberArray::GetString (int inx, std::string& strbuff, const std::string& n
     if (IsNull(inx))
         strbuff = null;
     else
-        strbuff = At(inx);
+        strbuff = Common::str((const wchar_t*)At(inx));
 }
 
 void NumberArray::GetTime (int, struct tm&, struct tm*) const
@@ -961,21 +985,21 @@ int NumberArray::ToInt (int inx, int null) const
 {
     if (IsNull(inx)) return null;
 
-    return atoi(At(inx));
+    return _wtoi((const wchar_t*)At(inx));
 }
 
 __int64 NumberArray::ToInt64 (int inx, __int64 null) const
 {
     if (IsNull(inx)) return null;
 
-    return _atoi64(At(inx));
+    return _wtoi64((const wchar_t*)At(inx));
 }
 
 double NumberArray::ToDouble (int inx, double null) const
 {
     if (IsNull(inx)) return null;
 
-    return atof(At(inx));
+    return _wtof((const wchar_t*)At(inx));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1002,7 +1026,7 @@ void DateArray::GetString (int inx, std::string& strbuff, const std::string& nul
         strbuff = null;
     else
     {
-        const char* data = At(inx);
+        const char* data = (const char*)At(inx);
         tm time;
         time.tm_isdst = time.tm_wday = time.tm_yday = -1;
         time.tm_year = (data[0] - 100) * 100 + (data[1] - 100) - 1900;
@@ -1021,7 +1045,7 @@ void DateArray::GetTime (int inx, struct tm& time, struct tm* null /*= 0*/) cons
 {
     if (!IsNull(inx))
     {
-        const char* data = At(inx);
+        const char* data = (const char*)At(inx);
         time.tm_isdst = time.tm_wday = time.tm_yday = -1;
         time.tm_year = (data[0] - 100) * 100 + (data[1] - 100) - 1900;
         time.tm_mon  = data[2] - 1;

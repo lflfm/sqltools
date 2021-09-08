@@ -27,19 +27,19 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(CDirTreeCtrl, CTreeCtrl)
 
     static 
-    void GetFileImage (LPCSTR path, TVITEM& item, UINT flags = SHGFI_ICON|SHGFI_SMALLICON/*|SHGFI_OPENICON*/)
+    void GetFileImage (LPCTSTR path, TVITEM& item, UINT flags = SHGFI_ICON|SHGFI_SMALLICON/*|SHGFI_OPENICON*/)
     {
-	    SHFILEINFO shFinfo;
+        SHFILEINFO shFinfo;
         if (SHGetFileInfo(path, 0, &shFinfo, sizeof(shFinfo), flags))
         {
             item.mask |= TVIF_IMAGE|TVIF_SELECTEDIMAGE;
-	        item.iImage = item.iSelectedImage = shFinfo.iIcon;
+            item.iImage = item.iSelectedImage = shFinfo.iIcon;
             DestroyIcon(shFinfo.hIcon); // we only need the index of the system image list
         }
     }
 
     static
-    bool IsFolder (const char* path)
+    bool IsFolder (LPCTSTR path)
     {
         ASSERT_EXCEPTION_FRAME;
 
@@ -81,7 +81,7 @@ IMPLEMENT_DYNCREATE(CDirTreeCtrl, CTreeCtrl)
 
 CDirTreeCtrl::CDirTreeCtrl()
 {
-    m_strFilter.Add("*.*");
+    m_strFilter.Add(_T("*.*"));
 }
 
 CDirTreeCtrl::~CDirTreeCtrl()
@@ -92,9 +92,9 @@ CDirTreeCtrl::~CDirTreeCtrl()
 }
 
 BEGIN_MESSAGE_MAP(CDirTreeCtrl, CTreeCtrl)
-	//{{AFX_MSG_MAP(CDirTreeCtrl)
-	ON_NOTIFY_REFLECT(TVN_ITEMEXPANDED, OnItemexpanded)
-	//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CDirTreeCtrl)
+    ON_NOTIFY_REFLECT(TVN_ITEMEXPANDED, OnItemexpanded)
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -102,57 +102,57 @@ END_MESSAGE_MAP()
 
 BOOL CDirTreeCtrl::DisplayTree(LPCTSTR strRoot, BOOL bFiles)
 {
-	//DWORD dwStyle = GetStyle();   // read the windowstyle
-	//if ( dwStyle & TVS_EDITLABELS ) 
-	//{
-	//	// Don't allow the user to edit ItemLabels
-	//	ModifyStyle( TVS_EDITLABELS , 0 );
-	//}
-	
-	// Display the DirTree with the Rootname e.g. C:\
-	// if Rootname == NULL then Display all Drives on this PC
+    //DWORD dwStyle = GetStyle();   // read the windowstyle
+    //if ( dwStyle & TVS_EDITLABELS ) 
+    //{
+    //	// Don't allow the user to edit ItemLabels
+    //	ModifyStyle( TVS_EDITLABELS , 0 );
+    //}
+    
+    // Display the DirTree with the Rootname e.g. C:\
+    // if Rootname == NULL then Display all Drives on this PC
     // First, we need the system-ImageList
-	
-	DeleteAllItems();
+    
+    DeleteAllItems();
 
-	if ( !GetSysImgList() )
-		return FALSE;
+    if ( !GetSysImgList() )
+        return FALSE;
     m_bFiles = bFiles;  // if TRUE, Display Path- and Filenames 
-	if ( strRoot == NULL || strRoot[0] == '\0' )
-	{
-		if ( !DisplayDrives() )
-			return FALSE;
-		m_strRoot = "";
-	}
+    if ( strRoot == NULL || strRoot[0] == '\0' )
+    {
+        if ( !DisplayDrives() )
+            return FALSE;
+        m_strRoot = _T("");
+    }
     else
-	{
-		m_strRoot = strRoot;
-		if ( m_strRoot.Right(1) != '\\' )
-			m_strRoot += "\\";
-		HTREEITEM hParent = AddItem( TVI_ROOT, m_strRoot );
+    {
+        m_strRoot = strRoot;
+        if ( m_strRoot.Right(1) != '\\' )
+            m_strRoot += "\\";
+        HTREEITEM hParent = AddItem( TVI_ROOT, m_strRoot );
 
         if (!hParent) // 11.06.2002   minimal error handling has been added
         {
             MessageBeep((UINT)-1);
-            AfxMessageBox(CString("Cannot show \"") + m_strRoot + "\".", MB_OK|MB_ICONSTOP);
-	        return FALSE;	
+            AfxMessageBox(CString(_T("Cannot show \"")) + m_strRoot + _T("\"."), MB_OK|MB_ICONSTOP);
+            return FALSE;	
         }
-		DisplayPath( hParent, strRoot );
-	}
-	return TRUE;	
+        DisplayPath( hParent, strRoot );
+    }
+    return TRUE;	
 }
 
 BOOL CDirTreeCtrl::GetSysImgList()
 {
     // 17.11.02   Win98 support
-	SHFILEINFO shFinfo;
-	HIMAGELIST hImgList = (HIMAGELIST)SHGetFileInfo("", 0, &shFinfo, sizeof(shFinfo), SHGFI_SMALLICON|SHGFI_SYSICONINDEX);
+    SHFILEINFO shFinfo;
+    HIMAGELIST hImgList = (HIMAGELIST)SHGetFileInfo(_T(""), 0, &shFinfo, sizeof(shFinfo), SHGFI_SMALLICON|SHGFI_SYSICONINDEX);
 
-	if ( !hImgList )
-	{
-		m_strError = "Cannot retrieve the Handle of SystemImageList!";
-		return FALSE;
-	}
+    if ( !hImgList )
+    {
+        m_strError = "Cannot retrieve the Handle of SystemImageList!";
+        return FALSE;
+    }
 
     if (m_imgList.m_hImageList) 
         m_imgList.Detach();
@@ -170,45 +170,45 @@ BOOL CDirTreeCtrl::GetSysImgList()
         ::SendMessage(m_hWnd, TVM_SETITEMHEIGHT, itemHeight, 0);
     }
 
-	return TRUE;   // OK
+    return TRUE;   // OK
 }
 
 BOOL CDirTreeCtrl::DisplayDrives()
 {
-	//
-	// Displaying the Availible Drives on this PC
-	// This are the First Items in the TreeCtrl
-	//
-	DeleteAllItems();
-	char  szDrives[128];
-	char* pDrive;
+    //
+    // Displaying the Availible Drives on this PC
+    // This are the First Items in the TreeCtrl
+    //
+    DeleteAllItems();
+    TCHAR  szDrives[128*2];
+    TCHAR* pDrive;
 
-	if ( !GetLogicalDriveStrings( sizeof(szDrives), szDrives ) )
-	{
-		m_strError = "Error Getting Logical DriveStrings!";
-		return FALSE;
-	}
+    if ( !GetLogicalDriveStrings( sizeof(szDrives)/sizeof(szDrives[0]), szDrives ) )
+    {
+        m_strError = "Error Getting Logical DriveStrings!";
+        return FALSE;
+    }
 
-	pDrive = szDrives;
-	while( *pDrive )
-	{
-		HTREEITEM hParent = AddItem( TVI_ROOT, pDrive );
+    pDrive = szDrives;
+    while( *pDrive )
+    {
+        HTREEITEM hParent = AddItem( TVI_ROOT, pDrive );
         if (hParent)  // 11.06.2002   minimal error handling has been added
         {
-		    if ( FindSubDir( pDrive ) )
-			    InsertItem( "", 0, 0, hParent );
-		    pDrive += strlen( pDrive ) + 1;
+            if ( FindSubDir( pDrive ) )
+                InsertItem( _T(""), 0, 0, hParent );
+            pDrive += _tcslen( pDrive ) + 1;
         }
         else
         {
             MessageBeep((UINT)-1);
-            AfxMessageBox(CString("Cannot show \"") + pDrive + "\".", MB_OK|MB_ICONSTOP);
+            AfxMessageBox(CString(_T("Cannot show \"")) + pDrive + _T("\"."), MB_OK|MB_ICONSTOP);
             return FALSE;
         }
-	}
+    }
 
 
-	return TRUE;
+    return TRUE;
 
 }
     
@@ -217,51 +217,51 @@ BOOL CDirTreeCtrl::DisplayDrives()
 //
 void CDirTreeCtrl::DisplayPath (HTREEITEM hParent, LPCTSTR strPath, BOOL skipFolders /*= FALSE*/)
 {
-	CWaitCursor wait;
-	CFileFind find;
-	CString strPathFiles = strPath;
-	CSortStringArray strDirArray, strFileArray;
-	
-	if ( strPathFiles.Right(1) != "\\" )
-		strPathFiles += "\\";
-	strPathFiles += "*.*";
+    CWaitCursor wait;
+    CFileFind find;
+    CString strPathFiles = strPath;
+    CSortStringArray strDirArray, strFileArray;
+    
+    if ( strPathFiles.Right(1) != "\\" )
+        strPathFiles += "\\";
+    strPathFiles += "*.*";
 
-	BOOL bFind = find.FindFile( strPathFiles );
-	while ( bFind )
-	{
-		bFind = find.FindNextFile();
-		if ( find.IsDirectory() && !find.IsDots() )
-			strDirArray.Add( find.GetFilePath() );
-		if ( !find.IsDirectory() && m_bFiles )
-			strFileArray.Add( find.GetFilePath() );
-	}
-	strDirArray.Sort();
-	SetRedraw( FALSE );
+    BOOL bFind = find.FindFile( strPathFiles );
+    while ( bFind )
+    {
+        bFind = find.FindNextFile();
+        if ( find.IsDirectory() && !find.IsDots() )
+            strDirArray.Add( find.GetFilePath() );
+        if ( !find.IsDirectory() && m_bFiles )
+            strFileArray.Add( find.GetFilePath() );
+    }
+    strDirArray.Sort();
+    SetRedraw( FALSE );
     
     if (!skipFolders)
     {
-	    for ( int i = 0; i < strDirArray.GetSize(); i++ )
-	    {
+        for ( int i = 0; i < strDirArray.GetSize(); i++ )
+        {
             if (HTREEITEM hItem = AddItem(hParent, strDirArray.GetAt(i))) 
             {
-			    if ( FindSubDir( strDirArray.GetAt(i) ) )
-				    InsertItem( "", 0, 0, hItem );
+                if ( FindSubDir( strDirArray.GetAt(i) ) )
+                    InsertItem( _T(""), 0, 0, hItem );
             }
             else // 11.06.2002   minimal error handling has been added
             {
                 MessageBeep((UINT)-1);
-                if (AfxMessageBox(CString("Cannot show \"") + strDirArray.GetAt(i) + "\".", 
+                if (AfxMessageBox(CString(_T("Cannot show \"")) + strDirArray.GetAt(i) + _T("\"."), 
                         MB_OKCANCEL|MB_ICONSTOP) == IDCANCEL)
                 {
                     SetRedraw(TRUE);
                     return;
                 }
             }
-	    }
+        }
     }
 
-	if ( m_bFiles )
-	{
+    if ( m_bFiles )
+    {
         if (m_strFilter.IsEmpty())
         {
             strFileArray.Sort();
@@ -271,7 +271,7 @@ void CDirTreeCtrl::DisplayPath (HTREEITEM hParent, LPCTSTR strPath, BOOL skipFol
                 if (!hItem) // 11.06.2002 minimal error handling has been added
                 {
                     MessageBeep((UINT)-1);
-                    if (AfxMessageBox(CString("Cannot show \"") + strFileArray.GetAt(i) + "\".", 
+                    if (AfxMessageBox(CString(_T("Cannot show \"")) + strFileArray.GetAt(i) + _T("\"."), 
                             MB_OKCANCEL|MB_ICONSTOP) == IDCANCEL)
                     {
                         SetRedraw(TRUE);
@@ -282,32 +282,32 @@ void CDirTreeCtrl::DisplayPath (HTREEITEM hParent, LPCTSTR strPath, BOOL skipFol
         }
         else
         {
-            std::set<std::string> files;
+            CStringList files;
             
             for (int i = 0; i < m_strFilter.GetCount(); ++i)
             {
                 CString strPathFiles = strPath;
-	            if ( strPathFiles.Right(1) != "\\" )
-		            strPathFiles += "\\";
-	            strPathFiles += m_strFilter.GetAt(i);
+                if ( strPathFiles.Right(1) != _T("\\") )
+                    strPathFiles += _T("\\");
+                strPathFiles += m_strFilter.GetAt(i);
 
-	            BOOL bFind = find.FindFile(strPathFiles);
-	            while ( bFind )
-	            {
-		            bFind = find.FindNextFile();
-		            if (!find.IsDirectory())
-			            files.insert( (LPCSTR)find.GetFilePath() );
-	            }
+                BOOL bFind = find.FindFile(strPathFiles);
+                while ( bFind )
+                {
+                    bFind = find.FindNextFile();
+                    if (!find.IsDirectory())
+                        files.AddTail( (LPCTSTR)find.GetFilePath() );
+                }
             }
 
-            std::set<std::string>::const_iterator it = files.begin();
-            for (; it !=  files.end(); ++it)
+            for (POSITION pos = files.GetHeadPosition(); pos != NULL;)
             {
-                HTREEITEM hItem = AddItem( hParent, it->c_str() );
+                CString file = files.GetNext(pos);
+                HTREEITEM hItem = AddItem( hParent, file);
                 if (!hItem) // 11.06.2002   minimal error handling has been added
                 {
                     MessageBeep((UINT)-1);
-                    if (AfxMessageBox(CString("Cannot show \"") + it->c_str() + "\".", MB_OKCANCEL|MB_ICONSTOP) == IDCANCEL)
+                    if (AfxMessageBox(CString(_T("Cannot show \"")) + file + _T("\"."), MB_OKCANCEL|MB_ICONSTOP) == IDCANCEL)
                     {
                         SetRedraw(TRUE);
                         return;
@@ -315,7 +315,7 @@ void CDirTreeCtrl::DisplayPath (HTREEITEM hParent, LPCTSTR strPath, BOOL skipFol
                 }
             }
         }
-	}
+    }
 
     //
     // change item image to an open folder
@@ -326,16 +326,16 @@ void CDirTreeCtrl::DisplayPath (HTREEITEM hParent, LPCTSTR strPath, BOOL skipFol
     GetFileImage (strPath, item, SHGFI_ICON|SHGFI_SMALLICON|SHGFI_OPENICON);
     SetItem(&item);
     
-	SetRedraw( TRUE );
+    SetRedraw( TRUE );
 }
 
 HTREEITEM CDirTreeCtrl::AddItem (HTREEITEM hParent, LPCTSTR strPath)
 {
-	// Adding the Item to the TreeCtrl with the current Icons
+    // Adding the Item to the TreeCtrl with the current Icons
     CString strTemp = strPath;
     
-	if ( strTemp.Right(1) != '\\' )
-		 strTemp += "\\";
+    if ( strTemp.Right(1) != '\\' )
+         strTemp += "\\";
     
     TVINSERTSTRUCT item;
     memset(&item, 0, sizeof(item));
@@ -344,35 +344,35 @@ HTREEITEM CDirTreeCtrl::AddItem (HTREEITEM hParent, LPCTSTR strPath)
     
     item.item.mask = TVIF_TEXT|TVIF_IMAGE|TVIF_SELECTEDIMAGE;
     GetFileImage(strTemp, item.item, SHGFI_ICON|SHGFI_SMALLICON);
-	
-	if (strTemp.Right(1) == "\\")
-		strTemp.SetAt(strTemp.GetLength() - 1, '\0');
-	
+    
+    if (strTemp.Right(1) == "\\")
+        strTemp.SetAt(strTemp.GetLength() - 1, '\0');
+    
     if (hParent == TVI_ROOT)
-        item.item.pszText = (LPSTR)(LPCSTR)strTemp;
+        item.item.pszText = (LPTSTR)(LPCTSTR)strTemp;
     else
-        item.item.pszText = (LPSTR)(LPCSTR)GetSubPath(strTemp);
+        item.item.pszText = (LPTSTR)(LPCTSTR)GetSubPath(strTemp);
 
-	return this->InsertItem(&item);
+    return this->InsertItem(&item);
 }
 
 LPCTSTR CDirTreeCtrl::GetSubPath(LPCTSTR strPath)
 {
-	//
-	// getting the last SubPath from a PathString
-	// e.g. C:\temp\readme.txt
-	// the result = readme.txt
-	static CString strTemp;
-	int     iPos;
+    //
+    // getting the last SubPath from a PathString
+    // e.g. C:\temp\readme.txt
+    // the result = readme.txt
+    static CString strTemp;
+    int     iPos;
 
-	strTemp = strPath;
-	if ( strTemp.Right(1) == '\\' )
-		 strTemp.SetAt( strTemp.GetLength() - 1, '\0' );
-	iPos = strTemp.ReverseFind( '\\' );
-	if ( iPos != -1 )
-	    strTemp = strTemp.Mid( iPos + 1);
+    strTemp = strPath;
+    if ( strTemp.Right(1) == '\\' )
+         strTemp.SetAt( strTemp.GetLength() - 1, '\0' );
+    iPos = strTemp.ReverseFind( '\\' );
+    if ( iPos != -1 )
+        strTemp = strTemp.Mid( iPos + 1);
 
-	return (LPCTSTR)strTemp;
+    return (LPCTSTR)strTemp;
 }
 
 #if (SUBDIR_ALWAYS==1)
@@ -386,202 +386,180 @@ BOOL CDirTreeCtrl::FindSubDir (LPCTSTR)
 
 BOOL CDirTreeCtrl::FindSubDir (LPCTSTR strPath)
 {
-	CFileFind find;
-	CString   strTemp = strPath;
-	BOOL      bFind;
+    CFileFind find;
+    CString   strTemp = strPath;
+    BOOL      bFind;
 
-	if ( strTemp[strTemp.GetLength()-1] == '\\' )
-		strTemp += "*.*";
-	else
-		strTemp += "\\*.*";
-		
-	bFind = find.FindFile( strTemp );
-	
-	
-	while ( bFind )
-	{
-		bFind = find.FindNextFile();
+    if ( strTemp[strTemp.GetLength()-1] == '\\' )
+        strTemp += "*.*";
+    else
+        strTemp += "\\*.*";
+        
+    bFind = find.FindFile( strTemp );
+    
+    
+    while ( bFind )
+    {
+        bFind = find.FindNextFile();
 
-		if ( find.IsDirectory() && !find.IsDots() )
-		{
-			return TRUE;
-		}
-		if ( !find.IsDirectory() && m_bFiles && !find.IsHidden() )
-			return TRUE;
-		
-	}
+        if ( find.IsDirectory() && !find.IsDots() )
+        {
+            return TRUE;
+        }
+        if ( !find.IsDirectory() && m_bFiles && !find.IsHidden() )
+            return TRUE;
+        
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 #endif//SUBDIR_ALWAYS
 
 void CDirTreeCtrl::OnItemexpanded(NMHDR* pNMHDR, LRESULT* pResult) 
 {
-	NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pNMHDR;
-	CString strPath;
-	 
-	if ( pNMTreeView->itemNew.state & TVIS_EXPANDED )
-	{
-		ExpandItem( pNMTreeView->itemNew.hItem, TVE_EXPAND );
-	}
-	else
-	{
-		//
-		// Delete the Items, but leave one there, for 
-		// expanding the item next time
-		//
-		HTREEITEM hChild = GetChildItem( pNMTreeView->itemNew.hItem );
-				
-		while ( hChild ) 
-		{
-			DeleteItem( hChild );
-			hChild = GetChildItem( pNMTreeView->itemNew.hItem );
-		}
-		InsertItem("", pNMTreeView->itemNew.hItem );
+    NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pNMHDR;
+    CString strPath;
+     
+    if ( pNMTreeView->itemNew.state & TVIS_EXPANDED )
+    {
+        ExpandItem( pNMTreeView->itemNew.hItem, TVE_EXPAND );
+    }
+    else
+    {
+        //
+        // Delete the Items, but leave one there, for 
+        // expanding the item next time
+        //
+        HTREEITEM hChild = GetChildItem( pNMTreeView->itemNew.hItem );
+                
+        while ( hChild ) 
+        {
+            DeleteItem( hChild );
+            hChild = GetChildItem( pNMTreeView->itemNew.hItem );
+        }
+        InsertItem(_T(""), pNMTreeView->itemNew.hItem );
     
         TVITEM item;
         memset(&item, 0, sizeof(item));
         item.hItem = pNMTreeView->itemNew.hItem;
         GetFileImage(GetFullPath(item.hItem), item, SHGFI_ICON|SHGFI_SMALLICON);
         SetItem(&item);
-	}
+    }
 
-	*pResult = 0;
+    *pResult = 0;
 }
 
 CString CDirTreeCtrl::GetFullPath(HTREEITEM hItem)
 {
-	// get the Full Path of the item
-	CString strReturn;
-	CString strTemp;
-	HTREEITEM hParent = hItem;
+    // get the Full Path of the item
+    CString strReturn;
+    CString strTemp;
+    HTREEITEM hParent = hItem;
 
-	strReturn = "";
+    strReturn = _T("");
 
-	while ( hParent )
-	{
-		
-		strTemp  = GetItemText( hParent );
-		strTemp += "\\";
-		strReturn = strTemp + strReturn;
-		hParent = GetParentItem( hParent );
-	}
+    while ( hParent )
+    {
+        
+        strTemp  = GetItemText( hParent );
+        strTemp += "\\";
+        strReturn = strTemp + strReturn;
+        hParent = GetParentItem( hParent );
+    }
     
-	strReturn.TrimRight( '\\' );
+    strReturn.TrimRight( '\\' );
 
     return strReturn;
 
 }
 
-BOOL CDirTreeCtrl::SetSelPath(LPCTSTR strPath)
+// 2018-11-12 reimplemeted
+BOOL CDirTreeCtrl::SetSelPath (LPCTSTR szPath)
 {
-	// Setting the Selection in the Tree
-	HTREEITEM hParent  = TVI_ROOT;
-	int       iLen    = strlen(strPath) + 2;
-	char*     pszPath = new char[iLen];
-	char*     pPath   = pszPath;
-	BOOL      bRet    = FALSE;
-    
-	if ( !IsValidPath( strPath ) )
-	{
-		delete [] pszPath; // this must be added 29.03.99
-		return FALSE;
-	}
-		
-	strcpy( pszPath, strPath );
-	strupr( pszPath );
-	
-	if ( pszPath[strlen(pszPath)-1] != '\\' )
-		strcat( pszPath, "\\" );
-    
-	int iLen2 = strlen( pszPath );
-	
-	for (WORD i = 0; i < iLen2; i++ )
-	{
-		if ( pszPath[i] == '\\' )
-		{
-			SetRedraw( FALSE );
-			pszPath[i] = '\0';
-			hParent = SearchSiblingItem( hParent, pPath );
-			if ( !hParent )  // Not found!
-				break;
-			else
-			{				
-				// Info:
-				// the notification OnItemExpanded 
-				// will not called every time 
-				// after the call Expand. 
-				// You must call Expand with TVE_COLLAPSE | TVE_COLLAPSERESET
-				// to Reset the TVIS_EXPANDEDONCE Flag
-				
-				UINT uState;
-				uState = GetItemState( hParent, TVIS_EXPANDEDONCE );
-				if ( uState )
-				{
-					Expand( hParent, TVE_EXPAND );
-					Expand( hParent, TVE_COLLAPSE | TVE_COLLAPSERESET );
-					InsertItem("", hParent ); // insert a blank child-item
-					Expand( hParent, TVE_EXPAND ); // now, expand send a notification
-				}
-				else
-					Expand( hParent, TVE_EXPAND );
-			}
-			pPath += strlen(pPath) + 1;
-		}
-	}
+    BOOL bRet = FALSE;
 
-	delete [] pszPath;
-	
-	if ( hParent ) // Ok the last subpath was found
-	{		
-        EnsureVisible( hParent ); // 06.08.2002 bug fix, make sure that selected item is visible
-		SelectItem( hParent ); // select the last expanded item
-		bRet = TRUE;
+    HTREEITEM hItem  = TVI_ROOT;
+
+    int curPos = 0;
+    CString path(szPath);
+    CString part = path.Tokenize(_T("\\"), curPos);
+
+    SetRedraw( FALSE );
+
+    while (!part.IsEmpty())
+    {
+        hItem = SearchSiblingItem( hItem, part.MakeUpper());
+        
+        if (!hItem)
+            break;
+
+        // Info:
+        // the notification OnItemExpanded 
+        // will not called every time 
+        // after the call Expand. 
+        // You must call Expand with TVE_COLLAPSE | TVE_COLLAPSERESET
+        // to Reset the TVIS_EXPANDEDONCE Flag
+        UINT uState;
+        uState = GetItemState( hItem, TVIS_EXPANDEDONCE );
+        if ( uState )
+        {
+            Expand( hItem, TVE_EXPAND );
+            Expand( hItem, TVE_COLLAPSE | TVE_COLLAPSERESET );
+            InsertItem(_T(""), hItem ); // insert a blank child-item
+            Expand( hItem, TVE_EXPAND ); // now, expand send a notification
+        }
+        else
+            Expand( hItem, TVE_EXPAND );
+
+        part = path.Tokenize(_T("\\"), curPos);
     }
-	else
-	{
-		bRet = FALSE;
-	}
-	
-	SetRedraw( TRUE );
+    
+    if ( hItem ) // Ok the last subpath was found
+    {
+        EnsureVisible( hItem ); // 06.08.2002 bug fix, make sure that selected item is visible
+        SelectItem( hItem );    // select the last expanded item
+        bRet = TRUE;
+    }
+    
+    SetRedraw( TRUE );
 
     return bRet;
 }
 
 HTREEITEM CDirTreeCtrl::SearchSiblingItem( HTREEITEM hItem, LPCTSTR strText)
 {
-	HTREEITEM hFound = GetChildItem( hItem );
-	CString   strTemp;
-	while ( hFound )
-	{
-		strTemp = GetItemText( hFound );
+    HTREEITEM hFound = GetChildItem( hItem );
+    CString   strTemp;
+    while ( hFound )
+    {
+        strTemp = GetItemText( hFound );
         strTemp.MakeUpper();
-		if ( strTemp == strText )
-			return hFound;
-		hFound = GetNextItem( hFound, TVGN_NEXT );
-	}
+        if ( strTemp == strText )
+            return hFound;
+        hFound = GetNextItem( hFound, TVGN_NEXT );
+    }
 
-	return NULL;
+    return NULL;
 }
 
 
 void CDirTreeCtrl::ExpandItem(HTREEITEM hItem, UINT nCode)
 {	
-	CString strPath;
-	
-	if ( nCode == TVE_EXPAND )
-	{
-		HTREEITEM hChild = GetChildItem( hItem );
-		while ( hChild )
-		{
-			DeleteItem( hChild );
-			hChild = GetChildItem( hItem );
-		}
+    CString strPath;
+    
+    if ( nCode == TVE_EXPAND )
+    {
+        HTREEITEM hChild = GetChildItem( hItem );
+        while ( hChild )
+        {
+            DeleteItem( hChild );
+            hChild = GetChildItem( hItem );
+        }
         
-		strPath = GetFullPath( hItem );
-		DisplayPath( hItem, strPath );
-	}
+        strPath = GetFullPath( hItem );
+        DisplayPath( hItem, strPath );
+    }
 }
 
 BOOL CDirTreeCtrl::IsValidPath(LPCTSTR strPath)
@@ -592,21 +570,21 @@ BOOL CDirTreeCtrl::IsValidPath(LPCTSTR strPath)
 
 void CDirTreeCtrl::RefreshFolder (HTREEITEM hItem)
 {
-	UINT uState = GetItemState(hItem, TVIS_EXPANDEDONCE|TVIS_EXPANDED);
+    UINT uState = GetItemState(hItem, TVIS_EXPANDEDONCE|TVIS_EXPANDED);
 
     if (uState & TVIS_EXPANDED)
     {
-	    SetRedraw(FALSE);
+        SetRedraw(FALSE);
 
-	    if (uState & TVIS_EXPANDEDONCE)
-	    {
-		    Expand( hItem, TVE_EXPAND );
-		    Expand( hItem, TVE_COLLAPSE | TVE_COLLAPSERESET );
-		    InsertItem("", hItem ); // insert a blank child-item
-		    Expand( hItem, TVE_EXPAND ); // now, expand send a notification
-	    }
+        if (uState & TVIS_EXPANDEDONCE)
+        {
+            Expand( hItem, TVE_EXPAND );
+            Expand( hItem, TVE_COLLAPSE | TVE_COLLAPSERESET );
+            InsertItem(_T(""), hItem ); // insert a blank child-item
+            Expand( hItem, TVE_EXPAND ); // now, expand send a notification
+        }
 
-	    SetRedraw(TRUE);
+        SetRedraw(TRUE);
     }
 }
 
@@ -615,10 +593,10 @@ BOOL CDirTreeCtrl::PreCreateWindow (CREATESTRUCT& cs)
     //cs.lpszClass = "SysTreeView32";
     cs.style |= WS_CHILD|WS_TABSTOP|/*TVS_LINESATROOT|*/TVS_HASBUTTONS|TVS_HASLINES|TVS_SHOWSELALWAYS;
 
-	if (!CTreeCtrl::PreCreateWindow(cs))
-		return FALSE;
+    if (!CTreeCtrl::PreCreateWindow(cs))
+        return FALSE;
 
-	return TRUE;
+    return TRUE;
 }
 
 void CDirTreeCtrl::SetFilter (const CString& filter)
@@ -626,11 +604,11 @@ void CDirTreeCtrl::SetFilter (const CString& filter)
     CStringArray arrFilter;
 
     int curPos = 0;
-    CString token = filter.Tokenize(";",curPos);
+    CString token = filter.Tokenize(_T(";"), curPos);
     while (!token.IsEmpty())
     {
         arrFilter.Add(token);
-        token = filter.Tokenize(";",curPos);
+        token = filter.Tokenize(_T(";"), curPos);
     };
 
     SetFilter(arrFilter);
@@ -662,7 +640,7 @@ void CDirTreeCtrl::SetFilter (const CStringArray& filter)
         if (*it)
         {
             CString path = GetFullPath(*it);
-	        DisplayPath(*it, path, TRUE);
+            DisplayPath(*it, path, TRUE);
         }
     }
 }
@@ -670,6 +648,6 @@ void CDirTreeCtrl::SetFilter (const CStringArray& filter)
 void CDirTreeCtrl::ClearFilter ()
 {
     m_strFilter.RemoveAll();
-    m_strFilter.Add("*.*");
+    m_strFilter.Add(_T("*.*"));
     SetFilter(m_strFilter);
 }

@@ -23,7 +23,7 @@ namespace Common
 {
     std::string getOsInfo ();
     std::string getShellInfo ();
-    std::string getDllVersion (const char* dllName);
-    std::string getDllVersionProperty (const char* dllName, const char* propName);
+    std::string getDllVersion (LPCSTR dllName);
+    std::string getDllVersionProperty (LPCSTR dllName, LPCSTR propName);
 
 };//namespace Common

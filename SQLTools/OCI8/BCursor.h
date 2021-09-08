@@ -1,6 +1,6 @@
 /* 
 	SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

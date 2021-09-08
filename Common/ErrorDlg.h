@@ -24,15 +24,17 @@ class CErrorDlg : public CDialog
 {
     CString m_text, m_reportPrefix;
 public:
-	CErrorDlg (LPCSTR text, LPCSTR reportPrefix);
+    CErrorDlg (LPCSTR text, LPCSTR reportPrefix);
+
+    static string m_extraInfo;
 
 // Dialog Data
-	enum { IDD = IDD_ERROR };
+    enum { IDD = IDD_ERROR };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 public:
     virtual BOOL OnInitDialog();
     afx_msg void OnBnClicked_ErrSave();

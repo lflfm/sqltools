@@ -880,6 +880,11 @@ void IterationNode::PutToken (const Token& token, std::auto_ptr<SyntaxNode>& chi
         break;
     case eWhile:
     case eFor:
+        if (!token.reserved && m_varName.empty())
+        {
+            m_varName = token.value;
+            return;
+        }
         SET_AND_RET(token, etLOOP, eLoop);
         break;
     case eLoop:
@@ -891,6 +896,8 @@ void IterationNode::PutToken (const Token& token, std::auto_ptr<SyntaxNode>& chi
         break;
     case eEndLoop:
         SET_AND_RET(token, etSEMICOLON, eComplete);
+        if (m_varName == token.value)
+            return;
         Failure(token.line);
         break;
     }

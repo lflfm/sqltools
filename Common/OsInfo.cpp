@@ -20,6 +20,7 @@
 #include <sstream>
 #include <ModulVer/ModulVer.h>
 #include "osinfo.h"
+#include "MyUtf.h"
 
 namespace Common
 {
@@ -167,17 +168,17 @@ namespace Common
         return "";
     }
 
-    std::string getDllVersion (const char* dllName)
+    std::string getDllVersion (LPCSTR dllName)
     {
         CModuleVersion ver;
 
-    	if (ver.GetFileVersionInfo(dllName))
+        if (ver.GetFileVersionInfo(wstr(dllName).c_str()))
         {
             std::ostringstream o;
 
             o << HIWORD(ver.dwFileVersionMS)
               << '.' << LOWORD(ver.dwFileVersionMS)
-			  << '.' << HIWORD(ver.dwFileVersionLS)
+              << '.' << HIWORD(ver.dwFileVersionLS)
               << '.' << LOWORD(ver.dwFileVersionLS);
 
             return o.str();
@@ -186,12 +187,12 @@ namespace Common
         return "Not found";
     }
 
-    std::string getDllVersionProperty (const char* dllName, const char* propName)
+    std::string getDllVersionProperty (LPCSTR dllName, LPCSTR propName)
     {
         CModuleVersion ver;
 
-    	if (ver.GetFileVersionInfo(dllName))
-            return (LPCSTR)ver.GetValue(propName);
+        if (ver.GetFileVersionInfo(wstr(dllName).c_str()))
+            return str(ver.GetValue(wstr(propName).c_str())).c_str();
 
         return "Not found";
     }

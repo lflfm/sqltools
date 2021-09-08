@@ -22,10 +22,11 @@
 #include <string>
 #include <sstream>
 #include <signal.h>
-#include <COMMON/ExceptionHelper.h>
-#include <COMMON/StackTracer.h>
-#include <COMMON/ErrorDlg.h>
-#include <COMMON/OsInfo.h>
+#include "ExceptionHelper.h"
+#include "StackTracer.h"
+#include "ErrorDlg.h"
+#include "OsInfo.h"
+#include "MyUtf.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,9 +38,9 @@ static char THIS_FILE[] = __FILE__;
 
 static const char* REPORT_TITLE = 
     "Please make a post about this problem in the forum:"
-    "\n\thttp://www.sqltools.net/cgi-bin/yabb25/YaBB.pl"
-    "\nWe need the stack trace (see below) and short description"
-    "\nwhat were you doing when this problem occurred (desirable but optional).\n\n";
+    "\n\thttp://www.sqltools.net/cgi-bin/yabb25/YaBB.pl,"
+    "\ninclude the stack trace (see below) and optionally a short description"
+    "\nwhat were you doing when this problem occurred.\n\n";
 
 namespace Common
 {
@@ -99,7 +100,7 @@ void DefaultHandler (const char* file, int line) // for ...
 static void defaultHandler (const AppException& x)
 {
 #ifdef _AFX
-    AfxMessageBox(x.what(), MB_OK|MB_ICONSTOP);
+    AfxMessageBox(wstr(x.what()).c_str(), MB_OK|MB_ICONSTOP);
 #else
     cerr << "Runtime error (" << x.what() << ")!" << endl;
 #endif//_AFX

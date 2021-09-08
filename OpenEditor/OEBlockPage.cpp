@@ -36,16 +36,8 @@ COEBlockPage::COEBlockPage (SettingsManager& manager)
 : CPropertyPage(COEBlockPage::IDD),
 m_manager(manager)
 {
-    /*
-	//{{AFX_DATA_INIT(COEBlockPage)
-	m_BlockKeepMarking                = FALSE;
-	m_BlockDelAndBSDelete             = FALSE;
-	m_BlockTypingOverwrite            = FALSE;
-	m_BlockTabIndent                  = FALSE;
-	m_ColBlockDeleteSpaceAfterMove    = -1;
-	m_ColBlockCursorToStartAfterPaste = -1;
-	//}}AFX_DATA_INIT
-    */
+    m_psp.dwFlags &= ~PSP_HASHELP;
+
     const OpenEditor::GlobalSettingsPtr settings = m_manager.GetGlobalSettings();
 	m_BlockKeepMarking                = settings->GetBlockKeepMarking()               ;
 	m_BlockDelAndBSDelete             = settings->GetBlockDelAndBSDelete()            ;

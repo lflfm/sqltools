@@ -42,6 +42,7 @@
 #include "ServerBackgroundThread\Thread.h"
 #include "ConnectionTasks.h"
 #include "OpenEditor/OEWorkspaceManager.h"
+#include <ActivePrimeExecutionNote.h>
 
 
 using namespace OpenEditor;
@@ -51,7 +52,7 @@ using namespace OpenEditor;
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
+/*
     struct SrvBkConnect : ServerBackgroundThread::Task
     {
         string m_uid, m_password, m_alias;
@@ -121,7 +122,7 @@ static char THIS_FILE[] = __FILE__;
         {
         }
     };
-
+ */
 void CSQLToolsApp::AfterOpeningConnect ()
 {
     //ServerBackgroundThread::BkgdRequestQueue::Get().Push(ServerBackgroundThread::TaskPtr(new SrvBkConnect(*m_connect)));
@@ -129,26 +130,6 @@ void CSQLToolsApp::AfterOpeningConnect ()
     COLORREF color = GetConnectReadOnly() ? RGB(255, 0, 0) : RGB(0, 0, 0);
 
     m_displayConnectionString = GetConnectDisplayString().c_str();
-
-    //CString mainWndTitle = m_displayConnectionString;
-    //mainWndTitle.MakeUpper();
-    //if (OEWorkspaceManager::Get().HasActiveWorkspace())
-    //{
-    //    CString buffer = ::PathFindFileName(OEWorkspaceManager::Get().GetWorkspacePath().c_str());
-    //    LPSTR ext = ::PathFindExtension(buffer.GetBuffer());
-    //    if (ext && *ext == '.') *ext = 0;
-    //    mainWndTitle += " <";
-    //    mainWndTitle += buffer;
-    //    mainWndTitle += ">";
-    //}
-    //mainWndTitle += " - ";
-    //mainWndTitle += m_orgMainWndTitle;
-
-    //AfxGetMainWnd()->SetWindowText(mainWndTitle);
-    //((CFrameWnd*)AfxGetMainWnd())->SetTitle(mainWndTitle);
-
-    //free((void*)m_pszAppName);
-    //m_pszAppName = strdup(mainWndTitle);
 
     UpdateApplicationTitle();
 
@@ -171,13 +152,6 @@ void CSQLToolsApp::AfterOpeningConnect ()
 
 void CSQLToolsApp::AfterClosingConnect ()
 {
-    //void* ptr = (void*)m_pszAppName;
-    //m_pszAppName = 0;
-    //free((void*)ptr);
-    //m_pszAppName = strdup(m_orgMainWndTitle);
-    //AfxGetMainWnd()->SetWindowText(m_orgMainWndTitle);
-    //((CFrameWnd*)AfxGetMainWnd())->SetTitle(m_orgMainWndTitle);
-
     m_displayConnectionString = m_displayNotConnected;
 
     UpdateApplicationTitle();
@@ -225,12 +199,12 @@ void CSQLToolsApp::OnSqlConnect()
             const ConnectEntry& entry = connectDlg.GetConnectEntry();
 
             if (!entry.m_Direct)
-                ConnectionTasks::SubmitConnectTask(entry.m_User, entry.m_DecryptedPassword, entry.m_Alias, 
+                ConnectionTasks::SubmitConnectTask(Common::str(entry.m_User), Common::str(entry.m_DecryptedPassword), Common::str(entry.m_Alias), 
                     ConnectionTasks::ToConnectionMode(entry.m_Mode), entry.m_Safety ? true : false, entry.m_Slow
                 );
             else
-                ConnectionTasks::SubmitConnectTask(entry.m_User, entry.m_DecryptedPassword, 
-                    entry.m_Host, entry.m_Port, entry.m_Sid, entry.m_UseService, 
+                ConnectionTasks::SubmitConnectTask(Common::str(entry.m_User), Common::str(entry.m_DecryptedPassword), 
+                    Common::str(entry.m_Host), Common::str(entry.m_Port), Common::str(entry.m_Sid), entry.m_UseService, 
                     ConnectionTasks::ToConnectionMode(entry.m_Mode), 
                     entry.m_Safety ? true : false, entry.m_Slow
                 );
@@ -245,32 +219,46 @@ void CSQLToolsApp::OnSqlConnect()
      _DEFAULT_HANDLER_
 }
 
-    struct CommitTask : ServerBackgroundThread::Task
+    struct AppCommitTask : ServerBackgroundThread::Task
     {
-        CommitTask () : ServerBackgroundThread::Task("Commit", 0) {}
-        virtual void DoInBackground (OciConnect& connect) { if (connect.IsOpen()) connect.Commit(); }
+        AppCommitTask () : ServerBackgroundThread::Task("Commit", 0) {}
+        virtual void DoInBackground (OciConnect& connect) 
+        { 
+            if (connect.IsOpen()) 
+            {
+                ActivePrimeExecutionOnOff onOff; // can i do that here?
+                connect.Commit(); 
+            }
+        }
     };
 
 void CSQLToolsApp::OnSqlCommit()
 {
     try { EXCEPTION_FRAME;
         ServerBackgroundThread::FrgdRequestQueue::Get()
-            .Push(ServerBackgroundThread::TaskPtr(new CommitTask));
+            .Push(ServerBackgroundThread::TaskPtr(new AppCommitTask));
     }
     _DEFAULT_HANDLER_
 }
 
-    struct RollbackTask : ServerBackgroundThread::Task
+    struct AppRollbackTask : ServerBackgroundThread::Task
     {
-        RollbackTask () : ServerBackgroundThread::Task("Rollback", 0) {}
-        virtual void DoInBackground (OciConnect& connect) { if (connect.IsOpen()) connect.Commit(); }
+        AppRollbackTask () : ServerBackgroundThread::Task("Rollback", 0) {}
+        virtual void DoInBackground (OciConnect& connect) 
+        { 
+            if (connect.IsOpen()) 
+            {
+                ActivePrimeExecutionOnOff onOff; // can i do that here?
+                connect.Rollback(); 
+            }
+        }
     };
 
 void CSQLToolsApp::OnSqlRollback()
 {
     try { EXCEPTION_FRAME;
         ServerBackgroundThread::FrgdRequestQueue::Get()
-            .Push(ServerBackgroundThread::TaskPtr(new RollbackTask));
+            .Push(ServerBackgroundThread::TaskPtr(new AppRollbackTask));
     }
     _DEFAULT_HANDLER_
 }

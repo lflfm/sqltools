@@ -1,6 +1,6 @@
 /* 
 	SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -219,7 +219,7 @@ public:
 
 protected:
     Connect& m_connect;
-    string m_numberFormat;
+    std::wstring m_numberFormat;
     OCINumber m_value;
 };
 
@@ -237,11 +237,11 @@ public:
     virtual void GetString (string&, const string& null = m_null) const;
 
     virtual bool IsDatetime () const { return true; }
-    virtual string Backcast (const string& val) { return "To_Date('" + val + "', '" + m_dateFormat + "')"; }
+    virtual string Backcast (const string& val) { return "To_Date('" + val + "', '" + Common::str(m_dateFormat) + "')"; }
 
 protected:
     Connect& m_connect;
-    string m_dateFormat;
+    std::wstring m_dateFormat;
     OCIDate m_value;
 };
 
@@ -271,11 +271,11 @@ public:
         return (
             (m_oci_handle_type == OCI_DTYPE_TIMESTAMP_TZ || m_oci_handle_type == OCI_DTYPE_TIMESTAMP_LTZ)
                 ? "To_Timestamp_TZ('" : "To_Timestamp('"
-            ) + val + "', '" + m_dateFormat + "')"; 
+            ) + val + "', '" + Common::str(m_dateFormat) + "')"; 
     }
 
 protected:
-    string m_dateFormat;
+    std::wstring m_dateFormat;
     static ub2 sqlt_dtype_map (ub2);
 };
 
@@ -339,7 +339,7 @@ protected:
     virtual void GetString (string&, const string& null = m_null) const;
 
     int  getLobLength () const;
-    void getString (char* strbuff, int buffsize) const;
+    void getString (char* strbuff, int buffsize, ub2 csid) const;
     //void makeTemporary (ub1 type);
 };
 
@@ -416,8 +416,8 @@ public:
     void Bind (Statement&, const char*);
 
 protected:
-    const char* At (int inx) const;
-    const char* at (int inx) const      { return ((const char*)m_buffer) + m_elm_buff_size * inx; }
+    const void* At (int inx) const;
+    const void* at (int inx) const      { return ((const char*)m_buffer) + m_elm_buff_size * inx; }
 
     friend Statement;
     ub2    m_type;

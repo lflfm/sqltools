@@ -28,12 +28,12 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 BEGIN_MESSAGE_MAP(COETabCtrl, CTabCtrl)
-	//{{AFX_MSG_MAP(CMyTabCtrl)
-	ON_WM_LBUTTONDBLCLK()
-	ON_WM_LBUTTONDOWN()
-	ON_WM_LBUTTONUP()
-	ON_WM_MOUSEMOVE()
-	//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CMyTabCtrl)
+    ON_WM_LBUTTONDBLCLK()
+    ON_WM_LBUTTONDOWN()
+    ON_WM_LBUTTONUP()
+    ON_WM_MOUSEMOVE()
+    //}}AFX_MSG_MAP
     ON_WM_TIMER()
 END_MESSAGE_MAP()
 //	ON_WM_PAINT()
@@ -51,8 +51,8 @@ m_highlighting_for_dragged(true),
 m_highlighting_threshold_exceeded(false),
 m_scrolling(SD_NONE)
 {
-	g_hCurArrow = LoadCursor(NULL, IDC_ARROW);
-	g_hCurNo = LoadCursor(NULL, IDC_NO);
+    g_hCurArrow = LoadCursor(NULL, IDC_ARROW);
+    g_hCurNo = LoadCursor(NULL, IDC_NO);
 }
 
 /** @fn COETabCtrl::~COETabCtrl(void)
@@ -70,7 +70,7 @@ COETabCtrl::~COETabCtrl(void)
  */
 void COETabCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	CRect item_rect;
+    CRect item_rect;
     if (GetItemCount() > 1) {
         TCHITTESTINFO ht;
         ht.pt = point;
@@ -81,14 +81,14 @@ void COETabCtrl::OnLButtonDown(UINT nFlags, CPoint point)
             m_first_selected_item = inx; 
 
         // if everything is ok set flag
-	    m_button_is_down = true;
+        m_button_is_down = true;
             m_button_down_point = point;
             m_highlighting_threshold_exceeded = false;
-	    //SetCursor(g_hCurSize);// set DragCursor
+        //SetCursor(g_hCurSize);// set DragCursor
     }
     }
 
-	CTabCtrl::OnLButtonDown(nFlags, point);
+    CTabCtrl::OnLButtonDown(nFlags, point);
 }
 
     // helper function
@@ -121,7 +121,7 @@ void COETabCtrl::OnLButtonDown(UINT nFlags, CPoint point)
  */
 void COETabCtrl::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	CTabCtrl::OnLButtonUp(nFlags, point);
+    CTabCtrl::OnLButtonUp(nFlags, point);
 
     if (m_button_is_down)
     {
@@ -137,7 +137,7 @@ void COETabCtrl::OnLButtonUp(UINT nFlags, CPoint point)
     m_first_selected_item = -1;
     m_button_is_down = false;
         m_scrolling = SD_NONE;
-	SetCursor(g_hCurArrow);
+    SetCursor(g_hCurArrow);
     }
 }
 
@@ -146,23 +146,23 @@ void COETabCtrl::OnLButtonUp(UINT nFlags, CPoint point)
     BOOL move_item (CTabCtrl* pTabWnd, int oldInx, int newInx, bool highlight)
     {
         TCITEM item;
-        char item_buf[255];
-		item.mask = TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM; // get all params
-		item.pszText = item_buf;
-		item.cchTextMax = sizeof(item_buf);
+        TCHAR item_buf[255];
+        item.mask = TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM; // get all params
+        item.pszText = item_buf;
+        item.cchTextMax = sizeof(item_buf)/sizeof(TCHAR);
 
         if (highlight)
             pTabWnd->HighlightItem(oldInx, FALSE);
                     
-		if(pTabWnd->GetItem(oldInx, &item) == TRUE) {
+        if(pTabWnd->GetItem(oldInx, &item) == TRUE) {
             pTabWnd->SetCurSel(newInx);
-			pTabWnd->DeleteItem(oldInx);
-			pTabWnd->InsertItem(newInx, &item);
+            pTabWnd->DeleteItem(oldInx);
+            pTabWnd->InsertItem(newInx, &item);
             pTabWnd->SetCurSel(newInx);
             if (highlight)
                 pTabWnd->HighlightItem(newInx);
             return TRUE;
-		}
+        }
 
         if (highlight)
             pTabWnd->HighlightItem(oldInx);
@@ -180,7 +180,7 @@ void COETabCtrl::OnMouseMove(UINT nFlags, CPoint point)
 {
     TRACE("COETabCtrl::OnMouseMove\n");
 
-	if(m_button_is_down == true) 
+    if(m_button_is_down == true) 
     {
         if (m_highlighting_for_dragged)
         {
@@ -263,8 +263,8 @@ void COETabCtrl::OnMouseMove(UINT nFlags, CPoint point)
                     SetTimer(DRAG_MOUSE_TIMER, DRAG_MOUSE_TIMER_ELAPSE, NULL);
             }
         }
-	}
-	CTabCtrl::OnMouseMove(nFlags, point);
+    }
+    CTabCtrl::OnMouseMove(nFlags, point);
 }
 
 void COETabCtrl::OnTimer (UINT nIDEvent)
@@ -294,16 +294,16 @@ void COETabCtrl::OnTimer (UINT nIDEvent)
                             ++m_first_selected_item;
                             TRACE("Scrolled\n");
                             return;
-					    }
-				    }
+                        }
+                    }
                 }
                 break;
-		    }
+            }
         }
         TRACE("Scrolling deactivated\n");
         m_scrolling = SD_NONE;
         KillTimer(DRAG_MOUSE_TIMER);
-	}
+    }
     else
         CTabCtrl::OnTimer(nIDEvent);
 }
@@ -326,70 +326,70 @@ void COETabCtrl::OnLButtonDblClk(UINT nFlags, CPoint point)
 
     GetOwner()->SendMessage(WM_NOTIFY, (WPARAM)hmhdr.idFrom, (LPARAM)&hmhdr);  
 
-	CTabCtrl::OnLButtonDblClk(nFlags, point);
+    CTabCtrl::OnLButtonDblClk(nFlags, point);
 }
 
 /* some experiments with Whell - it doesn't work
 BOOL COETabCtrl::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 {
-	int current_sel=GetCurSel();
-	if(zDelta > 0) {
-		if(current_sel+1 >= GetItemCount())
-			current_sel=0;
-		SetCurSel(current_sel);
-	} else if(zDelta < 0) {
-		if(current_sel-1 <= 0)
-			current_sel=GetItemCount();
-		SetCurSel(current_sel);
-	}
-	return FALSE;
+    int current_sel=GetCurSel();
+    if(zDelta > 0) {
+        if(current_sel+1 >= GetItemCount())
+            current_sel=0;
+        SetCurSel(current_sel);
+    } else if(zDelta < 0) {
+        if(current_sel-1 <= 0)
+            current_sel=GetItemCount();
+        SetCurSel(current_sel);
+    }
+    return FALSE;
 }*/
 
 /* some experiments with custom OnPaint
 void COETabCtrl::OnPaint()
 {
-	//GetWindowRect(rcBar);
-	CPaintDC dc(this);
-	CPen penDiv, *oldPen;
+    //GetWindowRect(rcBar);
+    CPaintDC dc(this);
+    CPen penDiv, *oldPen;
 
-	int oldBkMode, drawColor;
-	CRect rectItem;
-	TC_ITEM tcItem;
-	char tcItemBuf[255];
+    int oldBkMode, drawColor;
+    CRect rectItem;
+    TC_ITEM tcItem;
+    char tcItemBuf[255];
 
-	tcItem.mask=TCIF_TEXT;
-	tcItem.pszText=tcItemBuf;
-	tcItem.cchTextMax=255;
+    tcItem.mask=TCIF_TEXT;
+    tcItem.pszText=tcItemBuf;
+    tcItem.cchTextMax=255;
 
-	penDiv.CreatePen(PS_SOLID, 1, ::GetSysColor(COLOR_BTNSHADOW));
-	oldPen=dc.SelectObject(&penDiv);
-	oldBkMode=dc.SetBkMode(TRANSPARENT);
+    penDiv.CreatePen(PS_SOLID, 1, ::GetSysColor(COLOR_BTNSHADOW));
+    oldPen=dc.SelectObject(&penDiv);
+    oldBkMode=dc.SetBkMode(TRANSPARENT);
 
-	// for each item get info & draw
-	for(int i=0; i < this->GetItemCount(); i++) {
-		this->GetItemRect(i, rectItem);
-		this->SetItemSize(CSize(120,20));
-		if(this->GetItem(i,&tcItem) == TRUE) {
+    // for each item get info & draw
+    for(int i=0; i < this->GetItemCount(); i++) {
+        this->GetItemRect(i, rectItem);
+        this->SetItemSize(CSize(120,20));
+        if(this->GetItem(i,&tcItem) == TRUE) {
 
-			// selected or not
-			if(i == this->GetCurSel()) {
-				drawColor=::GetSysColor(COLOR_BTNFACE);
-				dc.SetTextColor(::GetSysColor(COLOR_BTNTEXT));
-			} else {
-				drawColor=::GetSysColor(COLOR_BTNFACE);
-				drawColor += (24+(24<<8)+(24<<16));
-				dc.SetTextColor(::GetSysColor(COLOR_GRAYTEXT));
-			}
-			// fill rect
-			dc.FillSolidRect(rectItem, drawColor);
-			// divider
-			dc.MoveTo(rectItem.right, rectItem.top+2);
-			dc.LineTo(rectItem.right, rectItem.bottom);
-			// text inside
-			dc.DrawText(tcItem.pszText, strlen(tcItem.pszText), rectItem, DT_CENTER|DT_VCENTER);
-		}
-	}
-	dc.SetBkMode(oldBkMode);
-	dc.SelectObject(oldPen);
+            // selected or not
+            if(i == this->GetCurSel()) {
+                drawColor=::GetSysColor(COLOR_BTNFACE);
+                dc.SetTextColor(::GetSysColor(COLOR_BTNTEXT));
+            } else {
+                drawColor=::GetSysColor(COLOR_BTNFACE);
+                drawColor += (24+(24<<8)+(24<<16));
+                dc.SetTextColor(::GetSysColor(COLOR_GRAYTEXT));
+            }
+            // fill rect
+            dc.FillSolidRect(rectItem, drawColor);
+            // divider
+            dc.MoveTo(rectItem.right, rectItem.top+2);
+            dc.LineTo(rectItem.right, rectItem.bottom);
+            // text inside
+            dc.DrawText(tcItem.pszText, strlen(tcItem.pszText), rectItem, DT_CENTER|DT_VCENTER);
+        }
+    }
+    dc.SetBkMode(oldBkMode);
+    dc.SelectObject(oldPen);
 }
 */

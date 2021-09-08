@@ -31,16 +31,16 @@
 class COEFileManagerPage : public CPropertyPage
 {
 public:
-	COEFileManagerPage (SettingsManager& manager);
-	virtual ~COEFileManagerPage();
+    COEFileManagerPage (SettingsManager& manager);
+    virtual ~COEFileManagerPage();
 
 // Dialog Data
-	enum { IDD = IDD_OE_FILE_MANAGER };
+    enum { IDD = IDD_OE_FILE_MANAGER };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 public:
     virtual BOOL OnApply();
 
@@ -49,8 +49,12 @@ public:
     BOOL m_FileManagerTooltips;
     BOOL m_FileManagerPreviewInTooltips;
     UINT m_FileManagerPreviewLines;
-    BOOL m_FileManagerShellContexMenu;
-    std::string m_FileManagerShellContexMenuFilter;
+    
+    //BOOL m_FileManagerShellContexMenu;
+    //CString m_FileManagerShellContexMenuFilter;
+    BOOL m_FileManagerShellContexMenuProperties ;
+    BOOL m_FileManagerShellContexMenuTortoiseGIT;
+    BOOL m_FileManagerShellContexMenuTortoiseSVN;
 
     bool m_HistoryRestoreEditorState;
     int  m_HistoryFiles;

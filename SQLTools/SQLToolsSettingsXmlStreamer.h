@@ -33,7 +33,7 @@
 class SQLToolsSettingsXmlStreamer : XmlStreamerBase
 {
 public:
-    SQLToolsSettingsXmlStreamer (const std::string& filename, bool backup = false);
+    SQLToolsSettingsXmlStreamer (const std::wstring& filename, bool backup = false);
 
     void operator >> (SQLToolsSettings& settings)           { XmlStreamerBase::read(&settings); }
     void operator << (const SQLToolsSettings& settings)     { XmlStreamerBase::write(&settings); }

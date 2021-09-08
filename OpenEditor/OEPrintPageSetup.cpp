@@ -21,6 +21,7 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "OpenEditor/OEPrintPageSetup.h"
+#include "Common/DlgDataExt.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -35,7 +36,7 @@ static char THIS_FILE[] = __FILE__;
 #define OEPP_SET_PROPERTY(N) \
     settings->SetPrint##N(m_##N, false);
 #define OEPP_SET_STR_PROPERTY(N) \
-    settings->SetPrint##N((const char*)m_##N, false);
+    settings->SetPrint##N((const char*)m_##N.c_str(), false);
 
 
 /////////////////////////////////////////////////////////////////////////////

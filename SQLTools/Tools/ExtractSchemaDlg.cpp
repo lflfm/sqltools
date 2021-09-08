@@ -30,6 +30,7 @@
 #include "ExtractDDLSettingsXmlStreamer.h"
 #include <COMMON\ErrorDlg.h>
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace OraMetaDict;
 using namespace ServerBackgroundThread;
@@ -46,7 +47,7 @@ static char THIS_FILE[] = __FILE__;
 // CExtractSchemaDlg
 
 CExtractSchemaDlg::CExtractSchemaDlg(CWnd* pParentWnd)
-: CPropertySheet("Extract Schema DDL", pParentWnd),
+: CPropertySheet(L"Extract Schema DDL", pParentWnd),
   m_MainPage  (m_DDLSettings),
   m_FilterPage(m_DDLSettings),
   m_OptionPage(m_DDLSettings)
@@ -54,9 +55,9 @@ CExtractSchemaDlg::CExtractSchemaDlg(CWnd* pParentWnd)
     m_psh.dwFlags |= PSH_NOAPPLYNOW;
     m_psh.dwFlags &= ~PSH_HASHELP;
 
-    ExtractDDLSettingsXmlStreamer("schemaddl.xml") >> m_DDLSettings;
+    ExtractDDLSettingsXmlStreamer(L"schemaddl.xml") >> m_DDLSettings;
 
-    m_DDLSettings.m_strDbAlias = theApp.GetConnectGlobalName();
+    m_DDLSettings.m_strDbAlias = Common::wstr(theApp.GetConnectGlobalName());
 
     m_MainPage.m_psp.dwFlags &= ~PSP_HASHELP;
     m_FilterPage.m_psp.dwFlags &= ~PSP_HASHELP;
@@ -81,11 +82,11 @@ BOOL CExtractSchemaDlg::OnInitDialog()
         
     HWND hItem = ::GetDlgItem(m_hWnd, IDOK); 
     _ASSERTE(hItem);
-    ::SetWindowText(hItem, "Load");
+    ::SetWindowText(hItem, L"Load");
 
     hItem = ::GetDlgItem(m_hWnd, IDCANCEL);
     _ASSERTE(hItem);
-    ::SetWindowText(hItem, "Close");
+    ::SetWindowText(hItem, L"Close");
         
     return bResult;
 }
@@ -108,7 +109,9 @@ BOOL CExtractSchemaDlg::OnInitDialog()
         {
             try
             {
-                string path;
+                ActivePrimeExecutionOnOff onOff;
+
+                std::wstring path;
                 MakeFolders(path, m_settings);
 
                 Dictionary dict;
@@ -163,7 +166,7 @@ void CExtractSchemaDlg::OnOK()
         if (m_FilterPage.m_hWnd) m_FilterPage.UpdateData();
         if (m_OptionPage.m_hWnd) m_OptionPage.UpdateData();
 
-        ExtractDDLSettingsXmlStreamer("schemaddl.xml") << m_DDLSettings;
+        ExtractDDLSettingsXmlStreamer(L"schemaddl.xml") << m_DDLSettings;
 
         if (GetActiveIndex())
             SetActivePage(0);

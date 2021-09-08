@@ -41,7 +41,7 @@ void default_oci_handler (const OciException& x, const char* file, int line)
     case 12545:
     case 12571:
 #ifdef _AFX
-        AfxMessageBox(x.what(), MB_OK|MB_ICONEXCLAMATION);
+        AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONEXCLAMATION);
 #else
         std::cerr << x.what() << endl;
 #endif//_AFX
@@ -58,7 +58,7 @@ void default_oci_handler (const OciException& x, const char* file, int line)
     case 2399: // exceeded maximum connect time
 #ifdef _AFX
         MessageBeep(MB_ICONSTOP);
-        AfxMessageBox(x.what(), MB_OK|MB_ICONSTOP);
+        AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONSTOP);
 #else
         std::cerr << x.what() << endl;
 #endif//_AFX
@@ -68,7 +68,7 @@ void default_oci_handler (const OciException& x, const char* file, int line)
         TRACE("OCI exception: %s at %s.%d", x.what(), file, line);
 #ifdef _AFX
         MessageBeep(MB_ICONSTOP);
-        AfxMessageBox(x.what(), MB_OK|MB_ICONSTOP);
+        AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONSTOP);
 #else
         std::cerr << x.what() << endl;
 #endif//_AFX

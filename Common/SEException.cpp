@@ -17,8 +17,8 @@
 */
 
 #include "stdafx.h"
-#include <COMMON/StackTracer.h>
-#include <COMMON/SEException.h>
+#include "StackTracer.h"
+#include "SEException.h"
 
 
 namespace Common

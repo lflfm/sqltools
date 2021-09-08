@@ -33,19 +33,44 @@
     class COEditorView;
     namespace Common { class CPropertySheetMem; }
     class RecentFileList;
+    class TiXmlElement;
 
 class COEDocument : public CDocument, public CFileWatchClient
 {
+public:
+    struct Encoding
+    {
+        int codepage, bom;
+        Encoding () : codepage(0), bom(0) {}
+        Encoding (int cp, int bm) : codepage(cp), bom(bm) {}
+    };
+private:
+    class UndoFileEncoding : public OpenEditor::UndoBase
+    {
+    public:
+        UndoFileEncoding (COEDocument& document, Encoding oldEncoding, Encoding newEncoding);
+        virtual void Undo (OpenEditor::UndoContext&) const;
+        virtual void Redo (OpenEditor::UndoContext&) const;
+        virtual unsigned GetMemUsage() const;
+    private:
+        COEDocument& m_document;
+        Encoding m_oldEncoding, m_newEncoding;
+    };
+    
+    friend UndoFileEncoding;
+
     // for a modified sign '*' in a title bar
-    std::string m_orgTitle, m_extension;
+    CString m_orgTitle, m_extension;
     bool m_orgModified, m_extensionInitialized;
     __int64 m_orgFileTime, m_orgFileSize;
+    Encoding  m_openEncoding, // set on initial load and on save, used in reload, can be changed if it's not utf16
+              m_saveEncoding; // set on load, can be changed by convert
     static bool m_enableOpenUnexisting;
 
     // for backup processing only
     bool m_newOrSaveAs;
-    std::string m_lastBackupPath;
-    void backupFile (LPCTSTR lpszPathName);
+    CString m_lastBackupPath;
+    void backupFile (LPCWSTR lpszPathName);
 
     // settings container
     OpenEditor::Settings m_settings;
@@ -56,7 +81,8 @@ class COEDocument : public CDocument, public CFileWatchClient
     Common::MemoryMappedFile m_mmfile;
     // allocated memory when file locking is disabled
     LPVOID m_vmdata;
-    void loadFile (const char* path, bool reload = false, bool external = false, bool modified = false);
+    unsigned long m_vmsize;
+    void loadFile (LPCWSTR path, bool reload = false, bool external = false, bool modified = false);
 
     static OpenEditor::SettingsManager* m_pSettingsManager;
     static OpenEditor::Searcher m_searcher;
@@ -77,7 +103,7 @@ protected:
 public:
     void SetText (const char*, unsigned long);
 
-    const::string& GetOrgTitle () const { return m_orgTitle; }
+    const CString& GetOrgTitle () const { return m_orgTitle; }
 
     static bool GetEnableOpenUnexisting () { return m_enableOpenUnexisting; }
     static void SetEnableOpenUnexisting (bool enable) { m_enableOpenUnexisting = enable; }
@@ -99,7 +125,7 @@ public:
     static void ReloadTemplates ();
     static void SaveSettingsManager ();
     static bool ShowSettingsDialog (SettingsDialogCallback* = 0);
-    static void ShowTemplateDialog (OpenEditor::TemplatePtr, int index, const string& = string());
+    static void ShowTemplateDialog (OpenEditor::TemplatePtr, int index, const std::wstring& = std::wstring());
     static const OpenEditor::SettingsManager& GetSettingsManager ();
     static void DestroySettingsManager ();
 
@@ -110,8 +136,8 @@ public:
     void SetClassSetting (const char* name)          { if (name) getSettingsManager().SetClassSettingsByLang(name, m_settings); }
     void DefaultFileFormat ()                        { m_storage.SetFileFormat((OpenEditor::EFileFormat)GetSettings().GetFileCreateAs(), false); }
 
-    bool IsLocked  () const;
-    virtual void Lock (bool readOnly);
+    bool IsContentLocked  () const;
+    virtual void LockContent (bool lock);
 
     bool IsNewDocument () const                     { return m_strPathName.IsEmpty() ? true : false; }
 
@@ -125,22 +151,26 @@ public:
     virtual BOOL IsModified();
     RecentFileList* GetRecentFileList();
     virtual BOOL OnNewDocument();
-    virtual void SetTitle(LPCTSTR lpszTitle);
-    virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
-    virtual void SetPathName(LPCTSTR lpszPathName, BOOL bAddToMRU = TRUE);
-    virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
+    virtual void SetTitle(LPCWSTR lpszTitle);
+    virtual BOOL OnSaveDocument(LPCWSTR lpszPathName);
+    virtual void SetPathName(LPCWSTR lpszPathName, BOOL bAddToMRU = TRUE);
+    virtual BOOL OnOpenDocument(LPCWSTR lpszPathName);
     virtual BOOL SaveModified (); 
     void SetModifiedFlag (BOOL bModified = TRUE);
+    void ClearUndo ();
     virtual BOOL DoFileSave();
-    virtual BOOL DoSave(LPCTSTR lpszPathName, BOOL bReplace = TRUE);
+    virtual BOOL DoSave(LPCWSTR lpszPathName, BOOL bReplace = TRUE);
     virtual void UpdateTitle ();
     virtual BOOL OnIdle(LONG);
     virtual void OnTimer (UINT /*nIDEvent*/) {};
     virtual void OnCloseDocument ();
+    void SaveEncoding (TiXmlElement&) const;
+    void RestoreEncoding (const TiXmlElement&);
+    COEditorView* GetFirstEditorView ();
 
 protected:
-    BOOL doSave  (LPCTSTR lpszPathName, BOOL bReplace, BOOL bMove);
-    BOOL doSave2 (LPCTSTR lpszPathName, BOOL bReplace = TRUE, BOOL bMove = FALSE);
+    BOOL doSave  (LPCWSTR lpszPathName, BOOL bReplace, BOOL bMove);
+    BOOL doSave2 (LPCWSTR lpszPathName, BOOL bReplace = TRUE, BOOL bMove = FALSE);
     //{{AFX_MSG(COEDocument)
     afx_msg void OnEditPrintPageSetup();
     afx_msg void OnEditFileSettings();
@@ -150,8 +180,9 @@ public:
     afx_msg void OnFileReload();
     afx_msg void OnUpdate_FileReload(CCmdUI *pCmdUI);
     afx_msg void OnUpdate_FileLocation(CCmdUI *pCmdUI);
-    afx_msg void OnUpdate_FileType  (CCmdUI* pCmdUI);
-    afx_msg void OnUpdate_FileLines (CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_EncodingInd(CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_FileTypeInd(CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_FileLinesInd(CCmdUI* pCmdUI);
 
     afx_msg void OnEditViewLineNumbers ();
     afx_msg void OnUpdate_EditViewLineNumbers (CCmdUI *pCmdUI);
@@ -173,11 +204,32 @@ public:
     afx_msg void OnFileRename ();
     afx_msg void OnFileCopyLocation();
     afx_msg void OnUpdate_FileCopyLocation (CCmdUI* pCmdUI);
+    afx_msg void OnFileCopyName ();
 
     afx_msg void OneditFileFormatWinows ();
     afx_msg void OneditFileFormatUnix   ();
     afx_msg void OneditFileFormatMac    ();
     afx_msg void OnUpdate_FileFormat (CCmdUI* pCmdUI);
+
+    int  GetSaveEncodingCodepage () const { return m_saveEncoding.codepage; }
+    int  GetEncodingCodepage () const;
+    void SetEncodingCodepage (int);
+    afx_msg void OnEditEncodingAnsi ();
+    afx_msg void OnEditEncodingOem ();
+    afx_msg void OnEditEncodingUtf8 ();
+    afx_msg void OnUpdate_Encoding (CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_EncodingCodepage (CCmdUI* pCmdUI);
+    afx_msg BOOL OnEncodingCodepage (UINT nID);
+
+    void SetFileEncodingCodepage (int, int);
+    afx_msg void OnFileEncodingAnsi      ();
+    afx_msg void OnFileEncodingOem       ();
+    afx_msg void OnFileEncodingUtf8      ();
+    afx_msg void OnFileEncodingUtf8wBom  ();
+    afx_msg void OnFileEncodingUtf16wBom ();
+    afx_msg void OnUpdate_FileEncoding  (CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_FileEncodingCodepage (CCmdUI* pCmdUI);
+    afx_msg BOOL OnFileEncodingCodepage (UINT nID);
 };
 
 inline
@@ -206,13 +258,13 @@ inline
         COEDocument::GetSettingsManager () { return getSettingsManager(); }
 
 inline
-    bool COEDocument::IsLocked  () const
+    bool COEDocument::IsContentLocked  () const
     {
         return m_storage.IsLocked();
     }
 
 inline
-    void COEDocument::Lock (bool lock)
+    void COEDocument::LockContent (bool lock)
     {
         m_storage.Lock(lock);
     }

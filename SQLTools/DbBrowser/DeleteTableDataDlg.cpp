@@ -35,8 +35,8 @@ CDeleteTableDataDlg::CDeleteTableDataDlg(CWnd* pParent /*=NULL*/)
     , m_commitAfter(0)
     */
 {
-    m_commit      = AfxGetApp()->GetProfileInt("DeleteTableDataOptions", "Commit",  0);
-    m_commitAfter = AfxGetApp()->GetProfileInt("DeleteTableDataOptions", "CommitAfter", 0);
+    m_commit      = AfxGetApp()->GetProfileInt(L"DeleteTableDataOptions", L"Commit",  0);
+    m_commitAfter = AfxGetApp()->GetProfileInt(L"DeleteTableDataOptions", L"CommitAfter", 0);
 }
 
 CDeleteTableDataDlg::~CDeleteTableDataDlg()
@@ -59,8 +59,8 @@ void CDeleteTableDataDlg::DoDataExchange(CDataExchange* pDX)
 void CDeleteTableDataDlg::OnOK()
 {
     CDialog::OnOK();
-    AfxGetApp()->WriteProfileInt("DeleteTableDataOptions", "Commit",  m_commit);
-    AfxGetApp()->WriteProfileInt("DeleteTableDataOptions", "CommitAfter", m_commitAfter);
+    AfxGetApp()->WriteProfileInt(L"DeleteTableDataOptions", L"Commit",  m_commit);
+    AfxGetApp()->WriteProfileInt(L"DeleteTableDataOptions", L"CommitAfter", m_commitAfter);
 }
 
 LRESULT CDeleteTableDataDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)

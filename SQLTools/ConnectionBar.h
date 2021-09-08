@@ -1,6 +1,6 @@
 /*
 	SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,46 +21,26 @@
 
 #include "LabelWithWaitBar.h"
 
+class ConnectionButton;
 // ConnectionBar
 
-class CConnectionLabel : public CStatic
-{
-    CString  m_text;
-    COLORREF m_textColor;
-
-public:
-    const CString GetText() const { return m_text; }
-
-    void SetConnectionDescription (LPCSTR pText, COLORREF color);
-    void SetColor (COLORREF color);
-    virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
-};
-
-class ConnectionBar : public CToolBar
+class ConnectionBar : public CMFCToolBar
 {
     /*
 	DECLARE_DYNAMIC(ConnectionBar)
     */
-
-    CSize m_btnDelta;
-    LabelWithWaitBar m_wndLabel;
-
 public:
 	ConnectionBar();
 	virtual ~ConnectionBar();
 
-    const CString GetText() const { return m_wndLabel.GetText(); }
 
     BOOL Create (CWnd* pParent, UINT id);
 
-    void SetConnectionDescription (LPCSTR pText, COLORREF color)
-        { m_wndLabel.SetText(pText, color); }
-
-    void SetColor (COLORREF color)
-        { m_wndLabel.SetText(m_wndLabel.GetText(), color); }
-
-    void StartAnimation (bool animation)
-        { m_wndLabel.StartAnimation(animation); }
+    LabelWithWaitBar*  GetLabel () const;
+    const CString GetText() const;
+    void SetConnectionDescription (LPCTSTR pText, COLORREF color);
+    void SetColor (COLORREF color);
+    void StartAnimation (bool animation);
 
 protected:
     /*

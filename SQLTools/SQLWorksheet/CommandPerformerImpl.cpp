@@ -280,14 +280,14 @@ void CommandPerformerImpl::DoConnect (CommandParser& commandParser, const string
                 m_connect, 
                 user, password, alias, 
                 ConnectionTasks::ToConnectionMode(mode), false, false, 
-                m_settings.autocommit, m_settings.commitOnDisconnect, 3
+                m_settings.autocommit, m_settings.commitOnDisconnect, password.empty() ? 3 : 1
             );
 		else
 			ConnectionTasks::DoConnect(
                 m_connect, 
                 user, password, alias, port, !service.empty() ? service : sid, !service.empty(), 
                 ConnectionTasks::ToConnectionMode(mode), false, false,
-                m_settings.autocommit, m_settings.commitOnDisconnect, 3
+                m_settings.autocommit, m_settings.commitOnDisconnect, password.empty() ? 3 : 1
             );
 	}
 	else

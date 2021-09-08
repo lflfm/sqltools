@@ -29,18 +29,20 @@ class RecentFileList
     struct file_info
     {
         unsigned __int64 time;
+        int codepage;
         int topmost_line, topmost_column;
         OpenEditor::Position cursor_position;
         OpenEditor::Square selection;
         int block_mode, alt_columnar;
         int counter, local_counter;
-        std::string path;
+        std::wstring path;
         std::vector<int> bookmarks;
         std::vector<std::pair<int,int>> random_bookmarks;
         bool deleted;
 
         file_info ()
         {
+            codepage = -1;
             time = 0;
             topmost_line = topmost_column = 0;
             block_mode = alt_columnar = 0;
@@ -59,7 +61,7 @@ class RecentFileList
     struct wks_info
     {
         unsigned __int64 time;
-        std::string path;
+        std::wstring path;
         bool deleted;
         wks_info () : time(0), deleted(false) {}
         bool operator == (const wks_info& other) { return path == other.path; }
@@ -71,7 +73,7 @@ class RecentFileList
     std::deque<wks_info> m_wksList;
 
     unsigned __int64 m_time;
-    string m_path;
+    std::wstring m_path;
     bool m_modified;
     CMutex m_fileAccessMutex;   // tinyxml uses fstream access
                                 // so we have to use the mutex to lock the file 
@@ -79,13 +81,13 @@ class RecentFileList
 
     RecentFilesListCtrl* m_pRecentFilesListCtrl;
 
-    file_info& find (const string& path);
-    wks_info& find_wks (const string& path);
+    file_info& find (const std::wstring& path);
+    wks_info& find_wks (const std::wstring& path);
 
     static 
-    void DoOpen (const string& path, std::deque<file_info>& list, std::deque<wks_info>& wksList, unsigned __int64& time);
+    void DoOpen (const std::wstring& path, std::deque<file_info>& list, std::deque<wks_info>& wksList, unsigned __int64& time);
     static 
-    void DoSave (const string& path, const std::deque<file_info>& list, const std::deque<wks_info>& wksList, unsigned __int64 time);
+    void DoSave (const std::wstring& path, const std::deque<file_info>& list, const std::deque<wks_info>& wksList, unsigned __int64 time);
 
 public:
     RecentFileList ();
@@ -93,17 +95,17 @@ public:
 
     void AttachControl (RecentFilesListCtrl* pRecentFilesListCtrl);
 
-    void Open (const string& path);
+    void Open (const std::wstring& path);
     void Save ();
 
     void OnOpenDocument (COEDocument*, bool restoreState = true);
     void OnSaveDocument (COEDocument*);
     void OnCloseDocument (COEDocument*);
-    void RemoveDocument (const string& path);
+    void RemoveDocument (const std::wstring& path);
 
-    void OnOpenWorkspace (const string& path);
-    void OnSaveWorkspace (const string& path);
-    void RemoveWorkspace (const string& path);
+    void OnOpenWorkspace (const std::wstring& path);
+    void OnSaveWorkspace (const std::wstring& path);
+    void RemoveWorkspace (const std::wstring& path);
 
     void UpdateFileMenu (CCmdUI* pCmdUI);
     bool GetFileName (int, CString&);
@@ -133,7 +135,7 @@ private:
         }
 
         int GetSize() const { return m_nSize; }
-        void Init (const std::vector<std::string>&, int size);
+        void Init (const std::vector<std::wstring>&, int size);
         bool GetName (int, CString&);
         BOOL GetDisplayName(CString& strName, int nIndex, LPCTSTR lpszCurDir, int nCurDir, BOOL bAtLeastName = TRUE) const;
         void UpdateMenu (CCmdUI* pCmdUI);

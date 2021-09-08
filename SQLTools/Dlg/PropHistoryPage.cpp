@@ -90,5 +90,5 @@ void CPropHistoryPage::OnBnClicked_Enable()
 
 void CPropHistoryPage::OnBnClicked_Global()
 {
-    AfxMessageBox("Changing GLOBAL option will not affect already open windows!", MB_OK|MB_ICONEXCLAMATION);
+    AfxMessageBox(L"Changing GLOBAL option will not affect already open windows!", MB_OK|MB_ICONEXCLAMATION);
 }

@@ -1,24 +1,27 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SQLTools", "SQLTools.vcproj", "{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SQLTools", "SQLTools.vcxproj", "{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}"
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Release = Release
-		Release-Beta = Release-Beta
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+		Unoptimized|Win32 = Unoptimized|Win32
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Debug.ActiveCfg = Debug|Win32
-		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Debug.Build.0 = Debug|Win32
-		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Release.ActiveCfg = Release|Win32
-		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Release.Build.0 = Release|Win32
-		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Release-Beta.ActiveCfg = Release-Beta|Win32
-		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Release-Beta.Build.0 = Release-Beta|Win32
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Debug|Win32.Build.0 = Debug|Win32
+		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Release|Win32.ActiveCfg = Release|Win32
+		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Release|Win32.Build.0 = Release|Win32
+		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Unoptimized|Win32.ActiveCfg = Unoptimized|Win32
+		{70C6BCB9-D0E3-4F4A-BEE6-5EEA19D716DB}.Unoptimized|Win32.Build.0 = Unoptimized|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+		SolutionGuid = {94751FA4-1DA4-4C0A-B401-11DFCA1944E8}
 	EndGlobalSection
 EndGlobal

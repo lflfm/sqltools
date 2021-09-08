@@ -41,20 +41,20 @@ public:
 
     using CDocManager::GetDocumentCount;
 
-	// helper for standard commdlg dialogs
-	virtual BOOL DoPromptFileName (CString&, UINT, DWORD, BOOL, CDocTemplate*);
+    // helper for standard commdlg dialogs
+    virtual BOOL DoPromptFileName (CString&, UINT, DWORD, BOOL, CDocTemplate*);
 
     virtual void OnFileOpen ();
     
-    virtual CDocument* OpenDocumentFile (LPCTSTR);
+    virtual CDocument* OpenDocumentFile (LPCWSTR);
 
     virtual BOOL SaveAllModified(); // obsolete
     BOOL SaveAllModified (bool skipNew, bool saveSilently, bool canUseWorksapce, bool onExit);
     virtual BOOL SaveAndCloseAllDocuments ();
 
 private:
-    void doFileOpen (LPCSTR initialDir);
-	BOOL doPromptFileName (LPCSTR initialDir, CString& fileName, UINT nIDSTitle, 
+    void doFileOpen (LPCWSTR initialDir);
+    BOOL doPromptFileName (LPCWSTR initialDir, CString& fileName, UINT nIDSTitle, 
                            DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* pTemplate);
     DWORD m_nFilterIndex;
 };
@@ -68,9 +68,9 @@ public:
 
     int GetDocumentCount () const { return m_docList.GetCount(); }
 
-    virtual CDocument* OpenWorkspaceFile (LPCTSTR lpszPathName);
-    virtual CDocument* OpenDocumentFile (LPCTSTR lpszPathName, BOOL bMakeVisible);
-    virtual CDocument* OpenDocumentFile (LPCTSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible);
+    virtual CDocument* OpenWorkspaceFile (LPCWSTR lpszPathName);
+    virtual CDocument* OpenDocumentFile (LPCWSTR lpszPathName, BOOL bMakeVisible);
+    virtual CDocument* OpenDocumentFile (LPCWSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible);
     virtual void SetDefaultTitle (CDocument*);
 
     virtual BOOL SaveAllModified(); // obsolete
@@ -81,7 +81,7 @@ public:
 
     typedef Common::FilenameTemplateFields FormatFields;
     const FormatFields& GetFormatFields () const { return Common::FilenameTemplate::GetFormatFields(); }
-    void FormatTitle (const char* format, std::string& title) const; 
+    void FormatTitle (const wchar_t* format, CString& title) const; 
 
     struct EnablePickDocType
     {
@@ -109,7 +109,7 @@ public:
 
 private:
     bool m_pickDocType, m_disableEditStateRestoring;
-    std::string m_category, m_filename;
+    CString m_category, m_filename;
     counted_ptr<RecentFileList> m_pRecentFileList;
     friend EnablePickDocType;
 };

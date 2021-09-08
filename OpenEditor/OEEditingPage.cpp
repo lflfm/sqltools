@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include <COMMON/ExceptionHelper.h>
 #include "OpenEditor/OEEditingPage.h"
+#include "Common/MyUtf.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,15 +39,7 @@ COEEditingPage::COEEditingPage(SettingsManager& manager)
 : CPropertyPage(COEEditingPage::IDD),
   m_manager(manager)
 {
-    /*
-	//{{AFX_DATA_INIT(COEEditingPage)
-    m_UndoAfterSaving(FALSE)
-	m_MaxUndoCount = 0;
-    m_UndoMemLimit = 0;
-	m_RestrictCursor = FALSE;
-	m_TruncateSpaces = FALSE;
-	//}}AFX_DATA_INIT
-    */
+    m_psp.dwFlags &= ~PSP_HASHELP;
 
     const OpenEditor::GlobalSettingsPtr settings = m_manager.GetGlobalSettings();
     m_UndoMemLimit    = settings->GetUndoMemLimit() / 1024;
@@ -128,7 +121,7 @@ BOOL COEEditingPage::OnApply()
         settings->SetEOFMark        (m_EOFMark ? true : false,         false /*notify*/);
         settings->SetUseSmartHome   (m_UseSmartHome ? true : false,    false /*notify*/);
         settings->SetUseSmartEnd    (m_UseSmartEnd ? true : false,     false /*notify*/);
-        settings->SetTimestampFormat((LPCSTR)m_TimestampFormat,        false /*notify*/);
+        settings->SetTimestampFormat(Common::str(m_TimestampFormat),false /*notify*/);
     }
     _OE_DEFAULT_HANDLER_;
 

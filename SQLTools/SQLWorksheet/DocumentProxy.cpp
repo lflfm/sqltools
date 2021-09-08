@@ -22,6 +22,7 @@
 #include "ErrorLoader.h"
 #include <OCI8/Statement.h>
 #include <COMMON/InputDlg.h>
+#include <ActivePrimeExecutionNote.h>
 
     DocumentProxy::document_destroyed::document_destroyed ()
         : std::exception("The execution failed because the documnet was closed!")
@@ -83,17 +84,17 @@ void DocumentProxy::send (ThreadCommunication::Note& note)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-    struct ActivePrimeExecutionNote : public ThreadCommunication::Note
-    {
-        bool m_on;
+    //struct ActivePrimeExecutionNote : public ThreadCommunication::Note
+    //{
+    //    bool m_on;
 
-        ActivePrimeExecutionNote (bool on) : m_on(on) {}
+    //    ActivePrimeExecutionNote (bool on) : m_on(on) {}
 
-        virtual void Deliver () 
-        {
-            theApp.SetActivePrimeExecution(m_on);
-        }
-    };
+    //    virtual void Deliver () 
+    //    {
+    //        theApp.SetActivePrimeExecution(m_on);
+    //    }
+    //};
 
 void DocumentProxy::SetActivePrimeExecution (bool on)
 {
@@ -361,7 +362,7 @@ void DocumentProxy::OnSqlDisconnect ()
 
         virtual void Deliver () 
         {
-            m_connectionString = theApp.GetDisplayConnectionString();
+            m_connectionString = Common::str(theApp.GetDisplayConnectionString());
         }
     };
 
@@ -432,8 +433,8 @@ int DocumentProxy::GetLineCount ()
     {
         CPLSWorksheetDoc& m_doc;
         int  m_line;
-        string m_buffer;
-        string m_error;
+        std::wstring m_buffer;
+        std::string m_error;
 
         GetLineNote (CPLSWorksheetDoc& doc, int line)
             : m_doc(doc), 
@@ -445,10 +446,9 @@ int DocumentProxy::GetLineCount ()
         {
             try
             {
-                const char* ptr;
-                int len;
-                m_doc.GetEditorView()->GetLine(m_line, ptr, len);
-                m_buffer.assign(ptr, len);
+                Common::OEStringW buffer;
+                m_doc.GetEditorView()->GetLineW(m_line, buffer);
+                m_buffer.assign(buffer.data(), buffer.length());
             }
             catch (std::exception& ex)
             {
@@ -457,7 +457,7 @@ int DocumentProxy::GetLineCount ()
         }
     };
 
-void DocumentProxy::GetLine (int line, string& buffer)
+void DocumentProxy::GetLine (int line, std::wstring& buffer)
 {
     GetLineNote note(m_doc, line);
     send(note);
@@ -509,8 +509,8 @@ bool DocumentProxy::AskIfUserWantToStopOnError ()
     send(ActivateRunningNote(m_doc));
     send(ShowLastErrorNote(m_doc));
 
-    bool retVal = (AfxMessageBox("Error happened while running the script."
-        "\n\nDo you want to stop execution?", MB_YESNO|MB_ICONSTOP) == IDYES);
+    bool retVal = (AfxMessageBox(L"Error happened while running the script."
+        L"\n\nDo you want to stop execution?", MB_YESNO|MB_ICONSTOP) == IDYES);
 
     send(SetTaskbarProgressStateNote(CSQLToolsApp::WORKING_STATE));
 
@@ -526,10 +526,10 @@ bool DocumentProxy::InputValue (const string& prompt, string& value)
     send(ActivateRunningNote(m_doc));
 
     Common::CInputDlg dlg(NULL);
-    dlg.m_prompt = prompt;
+    dlg.m_prompt = Common::wstr(prompt);
     if (dlg.DoModal() == IDOK)
     {
-        value = dlg.m_value;
+        value = Common::str(dlg.m_value);
         retVal = true;
     }
 

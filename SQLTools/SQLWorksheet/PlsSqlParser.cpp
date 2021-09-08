@@ -57,10 +57,6 @@ void PlsSqlParser::Clear ()
 void PlsSqlParser::SetTokenMap (TokenMapPtr tokenMap)
 {
     m_tokenMap = tokenMap;
-    m_fastmap.erase();
-    std::map<string, int>::const_iterator it = m_tokenMap->begin();
-    for (; it != m_tokenMap->end(); it++)
-		m_fastmap[it->first[0]] = true;
 }
 
 void PlsSqlParser::PutEOF (int line)
@@ -170,7 +166,7 @@ bool PlsSqlParser::PutLine (int line, const char* str, int length)
         }
 
 
-        if (token == etUNKNOWN && !buffer.empty() && m_fastmap[buffer.at(0)])
+        if (token == etUNKNOWN && !buffer.empty())
         {
             std::map<string, int>::const_iterator it = m_tokenMap->find(buffer);
 

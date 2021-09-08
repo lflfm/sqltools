@@ -46,7 +46,6 @@
 #define IDB_CONNECT                     182
 #define IDD_CONNECT_SETTINGS            189
 #define IDR_CONNECT                     190
-#define IDB_BITMAP1                     191
 #define IDB_FIND_FILES                  191
 #define IDB_PANE_ICONS                  201
 #define IDB_DB_OBJ_STATE                202
@@ -54,8 +53,13 @@
 #define IDD_INITIAL_SETUP               204
 #define IDR_GRIDPOPUP_OPTIONS           205
 #define IDT_GRIDPOPUP                   206
+#define IDT_CONNECT                     207
+#define IDI_OBJECT_VIEWER               208
+#define IDI_OBJECT_LIST                 209
+#define IDI_PROPERTIES                  210
+#define IDI_FIND_IN_FILES               211
+#define IDI_OPEN_FILES                  212
 #define IDR_DATAGRID                    301
-
 #define IDC_A_LOGO                      1000
 #define IDC_C_USER                      1000
 #define IDC_FF_MATH_WHOLE_WORD          1000
@@ -71,11 +75,12 @@
 #define IDC_FF_LOCK_IN_SUBFOLDERS       1003
 #define IDC_C_TEST                      1003
 #define IDC_ABOUTBOX_COPYRIGHT          1004
-#define IDC_FF_SAVE_FILES               1004
+#define IDC_FF_SEARCH_IN_MEMORY         1004
 #define IDC_C_TAG                       1004
 #define IDC_FF_COLAPSED_LIST            1005
 #define IDC_C_DELETE                    1005
 #define IDC_C_HOST                      1006
+#define IDC_FF_SHARE_SEARCH_CONTEXT     1006
 #define IDC_C_TCP_PORT                  1007
 #define IDC_C_SID                       1008
 #define IDC_C_SETTINGS                  1010
@@ -171,7 +176,7 @@
 #define IDC_FF_FOLDER                   1344
 #define IDC_TT_TABLE                    1344
 #define IDC_ES_STATUS                   1345
-#define IDC_FF_INSERT_EXPR              1345
+#define IDC_FF_REGEXP_FIND              1345
 #define IDC_ES_SYNONYMS                 1346
 #define IDC_DS_TAB                      1347
 #define IDC_ES_GRANTS_BY_GRANTEE        1347
@@ -200,73 +205,69 @@
 #define IDC_PROP_HIST_COUNT             1366
 #define IDC_ABORT_CONNECTION            1366
 #define IDC_CS_PASSWORD1                1366
+#define IDC_GOO2_COMMA_CHAR             1366
 #define IDC_DBD_COMMIT_AFTER_ROW        1367
 #define IDC_PROP_HIST_SIZE              1367
+#define IDC_GOO2_QUOTE_CHAR             1367
 #define IDC_ES_FOLDER_OPTIONS           1368
 #define IDC_ABORT_ACTION                1368
 #define IDC_WAIT_FOR_TEXT               1368
+#define IDC_GOO2_QUOTE_ESC_CHAR         1368
+#define IDC_GOO2_PREFIX_CHAR            1369
 #define ID_CNF_ALL                      1370
+#define IDC_GOO2_ROOT_ELEMENT           1370
+#define IDC_GOO2_RECORD_ELEMENT         1371
 #define IDC_DBSP_SQLPLUS_COMPATIBILITY  1372
 #define IDC_OVP_SORT_TAB_COL_ALPHABETICALLY 1372
+#define IDC_GOO2_ELEM_CASE_NOCHANGE     1372
 #define IDC_OVP_SORT_PKG_PROC_ALPHABETICALLY 1373
+#define IDC_GOO2_ELEM_CASE_LOWER        1373
+#define IDC_GOO_PLAIN_TEXT              1373
 #define IDC_OVP_USE_CACHE               1374
+#define IDC_GOO2_ELEM_CASE_UPPER        1374
+#define IDC_GOO_COMMA_DELIMITED         1374
 #define IDC_OVP_SYNONYM_WO_OBJECT_INVALID 1375
+#define IDC_GOO_TAB_DELIMITED           1375
 #define IDC_OVP_MAX_LINE_LENGTH         1376
+#define IDC_GOO_XML_ELEM                1376
 #define IDC_OVP_MAX_LINE_LENGTH_SPIN    1377
 #define IDC_OVP_CLASSIC_TREE_LOOK       1378
+#define IDC_GOO_XML_ELEM_W_NAME         1378
 #define IDC_GRID_PROP_DATE_FORMAT       1379
 #define IDC_OVP_INFOTIPS                1379
+#define IDC_GOO_XML_ATTR                1379
 #define IDC_GRID_PROP_TIMESTAMP_FORMAT  1380
 #define IDC_OVP_SHOW_COMMENTS           1380
+#define IDC_GOO_WITH_HEADERS            1380
 #define IDC_GRID_PROP_ALLOW_LESS_THAN_HEADER 1381
 #define IDC_GRID_PROP_TIME_FORMAT       1381
 #define IDC_OVP_COPY_PROCEDURE_WITH_PACKAGE_NAME 1381
+#define IDC_GOO_HTML                    1381
 #define IDC_GRID_PROP_ALLOW_REMEM_COL_WIDTH 1382
 #define IDC_GRID_PROP_TIMESTAMP_TZ_FORMAT 1382
 #define IDC_OVP_COPY_PASTE_ON_DOUBLE_CLICK 1382
+#define IDC_GOO_SHOW_ON_SHIFT_ONLY      1382
 #define IDC_OVP_OV_QUERY_IN_ACTIVE_WINDOW 1383
 #define IDC_GRID_PROP_HEADERS_IN_LOWERCASE 1383
 #define IDC_DBT_CHECK_DEPENDENCIES      1383
 #define IDC_GRID_PROP_NUMBER_FORMAT     1383
+#define IDC_GOO_PLSQL1                  1383
 #define IDC_OVP_OL_QUERY_IN_ACTIVE_WINDOW 1384
 #define IDC_DBC_DISABLE_FKS             1384
 #define IDC_DBT_DISABLE_FKS             1384
-
-#define IDC_GOO2_COMMA_CHAR             1366
-#define IDC_GOO2_QUOTE_CHAR             1367
-#define IDC_GOO2_QUOTE_ESC_CHAR         1368
-#define IDC_GOO2_PREFIX_CHAR            1369
-
-#define IDC_GOO2_ROOT_ELEMENT           1370
-#define IDC_GOO2_RECORD_ELEMENT         1371
-#define IDC_GOO2_ELEM_CASE_NOCHANGE     1372
-#define IDC_GOO2_ELEM_CASE_LOWER        1373
-#define IDC_GOO2_ELEM_CASE_UPPER        1374
-
-#define IDC_GOO_PLAIN_TEXT              1373
-#define IDC_GOO_COMMA_DELIMITED         1374
-#define IDC_GOO_TAB_DELIMITED           1375
-#define IDC_GOO_XML_ELEM                1376
-#define IDC_GOO_XML_ELEM_W_NAME         1378
-#define IDC_GOO_XML_ATTR                1379
-#define IDC_GOO_WITH_HEADERS            1380
-#define IDC_GOO_HTML                    1381
-#define IDC_GOO_SHOW_ON_SHIFT_ONLY      1382
-#define IDC_GOO_PLSQL1                  1383
 #define IDC_GOO_PLSQL2                  1384
 #define IDC_GOO_PLSQL3                  1385
-#define IDC_GOO_PLSQL4                  1386
-#define IDC_GOO_PLSQL5                  1387
-#define IDC_GOO_FILENAME_TEMPLATE_LABEL 1388
-#define IDC_GOO_FILENAME_TEMPLATE       1389
-#define IDC_GOO_SUBSTITUTION            1390
-
 #define IDC_OVP_RETAIN_FOCUS_IN_EDITOR  1385
 #define IDC_DBC_SCRIPT_ONLY             1385
 #define IDC_DBT_SCRIPT_ONLY             1385
+#define IDC_GOO_PLSQL4                  1386
 #define IDC_DBT_KEEP_ALLOCATED          1386
+#define IDC_GOO_PLSQL5                  1387
+#define IDC_GOO_FILENAME_TEMPLATE_LABEL 1388
 #define IDC_DBD_DONT_COMMIT             1388
+#define IDC_GOO_FILENAME_TEMPLATE       1389
 #define IDC_DBD_COMMIT                  1389
+#define IDC_GOO_SUBSTITUTION            1390
 #define IDC_DBT_CASCADE                 1391
 #define IDC_GRID_PROP_SKIP_LOBS         1391
 #define IDC_PROP_HIST_ENABLE            1391
@@ -312,6 +313,7 @@
 #define IDC_SCRIPT_AUTOSCROLL_TO_EXECUTED 1419
 #define IDC_SCRIPT_BUFFERED_OUTPUT      1420
 #define IDC_IGNORE_COMMMENTS_AFTER_SEMICOLON 1421
+#define IDC_FF_TRANSFORM_BACKSLASH_EXPR 1421
 #define IDC_SCRIPT_EXECUTION_STYLE_ALT  1423
 #define IDC_SCRIPT_EXECUTION_STYLE_ALT1 1424
 #define IDC_SCRIPT_EXECUTION_STYLE_ALT2 1425
@@ -356,6 +358,7 @@
 #define ID_SQL_ERR_HELP                 32800
 #define ID_SQL_OBJ_VIEWER               32801
 #define ID_VIEW_PROPERTIES              32802
+#define ID_VIEW_OPEN_FILES              32803
 #define ID_SQL_PLAN_VIEWER              32804
 #define ID_CUSTOM_SPLITTER_DEF          32805
 #define ID_CUSTOM_SPLITTER_DOWN         32807
@@ -456,6 +459,7 @@
 #define ID_BOOKLET_SQL_PLAN_TEXT        38196
 #define ID_BOOKLET_SQL_PLAN_TREE        38197
 #define ID_OUTPUT_TEXT_OPEN             38198
+#define ID_OUTPUT_TEXT_COPY             38199
 #define ID_CON_CONNECT                  38204
 #define ID_CON_TEST                     38205
 #define ID_CON_DELETE                   38207
@@ -509,15 +513,19 @@
 #define ID_GRIDPOPUP_HTML               38257
 #define ID_GRIDPOPUP_WORDWRAP           38258
 #define ID_GRIDPOPUP_CLOSE              38259
+#define ID_SQL_CONN_DESCRIPTION         38263
+
+#define ID_FF_DIR_FIRST                 50420 // FRM
+#define ID_FF_DIR_LAST                  50429 // FRM
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        207
-#define _APS_NEXT_COMMAND_VALUE         38261
-#define _APS_NEXT_CONTROL_VALUE         1421
+#define _APS_NEXT_RESOURCE_VALUE        211
+#define _APS_NEXT_COMMAND_VALUE         38264
+#define _APS_NEXT_CONTROL_VALUE         1422
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
     using namespace std;
     using namespace OpenEditor;
 
-bool COEditorView::PreNormalizeOnChar (NormalizeOnCharCxt& cxt, char ch)
+bool COEditorView::PreNormalizeOnChar (NormalizeOnCharCxt& cxt, wchar_t ch)
 {
     cxt.matched = false;
 
@@ -48,10 +48,10 @@ bool COEditorView::PreNormalizeOnChar (NormalizeOnCharCxt& cxt, char ch)
         && (phighlighter->GetDelimiters()[ch])
         && pos.line < GetLineCount())
         {
-            Position pos = GetPosition();
-            const char* str;
-            int len;
-            GetLine(pos.line, str, len);
+            OEStringW lineBuff;
+            GetLineW(pos.line, lineBuff);
+            const wchar_t* str = lineBuff.data();
+            int len = lineBuff.length();
             pos.column = pos2inx(str, len, pos.column);
             for (int i = pos.column - 1; i >= 0 && !phighlighter->GetDelimiters()[str[i]]; i--)
                 ;
@@ -62,13 +62,13 @@ bool COEditorView::PreNormalizeOnChar (NormalizeOnCharCxt& cxt, char ch)
                 cxt.sqr.end.column   = pos.column;
 
                 if (phighlighter->IsKeyword(str + cxt.sqr.start.column, cxt.sqr.end.column - cxt.sqr.start.column, cxt.keyword)
-                && strncmp(cxt.keyword.c_str(), str + cxt.sqr.start.column, cxt.sqr.end.column - cxt.sqr.start.column))
+                && wcsncmp(cxt.keyword.c_str(), str + cxt.sqr.start.column, cxt.sqr.end.column - cxt.sqr.start.column))
                 {
                     // the if below prevents annoying "normalization" for SQL file extention 
                     // incorrect and ugly way to handle that but lets make sacrifice
                     if (cxt.sqr.start.column > 0 
                     && str[cxt.sqr.start.column-1] == '.'
-                    && cxt.keyword == "SQL"
+                    && cxt.keyword == L"SQL"
                     && GetSettings().GetLanguage() == "PL/SQL")
                         return false;
 
@@ -83,7 +83,7 @@ bool COEditorView::PreNormalizeOnChar (NormalizeOnCharCxt& cxt, char ch)
     return cxt.matched;
 }
 
-// it does not seem to cheap :(
+// it is not cheap :(
 void COEditorView::NormalizeOnChar (NormalizeOnCharCxt& cxt)
 {
     if (cxt.matched
@@ -115,9 +115,11 @@ bool COEditorView::IsNormalizeablePos (Position pos) const
         ScanMultilineQuotes(pos.line, status, quoteId, parsing);
         phighlighter->SetMultilineQuotesState(status, quoteId, parsing);
 
-        int len;
-        const char* str; 
-        GetLine(pos.line, str, len);
+        OEStringW lineBuff;
+        GetLineW(pos.line, lineBuff);
+        int len = lineBuff.length();
+        const wchar_t* str = lineBuff.data(); 
+
         phighlighter->NextLine(str, len);
 
         LineTokenizer tokenizer(false, GetTabSpacing(), phighlighter->GetDelimiters());
@@ -126,13 +128,13 @@ bool COEditorView::IsNormalizeablePos (Position pos) const
 
         while (!tokenizer.Eol())
         {
-            int curPos, len;
-            const char* str;
+            int curPos, wlen;
+            const wchar_t* word;
 
-            tokenizer.GetCurentWord(str, curPos, len);
-            phighlighter->NextWord(str, len, curPos);
+            tokenizer.GetCurentWord(word, curPos, wlen);
+            phighlighter->NextWord(word, wlen, curPos);
 
-            if (curPos >= pos.column && pos.column < curPos + len)
+            if (curPos >= pos.column && pos.column < curPos + wlen)
                 return phighlighter->IsPlainText();
 
             tokenizer.Next();
@@ -142,10 +144,10 @@ bool COEditorView::IsNormalizeablePos (Position pos) const
     return false;
 }
 
-bool COEditorView::NormalizeText (const EditContext& cxt, string& _str)
+bool COEditorView::NormalizeText (const EditContext& cxt, std::wstring& _str)
 {
     int line, start, end;
-    cxt.GetScanLine(line, start, end);
+    cxt.GetScanPosition(line, start, end);
     
     const COEditorView& view = static_cast<const COEditorView&>(cxt);
     HighlighterBase* phighlighter = view.m_bSyntaxHighlight ? view.m_highlighter.get() : 0;
@@ -157,28 +159,30 @@ bool COEditorView::NormalizeText (const EditContext& cxt, string& _str)
         cxt.ScanMultilineQuotes(line, status, quoteId, parsing);
         phighlighter->SetMultilineQuotesState(status, quoteId, parsing);
 
-        int llen;
-        const char* str; 
-        cxt.GetLine(line, str, llen);
+        OEStringW lineBuff;
+        cxt.GetLineW(line, lineBuff);
+        int llen = lineBuff.length();
+        const wchar_t* str = lineBuff.data(); 
+
         phighlighter->NextLine(str, llen);
 
         LineTokenizer tokenizer(false, cxt.GetTabSpacing(), phighlighter->GetDelimiters());
         tokenizer.EnableProcessSpaces(true);
         tokenizer.StartScan(str, llen);
 
-        string buffer, keyword;
+        wstring keyword;
 
         while (!tokenizer.Eol())
         {
             int pos, wlen;
-            const char* str;
+            const wchar_t* word;
 
-            tokenizer.GetCurentWord(str, pos, wlen);
-            phighlighter->NextWord(str, wlen, pos);
+            tokenizer.GetCurentWord(word, pos, wlen);
+            phighlighter->NextWord(word, wlen, pos);
 
             // 16.03.2003 bug fix, keyword normalization fails in many cases
             if (((start <= pos && pos <= end) || (start <= (pos + wlen - 1) && (pos + wlen - 1) <= end))
-            && phighlighter->IsPlainText() && phighlighter->IsKeyword(str, wlen, keyword))
+            && phighlighter->IsPlainText() && phighlighter->IsKeyword(word, wlen, keyword))
             {
                 _ASSERTE(wlen == static_cast<int>(keyword.length()));
 

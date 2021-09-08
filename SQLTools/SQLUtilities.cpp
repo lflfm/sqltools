@@ -70,7 +70,7 @@ namespace SQLUtilities
                     _RAISE(std::logic_error("Text output stream error. Cannot get PL/SQL language support."));
                 }
 
-                LanguageKeywordMapConstIterator it = s_languageKeywordMap->find(name);
+                LanguageKeywordMapConstIterator it = s_languageKeywordMap->find(Common::wstr(name));
                 if (it != s_languageKeywordMap->end() && it->second.groupIndex == 0) // only for SQL Keywords
                 {
                     is_public = name == "PUBLIC";

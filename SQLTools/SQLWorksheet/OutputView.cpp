@@ -91,6 +91,7 @@ BEGIN_MESSAGE_MAP(COutputView, StrGridView)
     ON_WM_TIMER()
     ON_COMMAND(ID_GRID_OUTPUT_OPEN, OnGridOutputOpen)
     ON_COMMAND(ID_OUTPUT_TEXT_OPEN, OnOutputTextOpen)
+    ON_COMMAND(ID_OUTPUT_TEXT_COPY, OnOutputTextCopy)
     ON_WM_INITMENUPOPUP()
 END_MESSAGE_MAP()
 
@@ -306,6 +307,16 @@ void COutputView::OnOutputTextOpen()
     m_pManager->m_Rulers[0].ResetSelection();
 }
 
+
+void COutputView::OnOutputTextCopy()
+{
+    if (!IsEmpty() && OpenClipboard())
+    {
+        GetGridSource()->DoEditCopy(-1, -1, 2, 1, ecColumn, etfPlainText);
+        CloseClipboard();
+    }
+}
+
 void COutputView::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu)
 {
     GridView::OnInitMenuPopup(pPopupMenu, nIndex, bSysMenu);
@@ -313,6 +324,7 @@ void COutputView::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu)
     if (!IsEmpty() && m_pStrSource->GetCount(edVert) > 0)
     {
         pPopupMenu->EnableMenuItem(ID_OUTPUT_TEXT_OPEN, MF_BYCOMMAND|MF_ENABLED);
+        pPopupMenu->EnableMenuItem(ID_OUTPUT_TEXT_COPY, MF_BYCOMMAND|MF_ENABLED);
     }
 }
 

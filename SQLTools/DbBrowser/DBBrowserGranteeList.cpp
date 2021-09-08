@@ -22,6 +22,7 @@
 #include "DbBrowser\DBBrowserGranteeList.h"
 #include "OCI8/BCursor.h"
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace OraMetaDict;
 using namespace Common;
@@ -65,6 +66,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 50, 196);
                 cur.Prepare(csz_sttm);
                 cur.Bind(":owner", m_schema.c_str());

@@ -20,7 +20,7 @@
 #ifndef __MemoryMappedFile_h__
 #define __MemoryMappedFile_h__
 
-#include <COMMON/ExceptionHelper.h>
+#include "ExceptionHelper.h"
 
 
 namespace Common
@@ -42,7 +42,7 @@ public:
     MemoryMappedFile ();
     ~MemoryMappedFile ();
 
-    void Open (const char* filename, unsigned options, unsigned long length = 0);
+    void Open (const wchar_t* filename, unsigned options, unsigned long length = 0);
     void Close ();
 
     bool IsOpen () const                    { return m_hFile == INVALID_HANDLE_VALUE ? false : true; }

@@ -17,7 +17,7 @@
 */
 
 #include "stdafx.h"
-#include <COMMON/EditWithSelPos.h>
+#include "EditWithSelPos.h"
 
 
 // CEditWithSelPos
@@ -36,7 +36,7 @@ BOOL CEditWithSelPos::SubclassComboBoxEdit (HWND hWnd)
     static HINSTANCE g_user32_dll = NULL;
 
     if (!g_user32_dll) 
-        g_user32_dll = LoadLibrary("USER32.DLL");
+        g_user32_dll = LoadLibrary(_T("USER32.DLL"));
 
     typedef BOOL (WINAPI *GetComboBoxInfo_t)(HWND, PCOMBOBOXINFO);
     static FARPROC g_getComboBoxInfo = NULL;
@@ -53,16 +53,10 @@ BOOL CEditWithSelPos::SubclassComboBoxEdit (HWND hWnd)
         }
     }
 
-    //if (::GetComboBoxInfo(hWnd, &info))
-    //{
-    //    SubclassWindow(info.hwndItem);
-    //    return TRUE;
-    //}
-
     return FALSE;
 }
 
-void CEditWithSelPos::InsertAtCurPos (const char* str, int offset)
+void CEditWithSelPos::InsertAtCurPos (LPCTSTR str, int offset)
 {
     CString text;
     GetWindowText(text);
@@ -73,7 +67,7 @@ void CEditWithSelPos::InsertAtCurPos (const char* str, int offset)
     text.Insert(m_nStartChar, str);
     SetWindowText(text);
 
-    int pos = m_nStartChar + ((offset != -1) ? offset : strlen(str));
+    int pos = m_nStartChar + ((offset != -1) ? offset : _tcslen(str));
     
     SetWindowText(text);
     SetFocus();

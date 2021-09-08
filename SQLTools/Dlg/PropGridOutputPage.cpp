@@ -115,11 +115,11 @@ void CPropGridOutputPage1::OnBnClicked_Substitution ()
             for (int i = 0; it != formatFields.end(); ++it, ++i)
             {
                 ASSERT(::GetDlgItem(m_hWnd, IDC_GOO_SUBSTITUTION + i + 1) == NULL);
-                if (i == 1) menu.AppendMenu(MF_SEPARATOR, 0, (LPCSTR)0);
-                menu.AppendMenu(MF_STRING|MF_ENABLED, IDC_GOO_SUBSTITUTION + i + 1, it->menuLabel);
+                if (i == 1) menu.AppendMenu(MF_SEPARATOR, 0, (LPCTSTR)0);
+                menu.AppendMenu(MF_STRING|MF_ENABLED, IDC_GOO_SUBSTITUTION + i + 1, Common::wstr(it->menuLabel).c_str());
             }
-            menu.InsertMenu(0, MF_BYPOSITION|MF_STRING|MF_ENABLED, IDC_GOO_SUBSTITUTION + FilenameTemplateFields::max_size() + 1, "&&script\tThe parent script name");
-            menu.ModifyMenu(IDC_GOO_SUBSTITUTION + 1, MF_BYCOMMAND, IDC_GOO_SUBSTITUTION + 1, "&&n\tSave file counter");
+            menu.InsertMenu(0, MF_BYPOSITION|MF_STRING|MF_ENABLED, IDC_GOO_SUBSTITUTION + FilenameTemplateFields::max_size() + 1, L"&&script\tThe parent script name");
+            menu.ModifyMenu(IDC_GOO_SUBSTITUTION + 1, MF_BYCOMMAND, IDC_GOO_SUBSTITUTION + 1, L"&&n\tSave file counter");
 
             ::SendMessage(hButton, BM_SETCHECK, BST_CHECKED, 0L);
 
@@ -155,9 +155,9 @@ void CPropGridOutputPage1::OnSubstitution (UINT id)
         ASSERT(index < FilenameTemplateFields::max_size() + 1);
 
         if (index < FilenameTemplateFields::max_size())
-            m_edtTemplate.InsertAtCurPos(FilenameTemplate::GetFormatFields().at(index).displayFormat, -1);
+            m_edtTemplate.InsertAtCurPos(Common::wstr(FilenameTemplate::GetFormatFields().at(index).displayFormat).c_str(), -1);
         else if (index == FilenameTemplateFields::max_size())
-            m_edtTemplate.InsertAtCurPos("&script", -1);
+            m_edtTemplate.InsertAtCurPos(L"&script", -1);
     }
     _OE_DEFAULT_HANDLER_;
 }

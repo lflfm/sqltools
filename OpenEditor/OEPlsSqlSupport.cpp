@@ -131,10 +131,9 @@ bool PlSqlSupport::processText (int batchLimit)
 
         for (int i = 0; i < batchLimit && m_currLine < nlines; i++, m_currLine++)
         {
-	        int length;
-	        const char* str;
-            m_pStorage->GetLine(m_currLine, str, length);
-	        m_parser.PutLine(m_currLine, str, length);
+            Common::OEStringW wbuff;
+            m_pStorage->GetLineW(m_currLine, wbuff);
+	        m_parser.PutLine(m_currLine, wbuff.data(), wbuff.length());
         }
 
         if (m_currLine == nlines)

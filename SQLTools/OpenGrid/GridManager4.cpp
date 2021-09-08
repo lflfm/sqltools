@@ -36,7 +36,7 @@ namespace OG2
 {
 
     static HCURSOR g_hSizeCurs[2]  = { NULL, NULL };
-    static LPCSTR g_pszCursName[2] = { "IDC_COL_SIZE", "IDC_ROW_SIZE" };
+    static LPCWSTR g_pszCursName[2] = { L"IDC_COL_SIZE", L"IDC_ROW_SIZE" };
 
 ResizeGridManager::ResizeGridManager (CWnd* client , AGridSource* source, bool shouldDeleteSource)
 : EditGridManager(client, source, shouldDeleteSource),

@@ -36,7 +36,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////
 // ExtractDDLSettingsXmlStreamer
 ///////////////////////////////////////////////////////////////////////////
-ExtractDDLSettingsXmlStreamer::ExtractDDLSettingsXmlStreamer (const std::string& filename, bool backup) 
+ExtractDDLSettingsXmlStreamer::ExtractDDLSettingsXmlStreamer (const std::wstring& filename, bool backup) 
 : XmlStreamerBase(filename, backup)
 {
 }
@@ -54,7 +54,7 @@ void ExtractDDLSettingsXmlStreamer::read  (const TiXmlDocument& doc, void* ctx)
             readAwareness(settingsElem, *settings);
         }
         else 
-            THROW_APP_EXCEPTION("\"" + getFilename() + "\" does not contain settings.");
+            THROW_APP_EXCEPTION("\"" + Common::str(getFilename()) + "\" does not contain settings.");
     }
 }
 

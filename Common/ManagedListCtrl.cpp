@@ -71,10 +71,10 @@ void CManagedListCtrl::OnLvnGetdispinfo(NMHDR *pNMHDR, LRESULT *pResult)
     {
         if (pDispInfo->item.mask & LVIF_TEXT)
         {
-            strncpy(pDispInfo->item.pszText, 
+            wcsncpy(pDispInfo->item.pszText, 
                 m_manager.GetString((int)pDispInfo->item.lParam, pDispInfo->item.iSubItem), 
                 pDispInfo->item.cchTextMax);
-            pDispInfo->item.pszText[pDispInfo->item.cchTextMax] = 0;
+            pDispInfo->item.pszText[pDispInfo->item.cchTextMax-1] = 0;
         }
 
         if (pDispInfo->item.mask & LVIF_STATE)
@@ -85,7 +85,7 @@ void CManagedListCtrl::OnLvnGetdispinfo(NMHDR *pNMHDR, LRESULT *pResult)
     }
     catch (...)
     {
-        strncpy(pDispInfo->item.pszText, "error", pDispInfo->item.cchTextMax);
+        wcsncpy(pDispInfo->item.pszText, L"error", pDispInfo->item.cchTextMax);
         pDispInfo->item.state = 0;
     }
     

@@ -26,12 +26,12 @@
 OESplitLinesDlg::OESplitLinesDlg(CWnd* pParent /*=NULL*/)
 : CDialog(OESplitLinesDlg::IDD, pParent)
 {
-   m_nLeftMargin             = AfxGetApp()->GetProfileInt   ("Editor", "SplitLinesDlg.m_nLeftMargin"           , 1);
-   m_nRightMargin            = AfxGetApp()->GetProfileInt   ("Editor", "SplitLinesDlg.m_nRightMargin"          , 80);
-   m_bAdvancedOptions        = AfxGetApp()->GetProfileInt   ("Editor", "SplitLinesDlg.m_bAdvancedOptions"      , false) ? true : false;
-   m_sInsertNewLineAfter     = AfxGetApp()->GetProfileString("Editor", "SplitLinesDlg.m_sInsertNewLineAfter"   , ",");
-   m_sIgnorePreviousBetween  = AfxGetApp()->GetProfileString("Editor", "SplitLinesDlg.m_sIgnorePreviousBetween", "()");
-   m_sDontChangeBetween      = AfxGetApp()->GetProfileString("Editor", "SplitLinesDlg.m_sDontChangeBetween"    , "''");
+   m_nLeftMargin             = AfxGetApp()->GetProfileInt   (L"Editor", L"SplitLinesDlg.m_nLeftMargin"           , 1);
+   m_nRightMargin            = AfxGetApp()->GetProfileInt   (L"Editor", L"SplitLinesDlg.m_nRightMargin"          , 80);
+   m_bAdvancedOptions        = AfxGetApp()->GetProfileInt   (L"Editor", L"SplitLinesDlg.m_bAdvancedOptions"      , false) ? true : false;
+   m_sInsertNewLineAfter     = AfxGetApp()->GetProfileString(L"Editor", L"SplitLinesDlg.m_sInsertNewLineAfter"   , L",");
+   m_sIgnorePreviousBetween  = AfxGetApp()->GetProfileString(L"Editor", L"SplitLinesDlg.m_sIgnorePreviousBetween", L"()");
+   m_sDontChangeBetween      = AfxGetApp()->GetProfileString(L"Editor", L"SplitLinesDlg.m_sDontChangeBetween"    , L"''");
 }
 
 BOOL OESplitLinesDlg::OnInitDialog()
@@ -62,11 +62,11 @@ void OESplitLinesDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_OESL_IGNORE_PREVIOUS, m_sIgnorePreviousBetween);
     if (pDX->m_bSaveAndValidate)
     {
-        Common::trim_symmetric(m_sIgnorePreviousBetween);
-        int size = m_sIgnorePreviousBetween.size();
+        m_sIgnorePreviousBetween.Trim();
+        int size = m_sIgnorePreviousBetween.GetLength();
         if (size > 0 && (size/2)*2 != size)
         {
-            AfxMessageBox("\"Ignore previous between\" must contain one or multiple pairs of characters.", MB_OK|MB_ICONSTOP);
+            AfxMessageBox(L"\"Ignore previous between\" must contain one or multiple pairs of characters.", MB_OK|MB_ICONSTOP);
             pDX->Fail();
         }
     }
@@ -74,11 +74,11 @@ void OESplitLinesDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_OESL_DONT_CHANGE_BETWEEN, m_sDontChangeBetween);
     if (pDX->m_bSaveAndValidate)
     {
-        Common::trim_symmetric(m_sDontChangeBetween);
-        int size = m_sDontChangeBetween.size();
+        m_sDontChangeBetween.Trim();
+        int size = m_sDontChangeBetween.GetLength();
         if (size > 0 && (size/2)*2 != size)
         {
-            AfxMessageBox("\"Don't change between\" must contain one or multiple pairs of characters.", MB_OK|MB_ICONSTOP);
+            AfxMessageBox(L"\"Don't change between\" must contain one or multiple pairs of characters.", MB_OK|MB_ICONSTOP);
             pDX->Fail();
         }
     }
@@ -90,28 +90,28 @@ void OESplitLinesDlg::OnOK()
 {
     CDialog::OnOK();
 
-    AfxGetApp()->WriteProfileInt   ("Editor", "SplitLinesDlg.m_nLeftMargin"           , m_nLeftMargin                   );
-    AfxGetApp()->WriteProfileInt   ("Editor", "SplitLinesDlg.m_nRightMargin"          , m_nRightMargin                  );
-    AfxGetApp()->WriteProfileInt   ("Editor", "SplitLinesDlg.m_bAdvancedOptions"      , m_bAdvancedOptions              );
-    AfxGetApp()->WriteProfileString("Editor", "SplitLinesDlg.m_sInsertNewLineAfter"   , m_sInsertNewLineAfter.c_str()   );
-    AfxGetApp()->WriteProfileString("Editor", "SplitLinesDlg.m_sIgnorePreviousBetween", m_sIgnorePreviousBetween.c_str());
-    AfxGetApp()->WriteProfileString("Editor", "SplitLinesDlg.m_sDontChangeBetween"    , m_sDontChangeBetween.c_str()    );
+    AfxGetApp()->WriteProfileInt   (L"Editor", L"SplitLinesDlg.m_nLeftMargin"           , m_nLeftMargin           );
+    AfxGetApp()->WriteProfileInt   (L"Editor", L"SplitLinesDlg.m_nRightMargin"          , m_nRightMargin          );
+    AfxGetApp()->WriteProfileInt   (L"Editor", L"SplitLinesDlg.m_bAdvancedOptions"      , m_bAdvancedOptions      );
+    AfxGetApp()->WriteProfileString(L"Editor", L"SplitLinesDlg.m_sInsertNewLineAfter"   , m_sInsertNewLineAfter   );
+    AfxGetApp()->WriteProfileString(L"Editor", L"SplitLinesDlg.m_sIgnorePreviousBetween", m_sIgnorePreviousBetween);
+    AfxGetApp()->WriteProfileString(L"Editor", L"SplitLinesDlg.m_sDontChangeBetween"    , m_sDontChangeBetween    );
 }
 
-void OESplitLinesDlg::GetIgnoreForceNewLine (std::vector<std::pair<char,char> >& data) const
+void OESplitLinesDlg::GetIgnoreForceNewLine (std::vector<std::pair<wchar_t,wchar_t> >& data) const
 {
-    int size = m_sIgnorePreviousBetween.size();
+    int size = m_sIgnorePreviousBetween.GetLength();
     size = (size/2)*2;
     for (int i = 0; i < size; i += 2)
-        data.push_back(std::pair<char,char>(m_sIgnorePreviousBetween.at(i), m_sIgnorePreviousBetween.at(i+1)));
+        data.push_back(std::pair<wchar_t,wchar_t>(m_sIgnorePreviousBetween.GetAt(i), m_sIgnorePreviousBetween.GetAt(i+1)));
 }
 
-void OESplitLinesDlg::GetDontChaneBeetwen (std::vector<std::pair<char,char> >& data) const
+void OESplitLinesDlg::GetDontChaneBeetwen (std::vector<std::pair<wchar_t,wchar_t> >& data) const
 {
-    int size = m_sDontChangeBetween.size();
+    int size = m_sDontChangeBetween.GetLength();
     size = (size/2)*2;
     for (int i = 0; i < size; i += 2)
-        data.push_back(std::pair<char,char>(m_sDontChangeBetween.at(i), m_sDontChangeBetween.at(i+1)));
+        data.push_back(std::pair<wchar_t,wchar_t>(m_sDontChangeBetween.GetAt(i), m_sDontChangeBetween.GetAt(i+1)));
 }
 
 BEGIN_MESSAGE_MAP(OESplitLinesDlg, CDialog)

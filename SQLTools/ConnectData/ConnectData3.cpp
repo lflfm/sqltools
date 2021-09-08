@@ -40,145 +40,145 @@
     }
 
 // read legacy
-void ConnectData::ImportFromRegistry (const string& password)
-{
-    static const char* cszProfilesKeys[2] = { "Profiles", "ProfilesEx" };
-    static const char* cszCurrProfileKey = "CurrProfile";
-    static const char* cszUserKey        = "User";
-    static const char* cszPasswordKey    = "Password";
-    static const char* cszConnectKey     = "Connect";
-    static const char* cszCounterKey     = "Counter";
-    static const char* cszHostKey        = "Host";
-    static const char* cszTcpPortKey     = "TcpPort";
-    static const char* cszSIDKey         = "SID";  
-    static const char* cszModeKey        = "Mode";  
-    static const char* cszSafetyKey      = "Safety";  
-    static const char* cszLastUsage      = "LastUsage";  
-    static const char* cszServiceInsteadOfSidKey = "ServiceInsteadOfSid";
-    static const char* cszDirectConnectionKey = "DirectConnection";  
-    static const char* cszSortColumnKey       = "SortColumn";
-    static const char* cszSortDirectionKey    = "SortDirection";
-
-    std::vector<ConnectEntry> entries;
-
-    for (int branch = 0; branch < 2; branch++)
-    {
-        HKEY hKey = AfxGetApp()->GetSectionKey(cszProfilesKeys[branch]);
-
-        if (!hKey) break;
-
-        char  buff[120];
-        DWORD size = sizeof buff;
-        FILETIME lastWriteTime;
-
-        for (
-            DWORD index = 0;
-            RegEnumKeyEx(hKey, index, buff, &size, NULL, NULL, NULL, &lastWriteTime) == ERROR_SUCCESS;
-            index++, size = sizeof buff
-        )
-        {
-            ConnectEntry entry;
-            entry.m_status = ConnectEntry::MODIFIED;
-
-            CString subKeyName;
-            subKeyName += cszProfilesKeys[branch];
-            subKeyName += '\\';
-            subKeyName += buff;
-            HKEY hSubKey = AfxGetApp()->GetSectionKey(subKeyName);
-    
-            DWORD type;
-            if (!branch)
-            {
-                entry.SetDirect(false);
-
-                size = sizeof buff;
-                if (RegQueryValueEx(hSubKey, cszConnectKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
-                {
-                    buff[sizeof(buff)-1] = 0;
-                    entry.SetAlias(buff);
-                }
-            }
-            else
-            {
-                entry.SetDirect(true);
-
-                size = sizeof buff;
-                if (RegQueryValueEx(hSubKey, cszHostKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
-                {
-                    buff[sizeof(buff)-1] = 0;
-                    entry.SetHost(buff);
-                }
-                size = sizeof buff;
-                if (RegQueryValueEx(hSubKey, cszTcpPortKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
-                {
-                    buff[sizeof(buff)-1] = 0;
-                    entry.SetPort(buff);
-                }
-                size = sizeof buff;
-                if (RegQueryValueEx(hSubKey, cszSIDKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
-                {
-                    buff[sizeof(buff)-1] = 0;
-                    entry.SetSid(buff);
-                }
-                size = sizeof buff;
-                if (RegQueryValueEx(hSubKey, cszServiceInsteadOfSidKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
-                {
-                    buff[sizeof(buff)-1] = 0;
-                    entry.SetUseService((DWORD*)buff ? true : false);
-                }
-            }
-            size = sizeof buff;
-            if (RegQueryValueEx(hSubKey, cszUserKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
-            {
-                buff[sizeof(buff)-1] = 0;
-                entry.SetUser(buff);
-            }
-
-            if (m_SavePasswords)
-            {
-                size = sizeof buff;
-                if (RegQueryValueEx(hSubKey, cszPasswordKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
-                {
-                    buff[sizeof(buff)-1] = 0;
-                    entry.SetDecryptedPassword(buff);
-                }
-            }
-            else
-                entry.SetDecryptedPassword("");
-    
-            size = sizeof buff;
-            if (RegQueryValueEx(hSubKey, cszCounterKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
-            {
-                itoa(*(DWORD*)buff, buff, 10);
-                entry.SetUsageCounter(atoi(buff));
-            }
-
-            size = sizeof buff;
-            if (RegQueryValueEx(hSubKey, cszModeKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
-            {
-                buff[sizeof(buff)-1] = 0;
-                entry.SetMode(*(DWORD*)buff);
-            }
-
-            size = sizeof buff;
-            if (RegQueryValueEx(hSubKey, cszSafetyKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
-            {
-                buff[sizeof(buff)-1] = 0;
-                entry.SetSafety(*(DWORD*)buff);
-            }
-            time_t t;
-            filetime_to_timet(lastWriteTime, t);
-            entry.SetLastUsage(t);
-
-            RegCloseKey(hSubKey);
-
-            entries.push_back(entry);
-        }
-
-        RegCloseKey(hKey);
-    }
-
-    swap(m_entries, entries);
-
-    EncryptAll(password);
-}
+//void ConnectData::ImportFromRegistry (const string& password)
+//{
+//    static const char* cszProfilesKeys[2] = { "Profiles", "ProfilesEx" };
+//    static const char* cszCurrProfileKey = "CurrProfile";
+//    static const char* cszUserKey        = "User";
+//    static const char* cszPasswordKey    = "Password";
+//    static const char* cszConnectKey     = "Connect";
+//    static const char* cszCounterKey     = "Counter";
+//    static const char* cszHostKey        = "Host";
+//    static const char* cszTcpPortKey     = "TcpPort";
+//    static const char* cszSIDKey         = "SID";  
+//    static const char* cszModeKey        = "Mode";  
+//    static const char* cszSafetyKey      = "Safety";  
+//    static const char* cszLastUsage      = "LastUsage";  
+//    static const char* cszServiceInsteadOfSidKey = "ServiceInsteadOfSid";
+//    static const char* cszDirectConnectionKey = "DirectConnection";  
+//    static const char* cszSortColumnKey       = "SortColumn";
+//    static const char* cszSortDirectionKey    = "SortDirection";
+//
+//    std::vector<ConnectEntry> entries;
+//
+//    for (int branch = 0; branch < 2; branch++)
+//    {
+//        HKEY hKey = AfxGetApp()->GetSectionKey(cszProfilesKeys[branch]);
+//
+//        if (!hKey) break;
+//
+//        char  buff[120];
+//        DWORD size = sizeof buff;
+//        FILETIME lastWriteTime;
+//
+//        for (
+//            DWORD index = 0;
+//            RegEnumKeyEx(hKey, index, buff, &size, NULL, NULL, NULL, &lastWriteTime) == ERROR_SUCCESS;
+//            index++, size = sizeof buff
+//        )
+//        {
+//            ConnectEntry entry;
+//            entry.m_status = ConnectEntry::MODIFIED;
+//
+//            CString subKeyName;
+//            subKeyName += cszProfilesKeys[branch];
+//            subKeyName += '\\';
+//            subKeyName += buff;
+//            HKEY hSubKey = AfxGetApp()->GetSectionKey(subKeyName);
+//    
+//            DWORD type;
+//            if (!branch)
+//            {
+//                entry.SetDirect(false);
+//
+//                size = sizeof buff;
+//                if (RegQueryValueEx(hSubKey, cszConnectKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
+//                {
+//                    buff[sizeof(buff)-1] = 0;
+//                    entry.SetAlias(buff);
+//                }
+//            }
+//            else
+//            {
+//                entry.SetDirect(true);
+//
+//                size = sizeof buff;
+//                if (RegQueryValueEx(hSubKey, cszHostKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
+//                {
+//                    buff[sizeof(buff)-1] = 0;
+//                    entry.SetHost(buff);
+//                }
+//                size = sizeof buff;
+//                if (RegQueryValueEx(hSubKey, cszTcpPortKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
+//                {
+//                    buff[sizeof(buff)-1] = 0;
+//                    entry.SetPort(buff);
+//                }
+//                size = sizeof buff;
+//                if (RegQueryValueEx(hSubKey, cszSIDKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
+//                {
+//                    buff[sizeof(buff)-1] = 0;
+//                    entry.SetSid(buff);
+//                }
+//                size = sizeof buff;
+//                if (RegQueryValueEx(hSubKey, cszServiceInsteadOfSidKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
+//                {
+//                    buff[sizeof(buff)-1] = 0;
+//                    entry.SetUseService((DWORD*)buff ? true : false);
+//                }
+//            }
+//            size = sizeof buff;
+//            if (RegQueryValueEx(hSubKey, cszUserKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
+//            {
+//                buff[sizeof(buff)-1] = 0;
+//                entry.SetUser(buff);
+//            }
+//
+//            if (m_SavePasswords)
+//            {
+//                size = sizeof buff;
+//                if (RegQueryValueEx(hSubKey, cszPasswordKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
+//                {
+//                    buff[sizeof(buff)-1] = 0;
+//                    entry.SetDecryptedPassword(buff);
+//                }
+//            }
+//            else
+//                entry.SetDecryptedPassword("");
+//    
+//            size = sizeof buff;
+//            if (RegQueryValueEx(hSubKey, cszCounterKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
+//            {
+//                itoa(*(DWORD*)buff, buff, 10);
+//                entry.SetUsageCounter(atoi(buff));
+//            }
+//
+//            size = sizeof buff;
+//            if (RegQueryValueEx(hSubKey, cszModeKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
+//            {
+//                buff[sizeof(buff)-1] = 0;
+//                entry.SetMode(*(DWORD*)buff);
+//            }
+//
+//            size = sizeof buff;
+//            if (RegQueryValueEx(hSubKey, cszSafetyKey, NULL, &type, (LPBYTE)buff, &size) == ERROR_SUCCESS)
+//            {
+//                buff[sizeof(buff)-1] = 0;
+//                entry.SetSafety(*(DWORD*)buff);
+//            }
+//            time_t t;
+//            filetime_to_timet(lastWriteTime, t);
+//            entry.SetLastUsage(t);
+//
+//            RegCloseKey(hSubKey);
+//
+//            entries.push_back(entry);
+//        }
+//
+//        RegCloseKey(hKey);
+//    }
+//
+//    swap(m_entries, entries);
+//
+//    EncryptAll(password);
+//}

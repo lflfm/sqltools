@@ -45,14 +45,14 @@ static char THIS_FILE[] = __FILE__;
 namespace ExtractSchemaHelpers
 {
 
-string GetFullPath (ExtractDDLSettings& settings)
+std::wstring GetFullPath (ExtractDDLSettings& settings)
 {
-    return GetRootFolder(settings) + '\\' + GetSubdirName(settings);
+    return GetRootFolder(settings) + L"\\" + GetSubdirName(settings);
 }
 
-string GetRootFolder (ExtractDDLSettings& settings)
+std::wstring GetRootFolder (ExtractDDLSettings& settings)
 {
-    string folder = settings.m_strFolder;
+    std::wstring folder = settings.m_strFolder;
         Common::trim_symmetric(folder);
 
     if (folder.size() && (*(folder.rbegin()) == '\\'))
@@ -61,21 +61,21 @@ string GetRootFolder (ExtractDDLSettings& settings)
     if (settings.m_UseDbAlias 
     && settings.m_UseDbAliasAs == 2 
     && !settings.m_strDbAlias.empty())
-        folder += '\\' + settings.m_strDbAlias;
+        folder += L"\\" + settings.m_strDbAlias;
 
     return folder;
 }
 
-string GetSubdirName (ExtractDDLSettings& settings)
+std::wstring GetSubdirName (ExtractDDLSettings& settings)
 {
-    string name;
+    std::wstring name;
     
     if (settings.m_UseDbAlias && !settings.m_strDbAlias.empty())
     {
         switch (settings.m_UseDbAliasAs)
         {
-        case 0: name = settings.m_strDbAlias + '_' + settings.m_strSchema; break;
-        case 1: name = settings.m_strSchema + '_' + settings.m_strDbAlias; break;
+        case 0: name = settings.m_strDbAlias + L"_" + settings.m_strSchema; break;
+        case 1: name = settings.m_strSchema + L"_" + settings.m_strDbAlias; break;
         case 2: name = settings.m_strSchema;                               break;
         }
     }
@@ -85,13 +85,13 @@ string GetSubdirName (ExtractDDLSettings& settings)
     return name;
 }
 
-void MakeFolders (string& path, ExtractDDLSettings& settings)
+void MakeFolders (std::wstring& path, ExtractDDLSettings& settings)
 {
-    string folder = GetRootFolder(settings);
+    std::wstring folder = GetRootFolder(settings);
 
     if (folder.size())
     {
-        list<string> listDir;
+        list<std::wstring> listDir;
         // check existent path part
         while (!folder.empty() && *(folder.rbegin()) != ':'
         && GetFileAttributes(folder.c_str()) == 0xFFFFFFFF) {
@@ -105,7 +105,7 @@ void MakeFolders (string& path, ExtractDDLSettings& settings)
         }
 
         // create non-existent path part
-        list<string>::const_iterator it(listDir.begin()), end(listDir.end());
+        auto it(listDir.begin()), end(listDir.end());
         for (; it != end; it++)
             _CHECK_AND_THROW_(CreateDirectory((*it).c_str(), NULL), "Can't create folder!");
     }
@@ -113,8 +113,8 @@ void MakeFolders (string& path, ExtractDDLSettings& settings)
     path = GetFullPath(settings);
 
     if (GetFileAttributes(path.c_str()) != 0xFFFFFFFF) {
-        string strMessage;
-        strMessage = "Folder \"" + path + "\" already exists.\nDo you want to remove it?";
+        std::wstring strMessage;
+        strMessage = L"Folder \"" + path + L"\" already exists.\nDo you want to remove it?";
 
         if (AfxMessageBox(strMessage.c_str(), MB_YESNO) == IDNO)
             AfxThrowUserException();
@@ -125,7 +125,7 @@ void MakeFolders (string& path, ExtractDDLSettings& settings)
 
     _CHECK_AND_THROW_(CreateDirectory(path.c_str(), NULL), "Can't create folder!");
 
-    set<string> folders;
+    set<std::wstring> folders;
     folders.insert(settings.m_TableFolder      ); 
     folders.insert(settings.m_TriggerFolder    ); 
     folders.insert(settings.m_ViewFolder       ); 
@@ -138,9 +138,9 @@ void MakeFolders (string& path, ExtractDDLSettings& settings)
     folders.insert(settings.m_PackageBodyFolder); 
     folders.insert(settings.m_GrantFolder      ); 
 
-    set<string>::const_iterator it = folders.begin();
+    auto it = folders.begin();
     for (; it != folders.end(); ++it)
-        _CHECK_AND_THROW_(CreateDirectory((path + "\\" + *it).c_str(), NULL), "Can't create folder!");
+        _CHECK_AND_THROW_(CreateDirectory((path + L"\\" + *it).c_str(), NULL), "Can't create folder!");
 }
 
 void NextAction (OciConnect* connect, HWND hStatusWnd, char* text)
@@ -150,7 +150,7 @@ void NextAction (OciConnect* connect, HWND hStatusWnd, char* text)
 
     if (IsWindow(hStatusWnd)) 
     {
-        ::SetWindowText(hStatusWnd, text);
+        ::SetWindowText(hStatusWnd, Common::wstr(text).c_str());
         UpdateWindow(hStatusWnd);
     }
 }
@@ -162,42 +162,42 @@ void LoadSchema (OciConnect& connect, Dictionary& dict, HWND hStatusWnd, Extract
 
     if (settings.m_ExtractTables) {
         NextAction(&connect, hStatusWnd, "Loading tables...");
-        loader.LoadTables(settings.m_strSchema.c_str(), "%", true/*useLike*/);
+        loader.LoadTables(Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/);
     }
 
     if (settings.m_ExtractViews) {
         NextAction(&connect, hStatusWnd, "Loading views...");
-        loader.LoadViews(settings.m_strSchema.c_str(), "%", true/*useLike*/, settings.m_ExtractTables/*skipConstraints*/);
+        loader.LoadViews(Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/, settings.m_ExtractTables/*skipConstraints*/);
     }
 
     if (settings.m_ExtractTriggers) {
         NextAction(&connect, hStatusWnd, "Loading triggers...");
-        loader.LoadTriggers(settings.m_strSchema.c_str(), "%", false/*byTable*/, true/*useLike*/);
+        loader.LoadTriggers(Common::str(settings.m_strSchema).c_str(), "%", false/*byTable*/, true/*useLike*/);
     }
 
     if (settings.m_ExtractSequences) {
         NextAction(&connect, hStatusWnd, "Loading sequences...");
-        loader.LoadSequences(settings.m_strSchema.c_str(), "%", true/*useLike*/);
+        loader.LoadSequences(Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/);
     }
 
     if (settings.m_ExtractCode) {
         NextAction(&connect, hStatusWnd, "Loading types,functions,procedures && packages...");
-        loader.LoadTypes        (settings.m_strSchema.c_str(), "%", true/*useLike*/);
-        loader.LoadTypeBodies   (settings.m_strSchema.c_str(), "%", true/*useLike*/);
-        loader.LoadFunctions    (settings.m_strSchema.c_str(), "%", true/*useLike*/);
-        loader.LoadProcedures   (settings.m_strSchema.c_str(), "%", true/*useLike*/);
-        loader.LoadPackages     (settings.m_strSchema.c_str(), "%", true/*useLike*/);
-        loader.LoadPackageBodies(settings.m_strSchema.c_str(), "%", true/*useLike*/);
+        loader.LoadTypes        (Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/);
+        loader.LoadTypeBodies   (Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/);
+        loader.LoadFunctions    (Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/);
+        loader.LoadProcedures   (Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/);
+        loader.LoadPackages     (Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/);
+        loader.LoadPackageBodies(Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/);
     }
 
     if (settings.m_ExtractSynonyms) {
         NextAction(&connect, hStatusWnd, "Loading Synonyms...");
-        loader.LoadSynonyms(settings.m_strSchema.c_str(), "%", true/*useLike*/);
+        loader.LoadSynonyms(Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/);
     }
 
     if (settings.m_ExtractGrantsByGrantee) {
         NextAction(&connect, hStatusWnd, "Loading Grants...");
-        loader.LoadGrantByGrantors(settings.m_strSchema.c_str(), "%", true/*useLike*/);
+        loader.LoadGrantByGrantors(Common::str(settings.m_strSchema).c_str(), "%", true/*useLike*/);
     }
 }
 
@@ -210,13 +210,13 @@ void OverrideTablespace (Dictionary& dict, ExtractDDLSettings& settings)
             TableMapConstIter it, end;
             dict.InitIterators(it, end);
             for (; it != end; it++)
-                it->second->m_strTablespaceName.Set(settings.m_strTableTablespace);
+                it->second->m_strTablespaceName.Set(Common::str(settings.m_strTableTablespace));
         }
         {
             ClusterMapConstIter it, end;
             dict.InitIterators(it, end);
             for (; it != end; it++)
-                it->second->m_strTablespaceName.Set(settings.m_strTableTablespace);
+                it->second->m_strTablespaceName.Set(Common::str(settings.m_strTableTablespace));
         }
     }
     if (!settings.m_strIndexTablespace.empty())
@@ -226,14 +226,14 @@ void OverrideTablespace (Dictionary& dict, ExtractDDLSettings& settings)
             IndexMapConstIter it, end;
             dict.InitIterators(it, end);
             for (; it != end; it++)
-                it->second->m_strTablespaceName.Set(settings.m_strIndexTablespace);
+                it->second->m_strTablespaceName.Set(Common::str(settings.m_strIndexTablespace));
         }
     }
 }
 
-void WriteSchema (Dictionary& dict, vector<const DbObject*>& views, HWND hStatusWnd, string& path, string& error_log, ExtractDDLSettings& settings)
+void WriteSchema (Dictionary& dict, vector<const DbObject*>& views, HWND hStatusWnd, std::wstring& path, string& error_log, ExtractDDLSettings& settings)
 {
-    WriteContext context(path, "DO.sql", settings);
+    WriteContext context(path, L"DO.sql", settings);
 
     try 
     {
@@ -241,9 +241,9 @@ void WriteSchema (Dictionary& dict, vector<const DbObject*>& views, HWND hStatus
 
         if (settings.m_ExtractSynonyms) {
             NextAction(NULL, hStatusWnd, "Writing synonyms...");
-            context.SetDefExt("sql");
-            context.SetSubDir("");
-            context.BeginSingleStream("Synonyms");
+            context.SetDefExt(L"sql");
+            context.SetSubDir(L"");
+            context.BeginSingleStream(L"Synonyms");
             dict.EnumSynonyms(write_object, &context);
             context.EndSingleStream();
         }
@@ -251,9 +251,9 @@ void WriteSchema (Dictionary& dict, vector<const DbObject*>& views, HWND hStatus
         if (settings.m_ExtractCode) {
             NextAction(NULL, hStatusWnd, "Writing types...");
 
-            context.SetDefExt("sql");
-            context.SetSubDir("");
-            context.BeginSingleStream("Types");
+            context.SetDefExt(L"sql");
+            context.SetSubDir(L"");
+            context.BeginSingleStream(L"Types");
             dict.EnumTypes(write_incopmlete_type, &context);
             context.EndSingleStream();
 
@@ -496,7 +496,7 @@ void OptimizeViewCreationOrder (
             DpdBuilder builder(dict, result);
 
             OciCursor cursor(connect, cszDpdSttm, 256);
-            cursor.Bind(":p_owner", settings.m_strSchema.c_str());
+            cursor.Bind(":p_owner", Common::str(settings.m_strSchema).c_str());
 
             cursor.Execute();
             while (cursor.Fetch())

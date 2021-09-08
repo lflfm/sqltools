@@ -58,7 +58,8 @@ namespace OpenEditor
         int  GetLineCount () const;
         LineId GetLineId (int line) const;
         int  GetLineLength (int line) const;
-        void GetLine (int line, const char*& ptr, int& len) const;
+        void GetLineA (int line, const char*& ptr, int& len) const;
+        void GetLineW (int line, OEStringW&) const;
 
         int GetCursorLine () const;
         int GetCursorColumn () const;
@@ -70,7 +71,7 @@ namespace OpenEditor
         /*
            all navigation methods return true
            if action is successful and false if it is not,
-           but cursor position may be was changed by adjustment
+           but cursor position may be changed by adjustment in any case
         */
         bool GoToUp (bool force = false);
         bool GoToDown (bool force = false);
@@ -94,14 +95,14 @@ namespace OpenEditor
         void DoUndent ();
         void DoCarriageReturn ();
 
-        void Insert     (char);
-        void Overwrite  (char);
+        void Insert     (wchar_t);
+        void Overwrite  (wchar_t);
         void Backspace  ();
         void Delete     ();
 
         void DeleteLine ();
-	    void DeleteWordToLeft ();
-	    void DeleteWordToRight ();
+        void DeleteWordToLeft ();
+        void DeleteWordToRight ();
 
         bool CanUndo () const;
         bool CanRedo () const;
@@ -119,30 +120,30 @@ namespace OpenEditor
         void SelectByCursor (Position prevPos);
 
         bool WordFromPoint (Position, Square&, const char* delims = 0) const;
-        bool GetBlockOrWordUnderCursor (string& buff, Square& sqr, bool onlyOneLine, const char* delims = 0);
+        bool GetBlockOrWordUnderCursor (std::wstring& buff, Square& sqr, bool onlyOneLine, const char* delims = 0);
         bool WordOrSpaceFromPoint (Position, Square&, const char* delims = 0) const;
 
         void UntabifyForColumnarOperation (Square);
-        void ColumnarInsert (char ch);
+        void ColumnarInsert (wchar_t ch);
         void ColumnarIndent ();
         void ColumnarUndent ();
         void ColumnarBackspace ();
         void ColumnarDelete ();
 
-        virtual void GetBlock    (string&, const Square* = 0) const;
-        virtual void InsertBlock (const char*);
-        virtual void InsertBlock (const char*, bool hideSelection, bool putSelInUndo = true);
+        virtual void GetBlock    (std::wstring&, const Square* = 0) const;
+        virtual void InsertBlock (const wchar_t*);
+        virtual void InsertBlock (const wchar_t*, bool hideSelection, bool putSelInUndo = true);
         virtual void DeleteBlock (bool putSelInUndo = true);
 
         void IndentBlock ();
         void UndentBlock ();
         void Sort (const SortCtx&);
 
-        void CopyBookmarkedLines (string&) const;
+        void CopyBookmarkedLines (std::wstring&) const;
         void DeleteBookmarkedLines ();
         void RemoveBlankLines (bool excessiveOnly);
 
-        void AlignCodeFragment (const char*, string&);
+        void AlignCodeFragment (const wchar_t*, std::wstring&);
 
         virtual bool ExpandTemplate (OpenEditor::TemplatePtr, int index = -1);
 
@@ -167,8 +168,8 @@ namespace OpenEditor
 
         // Text searching
         bool IsSearchTextEmpty () const;
-        const char* GetSearchText () const;
-        void SetSearchText (const char* str);
+        const wchar_t* GetSearchText () const;
+        void SetSearchText (const wchar_t* str);
         void GetSearchOption (bool& backward, bool& wholeWords, bool& matchCase, bool& regExpr, bool& searchAll) const;
         void SetSearchOption (bool backward, bool wholeWords, bool matchCase, bool regExpr, bool searchAll);
         bool IsBackwardSearch () const;
@@ -176,7 +177,7 @@ namespace OpenEditor
 
         bool Find (const EditContext*&, FindCtx&) const;
         bool Replace (FindCtx&);
-        int  SearchBatch (const char* text, ESearchBatch mode);
+        int  SearchBatch (const wchar_t* text, ESearchBatch mode);
 
         // Bookmark supporting
         bool IsBookmarked      (int line, EBookmarkGroup group) const;
@@ -199,27 +200,27 @@ namespace OpenEditor
         void StartScan (EBlockMode, const Square* = 0);
         bool Next ();
         bool Eof () const;
-        void GetScanLine (const char*& ptr, int& len) const;
-        void GetScanLine (int& line, int& start, int& end) const;
-        void PutLine (const char* ptr, int len);
+        void GetScanLine (std::wstring&) const;
+        void GetScanPosition (int& line, int& start, int& end) const;
+        void PutLine (const std::wstring&);
         void StopScan ();
 
         // Text manipulation utilities (see OpenEditor_Context_5.cpp)
-        void ScanAndReplaceText (bool (pmfnDo)(const EditContext&, string&), bool curentWord);
-        static bool LowerText (const EditContext&, string&);
-        static bool UpperText (const EditContext&, string&);
-        static bool CapitalizeText (const EditContext&, string&);
-        static bool InvertCaseText (const EditContext&, string&);
-        static bool TabifyText (const EditContext&, string&);
-        static bool TabifyLeadingSpaces (const EditContext&, string&);
-        static bool UntabifyText (const EditContext&, string&);
-        static bool UntabifyLeadingSpaces (const EditContext&, string&);
-        static bool ColumnLeftJustify (const EditContext&, string&);
-        static bool ColumnCenterJustify (const EditContext&, string&);
-        static bool ColumnRightJustify (const EditContext&, string&);
-        static bool TrimLeadingSpaces (const EditContext&, string&);
-        static bool TrimExcessiveSpaces (const EditContext&, string&);
-        static bool TrimTrailingSpaces (const EditContext&, string&);
+        void ScanAndReplaceText (bool (pmfnDo)(const EditContext&, std::wstring&), bool curentWord);
+        static bool LowerText (const EditContext&, std::wstring&);
+        static bool UpperText (const EditContext&, std::wstring&);
+        static bool CapitalizeText (const EditContext&, std::wstring&);
+        static bool InvertCaseText (const EditContext&, std::wstring&);
+        static bool TabifyText (const EditContext&, std::wstring&);
+        static bool TabifyLeadingSpaces (const EditContext&, std::wstring&);
+        static bool UntabifyText (const EditContext&, std::wstring&);
+        static bool UntabifyLeadingSpaces (const EditContext&, std::wstring&);
+        static bool ColumnLeftJustify (const EditContext&, std::wstring&);
+        static bool ColumnCenterJustify (const EditContext&, std::wstring&);
+        static bool ColumnRightJustify (const EditContext&, std::wstring&);
+        static bool TrimLeadingSpaces (const EditContext&, std::wstring&);
+        static bool TrimExcessiveSpaces (const EditContext&, std::wstring&);
+        static bool TrimTrailingSpaces (const EditContext&, std::wstring&);
 
         // Settings
         const Settings& GetSettings () const;
@@ -250,12 +251,12 @@ namespace OpenEditor
         OEC_DECLARE_GET_PROPERTY(string, MouseSelectionDelimiters     );
 
         OEC_DECLARE_GET_PROPERTY(string, PrintHeader);
-	    OEC_DECLARE_GET_PROPERTY(string, PrintFooter);
+        OEC_DECLARE_GET_PROPERTY(string, PrintFooter);
         OEC_DECLARE_GET_PROPERTY(int,    PrintMarginMeasurement);
-	    OEC_DECLARE_GET_PROPERTY(double, PrintLeftMargin);
-	    OEC_DECLARE_GET_PROPERTY(double, PrintRightMargin);
-	    OEC_DECLARE_GET_PROPERTY(double, PrintTopMargin);
-	    OEC_DECLARE_GET_PROPERTY(double, PrintBottomMargin);
+        OEC_DECLARE_GET_PROPERTY(double, PrintLeftMargin);
+        OEC_DECLARE_GET_PROPERTY(double, PrintRightMargin);
+        OEC_DECLARE_GET_PROPERTY(double, PrintTopMargin);
+        OEC_DECLARE_GET_PROPERTY(double, PrintBottomMargin);
 
         void HighlightCurrentLine (bool);
         bool IsCurrentLineHighlighted () const;
@@ -285,8 +286,7 @@ namespace OpenEditor
         friend UndoGroup;
 
         // string mustn't have '\r' or '\n'
-        // void InsertLine     (int, const char*, int);      
-        void InsertLinePart (int, int, const char*, int);
+        void InsertLinePart (int, int, const wchar_t*, int);
         void DeleteLinePart (int, int, int);
         void SplitLine      (int, int);
 
@@ -296,19 +296,19 @@ namespace OpenEditor
 
     protected:
         int inx2pos (int, int) const;
-        int inx2pos (const char*, int, int) const;
+        int inx2pos (const wchar_t*, int, int) const;
         int pos2inx (int, int, bool = false) const;
-        int pos2inx (const char*, int, int, bool = false) const;
+        int pos2inx (const wchar_t*, int, int, bool = false) const;
         void moveCurrentLine (int);
     private:
         int adjustPosByTab (int, int, bool = false) const;
 
-        void line2buff (int, int, int, string&, bool = false) const;
+        void line2buff (int, int, int, std::wstring&, bool = false) const;
 
         Position wordRight (bool hurry);
         Position wordLeft (bool hurry);
 
-        static bool getLine (std::istringstream&, string&, bool&);
+        static bool getLine (const wchar_t* str, int& position, std::wstring&, bool&);
 
         Storage* m_pStorage;
 
@@ -321,8 +321,8 @@ namespace OpenEditor
         EBlockMode m_BlockMode;
         bool    m_AltColumnarMode; // columnar mode was activated by pressed Alt key
 
-        static bool tabify (string&, int startPos, int tabSpacing, bool leading);
-        static bool untabify (string&, int startPos, int tabSpacing, bool leading);
+        static bool tabify (const wchar_t*, int, std::wstring&, int startPos, int tabSpacing, bool leading);
+        static bool untabify (const wchar_t*, int, std::wstring&, int startPos, int tabSpacing, bool leading);
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -400,9 +400,15 @@ namespace OpenEditor
     }
 
     inline
-    void EditContext::GetLine (int line, const char*& ptr, int& len) const
+    void EditContext::GetLineA (int line, const char*& ptr, int& len) const
     {
-        m_pStorage->GetLine(line, ptr, len);
+        m_pStorage->GetLineA(line, ptr, len);
+    }
+
+    inline
+    void EditContext::GetLineW (int line, OEStringW& str) const
+    {
+        m_pStorage->GetLineW(line, str);
     }
 
     inline
@@ -482,14 +488,14 @@ namespace OpenEditor
     }
 
     inline
-    const char* EditContext::GetSearchText () const
+    const wchar_t* EditContext::GetSearchText () const
     {
         _ASSERTE(m_pStorage);
         return m_pStorage->GetSearchText();
     }
 
     inline
-    void EditContext::SetSearchText (const char* str)
+    void EditContext::SetSearchText (const wchar_t* str)
     {
         _ASSERTE(m_pStorage);
         m_pStorage->SetSearchText(str);

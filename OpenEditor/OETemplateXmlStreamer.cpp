@@ -1,5 +1,5 @@
 /* 
-    Copyright (C) 2002, 2017 Aleksey Kochetov
+    Copyright (C) 2002 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
 #include "OpenEditor\OETemplateXmlStreamer.h"
 #include "OpenEditor\OESettings.h"
 #include "TinyXml\TinyXml.h"
+#include "COMMON/MyUtf.h"
+#include "TiXmlUtils.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,7 +36,7 @@ static char THIS_FILE[] = __FILE__;
 
 namespace OpenEditor
 {
-	using Common::AppLoadTextFromResources;
+    using Common::AppLoadTextFromResources;
 
     static const int MAJOR_VERSION = 1; // indicates incompatibility 
     static const int MINOR_VERSION = 2; // any minor changes
@@ -65,9 +67,9 @@ namespace OpenEditor
 
 /////////////////////////////////////////////////////////////////////////////
 
-TemplateXmlStreamer::TemplateXmlStreamer (const std::string& filename) 
+TemplateXmlStreamer::TemplateXmlStreamer (const std::wstring& filename) 
     : m_filename(filename),
-    m_fileAccessMutex(FALSE, "GNU.OpenEditor.Languges")
+    m_fileAccessMutex(FALSE, L"GNU.OpenEditor.Languges")
 {
 }
 
@@ -122,15 +124,15 @@ void TemplateXmlStreamer::operator << (const SettingsManager& mgr)
     CSingleLock lock(&m_fileAccessMutex);
     BOOL locked = lock.Lock(LOCK_TIMEOUT);
     if (!locked) 
-        THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + m_filename + '"');
+        THROW_APP_EXCEPTION("Cannot get exclusive access to \"" + Common::str(m_filename) + '"');
 
     TiXmlBase::SetCondenseWhiteSpace(false);
 
     TiXmlDocument doc;
     if (!::PathFileExists(m_filename.c_str()))
         doc.InsertEndChild(TiXmlDeclaration("1.0", ""/*"Windows-1252"*/, "yes"));
-    else if (!doc.LoadFile(m_filename.c_str()))
-        THROW_APP_EXCEPTION("Cannot read \"" + m_filename + "\"\nERROR: " + doc.ErrorDesc());
+    else if (!TiXmlUtils::LoadFile(doc, m_filename.c_str()))
+        THROW_APP_EXCEPTION("Cannot read \"" + Common::str(m_filename) + "\"\nERROR: " + doc.ErrorDesc());
 
     TiXmlNode* rootElem = getNodeSafe(&doc, "OpenEditor");
     TiXmlElement* templsElem = getNodeSafe(rootElem, "Templates");
@@ -139,7 +141,7 @@ void TemplateXmlStreamer::operator << (const SettingsManager& mgr)
     if (templsElem->QueryIntAttribute("MajorVersion", &majorVer) != TIXML_SUCCESS)
         majorVer = MAJOR_VERSION;
     if (majorVer != MAJOR_VERSION)
-        THROW_APP_EXCEPTION("Cannot load \""  + m_filename + "\".\nERROR: Unsupported settings version.");
+        THROW_APP_EXCEPTION("Cannot load \""  + Common::str(m_filename) + "\".\nERROR: Unsupported settings version.");
 
     writeXml(templsElem, "MajorVersion", MAJOR_VERSION);
     writeXml(templsElem, "MinorVersion", MINOR_VERSION);
@@ -194,8 +196,8 @@ void TemplateXmlStreamer::operator << (const SettingsManager& mgr)
             }
         }
 
-        if (!doc.SaveFile(m_filename.c_str()))
-            THROW_APP_EXCEPTION("Cannot save \"" + m_filename + "\"\nERROR: " + doc.ErrorDesc());
+        if (!TiXmlUtils::SaveFile(doc, m_filename.c_str()))
+            THROW_APP_EXCEPTION("Cannot save \"" + Common::str(m_filename) + "\"\nERROR: " + doc.ErrorDesc());
 
         mgr.m_templateCollection.ClearModified();
     }
@@ -206,15 +208,15 @@ void TemplateXmlStreamer::operator >> (SettingsManager& mgr)
     CSingleLock lock(&m_fileAccessMutex);
     BOOL locked = lock.Lock(LOCK_TIMEOUT);
     if (!locked) 
-        THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + m_filename + '"');
+        THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + Common::str(m_filename) + '"');
 
     TiXmlBase::SetCondenseWhiteSpace(false);
 
     TiXmlDocument doc;
     if (::PathFileExists(m_filename.c_str()))
     {
-        if (!doc.LoadFile(m_filename.c_str()))
-            THROW_APP_EXCEPTION("Cannot parse \"" + m_filename + "\"\nERROR: " + doc.ErrorDesc());
+        if (!TiXmlUtils::LoadFile(doc, m_filename.c_str()))
+            THROW_APP_EXCEPTION("Cannot parse \"" + Common::str(m_filename) + "\"\nERROR: " + doc.ErrorDesc());
     }
     else // no problem - will load settings from resources
     {
@@ -235,7 +237,7 @@ void TemplateXmlStreamer::operator >> (SettingsManager& mgr)
             int majorVer;
             readXml(langsElem, "MajorVersion", majorVer);
             if (majorVer != MAJOR_VERSION)
-                THROW_APP_EXCEPTION("Cannot load \""  + m_filename + "\".\nERROR: Unsupported templates version.");
+                THROW_APP_EXCEPTION("Cannot load \""  + Common::str(m_filename) + "\".\nERROR: Unsupported templates version.");
 
             mgr.m_templateCollection.Clear();
 
@@ -285,8 +287,8 @@ void TemplateXmlStreamer::operator >> (SettingsManager& mgr)
     }
 
     if (fileModified)
-        if (!doc.SaveFile(m_filename.c_str()))
-            THROW_APP_EXCEPTION("Cannot save \"" + m_filename + "\"\nERROR: " + doc.ErrorDesc());
+        if (!TiXmlUtils::SaveFile(doc, m_filename.c_str()))
+            THROW_APP_EXCEPTION("Cannot save \"" + Common::str(m_filename) + "\"\nERROR: " + doc.ErrorDesc());
 }
 
 };//namespace OpenEditor

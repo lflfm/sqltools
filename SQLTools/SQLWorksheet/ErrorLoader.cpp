@@ -2,10 +2,11 @@
 #include "ErrorLoader.h"
 #include <OCI8/BCursor.h>
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 #define BOOST_REGEX_NO_LIB
 #define BOOST_REGEX_STATIC_LINK
-#include <boost/regex.hpp>
+#include <boost/cregex.hpp>
 using namespace boost;
 
 namespace ErrorLoader
@@ -35,12 +36,12 @@ namespace ErrorLoader
         line_pattern += '^';
         line_pattern += name; 
         line_pattern += ":([0-9]+):";
-        regex_t line_regex;
-        regcomp(&line_regex, line_pattern.c_str(), REG_EXTENDED);
+        regex_tA line_regex;
+        regcompA(&line_regex, line_pattern.c_str(), REG_EXTENDED);
 
         string pos_pattern("^[ ]*(\\^)[ ]*$");
-        regex_t pos_regex;
-        regcomp(&pos_regex, pos_pattern.c_str(), REG_EXTENDED);
+        regex_tA pos_regex;
+        regcompA(&pos_regex, pos_pattern.c_str(), REG_EXTENDED);
 
         vector<comp_error>::iterator it = errors.begin();
         vector<comp_error>::iterator seg_line_it = errors.end();
@@ -51,7 +52,7 @@ namespace ErrorLoader
             memset(match, 0, sizeof(match));
             match[0].rm_eo = it->text.size();    // to
 
-            if (!regexec(&line_regex, it->text.c_str(), sizeof(match)/sizeof(match[0]), match, REG_STARTEND))
+            if (!regexecA(&line_regex, it->text.c_str(), sizeof(match)/sizeof(match[0]), match, REG_STARTEND))
             {
                 string n;
                 if (match[1].rm_so != match[1].rm_eo)
@@ -65,7 +66,7 @@ namespace ErrorLoader
 
             memset(match, 0, sizeof(match));
             match[0].rm_eo = it->text.size();    // to
-            if (!regexec(&pos_regex, it->text.c_str(), sizeof(match)/sizeof(match[0]), match, REG_STARTEND))
+            if (!regexecA(&pos_regex, it->text.c_str(), sizeof(match)/sizeof(match[0]), match, REG_STARTEND))
             {
                 if (match[1].rm_so != match[1].rm_eo)
                 {
@@ -154,6 +155,7 @@ int Load (DocumentProxy& proxy, OciConnect& connect, const char* owner, const ch
 
         void DoInBackground (OciConnect& connect)
         {
+            ActivePrimeExecutionOnOff onOff;
             Load(m_proxy, connect, m_owner.c_str(), m_name.c_str(), m_type.c_str(), m_line);
         }
 

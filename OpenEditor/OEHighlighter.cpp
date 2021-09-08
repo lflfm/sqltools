@@ -72,8 +72,29 @@ HighlighterBase::HighlighterBase ()
 //      Shell   - one string
 //      XML/XSL -
 //
+    inline
+    pair<std::wstring, std::wstring> wpair (pair<std::string, std::string> p)
+    {
+        return std::pair<std::wstring, std::wstring>(Common::wstr(p.first), Common::wstr(p.second));
+    }
+
+    inline
+    pair<std::string, std::string> spair (pair<std::wstring, std::wstring> p)
+    {
+        return std::pair<std::string, std::string>(Common::str(p.first), Common::str(p.second));
+    }
+
+    inline
+    set<std::wstring> wset (set<std::string> nset)
+    {
+        set<std::wstring> wset;
+        for (auto it = nset.begin(); it != nset.end(); ++it)
+            wset.insert(Common::wstr(*it));
+        return wset;
+    }
 
 CommonHighlighter::CommonHighlighter (const char* langName)
+    :m_symbolFastMap(false), m_lineCommentFastMap(false)
 {
     m_currentLine = 0;
     m_currentLineLength = 0;
@@ -93,65 +114,65 @@ CommonHighlighter::CommonHighlighter (const char* langName)
     m_LanguageKeywordMap = langPtr->GetLanguageKeywordMap();
     m_keywordGroups      = langPtr->GetKeywordGroups();
     m_caseSensiteve      = langPtr->IsCaseSensitive();
-    m_commentPair        = langPtr->GetCommentPair();
-    m_endLineComment     = langPtr->GetEndLineComment();
+    m_commentPair        = wpair(langPtr->GetCommentPair());
+    m_endLineComment     = Common::wstr(langPtr->GetEndLineComment());
     m_endLineCommentCol  = langPtr->GetEndLineCommentCol();
-    m_startLineComment   = langPtr->GetStartLineComment();
-    m_escapeChar         = langPtr->GetEscapeChar();
-    m_stringPair         = langPtr->GetStringPair();
-    m_charPair           = langPtr->GetCharPair();
+    m_startLineComment   = wset(langPtr->GetStartLineComment());
+    m_escapeChar         = Common::wstr(langPtr->GetEscapeChar());
+    m_stringPair         = wpair(langPtr->GetStringPair());
+    m_charPair           = wpair(langPtr->GetCharPair());
 
     m_delimiters.Set(langPtr->GetDelimiters().c_str());
 
     m_symbolFastMap.erase();
     m_lineCommentFastMap.erase();
 
-    if (!m_commentPair.first.empty())  m_symbolFastMap[*m_commentPair.first.begin()]   = true;
-    if (!m_commentPair.second.empty()) m_symbolFastMap[*m_commentPair.second.rbegin()] = true;
-    if (!m_stringPair.first.empty())   m_symbolFastMap[*m_stringPair.first.begin()]    = true;
-    if (!m_stringPair.second.empty())  m_symbolFastMap[*m_stringPair.second.rbegin()]  = true;
-    if (!m_charPair.first.empty())     m_symbolFastMap[*m_charPair.first.begin()]      = true;
-    if (!m_charPair.second.empty())    m_symbolFastMap[*m_charPair.second.rbegin()]    = true;
+    if (!m_commentPair.first.empty())  m_symbolFastMap.assign(*m_commentPair.first.begin()  , true);
+    if (!m_commentPair.second.empty()) m_symbolFastMap.assign(*m_commentPair.second.rbegin(), true);
+    if (!m_stringPair.first.empty())   m_symbolFastMap.assign(*m_stringPair.first.begin()   , true);
+    if (!m_stringPair.second.empty())  m_symbolFastMap.assign(*m_stringPair.second.rbegin() , true);
+    if (!m_charPair.first.empty())     m_symbolFastMap.assign(*m_charPair.first.begin()     , true);
+    if (!m_charPair.second.empty())    m_symbolFastMap.assign(*m_charPair.second.rbegin()   , true);
 
     if (!m_endLineComment.empty())
     {
-        m_symbolFastMap[*m_endLineComment.begin()] = true;
-        m_lineCommentFastMap[*m_endLineComment.begin()]= true;
+        m_symbolFastMap.assign(*m_endLineComment.begin(), true);
+        m_lineCommentFastMap.assign(*m_endLineComment.begin(), true);
     }
 
     if (!m_endLineComment.empty())
     {
-        char ch = *m_endLineComment.begin();
+        wchar_t ch = *m_endLineComment.begin();
         if (m_caseSensiteve)
         {
-            m_symbolFastMap[ch] = true;
-            m_lineCommentFastMap[ch]= true;
+            m_symbolFastMap.assign(ch, true);
+            m_lineCommentFastMap.assign(ch, true);
         }
         else
         {
-            m_symbolFastMap[toupper(ch)]= true;
-            m_symbolFastMap[tolower(ch)]= true;
-            m_lineCommentFastMap[toupper(ch)]= true;
-            m_lineCommentFastMap[tolower(ch)]= true;
+            m_symbolFastMap.assign(towupper(ch), true);
+            m_symbolFastMap.assign(towlower(ch), true);
+            m_lineCommentFastMap.assign(towupper(ch), true);
+            m_lineCommentFastMap.assign(towlower(ch), true);
         }
     }
 
-    std::set<string>::const_iterator it = m_startLineComment.begin();
+    auto it = m_startLineComment.begin();
     for (; it != m_startLineComment.end(); ++it)
         if (it->size())
         {
-            char ch = it->at(0);
+            auto ch = it->at(0);
             if (m_caseSensiteve)
             {
-                m_symbolFastMap[ch] = true;
-                m_lineCommentFastMap[ch] = true;
+                m_symbolFastMap.assign(ch, true);
+                m_lineCommentFastMap.assign(ch, true);
             }
             else
             {
-                m_symbolFastMap[toupper(ch)]= true;
-                m_symbolFastMap[tolower(ch)]= true;
-                m_lineCommentFastMap[toupper(ch)]= true;
-                m_lineCommentFastMap[tolower(ch)]= true;
+                m_symbolFastMap.assign(towupper(ch), true);
+                m_symbolFastMap.assign(towlower(ch), true);
+                m_lineCommentFastMap.assign(towupper(ch), true);
+                m_lineCommentFastMap.assign(towlower(ch), true);
             }
         }
 }
@@ -183,7 +204,7 @@ void CommonHighlighter::Init (const VisualAttributesSet& set_)
         m_keyAttrs.at(i) = set_.FindByName(it->c_str());
 }
 
-void CommonHighlighter::NextLine (const char* currentLine, int currentLineLength)
+void CommonHighlighter::NextLine (const wchar_t* currentLine, int currentLineLength)
 {
     m_currentLine = currentLine;
     m_currentLineLength = currentLineLength;
@@ -198,13 +219,13 @@ void CommonHighlighter::NextLine (const char* currentLine, int currentLineLength
     }
 }
 
-bool CommonHighlighter::closingOfSeq (const char* str, int /*len*/, int /*pos*/)
+bool CommonHighlighter::closingOfSeq (const wchar_t* str, int /*len*/, int /*pos*/)
 {
     switch (m_seqOf)
     {
     case eComment:
         if ((str - m_commentPair.second.size() + 1) >= m_currentLine
-            && !strncmp(
+            && !wcsncmp(
                     m_commentPair.second.c_str(),
                     str - m_commentPair.second.size() + 1,
                     m_commentPair.second.size())
@@ -217,7 +238,7 @@ bool CommonHighlighter::closingOfSeq (const char* str, int /*len*/, int /*pos*/)
         break;
     case eCharacter:
         if ((str - m_charPair.second.size() + 1) >= m_currentLine
-            && !strncmp(
+            && !wcsncmp(
                     m_charPair.second.c_str(),
                     str - m_charPair.second.size() + 1,
                     m_charPair.second.size())
@@ -227,13 +248,13 @@ bool CommonHighlighter::closingOfSeq (const char* str, int /*len*/, int /*pos*/)
                 // the current position < escape size
                 || str - m_currentLine < static_cast<int>(m_escapeChar.size())
                 // the previous fragment is not escape
-                || strncmp(m_escapeChar.c_str(), str - m_escapeChar.size(), m_escapeChar.size())
+                || wcsncmp(m_escapeChar.c_str(), str - m_escapeChar.size(), m_escapeChar.size())
                 // it is double escape
                 || (
                     // the current position >= 2 * escape size
                     str - m_currentLine >= 2 * static_cast<int>(m_escapeChar.size())
                     // the previous previous fragment is escape
-                    && !strncmp(m_escapeChar.c_str(), str - 2 * m_escapeChar.size(), m_escapeChar.size())
+                    && !wcsncmp(m_escapeChar.c_str(), str - 2 * m_escapeChar.size(), m_escapeChar.size())
                 )
             )
         )
@@ -245,7 +266,7 @@ bool CommonHighlighter::closingOfSeq (const char* str, int /*len*/, int /*pos*/)
         break;
     case eString:
         if ((str - m_stringPair.second.size() + 1) >= m_currentLine
-            && !strncmp(
+            && !wcsncmp(
                     m_stringPair.second.c_str(),
                     str - m_stringPair.second.size() + 1,
                     m_stringPair.second.size())
@@ -255,13 +276,13 @@ bool CommonHighlighter::closingOfSeq (const char* str, int /*len*/, int /*pos*/)
                 // the current position < escape size
                 || str - m_currentLine < static_cast<int>(m_escapeChar.size())
                 // the previous fragment is not escape
-                || strncmp(m_escapeChar.c_str(), str - m_escapeChar.size(), m_escapeChar.size())
+                || wcsncmp(m_escapeChar.c_str(), str - m_escapeChar.size(), m_escapeChar.size())
                 // it is double escape
                 || (
                     // the current position >= 2 * escape size
                     str - m_currentLine >= 2 * static_cast<int>(m_escapeChar.size())
                     // the previous previous fragment is escape
-                    && !strncmp(m_escapeChar.c_str(), str - 2 * m_escapeChar.size(), m_escapeChar.size())
+                    && !wcsncmp(m_escapeChar.c_str(), str - 2 * m_escapeChar.size(), m_escapeChar.size())
                 )
             )
         )
@@ -275,7 +296,7 @@ bool CommonHighlighter::closingOfSeq (const char* str, int /*len*/, int /*pos*/)
     return false;
 }
 
-bool CommonHighlighter::openingOfSeq (const char* str, int len, int pos)
+bool CommonHighlighter::openingOfSeq (const wchar_t* str, int len, int pos)
 {
     bool comment = false;
 
@@ -283,17 +304,17 @@ bool CommonHighlighter::openingOfSeq (const char* str, int len, int pos)
     {
         if (!m_endLineComment.empty()
         && (m_endLineCommentCol == -1 || m_endLineCommentCol == pos)
-        && !strncmp(str, m_endLineComment.c_str(), m_endLineComment.size())
+        && !wcsncmp(str, m_endLineComment.c_str(), m_endLineComment.size())
         )
             comment = true;
 
         if (m_isStartLine)
         {
-            std::set<string>::const_iterator it = m_startLineComment.begin();
+            auto it = m_startLineComment.begin();
             for (; it != m_startLineComment.end(); ++it)
                 if (len == static_cast<int>(it->length()) // 10.03.2003 bug fix, start-line comment (promt & remark) should be separeted by delimiter from text
-                && (m_caseSensiteve && !strncmp(str, it->c_str(), it->length())
-                    || !m_caseSensiteve && !strnicmp(str, it->c_str(), it->length()))
+                && (m_caseSensiteve && !wcsncmp(str, it->c_str(), it->length())
+                    || !m_caseSensiteve && !wcsnicmp(str, it->c_str(), it->length()))
                 )
                 {
                     comment = true;
@@ -311,7 +332,7 @@ bool CommonHighlighter::openingOfSeq (const char* str, int len, int pos)
     }
     else if (!m_charPair.first.empty()
         && (m_currentLine + m_currentLineLength) >= (str + m_charPair.first.size())
-        && !strncmp(str, m_charPair.first.c_str(), m_charPair.first.size()))
+        && !wcsncmp(str, m_charPair.first.c_str(), m_charPair.first.size()))
     {
         m_seqOf = eCharacter;
         m_current = m_characterAttr;
@@ -320,7 +341,7 @@ bool CommonHighlighter::openingOfSeq (const char* str, int len, int pos)
     }
     else if (!m_stringPair.first.empty()
         && (m_currentLine + m_currentLineLength) >= (str + m_stringPair.first.size())
-        && !strncmp(str, m_stringPair.first.c_str(), m_stringPair.first.size()))
+        && !wcsncmp(str, m_stringPair.first.c_str(), m_stringPair.first.size()))
     {
         m_seqOf = eString;
         m_current = m_stringAttr;
@@ -329,7 +350,7 @@ bool CommonHighlighter::openingOfSeq (const char* str, int len, int pos)
     }
     else if (!m_commentPair.first.empty()
         && (m_currentLine + m_currentLineLength) >= (str + m_commentPair.first.size())
-        && !strncmp(str, m_commentPair.first.c_str(), m_commentPair.first.size()))
+        && !wcsncmp(str, m_commentPair.first.c_str(), m_commentPair.first.size()))
     {
         m_seqOf = eComment;
         m_current = m_commentAttr;
@@ -341,18 +362,18 @@ bool CommonHighlighter::openingOfSeq (const char* str, int len, int pos)
 }
 
 // export some additional functionality
-bool CommonHighlighter::IsKeyword (const char* str, int len, string& keyword)
+bool CommonHighlighter::IsKeyword (const wchar_t* str, int len, std::wstring& keyword)
 {
-    string key(str, len);
+    std::wstring key(str, len);
 
     if (!m_caseSensiteve)
-        for (string::iterator it = key.begin(); it != key.end(); ++it)
-            *it = toupper(*it);
+        for (auto it = key.begin(); it != key.end(); ++it)
+            *it = towupper(*it);
 
     LanguageKeywordMapConstIterator
         it = m_LanguageKeywordMap->find(key);
 
-	if (it != m_LanguageKeywordMap->end())
+    if (it != m_LanguageKeywordMap->end())
     {
         keyword = it->second.keyword;
         return true;
@@ -361,19 +382,18 @@ bool CommonHighlighter::IsKeyword (const char* str, int len, string& keyword)
     return false;
 }
 
-// TODO: add bool ValidateKeyword (const char* str, int len, int pos, int keywordGroup)
-bool CommonHighlighter::isKeyword (const char* str, int len)
+bool CommonHighlighter::isKeyword (const wchar_t* str, int len)
 {
-    string key(str, len);
+    std::wstring key(str, len);
 
     if (!m_caseSensiteve)
-        for (string::iterator it = key.begin(); it != key.end(); ++it)
-            *it = toupper(*it);
+        for (auto it = key.begin(); it != key.end(); ++it)
+            *it = towupper(*it);
 
     LanguageKeywordMapConstIterator
         it = m_LanguageKeywordMap->find(key);
 
-	if (it != m_LanguageKeywordMap->end())
+    if (it != m_LanguageKeywordMap->end())
     {
         m_seqOf = eKeyword;
         m_current = m_keyAttrs.at(it->second.groupIndex);
@@ -389,9 +409,9 @@ bool CommonHighlighter::isKeyword (const char* str, int len)
 
 // it's the simplest implementeation of isDigit
 // we check only the first character
-bool CommonHighlighter::isDigit (const char* str, int /*len*/)
+bool CommonHighlighter::isDigit (const wchar_t* str, int /*len*/)
 {
-    if (isdigit(*str))
+    if (iswdigit(*str))
     {
         m_current = m_numberAttr;
         return true;
@@ -400,9 +420,9 @@ bool CommonHighlighter::isDigit (const char* str, int /*len*/)
     return false;
 }
 
-void CommonHighlighter::NextWord (const char* str, int len, int pos)
+void CommonHighlighter::NextWord (const wchar_t* str, int len, int pos)
 {
-	_ASSERTE(str && len > 0);
+    _ASSERTE(str && len > 0);
 
     if (!(m_symbolFastMap[*str] && closingOfSeq(str, len, pos))
         && (m_seqOf & ePlainGroup)
@@ -419,15 +439,15 @@ void CommonHighlighter::InitStorageScanner (MultilineQuotesScanner& scanner) con
     scanner.ClearSettings ();
     scanner.SetCaseSensitive(m_caseSensiteve);
 
-    std::set<string>::const_iterator it = m_startLineComment.begin();
+    auto it = m_startLineComment.begin();
     for (; it != m_startLineComment.end(); ++it)
-        scanner.AddStartLineQuotes(it->c_str());
+        scanner.AddStartLineQuotes(Common::str(*it));
 
-    if (!m_endLineComment.empty())    scanner.AddSingleLineQuotes(m_endLineComment.c_str());
-    if (!m_commentPair.first.empty()) scanner.AddMultilineQuotes(m_commentPair);
-    if (!m_stringPair.first.empty())  scanner.AddMultilineQuotes(m_stringPair);
-    if (!m_charPair.first.empty())    scanner.AddMultilineQuotes(m_charPair);
-    if (!m_escapeChar.empty())        scanner.AddEscapeChar(m_escapeChar.c_str());
+    if (!m_endLineComment.empty())    scanner.AddSingleLineQuotes(Common::str(m_endLineComment));
+    if (!m_commentPair.first.empty()) scanner.AddMultilineQuotes (spair(m_commentPair));
+    if (!m_stringPair.first.empty())  scanner.AddMultilineQuotes (spair(m_stringPair));
+    if (!m_charPair.first.empty())    scanner.AddMultilineQuotes (spair(m_charPair));
+    if (!m_escapeChar.empty())        scanner.AddEscapeChar      (Common::str(m_escapeChar));
 
     scanner.SetDelimitersMap(m_delimiters);
 }

@@ -34,7 +34,7 @@ void CConnectSettingsDlg::OnOK()
     if (m_Passwords[0] != m_Passwords[1])
     {
         MessageBeep((UINT)-1);
-        AfxMessageBox("Master password and confirmation are not identical!", MB_OK|MB_ICONSTOP);
+        AfxMessageBox(L"Master password and confirmation are not identical!", MB_OK|MB_ICONSTOP);
         ::SetFocus(::GetDlgItem(m_hWnd, IDC_CS_PASSWORD1));
         return;
     }

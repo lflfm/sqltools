@@ -109,6 +109,7 @@ namespace OpenEditor
     typedef counted_ptr<ClassSettings> ClassSettingsPtr;
     typedef std::vector<ClassSettingsPtr> ClassSettingsVector;
 
+    enum EFileEncoding { feANSI, feUTF8, feUTF8BOM, feUTF16BOM };
     enum EFileFormat { effDefault = -1, effDos = 0, effUnix = 1, effMac = 2 };
     enum EBackupMode { ebmNone = 0, ebmCurrentDirectory = 1, ebmBackupDirectory = 2 };
 
@@ -191,6 +192,9 @@ namespace OpenEditor
         OES_DECL_STREAMABLE_PROPERTY(bool,   ColBlockEditMode);
         OES_DECL_STREAMABLE_PROPERTY(string, MouseSelectionDelimiters);
 
+        OES_DECL_STREAMABLE_PROPERTY(int,    Encoding);
+        OES_DECL_STREAMABLE_PROPERTY(bool,   AsciiAsUtf8);
+
         OES_DECL_STREAMABLE_PROPERTY(bool,   FileLocking);
         OES_DECL_STREAMABLE_PROPERTY(bool,   FileMemMapForBig);
         OES_DECL_STREAMABLE_PROPERTY(int,    FileMemMapThreshold);
@@ -211,22 +215,32 @@ namespace OpenEditor
 
         OES_DECL_STREAMABLE_PROPERTY(bool,   AllowMultipleInstances);
         OES_DECL_STREAMABLE_PROPERTY(bool,   NewDocOnStartup);
-        OES_DECL_STREAMABLE_PROPERTY(bool,   MaximizeFirstDocument);
+        //OES_DECL_STREAMABLE_PROPERTY(bool,   MaximizeFirstDocument); // FRM: cannot be used anymore
         OES_DECL_STREAMABLE_PROPERTY(bool,   WorkDirFollowsDocument);
-        OES_DECL_STREAMABLE_PROPERTY(bool,   SaveCurPosAndBookmarks);
+        //OES_DECL_STREAMABLE_PROPERTY(bool,   SaveCurPosAndBookmarks); // replaced with GetHistoryRestoreEditorState
         OES_DECL_STREAMABLE_PROPERTY(bool,   SaveMainWinPosition);
-        OES_DECL_STREAMABLE_PROPERTY(bool,   DoubleClickCloseTab);
+        //OES_DECL_STREAMABLE_PROPERTY(bool,   DoubleClickCloseTab); // FRM: cannot be used anymore 
         OES_DECL_STREAMABLE_PROPERTY(string, Locale);
         OES_DECL_STREAMABLE_PROPERTY(string, KeymapLayout);
+        OES_DECL_STREAMABLE_PROPERTY(bool,   MDITabsOnTop)
+        OES_DECL_STREAMABLE_PROPERTY(bool,   MDITabsAutoColor)
+        OES_DECL_STREAMABLE_PROPERTY(bool,   MDITabsDocumentMenuButton)
+        OES_DECL_STREAMABLE_PROPERTY(bool,   MDITabsActiveTabCloseButton)
+        OES_DECL_STREAMABLE_PROPERTY(bool,   MDITabsRectangularLook)
+        OES_DECL_STREAMABLE_PROPERTY(bool,   MDITabsCtrlTabSwitchesToPrevActive)
 
         OES_DECL_STREAMABLE_PROPERTY(string, DefaultClass);
-        OES_DECL_STREAMABLE_PROPERTY(bool,   UseIniFile);
+        //OES_DECL_STREAMABLE_PROPERTY(bool,   UseIniFile); // FRM: cannot be used anymore
 
         OES_DECL_STREAMABLE_PROPERTY(bool,   FileManagerTooltips);
         OES_DECL_STREAMABLE_PROPERTY(bool,   FileManagerPreviewInTooltips);
         OES_DECL_STREAMABLE_PROPERTY(int,    FileManagerPreviewLines);
-        OES_DECL_STREAMABLE_PROPERTY(bool,   FileManagerShellContexMenu);
-        OES_DECL_STREAMABLE_PROPERTY(string, FileManagerShellContexMenuFilter);
+        
+        //OES_DECL_STREAMABLE_PROPERTY(bool,   FileManagerShellContexMenu);
+        //OES_DECL_STREAMABLE_PROPERTY(string, FileManagerShellContexMenuFilter);
+        OES_DECL_STREAMABLE_PROPERTY(bool,   FileManagerShellContexMenuProperties);
+        OES_DECL_STREAMABLE_PROPERTY(bool,   FileManagerShellContexMenuTortoiseGIT);
+        OES_DECL_STREAMABLE_PROPERTY(bool,   FileManagerShellContexMenuTortoiseSVN);
 
         OES_DECL_STREAMABLE_PROPERTY(bool,   WorkspaceFileSaveInActiveOnExit);
         OES_DECL_STREAMABLE_PROPERTY(bool,   WorkspaceDetectChangesOnOpen);
@@ -347,6 +361,9 @@ namespace OpenEditor
         OES_AGGREGATE_GLOBAL_PROPERTY(bool,   ColBlockEditMode);
         OES_AGGREGATE_GLOBAL_PROPERTY(string, MouseSelectionDelimiters);
 
+        OES_AGGREGATE_GLOBAL_PROPERTY(int,    Encoding);
+        OES_AGGREGATE_GLOBAL_PROPERTY(bool,   AsciiAsUtf8);
+
         OES_AGGREGATE_GLOBAL_PROPERTY(bool,   FileLocking);
         OES_AGGREGATE_GLOBAL_PROPERTY(bool,   FileMemMapForBig);
         OES_AGGREGATE_GLOBAL_PROPERTY(int,    FileMemMapThreshold);
@@ -365,16 +382,19 @@ namespace OpenEditor
 
         OES_AGGREGATE_GLOBAL_PROPERTY(bool,   AllowMultipleInstances);
         OES_AGGREGATE_GLOBAL_PROPERTY(bool,   NewDocOnStartup);
-        OES_AGGREGATE_GLOBAL_PROPERTY(bool,   MaximizeFirstDocument);
+        //OES_AGGREGATE_GLOBAL_PROPERTY(bool,   MaximizeFirstDocument);
         OES_AGGREGATE_GLOBAL_PROPERTY(bool,   WorkDirFollowsDocument);
-        OES_AGGREGATE_GLOBAL_PROPERTY(bool,   SaveCurPosAndBookmarks);
+        //OES_AGGREGATE_GLOBAL_PROPERTY(bool,   SaveCurPosAndBookmarks);
         OES_AGGREGATE_GLOBAL_PROPERTY(bool,   SaveMainWinPosition);
-        OES_AGGREGATE_GLOBAL_PROPERTY(bool,   DoubleClickCloseTab);
+        //OES_AGGREGATE_GLOBAL_PROPERTY(bool,   DoubleClickCloseTab);
         OES_AGGREGATE_GLOBAL_PROPERTY(string, Locale);
         OES_AGGREGATE_GLOBAL_PROPERTY(string, KeymapLayout);
 
-        OES_AGGREGATE_GLOBAL_PROPERTY(bool,   FileManagerShellContexMenu);
-        OES_AGGREGATE_GLOBAL_PROPERTY(string, FileManagerShellContexMenuFilter);
+        //OES_AGGREGATE_GLOBAL_PROPERTY(bool,   FileManagerShellContexMenu);
+        //OES_AGGREGATE_GLOBAL_PROPERTY(string, FileManagerShellContexMenuFilter);
+        OES_AGGREGATE_GLOBAL_PROPERTY(bool, FileManagerShellContexMenuProperties);
+        OES_AGGREGATE_GLOBAL_PROPERTY(bool, FileManagerShellContexMenuTortoiseGIT);
+        OES_AGGREGATE_GLOBAL_PROPERTY(bool, FileManagerShellContexMenuTortoiseSVN);
 
         OES_AGGREGATE_GLOBAL_PROPERTY(bool,   SyntaxGutter);
 

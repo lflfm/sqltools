@@ -2,7 +2,7 @@ Name "SQLTools v${SQLTOOLSVER}"
 
 !define MUI_VERSION 	"v${SQLTOOLSVER}"
 
-!define DEST_NAME		"SQLTools 1.9"
+!define DEST_NAME		"SQLTools 2.0"
 !define SRCDIR 			"..\SQLTools"
 !define EXEDIR  		"..\_output_\${SQLTOOLS_BUILDDIR}"
 !define SQLHELP_PATH 	"..\SQLHelp"
@@ -41,9 +41,9 @@ SetCompressor bzip2
 ;Pages
 ;--------------------------------
 !ifdef NOADMIN
-	!define MUI_WELCOMEPAGE_TITLE "Welcome to the SQLTools 1.9 Setup Wizard (for user w/o admin rights)"
+	!define MUI_WELCOMEPAGE_TITLE "Welcome to the SQLTools 2.0 Setup Wizard (for user w/o admin rights)"
 !else
-	!define MUI_WELCOMEPAGE_TITLE "Welcome to the SQLTools 1.9 Setup Wizard (for user with admin rights)"
+	!define MUI_WELCOMEPAGE_TITLE "Welcome to the SQLTools 2.0 Setup Wizard (for user with admin rights)"
 !endif
 !define MUI_WELCOMEPAGE_TEXT "PLEASE READ THIS INFORMATION CAREFULLY$\n$\n\
 ***Oracle Client (8i, 9i, 10g, 11g or 12c) 32-bit is REQUIRED***$\n$\n\
@@ -96,9 +96,8 @@ Section "!Program files (required)" SecCopyProgramFiles
 
 	SetOutPath "$INSTDIR"
 	File "${SQLHELP_PATH}\sqlqkref.chm"
-	File "${EXEDIR}\sqltools.chm"
-	File "${EXEDIR}\SQLTools.exe"
-	File "${GREP_PATH}\grep.exe"
+	File /oname=SQLToolsU.chm "${EXEDIR}\sqltools.chm"
+	File /oname=SQLToolsU.exe "${EXEDIR}\SQLTools.exe"
 	File "${SRCDIR}\README.TXT"
 	File "${SRCDIR}\LICENSE.TXT"
 	File "${SRCDIR}\History.TXT"
@@ -124,7 +123,7 @@ Section "!Program files (required)" SecCopyProgramFiles
 	File "${LAUNCHER_PATH}\sqlt-launcher.xml"
 SqltLauncherXmlExists:
 
-	Exec 'hh $INSTDIR\sqltools.chm::/init_setup.htm'
+	Exec 'hh $INSTDIR\sqltoolsu.chm::/init_setup.htm'
 
 SectionEnd
 
@@ -141,7 +140,7 @@ Section "Menu Group" SecCreateMenuGroup
     WriteINIStr "$SMPROGRAMS\${DEST_NAME}\SQLTools Home Page.url" "InternetShortcut" "URL" "http://www.sqltools.net"
     WriteINIStr "$SMPROGRAMS\${DEST_NAME}\Download SQLTools Tutorial.url" "InternetShortcut" "URL" "https://sourceforge.net/projects/sqlt/files/Tutorial/Version%200.1%20%28EN%2CPL%2CFR%2CSP%2CHU%29/"
     CreateShortCut "$SMPROGRAMS\${DEST_NAME}\Uninstall SQLTools.lnk" "$INSTDIR\uninst.exe"
-    CreateShortCut "$SMPROGRAMS\${DEST_NAME}\SQLTools.lnk" "$INSTDIR\SQLTools.exe"
+    CreateShortCut "$SMPROGRAMS\${DEST_NAME}\SQLTools.lnk" "$INSTDIR\SQLToolsU.exe"
     CreateShortCut "$SMPROGRAMS\${DEST_NAME}\README.lnk" "$INSTDIR\README.TXT"
     CreateShortCut "$SMPROGRAMS\${DEST_NAME}\LICENSE.lnk" "$INSTDIR\LICENSE.TXT"
     CreateShortCut "$SMPROGRAMS\${DEST_NAME}\History.lnk" "$INSTDIR\History.txt"
@@ -155,7 +154,7 @@ Section "Desktop Icon" SecCreateDesktopIcon
 !else
 	SetShellVarContext all
 !endif
-    CreateShortCut "$DESKTOP\${DEST_NAME}.lnk" "$INSTDIR\SQLTools.exe"
+    CreateShortCut "$DESKTOP\${DEST_NAME}.lnk" "$INSTDIR\SQLToolsU.exe"
 SectionEnd
 
 Section "Quick Launch Icon" SecQuickLaunchIcon
@@ -165,7 +164,7 @@ Section "Quick Launch Icon" SecQuickLaunchIcon
 !else
 	SetShellVarContext all
 !endif
-    CreateShortCut "$QUICKLAUNCH\${DEST_NAME}.lnk" "$INSTDIR\SQLTools.exe"
+    CreateShortCut "$QUICKLAUNCH\${DEST_NAME}.lnk" "$INSTDIR\SQLToolsU.exe"
 SectionEnd
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -180,9 +179,8 @@ Section Uninstall
 	Delete "$INSTDIR\sqlnet.log"
 	Delete "$INSTDIR\uninst.exe"
 	Delete "$INSTDIR\sqlqkref.chm"
-	Delete "$INSTDIR\sqltools.chm"
-	Delete "$INSTDIR\SQLTools.exe"
-	Delete "$INSTDIR\grep.exe"
+	Delete "$INSTDIR\SQLToolsU.chm"
+	Delete "$INSTDIR\SQLToolsU.exe"
 	Delete "$INSTDIR\ReadMe.txt"
 	Delete "$INSTDIR\License.txt"
 	Delete "$INSTDIR\History.txt"

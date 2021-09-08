@@ -23,7 +23,6 @@
 #include <algorithm>
 #include <COMMON/ExceptionHelper.h>
 #include "OpenEditor/OETemplates.h"
-#include "OpenEditor/OESettingsStreams.h"
 
 #ifdef _AFX
 #ifdef _DEBUG
@@ -96,9 +95,9 @@ void Template::GenUUID (Entry& entry)
     UUID uuid;
     UuidCreate(&uuid);
     char* pszUuid;
-    UuidToString(&uuid, (RPC_CSTR*)&pszUuid);
+    UuidToStringA(&uuid, (RPC_CSTR*)&pszUuid);
     entry.uuid = pszUuid;
-    RpcStringFree((RPC_CSTR*)&pszUuid);
+    RpcStringFreeA((RPC_CSTR*)&pszUuid);
 }
 
 void Template::AppendEntry (const Entry& entry)

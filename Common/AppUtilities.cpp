@@ -24,7 +24,7 @@
 #include <lmerr.h>
 #include <sstream>
 #include <afxole.h>
-#include "COMMON\AppUtilities.h"
+#include "AppUtilities.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,7 +37,7 @@ using namespace std;
 namespace Common
 {
 
-void AppRestoreHistory (CComboBox& wndList, const char* szSection, const char* szEntry, int nSize)
+void AppRestoreHistory (CComboBox& wndList, LPCTSTR szSection, LPCTSTR szEntry, int nSize)
 {
     BOOL useRegistry = AfxGetApp()->m_pszRegistryKey ?  TRUE : FALSE;
 
@@ -46,7 +46,7 @@ void AppRestoreHistory (CComboBox& wndList, const char* szSection, const char* s
     for (int i(0); i < nSize; i++)
     {
         CString strEntry, strBuffer;
-        strEntry.Format(useRegistry ? "%s_%d" : "%s_v2_%d", (const char*)szEntry, i);
+        strEntry.Format(useRegistry ? _T("%s_%d") : _T("%s_v2_%d"), (LPCTSTR)szEntry, i);
         
         if (useRegistry)
             strBuffer = AfxGetApp()->GetProfileString(szSection, strEntry);
@@ -55,7 +55,7 @@ void AppRestoreHistory (CComboBox& wndList, const char* szSection, const char* s
             LPBYTE data; 
             UINT   bytes;
             if (AfxGetApp()->GetProfileBinary(szSection, strEntry, &data, &bytes))
-                strBuffer.SetString((LPCSTR)data, bytes);
+                strBuffer = wstr(string((const char*)data, bytes)).c_str();
         }
 
         if (!i)
@@ -68,7 +68,7 @@ void AppRestoreHistory (CComboBox& wndList, const char* szSection, const char* s
     }
 }
 
-void AppSaveHistory (CComboBox& wndList, const char* szSection, const char* szEntry, int nSize)
+void AppSaveHistory (CComboBox& wndList, LPCTSTR szSection, LPCTSTR szEntry, int nSize)
 {
     BOOL useRegistry = AfxGetApp()->m_pszRegistryKey ?  TRUE : FALSE;
 
@@ -76,11 +76,14 @@ void AppSaveHistory (CComboBox& wndList, const char* szSection, const char* szEn
     CString strText, strEntry;
     wndList.GetWindowText(strText);
 
-    strEntry.Format(useRegistry ? "%s_%d" : "%s_v2_%d", (const char*)szEntry, i);
+    strEntry.Format(useRegistry ? L"%s_%d" : L"%s_v2_%d", szEntry, i);
     if (useRegistry)
         AfxGetApp()->WriteProfileString(szSection, strEntry, strText);
     else
-        AfxGetApp()->WriteProfileBinary(szSection, strEntry, (LPBYTE)(LPCSTR)strText, strText.GetLength());
+    {
+        string utf8buffer = str(strText);
+        AfxGetApp()->WriteProfileBinary(szSection, strEntry, (LPBYTE)utf8buffer.data(), utf8buffer.length());
+    }
     i++;
 
     int nCount = wndList.GetCount();
@@ -99,38 +102,41 @@ void AppSaveHistory (CComboBox& wndList, const char* szSection, const char* szEn
         if (strBuffer.IsEmpty()
         || strBuffer == strText) break;
 
-        strEntry.Format(useRegistry ? "%s_%d" : "%s_v2_%d", (const char*)szEntry, i);
+        strEntry.Format(useRegistry ? L"%s_%d" : L"%s_v2_%d", szEntry, i);
         if (useRegistry)
             AfxGetApp()->WriteProfileString(szSection, strEntry, strBuffer);
         else
-            AfxGetApp()->WriteProfileBinary(szSection, strEntry, (LPBYTE)(LPCSTR)strBuffer, strBuffer.GetLength());
+        {
+            string utf8buffer = str(strBuffer);
+            AfxGetApp()->WriteProfileBinary(szSection, strEntry, (LPBYTE)utf8buffer.data(), utf8buffer.length());
+        }
     }
 }
 
-void AppWalkDir (const char* szPath, const char* szFileMask,
-                 StringList& listFiles, BOOL bSortFiles, StringList* pListSubdir)
+void AppWalkDir (LPCTSTR szPath, LPCTSTR szFileMask,
+                 CStringList& fileList, BOOL bSortFiles, CStringList* folderList)
 {
     HANDLE hFile = INVALID_HANDLE_VALUE;
     WIN32_FIND_DATA wfdFile;
     memset(&wfdFile, 0, sizeof wfdFile);
 
-    String strBuffer;
-    String strPath(szPath);
-    if (strPath.length() > 0 && strPath[strPath.length()-1] != '\\')
-        strPath += "\\";
+    wstring buffer;
+    wstring path(szPath);
+    if (path.length() > 0 && path[path.length()-1] != '\\')
+        path += L"\\";
 
-    StringList listLocal;
+    list<wstring> local;
 
-    strBuffer = strPath;
-    strBuffer += szFileMask;
-    hFile = FindFirstFile(strBuffer.c_str(), &wfdFile);
+    buffer = path;
+    buffer += szFileMask;
+    hFile = FindFirstFile(buffer.c_str(), &wfdFile);
 
     if(hFile != INVALID_HANDLE_VALUE)
     {
         do
         {
             if(wfdFile.dwFileAttributes != FILE_ATTRIBUTE_DIRECTORY)
-                listLocal.push_back(wfdFile.cFileName);
+                local.push_back(wfdFile.cFileName);
         }
         while(FindNextFile(hFile, &wfdFile));
 
@@ -139,31 +145,30 @@ void AppWalkDir (const char* szPath, const char* szFileMask,
     }
 
     if (bSortFiles)
-        listLocal.sort();
+        local.sort();
 
-    StringListIt it;
-    for(it = listLocal.begin(); it != listLocal.end(); ++it)
+    for(auto it = local.begin(); it != local.end(); ++it)
     {
-        strBuffer = strPath;
-        strBuffer.append(*it);
-        listFiles.push_back(strBuffer);
+        buffer = path;
+        buffer.append(*it);
+        fileList.AddTail(buffer.c_str());
     }
 
     memset(&wfdFile, 0, sizeof wfdFile);
-    strBuffer = strPath;
-    strBuffer += "*.*";
+    buffer = path;
+    buffer += L"*.*";
 
-    listLocal.clear();
-    hFile = FindFirstFile(strBuffer.c_str(), &wfdFile);
+    local.clear();
+    hFile = FindFirstFile(buffer.c_str(), &wfdFile);
 
     if(hFile != INVALID_HANDLE_VALUE)
     {
         do
         {
             if(wfdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY
-            && strcmp(".", wfdFile.cFileName)
-            && strcmp("..", wfdFile.cFileName))
-                listLocal.push_back(wfdFile.cFileName);
+            && wcscmp(L".", wfdFile.cFileName)
+            && wcscmp(L"..", wfdFile.cFileName))
+                local.push_back(wfdFile.cFileName);
         }
         while(FindNextFile(hFile, &wfdFile));
 
@@ -172,120 +177,124 @@ void AppWalkDir (const char* szPath, const char* szFileMask,
     }
 
     if (bSortFiles)
-        listLocal.sort();
+        local.sort();
 
-    for(it = listLocal.begin(); it != listLocal.end(); ++it)
+    for(auto it = local.begin(); it != local.end(); ++it)
     {
-        strBuffer = strPath;
-        strBuffer.append(*it);
+        buffer = path;
+        buffer.append(*it);
 
-        AppWalkDir(strBuffer.c_str(), szFileMask, listFiles, bSortFiles, pListSubdir);
+        AppWalkDir(buffer.c_str(), szFileMask, fileList, bSortFiles, folderList);
 
-        if (pListSubdir)
-            pListSubdir->push_back(strBuffer);
+        if (folderList)
+            folderList->AddTail(buffer.c_str());
     }
 
-    listLocal.clear();
+    local.clear();
 }
 
-BOOL AppDeleteFiles (const char* szPath, const char* szFileMask, BOOL bAndSubdir)
+BOOL AppDeleteFiles (LPCTSTR szPath, LPCTSTR szFileMask, BOOL bAndSubdir)
 {
     BOOL bRetVal = TRUE;
-    StringList listFiles, listSubdir;
+    CStringList listFiles, listSubdir;
 
     AppWalkDir(szPath, szFileMask, listFiles, FALSE, &listSubdir);
 
-    StringListIt it = listFiles.begin();
-    for(; it != listFiles.end(); ++it)
-        if (DeleteFile((*it).c_str()) == FALSE)
+    for (POSITION pos = listFiles.GetHeadPosition(); pos != NULL;)
+    {
+        CString file = listFiles.GetNext(pos);
+        if (DeleteFile(file) == FALSE)
             bRetVal = FALSE;
+    }
 
     if (bAndSubdir)
-        for(it = listSubdir.begin(); it != listSubdir.end(); ++it)
-            if (RemoveDirectory((*it).c_str()) == FALSE)
+        for (POSITION pos = listSubdir.GetHeadPosition(); pos != NULL;)
+        {
+            CString folder = listFiles.GetNext(pos);
+            if (RemoveDirectory(folder) == FALSE)
                 bRetVal = FALSE;
+        }
 
     return bRetVal;
 }
 
 
-BOOL AppDeleteDirectory (const char* szPath)
+BOOL AppDeleteDirectory (LPCTSTR szPath)
 {
-    AppDeleteFiles(szPath, "*.*", TRUE);
+    ASSERT(0);
+    AppDeleteFiles(szPath, L"*.*", TRUE);
     return RemoveDirectory(szPath);
 }
 
 bool AppGetFileAttrs (
-        const char* szPath, DWORD* attrs, __int64* fileSize,
+        LPCTSTR szPath, DWORD* attrs, __int64* fileSize,
         __int64* creationTime, __int64* lastWriteTime
     )
 {
     BY_HANDLE_FILE_INFORMATION info;
 
     if (AppGetFileAttrs (szPath, &info))
-	{
+    {
         if (attrs)
             *attrs = info.dwFileAttributes;
         if (fileSize)
             *fileSize = (__int64(info.nFileSizeHigh) << 32) 
                 + info.nFileSizeLow;
         if (creationTime)
-			*creationTime = (__int64(info.ftCreationTime.dwHighDateTime) << 32) 
+            *creationTime = (__int64(info.ftCreationTime.dwHighDateTime) << 32) 
                 + info.ftCreationTime.dwLowDateTime;
         if (lastWriteTime)
-			*lastWriteTime = (__int64(info.ftLastWriteTime.dwHighDateTime) << 32) 
+            *lastWriteTime = (__int64(info.ftLastWriteTime.dwHighDateTime) << 32) 
                 + info.ftLastWriteTime.dwLowDateTime;
-		return true;
-	}
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
-bool AppGetFileAttrs (const char* szPath, BY_HANDLE_FILE_INFORMATION* pInfo)
+bool AppGetFileAttrs (LPCTSTR szPath, BY_HANDLE_FILE_INFORMATION* pInfo)
 {
     HANDLE hFile = ::CreateFile(
             szPath, GENERIC_READ, FILE_SHARE_WRITE|FILE_SHARE_READ, 
             NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL
         );
 
-	if (hFile != INVALID_HANDLE_VALUE)
-	{
+    if (hFile != INVALID_HANDLE_VALUE)
+    {
         // it can be replaced with GetFileAttributesEx, but it'll not be compatible with win95
-		if (GetFileInformationByHandle(hFile, pInfo))
+        if (GetFileInformationByHandle(hFile, pInfo))
         {
             ::CloseHandle(hFile);
-			return true;
+            return true;
         }
         ::CloseHandle(hFile);
-	}
+    }
 
     TRACE("Common::AppGetFileAttrs failed for %s", szPath);
-	return false;
+    return false;
 }
 
-void AppGetPath (std::string& path)
+void AppGetPath (CString& path)
 {
-    char szBuff[_MAX_PATH + 1];
+    TCHAR szBuff[_MAX_PATH + 1];
     VERIFY(::GetModuleFileName(AfxGetApp()->m_hInstance, szBuff, _MAX_PATH));
     szBuff[_MAX_PATH] = 0;
+    VERIFY(::PathRemoveFileSpec(szBuff));
     path = szBuff;
-    String::size_type pathLen = path.find_last_of('\\');
-    path.resize((pathLen != String::npos) ? pathLen : 0);
 }
 
-void AppGetFullPathName (const String& path, String& fullPath)
+// TODO: test
+void AppGetFullPathName (LPCTSTR path, CString& fullPath)
 {
-	char *filename;
-    int length = GetFullPathName(path.c_str(), 0, 0, &filename);
-    char *buffer = new char[length + 1];
-    GetFullPathName(path.c_str(), length + 1, buffer, &filename);
-    fullPath = buffer;
-    delete buffer;
+    int length = GetFullPathName(path, 0, 0, 0);
+    TCHAR* buffer = fullPath.GetBuffer(length + 1);
+    GetFullPathName(path, length + 1, buffer, 0);
+    fullPath.ReleaseBuffer();
 }
 
-bool AppShellOpenFile (const char* file)
+bool AppShellOpenFile (LPCTSTR file)
 {
-    HINSTANCE result = ShellExecute(NULL, "open", file, NULL, NULL, SW_SHOW);
+    HINSTANCE result = ShellExecute(NULL, L"open", file, NULL, NULL, SW_SHOW);
 
 #pragma warning(push)
 #pragma warning(disable : 4311)
@@ -293,14 +302,14 @@ bool AppShellOpenFile (const char* file)
 #pragma warning(pop)
     {
         MessageBeep((UINT)-1);
-        AfxMessageBox((String("Cannot open file \"") + file + "\" with default viewer.").c_str(), MB_OK|MB_ICONSTOP);
+        AfxMessageBox((CString(L"Cannot open file \"") + file + L"\" with default viewer."), MB_OK|MB_ICONSTOP);
         return false;
     }
 
     return true;
 }
 
-bool AppIsFolder (const char* path, bool nothrow)
+bool AppIsFolder (LPCTSTR path, bool _nothrow)
 {
     ASSERT_EXCEPTION_FRAME;
 
@@ -309,131 +318,96 @@ bool AppIsFolder (const char* path, bool nothrow)
     if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
         return (dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false;
 
-    if (!nothrow)
-        THROW_APP_EXCEPTION(CString("Cannot read folder or file \"") + path + "\".");
+    if (!_nothrow)
+        THROW_APP_EXCEPTION("Cannot read folder or file \"" + Common::str(path) + "\".");
 
     return false;
 }
 
-void AppCreateFolderHierarchy (const char* _path)
+void AppCreateFolderHierarchy (LPCTSTR path)
 {
-    String path = _path; 
-
-    if (path.size())
-    {
-        StringList listDir;
-        // check existent path part
-        while (!path.empty() && *(path.rbegin()) != ':'
-        && GetFileAttributes(path.c_str()) == 0xFFFFFFFF) {
-            listDir.push_front(path);
-
-            size_t len = path.find_last_of('\\');
-            if (len != std::string::npos)
-                path.resize(len);
-            else
-                break;
-        }
-
-        // create non-existent path part
-        StringList::const_iterator it(listDir.begin()), end(listDir.end());
-        for (; it != end; it++)
-        {
-            if (!::CreateDirectory((*it).c_str(), NULL))
-            {
-                String lastError;
-                AppGetLastError(lastError);
-                String message("Can't create folder \"");
-                message += *it;
-                message += "\"\n";
-                message += lastError;
-                THROW_APP_EXCEPTION(message);
-            }
-        }
-    }
+    SHCreateDirectoryEx( NULL, path, NULL );
 }
 
 /////////////////////////////////////////////////////////////////////////////
 //  the following code is based on CWinException
 //	Copyright(c) Armen Hakobyan 2001
-void AppGetLastError (String& lastError)
+void AppGetLastError (CString& lastError)
 {
-	HMODULE 	hModule 	= NULL; 
-	LPTSTR		lpszMessage	= NULL;
-	DWORD		cbBuffer	= NULL;
+    HMODULE 	hModule 	= NULL; 
+    LPTSTR		lpszMessage	= NULL;
+    DWORD		cbBuffer	= NULL;
     DWORD       dwErrCode   = ::GetLastError();
 
-	lastError.clear();
+    lastError.Empty();
 
-	if ((dwErrCode >= NERR_BASE) && (dwErrCode <= MAX_NERR /*NERR_BASE+899*/))
-	{
-		hModule = ::LoadLibraryEx( _T("netmsg.dll"), NULL, LOAD_LIBRARY_AS_DATAFILE);
-	}
-	
-	cbBuffer = ::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-							   FORMAT_MESSAGE_IGNORE_INSERTS | 
-							   FORMAT_MESSAGE_FROM_SYSTEM | // always consider system table
-							   ((hModule != NULL) ? FORMAT_MESSAGE_FROM_HMODULE : 0), 
-							   hModule, // module to get message from (NULL == system)
-							   dwErrCode,
-							   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // default language
-							   (LPTSTR) &lpszMessage, 0, NULL );
-	
-	//ERROR_RESOURCE_LANG_NOT_FOUND
+    if ((dwErrCode >= NERR_BASE) && (dwErrCode <= MAX_NERR /*NERR_BASE+899*/))
+    {
+        hModule = ::LoadLibraryEx( _T("netmsg.dll"), NULL, LOAD_LIBRARY_AS_DATAFILE);
+    }
+    
+    cbBuffer = ::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+                               FORMAT_MESSAGE_IGNORE_INSERTS | 
+                               FORMAT_MESSAGE_FROM_SYSTEM | // always consider system table
+                               ((hModule != NULL) ? FORMAT_MESSAGE_FROM_HMODULE : 0), 
+                               hModule, // module to get message from (NULL == system)
+                               dwErrCode,
+                               MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // default language
+                               (LPTSTR) &lpszMessage, 0, NULL );
+    
+    //ERROR_RESOURCE_LANG_NOT_FOUND
 
     if (cbBuffer)
-		lastError = (LPCTSTR)lpszMessage;
+        lastError = (LPCTSTR)lpszMessage;
 
-	::LocalFree(lpszMessage);
-	if (hModule) ::FreeLibrary(hModule);
+    ::LocalFree(lpszMessage);
+    if (hModule) ::FreeLibrary(hModule);
 
-    if (lastError.empty())
+    if (lastError.IsEmpty())
+        lastError.Format(L"Unknown system error - %d", dwErrCode);
+}
+
+void AppCopyTextToClipboard (const CString& theText)
+{
+    if (::OpenClipboard(NULL))
     {
-        ostringstream o;
-        o << "Unknown system error - " << dwErrCode;
-        lastError = o.str();
+        CWaitCursor wait;
+        ::EmptyClipboard();
+
+        if (theText.GetLength())
+        {
+            size_t size = sizeof(TCHAR) * (theText.GetLength() + 1);
+            HGLOBAL hDataDest = ::GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, size);
+            
+            if (hDataDest)
+            {
+                void* dest = ::GlobalLock(hDataDest);
+
+                if (dest)
+                    memcpy(dest, (LPCTSTR)theText, size);
+
+                ::GlobalUnlock(hDataDest);
+                ::SetClipboardData(CF_UNICODETEXT, hDataDest);
+            }
+        }
+        ::CloseClipboard();
     }
 }
 
-void AppCopyTextToClipboard (const String& theText)
+bool AppLoadTextFromResources (LPCTSTR name, LPCTSTR type, std::string& text)
 {
-	if (::OpenClipboard(NULL))
-	{
-		CWaitCursor wait;
-		::EmptyClipboard();
-
-		if (theText.size())
-		{
-			HGLOBAL hDataDest = ::GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, theText.size() + 1);
-			
-            if (hDataDest)
-			{
-				char* dest = (char*)::GlobalLock(hDataDest);
-
-                if (dest)
-					memcpy(dest, theText.c_str(), theText.size() + 1);
-
-				::GlobalUnlock(hDataDest);
-				::SetClipboardData(CF_TEXT, hDataDest);
-			}
-		}
-		::CloseClipboard();
-	}
-}
-
-bool AppLoadTextFromResources (const char* name, const char* type, String& text)
-{
-	text.clear();
+    text.clear();
 
     if (HRSRC hrsrc = ::FindResource(AfxGetResourceHandle(), name, type))
         if (HGLOBAL handle = ::LoadResource(AfxGetResourceHandle(), hrsrc))
-		{
-            const char* ptr = (const char*)::LockResource(handle);
-			int length = (int)::SizeofResource(AfxGetResourceHandle(), hrsrc);
-			text.assign(ptr, length);
-			return true;
-		}
+        {
+            LPCSTR ptr = (LPCSTR)::LockResource(handle);
+            int length = (int)::SizeofResource(AfxGetResourceHandle(), hrsrc);
+            text.assign(ptr, length);
+            return true;
+        }
 
-	return false;
+    return false;
 }
 
 bool AppSetClipboardText (const char* text, int length, UINT format /*= CF_TEXT*/)
@@ -441,13 +415,32 @@ bool AppSetClipboardText (const char* text, int length, UINT format /*= CF_TEXT*
     HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, length + 1);
     
     if (hData)
-        if (char* mem = (char*)GlobalLock(hData)) 
+    {
+        if (void* mem = GlobalLock(hData)) 
+        {
             memcpy(mem, text, length + 1);
-
-    return SetClipboardData(format, hData) ? true : false;
+            ::GlobalUnlock(hData);
+        }
+    }
+    return ::SetClipboardData(format, hData) ? true : false;
 }
 
-bool AppGetClipboardText (string& buffer, UINT format /*= CF_TEXT*/)
+bool AppSetClipboardText (const wchar_t* text, int length, UINT format /*= CF_UNICODETEXT*/)
+{
+    int size = sizeof(wchar_t) * (length + 1);
+    HGLOBAL hData = ::GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, size);
+    if (hData)
+    {
+        if (void* dest = ::GlobalLock(hData))
+        {
+            memcpy(dest, text, size);
+            ::GlobalUnlock(hData);
+        }
+    }
+    return ::SetClipboardData(format, hData);
+}
+
+bool AppGetClipboardText (std::string& buffer, UINT format /*= CF_TEXT*/)
 {
     if (HGLOBAL hData = ::GetClipboardData(format))
         if (char* text = (char*)GlobalLock(hData)) 
@@ -459,10 +452,46 @@ bool AppGetClipboardText (string& buffer, UINT format /*= CF_TEXT*/)
     return false;
 }
 
-bool AppGetDragAndDroData (string& buffer, COleDataObject* pDataObject, CLIPFORMAT format /*= CF_TEXT*/)
+bool AppGetClipboardText (CString& buffer, UINT format /*= CF_UNICODETEXT*/)
+{
+    if (HGLOBAL hData = ::GetClipboardData(format))
+        if (TCHAR* text = (TCHAR*)GlobalLock(hData)) 
+        {
+            buffer = text;
+            GlobalUnlock(hData);
+            return true;
+        }
+    return false;
+}
+
+bool AppGetDragAndDroData (std::string& buffer, COleDataObject* pDataObject, CLIPFORMAT format /*= CF_TEXT*/)
 {
     if (HGLOBAL hData = pDataObject->GetGlobalData(format))
         if (char* text = (char*)GlobalLock(hData)) 
+        {
+            buffer = text;
+            GlobalUnlock(hData);
+            return true;
+        }
+    return false;
+}
+
+bool AppGetDragAndDroData (std::wstring& buffer, COleDataObject* pDataObject, CLIPFORMAT format /*= CF_UNICODETEXT*/)
+{
+    if (HGLOBAL hData = pDataObject->GetGlobalData(format))
+        if (wchar_t* text = (wchar_t*)GlobalLock(hData)) 
+        {
+            buffer = text;
+            GlobalUnlock(hData);
+            return true;
+        }
+    return false;
+}
+
+bool AppGetDragAndDroData (CString& buffer, COleDataObject* pDataObject, CLIPFORMAT format /*= CF_UNICODETEXT*/)
+{
+    if (HGLOBAL hData = pDataObject->GetGlobalData(format))
+        if (TCHAR* text = (TCHAR*)GlobalLock(hData)) 
         {
             buffer = text;
             GlobalUnlock(hData);

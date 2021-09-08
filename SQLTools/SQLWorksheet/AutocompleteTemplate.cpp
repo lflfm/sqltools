@@ -22,6 +22,7 @@
 #include "AutocompleteTemplate.h"
 #include "DbBrowser\ObjectTree_Builder.h"
 #include "DbBrowser\FindObjectsTask.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace OpenEditor;
 using namespace ObjectTree;
@@ -53,12 +54,15 @@ AutocompleteTemplate::AutocompleteTemplate (TreeNodePoolPtr poolPtr)
         {
             FindObjectsTask::DoInBackground(connect);
 
-			if (m_result.size() > 0)
+            if (m_result.size() > 0)
             {
                 TreeNode* object = m_poolPtr->CreateObject(m_result.at(0));
 
                 if (object && !object->IsComplete())
+                {
+                    ActivePrimeExecutionOnOff onOff;
                     object->Load(connect);
+                }
 
                 m_object = object;
             }
@@ -71,18 +75,42 @@ AutocompleteTemplate::AutocompleteTemplate (TreeNodePoolPtr poolPtr)
         }
     };
 
+    static bool pump_messages_and_wait_for_event (CEvent& event, int timeout)
+    {
+        clock64_t startTime = clock64();
+        bool ready = false;
+        MSG Msg;
+        while (GetMessage(&Msg, NULL, 0, 0) > 0)
+        {
+            TranslateMessage(&Msg);
+            DispatchMessage(&Msg);
+
+            if (WaitForSingleObject(event, 0) == WAIT_OBJECT_0)
+            {
+                ready = true;
+                break;
+            }
+
+            if ((clock64() - startTime) > timeout)
+                break;            
+        }
+
+        return ready;
+    }
+
 bool AutocompleteTemplate::AfterExpand (const Entry& entry, string& text, Position& pos)
 {
     if (entry.name == "PROCEDURE" || entry.name == "FUNCTION")
     {
-		CWaitCursor wait;
+        CWaitCursor wait;
 
         m_bkgrSyncEvent.ResetEvent();
         BackgroundTask_FindAndLoadProc* task = new BackgroundTask_FindAndLoadProc(m_bkgrSyncEvent, m_poolPtr, text);
         TaskPtr taskPtr(task);
 
         BkgdRequestQueue::Get().Push(taskPtr);
-        if (WaitForSingleObject(m_bkgrSyncEvent, 3000) == WAIT_OBJECT_0)
+
+        if (pump_messages_and_wait_for_event(m_bkgrSyncEvent, 5000))
         {
             if (task->m_object)
             {
@@ -120,7 +148,7 @@ bool AutocompleteTemplate::AfterExpand (const Entry& entry, string& text, Positi
             }
         }
         else
-            AfxMessageBox("Timeout error while loading object(s).\nPlease try again.", MB_ICONERROR | MB_OK); 
+            AfxMessageBox(L"Timeout error while loading object(s).\nPlease try again.", MB_ICONERROR | MB_OK); 
     }
 
     return true;
@@ -144,8 +172,10 @@ bool AutocompleteTemplate::AfterExpand (const Entry& entry, string& text, Positi
         {
             FindObjectsTask::DoInBackground(connect);
 
-			if (m_result.size() > 0)
+            if (m_result.size() > 0)
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 if (Object* object = m_poolPtr->CreateObject(m_result.at(0)))
                 {
                     if (!object->IsComplete())
@@ -211,7 +241,8 @@ AutocompleteSubobjectTemplate::AutocompleteSubobjectTemplate (TreeNodePoolPtr po
     TaskPtr taskPtr(task);
 
     BkgdRequestQueue::Get().Push(taskPtr);
-    if (WaitForSingleObject(m_bkgrSyncEvent, 3000) == WAIT_OBJECT_0)
+
+    if (pump_messages_and_wait_for_event(m_bkgrSyncEvent, 5000))
     {
         vector<TreeNode*>::const_iterator it = task->m_children.begin();
         for (; it != task->m_children.end(); ++it)
@@ -239,5 +270,5 @@ AutocompleteSubobjectTemplate::AutocompleteSubobjectTemplate (TreeNodePoolPtr po
         }
     }
     else
-        AfxMessageBox("Timeout error while loading object(s).\nPlease try again.", MB_ICONERROR | MB_OK); 
+        AfxMessageBox(L"Timeout error while loading object(s).\nPlease try again.", MB_ICONERROR | MB_OK); 
 }

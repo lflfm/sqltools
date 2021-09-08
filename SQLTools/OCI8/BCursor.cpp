@@ -1,6 +1,6 @@
 /* 
 	SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ void BuffCursor::Define ()
 	    ub2 type, size;
 	    OCIParam *paramd;
         counted_ptr<HostArray> fld;
-        char* col_name = 0;
+        wchar_t* col_name = 0;
         ub4   col_name_len = 0;
 
 	    CHECK(OCIParamGet(m_sttmp, OCI_HTYPE_STMT, GetOCIError(), (dvoid**)&paramd, col + 1));
@@ -151,7 +151,7 @@ void BuffCursor::Define ()
         }
 
         m_fields.push_back(fld);
-        m_fieldNames.push_back(string(col_name, col_name_len));
+        m_fieldNames.push_back(Common::str(col_name, col_name_len/sizeof(wchar_t)));
 
         Statement::Define(col + 1, *fld);
 	}

@@ -37,7 +37,9 @@
 
 namespace OpenEditor
 {
-    using Common::FixedString;
+    using Common::OEString;
+    using Common::OEStringA;
+    using Common::OEStringW;
     using std::vector;
     using std::pair;
     using std::map;
@@ -109,7 +111,7 @@ namespace OpenEditor
 
         unsigned GetMemUsage() const;
 
-        bool AppendOnInsert (int, int, const char*, int, const DelimitersMap&);
+        bool AppendOnInsert (int, int, const wchar_t*, int, const DelimitersMap&);
 
     private:
         void removeAllAbove (UndoBase*);
@@ -145,7 +147,7 @@ namespace OpenEditor
         virtual unsigned GetMemUsage() const = 0;
 
         virtual bool IsAppendable () const { return false; }
-        virtual bool Append (int, int, const char*, int, const DelimitersMap&) { return false; }
+        virtual bool Append (int, int, const wchar_t*, int, const DelimitersMap&) { return false; }
         bool AboveSaved (void* saved) const;
     protected:
         SequenceId m_groupId;
@@ -156,24 +158,25 @@ namespace OpenEditor
     class UndoInsert : public UndoBase
     {
     public:
-        UndoInsert (int, int, const char*, int, ELineStatus);
+        UndoInsert (int, int, const wchar_t*, int, ELineStatus);
         virtual void Undo (UndoContext&) const;
         virtual void Redo (UndoContext&) const;
         //virtual EEditOperation Type () const { return eeoInsert; };
         virtual unsigned GetMemUsage() const { return sizeof(*this) + m_str.length(); };
 
         virtual bool IsAppendable () const { return true; }
-        virtual bool Append (int, int, const char*, int, const DelimitersMap&);
+        virtual bool Append (int, int, const wchar_t*, int, const DelimitersMap&);
     private:
         Position m_position;
-        FixedString m_str;
+        OEStringW m_str;
         ELineStatus m_status;
     };
 
     class UndoOverwrite : public UndoBase
     {
     public:
-        UndoOverwrite (int, int, const char*, int, const char*, int, ELineStatus);
+        UndoOverwrite (int, int, const OEStringW&, const OEStringW&, ELineStatus);
+        UndoOverwrite (int, int, const wchar_t*, int, const wchar_t*, int, ELineStatus);
         virtual void Undo (UndoContext&) const;
         virtual void Redo (UndoContext&) const;
         //virtual EEditOperation Type () const { return eeoOverwrite; };
@@ -181,49 +184,63 @@ namespace OpenEditor
 
     private:
         Position m_position;
-        FixedString m_orgStr, m_newStr;
+        OEStringW m_orgStr, m_newStr;
+        ELineStatus m_status;
+    };
+
+    class UndoConvertLine : public UndoBase
+    {
+    public:
+        UndoConvertLine (int, const OEStringW&, ELineStatus);
+        virtual void Undo (UndoContext&) const;
+        virtual void Redo (UndoContext&) const;
+        virtual unsigned GetMemUsage() const { return sizeof(*this) + m_str.length(); };
+
+    private:
+        int m_line;
+        OEStringW m_str;
         ELineStatus m_status;
     };
 
     class UndoDelete : public UndoBase
     {
     public:
-        UndoDelete (int, int, const char*, int, ELineStatus);
+        UndoDelete (int, int, const wchar_t*, int, ELineStatus);
         virtual void Undo (UndoContext&) const;
         virtual void Redo (UndoContext&) const;
         //virtual EEditOperation Type () const { return eeoDelete; };
         virtual unsigned GetMemUsage() const { return sizeof(*this) + m_str.length(); };
     private:
         Position m_position;
-        FixedString m_str;
+        OEStringW m_str;
         ELineStatus m_status;
     };
 
     class UndoInsertLine : public UndoBase
     {
     public:
-        UndoInsertLine (int, const char*, int, ELineStatus);
+        UndoInsertLine (int, const wchar_t*, int, ELineStatus);
         virtual void Undo (UndoContext&) const;
         virtual void Redo (UndoContext&) const;
         //virtual EEditOperation Type () const { return eeoInsertLine; };
         virtual unsigned GetMemUsage() const { return sizeof(*this) + m_str.length(); };
     private:
         int m_line;
-        FixedString m_str;
+        OEStringW m_str;
         ELineStatus m_status;
     };
 
     class UndoDeleteLine : public UndoBase
     {
     public:
-        UndoDeleteLine (int, const char*, int, ELineStatus[2]);
+        UndoDeleteLine (int, const wchar_t*, int, ELineStatus[2]);
         virtual void Undo (UndoContext&) const;
         virtual void Redo (UndoContext&) const;
         //virtual EEditOperation Type () const { return eeoDeleteLine; };
         virtual unsigned GetMemUsage() const { return sizeof(*this) + m_str.length(); };
     private:
         int m_line;
-        FixedString m_str;
+        OEStringW m_str;
         ELineStatus m_status[2];
     };
 
@@ -256,28 +273,28 @@ namespace OpenEditor
     class UndoInsertLines : public UndoBase
     {
     public:
-        UndoInsertLines (unsigned line, const StringArray& lines, ELineStatus status);
+        UndoInsertLines (unsigned line, const StringArrayW& lines, ELineStatus status);
         virtual void Undo (UndoContext&) const;
         virtual void Redo (UndoContext&) const;
         //virtual EEditOperation Type () const { return eeoInsertLines; };
         virtual unsigned GetMemUsage() const;
     private:
         unsigned m_line;
-        StringArray m_lines;
+        StringArrayW m_lines;
         ELineStatus m_status; // insert line status
     };
 
     class UndoDeleteLines : public UndoBase
     {
     public:
-        UndoDeleteLines (unsigned line, const StringArray& lines, ELineStatus status);
+        UndoDeleteLines (unsigned line, const StringArrayW& lines, ELineStatus status);
         virtual void Undo (UndoContext&) const;
         virtual void Redo (UndoContext&) const;
         //virtual EEditOperation Type () const { return eeoDeleteLines; };
         virtual unsigned GetMemUsage() const;
     private:
         unsigned m_line;
-        StringArray m_lines;
+        StringArrayW m_lines;
         ELineStatus m_status; // next line status
     };
 
@@ -304,6 +321,17 @@ namespace OpenEditor
         virtual unsigned GetMemUsage() const;
     private:
         EFileFormat m_oldFormat, m_newFormat;
+    };
+
+    class UndoSetCodepage : public UndoBase
+    {
+    public:
+        UndoSetCodepage (int oldCodepage, int newCodepage);
+        virtual void Undo (UndoContext&) const;
+        virtual void Redo (UndoContext&) const;
+        virtual unsigned GetMemUsage() const;
+    private:
+        int m_oldCodepage, m_newCodepage;
     };
 
     class UndoCursorPosition : public UndoBase
@@ -402,19 +430,25 @@ namespace OpenEditor
     UndoBase::~UndoBase ()
         { _ASSERTE(!m_above && !m_below); }
     inline
-    UndoInsert::UndoInsert (int line, int col, const char* str, int len, ELineStatus status)
+    UndoInsert::UndoInsert (int line, int col, const wchar_t* str, int len, ELineStatus status)
         : m_str(str, len) { m_position.line = line; m_position.column = col; m_status = status; }
     inline
-    UndoOverwrite::UndoOverwrite (int line, int col, const char* orgStr, int orgLen, const char* newStr, int newLen, ELineStatus status)
+    UndoOverwrite::UndoOverwrite (int line, int col, const OEStringW& orgStr, const OEStringW& newStr, ELineStatus status)
+        : m_orgStr(orgStr), m_newStr(newStr) { m_position.line = line; m_position.column = col; m_status = status; }
+    inline
+    UndoOverwrite::UndoOverwrite (int line, int col, const wchar_t* orgStr, int orgLen, const wchar_t* newStr, int newLen, ELineStatus status)
         : m_orgStr(orgStr, orgLen), m_newStr(newStr, newLen) { m_position.line = line; m_position.column = col; m_status = status; }
     inline
-    UndoDelete::UndoDelete (int line, int col, const char* str, int len, ELineStatus status)
+    UndoConvertLine::UndoConvertLine (int line, const OEStringW& str, ELineStatus status)
+        : m_str(str) { m_line = line; m_status = status; }
+    inline
+    UndoDelete::UndoDelete (int line, int col, const wchar_t* str, int len, ELineStatus status)
         : m_str(str, len){ m_position.line = line; m_position.column = col; m_status = status; }
     inline
-    UndoInsertLine::UndoInsertLine (int line, const char* str, int len, ELineStatus status)
+    UndoInsertLine::UndoInsertLine (int line, const wchar_t* str, int len, ELineStatus status)
         : m_str(str, len){ m_line = line; m_status = status; }
     inline
-    UndoDeleteLine::UndoDeleteLine (int line, const char* str, int len, ELineStatus status[2])
+    UndoDeleteLine::UndoDeleteLine (int line, const wchar_t* str, int len, ELineStatus status[2])
         : m_str(str, len){ m_line = line; ; m_status[0] = status[0]; m_status[1] = status[1]; }
     inline
     UndoSplitLine::UndoSplitLine (int line, int col, ELineStatus status)
@@ -423,10 +457,10 @@ namespace OpenEditor
     UndoMergeLine::UndoMergeLine (int line, int col, ELineStatus status[2])
         { m_position.line = line; m_position.column = col; m_status[0] = status[0]; m_status[1] = status[1]; }
     inline
-    UndoInsertLines::UndoInsertLines (unsigned line, const StringArray& lines, ELineStatus status)
+    UndoInsertLines::UndoInsertLines (unsigned line, const StringArrayW& lines, ELineStatus status)
         : m_lines(lines) { m_line = line; m_status = status; }
     inline
-    UndoDeleteLines::UndoDeleteLines (unsigned line, const StringArray& lines, ELineStatus status)
+    UndoDeleteLines::UndoDeleteLines (unsigned line, const StringArrayW& lines, ELineStatus status)
         : m_lines(lines) { m_line = line; m_status = status; }
     inline
     UndoCursorPosition::UndoCursorPosition (int line, int col)

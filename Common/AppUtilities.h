@@ -30,38 +30,38 @@
 namespace Common
 {
 
-    void AppRestoreHistory (CComboBox& wndList, const char* szSection, const char* szEntry, int nSize);
-    void AppSaveHistory (CComboBox& wndList, const char* szSection, const char* szEntry, int nSize);
+    void AppRestoreHistory (CComboBox& wndList, LPCTSTR szSection, LPCTSTR szEntry, int nSize);
+    void AppSaveHistory (CComboBox& wndList, LPCTSTR szSection, LPCTSTR szEntry, int nSize);
 
 
-    typedef std::string          String;
-    typedef std::list<String>    StringList;
-    typedef StringList::iterator StringListIt;
-
-    void AppWalkDir (const char* szPath, const char* szFileMask,
-                     StringList& listFiles, BOOL bSortFiles = TRUE, StringList* pListSubdir = 0);
-    BOOL AppDeleteFiles (const char* szPath, const char* szFileMask, BOOL bAndSubdir);
-    BOOL AppDeleteDirectory (const char* szPath);
-    void AppGetPath (String& path);
-    void AppGetFullPathName (const String& path, String& fullPath);
+    void AppWalkDir (LPCTSTR szPath, LPCTSTR szFileMask,
+                     CStringList& fileList, BOOL bSortFiles = TRUE, CStringList* folderList = 0);
+    BOOL AppDeleteFiles (LPCTSTR szPath, LPCTSTR szFileMask, BOOL bAndSubdir);
+    BOOL AppDeleteDirectory (LPCTSTR szPath);
+    void AppGetPath (CString& path);
+    void AppGetFullPathName (LPCTSTR path, CString& fullPath);
 
     bool AppGetFileAttrs (
-            const char* szPath, DWORD* attrs, __int64* fileSize = 0,
+            LPCTSTR szPath, DWORD* attrs, __int64* fileSize = 0,
             __int64* creationTime = 0, __int64* lastWriteTime = 0
         );
-    bool AppGetFileAttrs (const char* szPath, BY_HANDLE_FILE_INFORMATION*);
+    bool AppGetFileAttrs (LPCTSTR szPath, BY_HANDLE_FILE_INFORMATION*);
 
-    bool AppShellOpenFile (const char* file);
-    bool AppIsFolder (const char* path, bool nothrow);
-    void AppCreateFolderHierarchy (const char* path);
-    void AppGetLastError (String&);
-	void AppCopyTextToClipboard (const String& theText);
+    bool AppShellOpenFile (LPCTSTR file);
+    bool AppIsFolder (LPCTSTR path, bool nothrow);
+    void AppCreateFolderHierarchy (LPCTSTR path);
+    void AppGetLastError (CString&);
+    void AppCopyTextToClipboard (const CString& theText);
 
-	bool AppLoadTextFromResources (const char* name, const char* type, String& text);
+    bool AppLoadTextFromResources (LPCTSTR name, LPCTSTR type, std::string& text);
 
     bool AppSetClipboardText (const char*, int, UINT = CF_TEXT);
-    bool AppGetClipboardText (string&, UINT = CF_TEXT);
-    bool AppGetDragAndDroData (string&, COleDataObject*, CLIPFORMAT = CF_TEXT);
+    bool AppSetClipboardText (const wchar_t*, int, UINT = CF_UNICODETEXT);
+    bool AppGetClipboardText (std::string&, UINT = CF_TEXT);
+    bool AppGetClipboardText (CString&, UINT = CF_UNICODETEXT);
+    bool AppGetDragAndDroData (std::string&, COleDataObject*, CLIPFORMAT = CF_TEXT);
+    bool AppGetDragAndDroData (std::wstring&, COleDataObject*, CLIPFORMAT = CF_UNICODETEXT);
+    bool AppGetDragAndDroData (CString&, COleDataObject*, CLIPFORMAT = CF_UNICODETEXT);
 
 }//namespace Common
 

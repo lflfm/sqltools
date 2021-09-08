@@ -1,5 +1,5 @@
 /* 
-	SQLTools is a tool for Oracle database developers and DBAs.
+    SQLTools is a tool for Oracle database developers and DBAs.
     Copyright (C) 1997-2004 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
@@ -37,22 +37,22 @@ static char THIS_FILE[] = __FILE__;
     
 BOOL CMDIChildFrame::m_MaximizeFirstDocument = TRUE;
 
-IMPLEMENT_DYNCREATE(CMDIChildFrame, CMDIChildWnd)
+IMPLEMENT_DYNCREATE(CMDIChildFrame, CMDIChildWndEx)
 
-BEGIN_MESSAGE_MAP(CMDIChildFrame, CMDIChildWnd)
-	//{{AFX_MSG_MAP(CMDIChildFrame)
-	ON_COMMAND(ID_CUSTOM_NEXT_PANE, OnCustomNextPane)
-	ON_COMMAND(ID_CUSTOM_PREV_PANE, OnCustomPrevPane)
-	ON_COMMAND(ID_CUSTOM_NEXT_TAB, OnCustomNextTab)
-	ON_COMMAND(ID_CUSTOM_PREV_TAB, OnCustomPrevTab)
-	ON_COMMAND(ID_CUSTOM_SPLITTER_DOWN, OnCustomSplitterDown)
-	ON_COMMAND(ID_CUSTOM_SPLITTER_UP, OnCustomSplitterUp)
-	ON_WM_DESTROY()
-	ON_WM_MDIACTIVATE()
-	//}}AFX_MSG_MAP
-	ON_MESSAGE(WM_SETTEXT, OnSetText)
-	ON_COMMAND(ID_CUSTOM_SPLITTER_DEF, OnCustomSplitterDefault)
+BEGIN_MESSAGE_MAP(CMDIChildFrame, CMDIChildWndEx)
+    //{{AFX_MSG_MAP(CMDIChildFrame)
+    ON_COMMAND(ID_CUSTOM_NEXT_PANE, OnCustomNextPane)
+    ON_COMMAND(ID_CUSTOM_PREV_PANE, OnCustomPrevPane)
+    ON_COMMAND(ID_CUSTOM_NEXT_TAB, OnCustomNextTab)
+    ON_COMMAND(ID_CUSTOM_PREV_TAB, OnCustomPrevTab)
+    ON_COMMAND(ID_CUSTOM_SPLITTER_DOWN, OnCustomSplitterDown)
+    ON_COMMAND(ID_CUSTOM_SPLITTER_UP, OnCustomSplitterUp)
+    ON_WM_MDIACTIVATE()
+    //}}AFX_MSG_MAP
+    ON_COMMAND(ID_CUSTOM_SPLITTER_DEF, OnCustomSplitterDefault)
     ON_WM_ERASEBKGND()
+    ON_MESSAGE(WM_SETTEXT, OnSetText)
+    ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 CMDIChildFrame::CMDIChildFrame ()
@@ -70,30 +70,13 @@ BOOL CMDIChildFrame::OnCreateClient (LPCREATESTRUCT /*lpcs*/, CCreateContext* pC
     m_wndSplitter.SetEditorView((CView*)m_wndSplitter.GetPane(0,0));
     SetActiveView(m_wndSplitter.GetEditorView());
 
-    if (m_MaximizeFirstDocument)
-    {
-        CWnd* other = GetParent()->GetWindow(GW_CHILD);
-        for (int i = 0; other; ) 
-        {
-            if (other->IsKindOf(RUNTIME_CLASS(CMDIChildFrame))
-            && other != this) 
-            {
-                i++;
-                break;
-            }
-            other = other->GetNextWindow();
-        }
-        if (!i)
-            GetParent()->PostMessage(WM_MDIMAXIMIZE, (WPARAM)m_hWnd);
-    }
-
     PostMessage(WM_COMMAND, ID_CUSTOM_SPLITTER_DEF);
 
-    // Workbook implementation
+    // include the window in OpenFiles control
     ASSERT_KINDOF(CMDIMainFrame, GetMDIFrame());
     ((CMDIMainFrame*)GetMDIFrame())->OnCreateChild(this);
 
-	return TRUE;
+    return TRUE;
 }
 
 void CMDIChildFrame::OnCustomNextPane()
@@ -133,28 +116,12 @@ void CMDIChildFrame::OnCustomSplitterDefault()
 
 // Workbook implementation
 
-void CMDIChildFrame::OnDestroy () 
-{
-    CMDIChildWnd::OnDestroy();
-
-    ((CMDIMainFrame*)GetMDIFrame())->OnDestroyChild(this);
-}
-
 void CMDIChildFrame::OnMDIActivate (BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeactivateWnd) 
 {
-    CMDIChildWnd::OnMDIActivate(bActivate, pActivateWnd, pDeactivateWnd);
+    CMDIChildWndEx::OnMDIActivate(bActivate, pActivateWnd, pDeactivateWnd);
 
     if (bActivate && this == pActivateWnd)
         ((CMDIMainFrame*)GetMDIFrame())->OnActivateChild(this);
-}
-
-LRESULT CMDIChildFrame::OnSetText (WPARAM, LPARAM lParam)
-{
-    Default();
-
-    ((CMDIMainFrame*)GetMDIFrame())->OnRenameChild(this, (LPCTSTR)lParam);
-
-    return TRUE;
 }
 
 // the method has been added because of garbage on open document error 
@@ -171,5 +138,22 @@ BOOL CMDIChildFrame::PreCreateWindow(CREATESTRUCT& cs)
     // 23.03.2005 bug fix, flicker on resizing
     cs.style |= WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
 
-    return CMDIChildWnd::PreCreateWindow(cs);
+    return CMDIChildWndEx::PreCreateWindow(cs);
+}
+
+LRESULT CMDIChildFrame::OnSetText (WPARAM, LPARAM lParam)
+{
+    Default();
+
+    // rename the window in OpenFiles control
+    ((CMDIMainFrame*)GetMDIFrame())->OnRenameChild(this, (LPCTSTR)lParam);
+
+    return TRUE;
+}
+
+void CMDIChildFrame::OnDestroy () 
+{
+    CMDIChildWndEx::OnDestroy();
+
+    ((CMDIMainFrame*)GetMDIFrame())->OnDestroyChild(this);
 }

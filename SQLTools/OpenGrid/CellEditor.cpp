@@ -180,26 +180,27 @@ struct CKEditDataSource : COleDataSource
         DelayRenderData(CF_TEXT);
     }
 
+// TODO: test!
     virtual BOOL OnRenderGlobalData (LPFORMATETC lpFormatEtc, HGLOBAL* phGlobal)
     {
         if (lpFormatEtc->cfFormat == CF_TEXT) 
         {
             int beg, end;
             CString buffer;
-            char *src;
+            wchar_t *src;
             m_pEdit->GetSel(beg, end);
             int size = end - beg + 1;
-            HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, size);
+            HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, size * sizeof(wchar_t));
             if (hGlobal) 
             {
-                if (char* dest = (char*)GlobalLock(hGlobal)) 
+                if (wchar_t* dest = (wchar_t*)GlobalLock(hGlobal)) 
                 {
                     dest[0] = 0;
                     HGLOBAL hMem = 0;
                     if (ES_MULTILINE & ::GetWindowLong(*m_pEdit, GWL_STYLE)) 
                     {
                         hMem = m_pEdit->GetHandle();
-                        src = (char*)GlobalLock(hMem);
+                        src = (wchar_t*)GlobalLock(hMem);
                     } 
                     else 
                     {
@@ -208,13 +209,13 @@ struct CKEditDataSource : COleDataSource
                     }
                     if (src) 
                     {
-                        memcpy(dest, src + beg, end - beg);
+                        wcsncpy(dest, src + beg, end - beg);
                         dest[end - beg] = 0;
                     }
                     if (hMem) 
                     {
                         GlobalUnlock(hMem);
-                        m_pEdit->SetHandle(hMem);
+                        m_pEdit->SetHandle(hMem); // why?
                     }
           
                     GlobalUnlock(hGlobal);

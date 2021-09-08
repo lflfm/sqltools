@@ -49,6 +49,7 @@
 #include "DbBrowser\DBBrowserInvalidObjectList.h"
 #include "COMMON/GUICommandDictionary.h"
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,11 +76,11 @@ CDbSourceWnd::CDbSourceWnd ()
 {
     //{{AFX_DATA_INIT(CDbSourceWnd)
     //}}AFX_DATA_INIT
-    m_AllSchemas = AfxGetApp()->GetProfileInt("Code", "AllSchemas",  TRUE);
-    m_bValid     = AfxGetApp()->GetProfileInt("Code", "Valid",  TRUE);
-    m_bInvalid   = AfxGetApp()->GetProfileInt("Code", "Invalid",TRUE);
-    m_nViewAs    = AfxGetApp()->GetProfileInt("Code", "ViewAs", 1);
-    m_bShowTabTitles = AfxGetApp()->GetProfileInt("Code", "ShowTabTitles",  TRUE);
+    m_AllSchemas = AfxGetApp()->GetProfileInt(L"Code", L"AllSchemas",  TRUE);
+    m_bValid     = AfxGetApp()->GetProfileInt(L"Code", L"Valid",  TRUE);
+    m_bInvalid   = AfxGetApp()->GetProfileInt(L"Code", L"Invalid",TRUE);
+    m_nViewAs    = AfxGetApp()->GetProfileInt(L"Code", L"ViewAs", 1);
+    m_bShowTabTitles = AfxGetApp()->GetProfileInt(L"Code", L"ShowTabTitles",  TRUE);
 }
 
 CDbSourceWnd::~CDbSourceWnd ()
@@ -208,7 +209,9 @@ BOOL CDbSourceWnd::OnInitDialog()
         m_wndTabLists[i]->ModifyStyleEx(0, WS_EX_CLIENTEDGE, 0);
         m_wndTabLists[i]->SetOwner(this);
 
-        m_wndTab.InsertItem(m_wndTab.GetItemCount(), m_bShowTabTitles ? m_wndTabLists[i]->GetTitle() : "", m_wndTabLists[i]->GetImageIndex());
+        m_wndTab.InsertItem(m_wndTab.GetItemCount(), 
+            m_bShowTabTitles ? Common::wstr(m_wndTabLists[i]->GetTitle()).c_str() : L"", 
+            m_wndTabLists[i]->GetImageIndex());
     }
 
     CWinApp* pApp = AfxGetApp();
@@ -223,7 +226,7 @@ BOOL CDbSourceWnd::OnInitDialog()
     if (theApp.GetConnectOpen()) EvOnConnect();
     else                         EvOnDisconnect();
 
-    int nTab = AfxGetApp()->GetProfileInt("Code", "nTab", 0);
+    int nTab = AfxGetApp()->GetProfileInt(L"Code", L"nTab", 0);
     _ASSERTE((unsigned int)nTab < m_wndTabLists.size());
     m_wndTab.SetCurSel(nTab);
     OnSwitchTab(nTab);
@@ -242,7 +245,7 @@ BOOL CDbSourceWnd::OnInitDialog()
 	{
 		CMenu menu;
         menu.CreatePopupMenu();
-        menu.AppendMenu(MF_STRING, ID_SQL_DB_SOURCE, "dummy");
+        menu.AppendMenu(MF_STRING, ID_SQL_DB_SOURCE, L"dummy");
 		m_accelTable = Common::GUICommandDictionary::GetMenuAccelTable(menu.m_hMenu);
 	}
 
@@ -251,15 +254,15 @@ BOOL CDbSourceWnd::OnInitDialog()
 
 void CDbSourceWnd::OnDestroy()
 {
-    AfxGetApp()->WriteProfileInt("Code", "AllSchemas",  m_AllSchemas);
+    AfxGetApp()->WriteProfileInt(L"Code", L"AllSchemas",  m_AllSchemas);
 
     int nTab = m_wndTab.GetCurSel();
     if (nTab != -1)
-        AfxGetApp()->WriteProfileInt("Code", "nTab",    nTab);
+        AfxGetApp()->WriteProfileInt(L"Code", L"nTab",    nTab);
 
-    AfxGetApp()->WriteProfileInt("Code", "Valid",   m_bValid);
-    AfxGetApp()->WriteProfileInt("Code", "Invalid", m_bInvalid);
-    AfxGetApp()->WriteProfileInt("Code", "ViewAs",  m_nViewAs);
+    AfxGetApp()->WriteProfileInt(L"Code", L"Valid",   m_bValid);
+    AfxGetApp()->WriteProfileInt(L"Code", L"Invalid", m_bInvalid);
+    AfxGetApp()->WriteProfileInt(L"Code", L"ViewAs",  m_nViewAs);
 
     CDialog::OnDestroy();
 }
@@ -380,7 +383,7 @@ void CDbSourceWnd::InitSchemaList ()
 
         m_defSchema = theApp.GetCurrentSchema();
         m_strSchema = m_defSchema.c_str();
-		addToRecentSchemas(m_defSchema);
+		addToRecentSchemas(Common::wstr(m_defSchema).c_str());
         m_wndSchemaList.SetCurSel(m_wndSchemaList.AddString(m_strSchema));
         m_schemaListStatus = SLS_CURRENT_ONLY;
 
@@ -417,10 +420,12 @@ void CDbSourceWnd::InitSchemaList ()
 
         void DoInBackground (OciConnect& connect)
         {
+            ActivePrimeExecutionOnOff onOff;
+
             SetCursor(LoadCursor(NULL, IDC_APPSTARTING));
             OciCursor cursor(connect);
-			cursor.Prepare(m_allSchemas ? cszAllSchemasSttm : cszSchemasSttm);
-			cursor.Bind(":schema", m_defSchema.c_str());
+            cursor.Prepare(m_allSchemas ? cszAllSchemasSttm : cszSchemasSttm);
+            cursor.Bind(":schema", m_defSchema.c_str());
             cursor.Execute();
             while (cursor.Fetch())
                 m_schemas.push_back(cursor.ToString(0));
@@ -438,10 +443,10 @@ void CDbSourceWnd::InitSchemaList ()
                 vector<string>::const_iterator it = m_schemas.begin();
             
                 for (; it != m_schemas.end(); ++it)
-                    m_dbSourceWnd.m_wndSchemaList.AddString(it->c_str());
+                    m_dbSourceWnd.m_wndSchemaList.AddString(Common::wstr(*it).c_str());
 
                 // TODO: reimplement PUBLIC support! Forgot how :(
-                m_dbSourceWnd.m_wndSchemaList.AddString("PUBLIC");
+                m_dbSourceWnd.m_wndSchemaList.AddString(L"PUBLIC");
 
                 if (dropped) 
                     m_dbSourceWnd.m_wndSchemaList.ShowDropDown(TRUE);
@@ -479,14 +484,18 @@ void CDbSourceWnd::OnSetFocusSchema ()
 void CDbSourceWnd::SetSchemaForObjectLists ()
 {
     for (unsigned int i(0); i < m_wndTabLists.size(); i++)
-        m_wndTabLists[i]->SetSchema(m_strSchema);
+        m_wndTabLists[i]->SetSchema(Common::str(m_strSchema).c_str());
 }
 
-void CDbSourceWnd::addToRecentSchemas (const string& schema)
+void CDbSourceWnd::addToRecentSchemas (const wchar_t* schema)
 {
-	std::vector<string>::iterator it = std::find(m_recentSchemas.begin(), m_recentSchemas.end(), schema);
+    //std::wstring schema = Common::wstr(_schema);
+
+	auto it = std::find(m_recentSchemas.begin(), m_recentSchemas.end(), schema);
+
 	if (it != m_recentSchemas.end())
 		m_recentSchemas.erase(it);
+
 	m_recentSchemas.push_back(schema);
 
 	while (m_recentSchemas.size() > RECENT_SCHEMAS_SIZE)
@@ -498,7 +507,7 @@ void CDbSourceWnd::OnSchemaChanged ()
     CWaitCursor wait;
 
     UpdateData();
-	addToRecentSchemas((LPCSTR)m_strSchema);
+	addToRecentSchemas(m_strSchema);
     SetSchemaForObjectLists();
 
     int nTab = m_wndTab.GetCurSel();
@@ -561,6 +570,9 @@ void CDbSourceWnd::OnIdleUpdateCmdUI ()
 {
     //TRACE("CDbSourceWnd::OnIdleUpdateCmdUI\n");
 
+    if (!IsVisible())
+        return;
+
     int nTab = m_wndTab.GetCurSel();
     if (nTab != -1)
     {
@@ -570,10 +582,12 @@ void CDbSourceWnd::OnIdleUpdateCmdUI ()
         if (m_nItems != nItems
         || m_nSelItems != nSelItems)
         {
-            char buff[80]; buff[sizeof(buff)-1] = 0;
+            wchar_t buff[80]; 
+            const int buff_size = sizeof(buff)/sizeof(buff[0]);
+            buff[buff_size-1] = 0;
             m_nItems    = nItems;
             m_nSelItems = nSelItems;
-            _snprintf(buff, sizeof(buff)-1, "Selected %d of %d", nSelItems, nItems);
+            _snwprintf(buff, buff_size-1, L"Selected %d of %d", nSelItems, nItems);
             m_wndStatus.SetText(buff, RGB(0, 0, 0));
         }
 
@@ -686,13 +700,14 @@ void CDbSourceWnd::OnCancel ()
 void CDbSourceWnd::OnTabTitles ()
 {
     m_bShowTabTitles = !m_bShowTabTitles;
-    AfxGetApp()->WriteProfileInt("Code", "ShowTabTitles",  m_bShowTabTitles);
+    AfxGetApp()->WriteProfileInt(L"Code", L"ShowTabTitles",  m_bShowTabTitles);
 
     TCITEM item;
     item.mask = TCIF_TEXT;
-    for (unsigned int i(0); i < m_wndTabLists.size(); i++)
+    for (unsigned i = 0; i < m_wndTabLists.size(); i++)
     {
-        item.pszText = const_cast<char*>(m_bShowTabTitles ? m_wndTabLists[i]->GetTitle() : "");
+        std::wstring buff = Common::wstr(m_bShowTabTitles ? m_wndTabLists[i]->GetTitle() : "");
+        item.pszText = const_cast<wchar_t*>(buff.c_str());
         m_wndTab.SetItem(i, &item);
     }
 
@@ -781,13 +796,13 @@ void CDbSourceWnd::OnContextMenu(CWnd* pWnd, CPoint point)
 
         CMenu menu;
         menu.CreatePopupMenu();
-        menu.AppendMenu(MF_STRING, 3, "&Refresh the list");
+        menu.AppendMenu(MF_STRING, 3, L"&Refresh the list");
         menu.AppendMenu(MF_SEPARATOR, (UINT_PTR)-1);
 
 		if (m_recentSchemas.size() > 1)
 		{
-			std::vector<string>::const_reverse_iterator it = m_recentSchemas.rbegin();
-			std::vector<string>::const_reverse_iterator end = m_recentSchemas.rend();
+			auto it = m_recentSchemas.rbegin();
+			auto end = m_recentSchemas.rend();
 			for (int i = m_recentSchemas.size()-1; it != end; ++it, --i)
 			{
 				if (it->c_str() != m_strSchema)
@@ -796,8 +811,8 @@ void CDbSourceWnd::OnContextMenu(CWnd* pWnd, CPoint point)
 
 			menu.AppendMenu(MF_SEPARATOR, (UINT_PTR)-1);
 		}
-        menu.AppendMenu(MF_STRING, 1, "&All schemas (faster)");
-        menu.AppendMenu(MF_STRING, 2, "Schemas with &objects");
+        menu.AppendMenu(MF_STRING, 1, L"&All schemas (faster)");
+        menu.AppendMenu(MF_STRING, 2, L"Schemas with &objects");
         menu.CheckMenuRadioItem(1, 2, m_AllSchemas ?  1 : 2, MF_BYCOMMAND);
         int choice = (int)menu.TrackPopupMenu(TPM_RETURNCMD | TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
         switch (choice)
@@ -820,8 +835,10 @@ void CDbSourceWnd::OnContextMenu(CWnd* pWnd, CPoint point)
 			{
 				unsigned int index = choice - SCHEMA_COMMAND_BASE;
 				if (index < m_recentSchemas.size())
-				{
-					int cbIndex = m_wndSchemaList.FindStringExact(0, m_recentSchemas.at(index).c_str());
+				{                                           
+                    auto it = m_recentSchemas.begin();
+                    std::advance(it, index);
+					int cbIndex = m_wndSchemaList.FindStringExact(0, it->c_str());
 					if (cbIndex != LB_ERR)
 					{
 						m_wndSchemaList.SetCurSel(cbIndex);
@@ -843,7 +860,7 @@ void CDbSourceWnd::OnContextMenu(CWnd* pWnd, CPoint point)
 
         CMenu menu;
         menu.CreatePopupMenu();
-        menu.AppendMenu(MF_STRING, 1, "&Tab Titles");
+        menu.AppendMenu(MF_STRING, 1, L"&Tab Titles");
         if (m_bShowTabTitles) menu.CheckMenuItem(1, MF_BYCOMMAND|MF_CHECKED);
         int choice = (int)menu.TrackPopupMenu(TPM_RETURNCMD | TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
         if (choice == 1)

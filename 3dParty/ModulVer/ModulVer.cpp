@@ -67,7 +67,7 @@ BOOL CModuleVersion::GetFileVersionInfo(LPCTSTR modulename)
 
 	// Get translation info
 	if (VerQueryValue(m_pVersionInfo,
-		"\\VarFileInfo\\Translation", &lpvi, &iLen) && iLen >= 4) {
+		_T("\\VarFileInfo\\Translation"), &lpvi, &iLen) && iLen >= 4) {
 		m_translation = *(TRANSLATION*)lpvi;
 		TRACE("code page = %d\n", m_translation.charset);
 	}
@@ -126,7 +126,7 @@ BOOL CModuleVersion::DllGetVersion(LPCTSTR modulename, DLLVERSIONINFO& dvi)
 	// function may be a version marker in itself.
 	//
 	DLLGETVERSIONPROC pDllGetVersion =
-		(DLLGETVERSIONPROC)GetProcAddress(hinst, _T("DllGetVersion"));
+		(DLLGETVERSIONPROC)GetProcAddress(hinst, "DllGetVersion");
 
 	if (!pDllGetVersion)
 		return FALSE;

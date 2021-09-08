@@ -27,7 +27,7 @@ class FavoritesList : CFileWatchClient
 {
     std::unique_ptr<TiXmlDocument> m_favorites;
 
-    string m_path;
+    std::wstring m_path;
     bool m_modified;
     CMutex m_fileAccessMutex;   // tinyxml uses fstream access
                                 // so we have to use the mutex to lock the file 
@@ -38,7 +38,7 @@ public:
     FavoritesList ();
     virtual ~FavoritesList ();
 
-    void Open (const string& path);
+    void Open (const std::wstring& path);
     void Save ();
 
     void AddWorkspaceQuickSave (const std::string&);

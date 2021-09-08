@@ -3,6 +3,14 @@
         <title>Initial setup</title>
         <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
         <link href="_sqltools.css" type="text/css" rel="stylesheet" />
+        <style type="text/css">
+            .auto-style1 {
+                background-color: #FFFF00;
+            }
+            .auto-style2 {
+                color: #FF3300;
+            }
+        </style>
     </head>
     <body>
         <object id="Object1" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e" type="application/x-oleobject">
@@ -13,17 +21,17 @@
         <p>
             If you are installing SQLTools for the first time, please read the following:</p>
         <h4>Oracle client</h4>
-        <p><strong>Oracle 32-bit client</strong> (9i, 10i, 11i or 12c) is required 
-            regardless of whether you have 32-bit or 64-bit Windows. If you don't have any 
+        <p><span class="auto-style2"><strong><span class="auto-style1">Oracle 32-bit client</span></strong><span class="auto-style1"> (9i, 10i, 11i or 12c) is required 
+            regardless of whether you have 32-bit or 64-bit Windows.</span></span> If you don't have any 
             Oracle client then the program fails to start with a message like &quot;OCI.DLL not 
             found&quot;. Do not try to find and download this DLL because you need a properly 
             installed client, check www.oracle.com for the latest one. The smallest 
             available distribution package is called <a href="oracle_instant_client.htm">Oracle Instant client</a>. 
             <br />
-            If you have only 
+            <span class="auto-style1">If you have only 
             64-bit client installed then SQLTools fails with the very cryptic message &quot;The application was 
-            unable to start correctly (0xc000007b)&quot; </p>
-        <h4>Private vs shared configurations</h4>
+            unable to start correctly (0xc000007b)&quot; </span> </p>
+        <h4>Configuration files</h4>
         <img src="Images\initial_setup.jpg"><p class="MsoNormal">
             <span lang="EN-US" style="font-size:9.5pt;font-family:Arial;
 color:black;mso-ansi-language:EN-US">When SQLTools starts for the very first time, it asks 
@@ -35,13 +43,20 @@ color:black;mso-ansi-language:EN-US">When SQLTools starts for the very first tim
                     <td><strong>Settings Location</strong></td>
                 </tr>
                 <tr valign="top">
-                    <td width="150"><strong>User private</strong></td>
+                    <td width="150"><strong>User </strong>
+                </span>
+            <span style="font-size:9.5pt;font-family:Arial;
+color:black;mso-ansi-language:EN-US"><strong>p</strong></span><span style="font-family:Arial;
+color:black;mso-ansi-language:EN-US"><strong>rofile</strong></td>
+                </span>
+            <span lang="EN-US" style="font-size:9.5pt;font-family:Arial;
+color:black;mso-ansi-language:EN-US">
                     <td>
                         <span lang="EN-US" style="font-size:9.5pt;font-family:Arial;
 color:black;mso-ansi-language:EN-US">%APPDATA%/GNU/SQLTools folder</span></td>
                 </tr>
                 <tr valign="top">
-                    <td width="150"><strong>Shared</strong></td>
+                    <td width="150"><strong>Program folder</strong></td>
                     <td>
                         <span lang="EN-US" style="font-size:9.5pt;font-family:Arial;
 color:black;mso-ansi-language:EN-US">

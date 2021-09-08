@@ -45,14 +45,14 @@ namespace OpenEditor
     struct LanguageKeyword 
     { 
         LanguageKeyword () {}
-        LanguageKeyword (string _keyword, int _groupIndex) : keyword(_keyword), groupIndex(_groupIndex) {}
-        string keyword; 
+        LanguageKeyword (const std::wstring& _keyword, int _groupIndex) : keyword(_keyword), groupIndex(_groupIndex) {}
+        std::wstring keyword; 
         int groupIndex; 
     };
 
-	typedef map<string, LanguageKeyword> LanguageKeywordMap;
-	typedef LanguageKeywordMap::iterator LanguageKeywordMapIterator;
-	typedef LanguageKeywordMap::const_iterator LanguageKeywordMapConstIterator;
+    typedef map<std::wstring, LanguageKeyword> LanguageKeywordMap;
+    typedef LanguageKeywordMap::iterator LanguageKeywordMapIterator;
+    typedef LanguageKeywordMap::const_iterator LanguageKeywordMapConstIterator;
     typedef counted_ptr<LanguageKeywordMap> LanguageKeywordMapPtr;
 
     class Language
@@ -99,7 +99,7 @@ namespace OpenEditor
             charEsc, stringEsc, hyphenChar     
         */
 
-	    LanguageKeywordMapPtr m_LanguageKeywordMap;
+        LanguageKeywordMapPtr m_LanguageKeywordMap;
 
         friend class LanguagesCollectionReader;
         friend class LanguagesCollectionWriter;

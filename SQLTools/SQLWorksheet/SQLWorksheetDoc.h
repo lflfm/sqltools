@@ -197,6 +197,7 @@ protected:
     afx_msg void OnEditAutocomplete();
     afx_msg void OnSqlQuickQuery();
     afx_msg void OnSqlQuickCount();
+    afx_msg void OnFindInFiles();
 };
 
 //{{AFX_INSERT_LOCATION}}

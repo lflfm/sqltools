@@ -43,7 +43,7 @@ class CObjectViewerWnd : public CDialog, protected OpenEditor::SettingsSubscribe
     friend class CTreeViewer;
     friend struct BackgroundTask_FindObjectsForViewer;
 
-    std::string m_input;
+    CString     m_input;
     CComboBox   m_inputBox;
     CTreeViewer m_treeViewer;
 	CPPToolTip  m_tooltip;

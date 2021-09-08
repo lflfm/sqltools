@@ -26,14 +26,14 @@ class OsException : public std::exception
 {
     int m_err;
 public:
-    OsException (int err, const char* msg)    : m_err(err), std::exception(msg) {}
+    OsException (int err, const wchar_t* msg);
 
-    int GetErrCode () const                     { return m_err; }
+    int GetErrCode () const { return m_err; }
 
     static void CheckLastError () /* throw OsException */;
     
-    static int GetLastError (std::string&);
-    static int GetError (int, std::string&);
+    static int GetLastError (std::wstring&);
+    static int GetError (int, std::wstring&);
 };
 
 }; // Common

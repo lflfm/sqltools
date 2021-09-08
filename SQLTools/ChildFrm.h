@@ -1,5 +1,5 @@
 /* 
-	SQLTools is a tool for Oracle database developers and DBAs.
+    SQLTools is a tool for Oracle database developers and DBAs.
     Copyright (C) 1997-2004 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
@@ -25,41 +25,42 @@
 
     class CBooklet;
 
-class CMDIChildFrame : public CMDIChildWnd
+class CMDIChildFrame : public CMDIChildWndEx
 {
-	DECLARE_DYNCREATE(CMDIChildFrame)
+    DECLARE_DYNCREATE(CMDIChildFrame)
 public:
     static BOOL m_MaximizeFirstDocument;
 
-	CMDIChildFrame();
-	virtual ~CMDIChildFrame();
+    CMDIChildFrame();
+    virtual ~CMDIChildFrame();
 
-	//{{AFX_VIRTUAL(CMDIChildFrame)
-	public:
-	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
-	//}}AFX_VIRTUAL
-
-protected:
-	//{{AFX_MSG(CMDIChildFrame)
-	afx_msg void OnCustomNextPane();
-	afx_msg void OnCustomPrevPane();
-	afx_msg void OnCustomNextTab();
-	afx_msg void OnCustomPrevTab();
-	afx_msg void OnCustomSplitterDown();
-	afx_msg void OnCustomSplitterUp();
-	afx_msg void OnCustomSplitterDefault();
-	afx_msg void OnDestroy();
-	afx_msg void OnMDIActivate(BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeactivateWnd);
-	//}}AFX_MSG
-    afx_msg LRESULT OnSetText (WPARAM, LPARAM);
-	DECLARE_MESSAGE_MAP()
+    //{{AFX_VIRTUAL(CMDIChildFrame)
+    public:
+    virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
+    //}}AFX_VIRTUAL
 
 protected:
-	C2PaneSplitter m_wndSplitter;
+    //{{AFX_MSG(CMDIChildFrame)
+    afx_msg void OnCustomNextPane();
+    afx_msg void OnCustomPrevPane();
+    afx_msg void OnCustomNextTab();
+    afx_msg void OnCustomPrevTab();
+    afx_msg void OnCustomSplitterDown();
+    afx_msg void OnCustomSplitterUp();
+    afx_msg void OnCustomSplitterDefault();
+    afx_msg void OnMDIActivate(BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeactivateWnd);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
+
+protected:
+    C2PaneSplitter m_wndSplitter;
 public:
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 protected:
     virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+    virtual BOOL CanShowOnTaskBarTabs () { return FALSE; }
+    afx_msg LRESULT OnSetText (WPARAM, LPARAM lParam);
+    afx_msg void OnDestroy ();
 };
 
 //{{AFX_INSERT_LOCATION}}

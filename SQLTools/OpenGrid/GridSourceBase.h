@@ -152,6 +152,12 @@ protected:
     virtual void CopyColumnNames (std::string&, int, int) const;
     virtual int CopyToString (std::string&, int, int, int, int, ECopyWhat, int); // return actual format
     virtual void GetCellStr (std::string&, int row, int col) const = 0;
+    void GetCellStr (std::wstring& buff, int row, int col) const
+    {
+        std::string utf8buff;
+        GetCellStr(utf8buff, row, col);
+        buff = Common::wstr(utf8buff);
+    }
 
     struct ColumnInfo
     {

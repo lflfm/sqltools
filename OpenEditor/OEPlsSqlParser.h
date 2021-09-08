@@ -37,9 +37,9 @@ namespace OpenEditor
     class PlSqlParser : public Common::PlsSql::PlSqlParser
     {
     public:
-        PlSqlParser (SyntaxAnalyser&);
+        PlSqlParser (Common::PlsSql::SyntaxAnalyser&);
         
-        static const char* GetStringToken (EToken token);
+        static const wchar_t* GetStringToken (EToken token);
 
         static bool IsPlSqlToken (EToken token);
         static bool IsScriptToken (EToken token);

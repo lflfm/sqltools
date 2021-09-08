@@ -1,6 +1,6 @@
 /* 
-	SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    SQLTools is a tool for Oracle database developers and DBAs.
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,44 +27,37 @@ class CGrepView;
 class CGrepThread : public CWinThread
 {
     DECLARE_DYNCREATE(CGrepThread)
-
-    CString m_strInputFile;
-    HANDLE  m_hFileList;
-    HANDLE  m_hReadOutputPipe;
-    HANDLE  m_hReadErrorPipe;
-    PROCESS_INFORMATION m_procInfo;
-
 protected:
     CGrepThread();
     ~CGrepThread();
 
 public:
-    BOOL	m_bMathWholeWord;
-    BOOL	m_bMathCase;
-    BOOL	m_bUseRegExpr;
-    BOOL	m_bLookInSubfolders;
-    BOOL	m_bSaveFiles;
-    BOOL    m_bCollapsedList;
-    CString	m_strFileOrType;
-    CString	m_strFolder;
-    CString	m_strWhatFind;
+    BOOL	m_MatchWholeWord;
+    BOOL	m_MatchCase;
+    BOOL	m_RegExp;
+    BOOL	m_LookInSubfolders;
+    BOOL	m_SearchInMemory;
+    BOOL    m_CollapsedList;
+    CString	m_MaskList;
+    CString	m_FolderList;
+    CString	m_SearchText;
 
     CGrepView* m_pViewResult;
 
 public:
-	void RunGrep (CGrepDlg*, CGrepView*);
+    void RunGrep (CGrepDlg*, CGrepView*);
 
-	//{{AFX_VIRTUAL(CGrepThread)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
+    //{{AFX_VIRTUAL(CGrepThread)
+    public:
+    virtual BOOL InitInstance();
+    //}}AFX_VIRTUAL
 
 protected:
-	//{{AFX_MSG(CGrepThread)
-	//}}AFX_MSG
+    //{{AFX_MSG(CGrepThread)
+    //}}AFX_MSG
     afx_msg void OnThreadMessage (WPARAM, LPARAM);
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

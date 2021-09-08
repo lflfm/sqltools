@@ -25,6 +25,8 @@
 #include "COMMON\ExceptionHelper.h"
 #include "COMMON/AppUtilities.h"
 #include "OpenEditor\OELanguageXmlStreamer.h"
+#include "Common/MyUtf.h"
+#include "TiXmlUtils.h"
 
 #ifdef _AFX
 #ifdef _DEBUG
@@ -112,8 +114,8 @@ void LanguageXmlStreamer::operator << (const LanguagesCollection&)
     rootElem->LinkEndChild(langsElem.release());
     doc.LinkEndChild(rootElem.release());
 
-    if (!doc.SaveFile(m_filename.c_str()))
-        throw Common::AppException("Cannot save \"" + m_filename + "\"\nERROR: " + doc.ErrorDesc());
+    if (!TiXmlUtils::SaveFile(doc, m_filename.c_str()))
+        throw Common::AppException("Cannot save \"" + Common::str(m_filename) + "\"\nERROR: " + doc.ErrorDesc());
 }
 
 void LanguageXmlStreamer::write (const Language& lang, TiXmlElement* langElem)
@@ -165,7 +167,7 @@ void LanguageXmlStreamer::write (const LanguageKeywordMapPtr& keywordMap, const 
             if (groupIndex == it->second.groupIndex)
             {
                 if (keywordIndex) out << ' ';
-                out << it->second.keyword;
+                out << Common::str(it->second.keyword);
                 keywordIndex++;
             }
 
@@ -186,13 +188,13 @@ void LanguageXmlStreamer::operator >> (LanguagesCollection&)
 
     if (::PathFileExists(m_filename.c_str()))
     {
-        if (!doc.LoadFile(m_filename.c_str()))
-            THROW_APP_EXCEPTION("Cannot parse \"" + m_filename + "\"\nERROR: " + doc.ErrorDesc());
+        if (!TiXmlUtils::LoadFile(doc, m_filename.c_str()))
+            THROW_APP_EXCEPTION("Cannot parse \"" + Common::str(m_filename) + "\"\nERROR: " + doc.ErrorDesc());
     }
     else // no problem - will load settings from resources
     {
-		string xmlText;
-		if (!AppLoadTextFromResources(::PathFindFileName(m_filename.c_str()), RT_HTML, xmlText) || xmlText.empty())
+        string xmlText;
+        if (!AppLoadTextFromResources(::PathFindFileName(m_filename.c_str()), RT_HTML, xmlText) || xmlText.empty())
             THROW_APP_EXCEPTION("Cannot load language settings from resources");
 
         if (!doc.Parse(xmlText.c_str()))
@@ -206,7 +208,7 @@ void LanguageXmlStreamer::operator >> (LanguagesCollection&)
             int majorVer = -1;
             readXml(langsElem, "MajorVersion", majorVer);
             if (majorVer != MAJOR_VERSION)
-                throw Common::AppException("Cannot load \""  + m_filename + "\".\nERROR: Unsupported languages version.");
+                throw Common::AppException("Cannot load \""  + Common::str(m_filename) + "\".\nERROR: Unsupported languages version.");
 
             const TiXmlElement* langElem = langsElem->FirstChildElement("Language");
             for (; langElem; langElem = langElem->NextSiblingElement("Language"))
@@ -303,23 +305,21 @@ void LanguageXmlStreamer::read (const TiXmlElement* langElem, LanguageKeywordMap
 
                     std::istringstream in(buffer);
 
-                    string key;
-                    LanguageKeyword keyword;
-                    while (getline(in, keyword.keyword, ' '))
+                    string keywordStr;
+                    while (getline(in, keywordStr, ' '))
                     {
-                        keyword.groupIndex = groupIndex;
-                        key = keyword.keyword;
-
-                        trim_symmetric(key);
-
-                        if (!key.empty())
+                        trim_symmetric(keywordStr);
+                        if (!keywordStr.empty())
                         {
+                            std::wstring keyword = Common::wstr(keywordStr);
+                            std::wstring key = keyword;
+
                             if (!caseSensiteve)
-                                for (string::iterator it = key.begin(); it != key.end(); ++it)
-                                    *it = toupper(*it);
+                                for (auto it = key.begin(); it != key.end(); ++it)
+                                    *it = towupper(*it);
 
                             if (keywordMap->find(key) == keywordMap->end())
-                                keywordMap->insert(pair<string, LanguageKeyword>(key, keyword));
+                                keywordMap->insert(pair<std::wstring, LanguageKeyword>(key, LanguageKeyword(keyword, groupIndex)));
                             else
                                 TRACE1("\tWARNING: skip duplicated keyword \"%s\"\n", key.c_str());
                         }

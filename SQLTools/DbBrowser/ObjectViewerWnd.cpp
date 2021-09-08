@@ -86,6 +86,8 @@ BOOL CObjectViewerWnd::Create (CWnd* pParentWnd)
 	    m_tooltip.SetNotify(m_hWnd);
 	    m_tooltip.AddTool(&m_treeViewer);
         m_tooltip.SetDirection(PPTOOLTIP_TOPEDGE_LEFT);
+
+        LoadAndSetImageList(IDB_SQL_GENERAL_LIST);
     }
 
     return retVal;
@@ -101,7 +103,7 @@ void CObjectViewerWnd::DoDataExchange (CDataExchange* pDX)
 
 void CObjectViewerWnd::ShowObject (const std::string& name)
 {
-    m_input = name;
+    m_input = Common::wstr(name).c_str();
     UpdateData(FALSE);
     OnOK();
 }
@@ -131,12 +133,12 @@ BOOL CObjectViewerWnd::OnInitDialog()
 		CMenu menu;
         menu.CreatePopupMenu();
 
-        menu.AppendMenu(MF_STRING, ID_SQL_OBJ_VIEWER, "dummy");
-        menu.AppendMenu(MF_STRING, ID_VIEW_FILE_PANEL, "dummy");
-        menu.AppendMenu(MF_STRING, ID_SQL_DB_SOURCE, "dummy");
-        menu.AppendMenu(MF_STRING, ID_FILE_SHOW_GREP_OUTPUT, "dummy");
+        menu.AppendMenu(MF_STRING, ID_SQL_OBJ_VIEWER, L"dummy");
+        menu.AppendMenu(MF_STRING, ID_VIEW_FILE_PANEL, L"dummy");
+        menu.AppendMenu(MF_STRING, ID_SQL_DB_SOURCE, L"dummy");
+        menu.AppendMenu(MF_STRING, ID_FILE_SHOW_GREP_OUTPUT, L"dummy");
 
-        //menu.AppendMenu(MF_STRING, ID_EDIT_COPY, "dummy");
+        //menu.AppendMenu(MF_STRING, ID_EDIT_COPY, L"dummy");
 		m_accelTable = Common::GUICommandDictionary::GetMenuAccelTable(menu.m_hMenu);
 	}
 
@@ -146,7 +148,7 @@ BOOL CObjectViewerWnd::OnInitDialog()
 void CObjectViewerWnd::setQuestionIcon ()
 {
     m_inputBox.ResetContent();
-    int inx = m_inputBox.AddString(m_input.c_str());
+    int inx = m_inputBox.AddString(m_input);
     m_inputBox.SetItemData(inx, (DWORD)-1);
     m_inputBox.SetCurSel(0);
 }
@@ -169,7 +171,7 @@ void CObjectViewerWnd::setQuestionIcon ()
             if (!m_error.empty()) // too many objects
             {
                 ::MessageBeep(MB_ICONSTOP);
-                AfxMessageBox(m_error.c_str(), MB_OK|MB_ICONSTOP);
+                AfxMessageBox(Common::wstr(m_error).c_str(), MB_OK|MB_ICONSTOP);
                 m_viewerWnd.m_inputBox.SetFocus();
             }
             else
@@ -182,7 +184,7 @@ void CObjectViewerWnd::setQuestionIcon ()
                     {
                         std::string object(it->owner + '.' + it->name);
 
-                        int inx = m_viewerWnd.m_inputBox.AddString(object.c_str());
+                        int inx = m_viewerWnd.m_inputBox.AddString(Common::wstr(object).c_str());
                         m_viewerWnd.m_inputBox.SetItemData(inx, i);
                     }
 
@@ -212,7 +214,7 @@ void CObjectViewerWnd::setQuestionIcon ()
                 else
                 {
                     ::MessageBeep(MB_ICONSTOP);
-                    Global::SetStatusText('<' + m_input + "> not found!");
+                    Global::SetStatusText(("<" + m_input + "> not found!").c_str());
                     m_viewerWnd.m_inputBox.SetFocus();
                     m_viewerWnd.setQuestionIcon();
                 }
@@ -242,7 +244,7 @@ void CObjectViewerWnd::OnOK ()
 			m_treeViewer.DeleteAllItems();
             m_pInputBoxContent.reset(0);
 
-            BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_FindObjectsForViewer(*this, m_input)));
+            BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_FindObjectsForViewer(*this, Common::str(m_input))));
         }
     }
     _COMMON_DEFAULT_HANDLER_

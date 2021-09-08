@@ -38,7 +38,7 @@
 
 class COEditorView : public CView, protected OpenEditor::EditContext
 {
-	// Ruler is a struct, which helpes to draw character grid
+    // Ruler is a struct, which helpes to draw character grid
     struct Ruler
     {
         int m_Topmost,       // topmost visible line or column
@@ -83,7 +83,7 @@ class COEditorView : public CView, protected OpenEditor::EditContext
     struct CurCharCache
     {
         OpenEditor::Position pos;
-        std::string message;
+        std::wstring message;
 
         CurCharCache () { pos.line = pos.column = -1; }
         void Reset ()   { pos.line = pos.column = -1; }
@@ -95,7 +95,7 @@ class COEditorView : public CView, protected OpenEditor::EditContext
     OpenEditor::Square m_selCache;
     OpenEditor::Position m_highlightingPosCache;
     OpenEditor::SequenceId m_highlightingActionSeqCache;
-    string m_highlightedText;
+    std::wstring m_highlightedText;
 
     int m_nFistHighlightedLine, m_nLastHighlightedLine;
     bool m_autoscrollOnHighlighting;
@@ -150,9 +150,11 @@ private:
 
     void DrawHorzRuler (CDC&, const CRect&, int start, int end);
     void DrawVertRuler (CDC&, const CRect&, int start, int end, bool lineNumbers);
-	//
-	//  implementations of this methods are stored in OEView_3.cpp
-	//
+    void TextOutToScreen  (CDC& dc, Ruler[2], int pos, const wchar_t* str, int len, const CRect&, bool selection);
+    void TextOutToPrinter (CDC& dc, const CPoint& pt, const CSize& chSz, const wchar_t* str, int len);
+    //
+    //  implementations of this methods are stored in OEView_3.cpp
+    //
 public:
     void SetHighlighting  (int fistHighlightedLine, int lastHighlightedLine, bool updateWindow = false);
     void HideHighlighting ();
@@ -168,7 +170,8 @@ public:
     int  GetTopmostColumn () const                  { return m_Rulers[0].m_Topmost; }
     void SetTopmostColumn (int column);
 
-    using EditContext::GetLine;
+    using EditContext::GetLineW;
+    //using EditContext::GetLineA;
     using EditContext::GetLineLength;
     using EditContext::GetLineCount;
     using EditContext::GetLineId;
@@ -200,8 +203,8 @@ public:
     void MoveToBottom ();
     void MoveToAndCenter (OpenEditor::Position);
 
-    virtual void GetBlock    (std::string&, const OpenEditor::Square* = 0) const;
-    virtual void InsertBlock (const char*, bool hideSelection, bool putSelInUndo = true);
+    virtual void GetBlock    (std::wstring&, const OpenEditor::Square* = 0) const;
+    virtual void InsertBlock (const wchar_t*, bool hideSelection, bool putSelInUndo = true);
     virtual void DeleteBlock (bool putSelInUndo = true);
 
     // Searching
@@ -236,8 +239,8 @@ protected:
 
     void AdjustVertScroller (int maxPos = 0);
     void AdjustHorzScroller (int maxPos = 0);
-	void DoHScroll (UINT nSBCode, BOOL keyboard);
-	void DoVScroll (UINT nSBCode, BOOL keyboard);
+    void DoHScroll (UINT nSBCode, BOOL keyboard);
+    void DoVScroll (UINT nSBCode, BOOL keyboard);
 
     void DoSize (UINT nType, int cx, int cy);
 
@@ -257,13 +260,13 @@ protected:
     static UINT m_AltColumnarTextFormat;
 public:
     static UINT GetAltColumnarTextFormat();
-    void DoEditCopy (const std::string&, bool append = false);
+    void DoEditCopy (const std::wstring&, bool append = false);
     void DoEditExpandTemplate (OpenEditor::TemplatePtr templ, bool canModifyTemplate);
 
 protected:
     //
     //  Drag & Drop implementation (see OEView_3.cpp)
-	//
+    //
     struct CDragAndDropData
     {
         bool   bVisible;
@@ -289,129 +292,129 @@ protected:
 
     // comment/uncomment helper functions
     void  DoCommentText (bool comment); // uncomment on false
-    static bool CommentText (const OpenEditor::EditContext&, std::string&);
-    static bool UncommentText (const OpenEditor::EditContext&, std::string&);
+    static bool CommentText (const OpenEditor::EditContext&, std::wstring&);
+    static bool UncommentText (const OpenEditor::EditContext&, std::wstring&);
 
     // printing helper
     void GetMargins (CRect& rc) const;
-	void MoveToPage (CPrintInfo* pInfo, int* pMaxPage = NULL);
-	void PrintHeader (CDC* pDC, CPrintInfo* pInfo);
-	void PrintFooter (CDC* pDC, CPrintInfo* pInfo);
+    void MoveToPage (CPrintInfo* pInfo, int* pMaxPage = NULL);
+    void PrintHeader (CDC* pDC, CPrintInfo* pInfo);
+    void PrintFooter (CDC* pDC, CPrintInfo* pInfo);
 
     // keyword normalization helpers
     struct NormalizeOnCharCxt 
     {
         bool matched;
-        std::string keyword; 
+        std::wstring keyword; 
         OpenEditor::Square sqr; 
     };
-    bool PreNormalizeOnChar (NormalizeOnCharCxt&, char ch);
+    bool PreNormalizeOnChar (NormalizeOnCharCxt&, wchar_t ch);
     void NormalizeOnChar    (NormalizeOnCharCxt&);
     // it's not comment and string position
     bool IsNormalizeablePos (OpenEditor::Position pos) const;
-    static bool NormalizeText (const OpenEditor::EditContext&, std::string&);
+    static bool NormalizeText (const OpenEditor::EditContext&, std::wstring&);
 
 protected: // create from serialization only
-	COEditorView();
-	DECLARE_DYNCREATE(COEditorView)
+    COEditorView();
+    DECLARE_DYNCREATE(COEditorView)
 
 // Attributes
 public:
-	COEDocument* GetDocument();
+    COEDocument* GetDocument();
 
-	afx_msg void OnUpdate_Mode      (CCmdUI* pCmdUI);
-	afx_msg void OnUpdate_Pos       (CCmdUI* pCmdUI);
-	afx_msg void OnUpdate_ScrollPos (CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_Mode      (CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_Pos       (CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_ScrollPos (CCmdUI* pCmdUI);
     afx_msg void OnUpdate_BlockType (CCmdUI* pCmdUI);
     afx_msg void OnUpdate_CurChar   (CCmdUI* pCmdUI);
 
 public:
-	//{{AFX_VIRTUAL(COEditorView)
-	public:
-	virtual void OnInitialUpdate();
+    //{{AFX_VIRTUAL(COEditorView)
+    public:
+    virtual void OnInitialUpdate();
     virtual void OnDraw(CDC*) {};  // overridden to draw this view
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
-	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
-	protected:
-	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
-	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
-	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
+    virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+    virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
+    virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
+    protected:
+    virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
+    virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
+    virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
     virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-	virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
-	//}}AFX_VIRTUAL
+    virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
+    //}}AFX_VIRTUAL
 
 public:
-	virtual ~COEditorView();
+    virtual ~COEditorView();
 
 protected:
-	//{{AFX_MSG(COEditorView)
-	afx_msg void OnPaint(); // moved to OEView_2.cpp
-	afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
-	afx_msg void OnKillFocus(CWnd* pNewWnd);
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnSysKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonDownImpl(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonDblClkImpl(UINT nFlags, CPoint point);
-	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnEditToggleColumnarSelection();
-	afx_msg void OnEditToggleStreamSelection();
+    //{{AFX_MSG(COEditorView)
+    afx_msg void OnPaint(); // moved to OEView_2.cpp
+    afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+    afx_msg void OnSize(UINT nType, int cx, int cy);
+    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnSetFocus(CWnd* pOldWnd);
+    afx_msg void OnKillFocus(CWnd* pNewWnd);
+    afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+    afx_msg void OnSysKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonDownImpl(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonDblClkImpl(UINT nFlags, CPoint point);
+    afx_msg void OnTimer(UINT nIDEvent);
+    afx_msg void OnEditToggleColumnarSelection();
+    afx_msg void OnEditToggleStreamSelection();
     afx_msg void OnEditToggleSelectionMode();
-	afx_msg void OnUpdate_SelectionType(CCmdUI* pCmdUI);
-	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnEditCopy();
-	afx_msg void OnEditCut();
-	afx_msg void OnEditPaste();
-	afx_msg void OnUpdate_EditCopy(CCmdUI* pCmdUI);
-	afx_msg void OnUpdate_EditPaste(CCmdUI* pCmdUI);
-	afx_msg void OnTest();
-	afx_msg void OnEditUndo();
-	afx_msg void OnEditRedo();
-	afx_msg void OnUpdate_EditUndo(CCmdUI* pCmdUI);
-	afx_msg void OnUpdate_EditRedo(CCmdUI* pCmdUI);
-	afx_msg void OnEditSelectAll();
-	afx_msg void OnEditDeleteLine();
-	afx_msg void OnEditDeleteWordToLeft();
-	afx_msg void OnEditDeleteWordToRight();
-	afx_msg void OnEditFind();
-	afx_msg void OnEditReplace();
-	afx_msg void OnEditFindNext();
-	afx_msg void OnEditFindPrevious();
-	afx_msg void OnEditFindSeletedNext();
-	afx_msg void OnEditFindSeletedPrevious();
-	afx_msg void OnEditBookmarkToggle();
-	afx_msg void OnEditBookmarkNext();
-	afx_msg void OnEditBookmarkPrev();
-	afx_msg void OnEditBookmarkRemoveAll();
-	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	afx_msg void OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu);
-	afx_msg void OnUpdate_EditFindNext(CCmdUI* pCmdUI);
-	afx_msg void OnEditLower();
-	afx_msg void OnUpdate_SelectionOperation(CCmdUI* pCmdUI);
-	afx_msg void OnEditUpper();
-	afx_msg void OnBlockTabify();
-	afx_msg void OnBlockUntabify();
+    afx_msg void OnUpdate_SelectionType(CCmdUI* pCmdUI);
+    afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+    afx_msg void OnEditCopy();
+    afx_msg void OnEditCut();
+    afx_msg void OnEditPaste();
+    afx_msg void OnUpdate_EditCopy(CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_EditPaste(CCmdUI* pCmdUI);
+    afx_msg void OnTest();
+    afx_msg void OnEditUndo();
+    afx_msg void OnEditRedo();
+    afx_msg void OnUpdate_EditUndo(CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_EditRedo(CCmdUI* pCmdUI);
+    afx_msg void OnEditSelectAll();
+    afx_msg void OnEditDeleteLine();
+    afx_msg void OnEditDeleteWordToLeft();
+    afx_msg void OnEditDeleteWordToRight();
+    afx_msg void OnEditFind();
+    afx_msg void OnEditReplace();
+    afx_msg void OnEditFindNext();
+    afx_msg void OnEditFindPrevious();
+    afx_msg void OnEditFindSeletedNext();
+    afx_msg void OnEditFindSeletedPrevious();
+    afx_msg void OnEditBookmarkToggle();
+    afx_msg void OnEditBookmarkNext();
+    afx_msg void OnEditBookmarkPrev();
+    afx_msg void OnEditBookmarkRemoveAll();
+    afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+    afx_msg void OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu);
+    afx_msg void OnUpdate_EditFindNext(CCmdUI* pCmdUI);
+    afx_msg void OnEditLower();
+    afx_msg void OnUpdate_SelectionOperation(CCmdUI* pCmdUI);
+    afx_msg void OnEditUpper();
+    afx_msg void OnBlockTabify();
+    afx_msg void OnBlockUntabify();
     afx_msg void OnBlockTabifyLeading();
     afx_msg void OnEditExpandTemplate();
     afx_msg void OnEditCreateTemplate();
     afx_msg void OnOpenFileUnderCursor();
-	afx_msg void OnEditIndent();
-	afx_msg void OnEditUndent();
-	afx_msg void OnEditSort();
-	afx_msg void OnEditFindMatch();
-	afx_msg void OnEditFindMatchAndSelect();
-	afx_msg void OnUpdate_CommentUncomment (CCmdUI* pCmdUI);
-	afx_msg void OnEditComment();
-	afx_msg void OnEditUncomment();
-	afx_msg void OnEditGoto();
-	//}}AFX_MSG
+    afx_msg void OnEditIndent();
+    afx_msg void OnEditUndent();
+    afx_msg void OnEditSort();
+    afx_msg void OnEditFindMatch();
+    afx_msg void OnEditFindMatchAndSelect();
+    afx_msg void OnUpdate_CommentUncomment (CCmdUI* pCmdUI);
+    afx_msg void OnEditComment();
+    afx_msg void OnEditUncomment();
+    afx_msg void OnEditGoto();
+    //}}AFX_MSG
     afx_msg void OnSetRandomBookmark       (UINT nBookmark);
     afx_msg void OnGetRandomBookmark       (UINT nBookmark);
     afx_msg void OnUpdate_GetRandomBookmark (CCmdUI* pCmdUI);
@@ -420,7 +423,7 @@ protected:
     afx_msg void OnEditScrollUp ();
     afx_msg void OnEditScrollDown ();
     afx_msg void OnEditScrollCenter ();
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 public:
     afx_msg void OnEditCutAndAppend();
     afx_msg void OnEditCutBookmarked();
@@ -456,10 +459,11 @@ public:
     afx_msg void OnEditColumnRightJustify ();
     afx_msg void OnEditDupLineOrSelection ();
 
-	afx_msg void OnUpdate_ColumnOperation (CCmdUI* pCmdUI);
-	afx_msg void OnUpdate_NotInReadOnly (CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_ColumnOperation (CCmdUI* pCmdUI);
+    afx_msg void OnUpdate_NotInReadOnly (CCmdUI* pCmdUI);
 
     afx_msg void OnIdleUpdateCmdUI ();
+    afx_msg void OnFilePrintPreview ();
 };
 
 inline

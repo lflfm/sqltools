@@ -104,7 +104,7 @@ public:
 	virtual void BuildContexMenu (CMenu* pMenu);
 	virtual void ExtendContexMenu (CMenu* pMenu) = 0;
 
-    void GetListSelectionAsText (string& text);
+    void GetListSelectionAsText (CString& text);
     void DoShowInObjectView(const string& schema, const string& name, const string& type, const std::vector<std::string>& drilldown = std::vector<std::string>());
 
 

@@ -24,7 +24,7 @@ class CustomShellContextMenu : CShellContextMenu
 public:
     CustomShellContextMenu (
         CWnd* pWnd, CPoint point, const CString& path, 
-        CMenu* pUserMenu, const CString& shellContexMenuFilter
+        CMenu* pUserMenu, bool fileProperties, bool tortoiseGit, bool tortoiseSvn
     );
 
     UINT ShowContextMenu ();
@@ -33,7 +33,8 @@ private:
     CWnd* m_pWnd; 
     CPoint m_point;
     CMenu* m_pUserMenu;
-    CString m_shellContexMenuFilter;
+    bool m_fileProperties, m_tortoiseGit, m_tortoiseSvn;
+    std::ostringstream m_traceStream;
 
     virtual HRESULT DoQueryContextMenu (LPCONTEXTMENU pContextMenu, HMENU hmenu, UINT indexMenu, UINT idCmdFirst, UINT idCmdLast, UINT uFlags);
 };

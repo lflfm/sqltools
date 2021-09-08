@@ -31,13 +31,13 @@ namespace OpenEditor
     class TemplateXmlStreamer
     {
     public:
-        TemplateXmlStreamer (const std::string& filename);
+        TemplateXmlStreamer (const std::wstring& filename);
 
         void operator >> (SettingsManager&);
         void operator << (const SettingsManager&);
 
     private:
-        std::string m_filename;
+        std::wstring m_filename;
         CMutex m_fileAccessMutex;   // tinyxml uses fstream access
                                     // so we have to use the mutex to lock the file 
                                     // for concurrent access

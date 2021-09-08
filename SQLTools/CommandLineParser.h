@@ -32,8 +32,8 @@ public:
 
     void Clear ();
     bool Parse ();
-    void Pack (std::string& data) const;
-    void Unpack (const char*, int);
+    void Pack (CString& data) const;
+    void Unpack (const wchar_t*, int);
     void Process ();
 
     bool GetConnectOption () const { return m_connect; }
@@ -42,7 +42,7 @@ public:
     bool GetReuseOption   () const { return m_reuse;   }
     bool GetHelpOption    () const { return m_help;    }
 
-    const std::vector<std::string>& GetFiles () const   { return m_files; }
+    const std::vector<std::wstring>& GetFiles () const   { return m_files; }
 
     static
     bool GetConnectionInfo (const std::string& connectStr, std::string& user, std::string& password, std::string& alias, std::string& port, std::string& sid, std::string& mode, std::string& service);
@@ -51,8 +51,8 @@ public:
     void SetStartingDefaults ();
 
 private:
-    bool check_option (const char* str, const char* option);
-    bool check_option (const char* str, const char* option, std::string& arg);
+    bool check_option (const wchar_t* str, const wchar_t* option);
+    bool check_option (const wchar_t* str, const wchar_t* option, std::wstring& arg);
 
     bool m_error;
     int  m_errorPos;
@@ -64,12 +64,12 @@ private:
     bool m_reuse;
     bool m_help;
 
-    std::string m_connectStr;
-    std::vector<std::string> m_files;
+    std::wstring m_connectStr;
+    std::vector<std::wstring> m_files;
 };
 
 inline
 bool CCommandLineParser::GetConnectionInfo (std::string& user, std::string& password, std::string& alias, std::string& port, std::string& sid, std::string& mode, std::string& service) const
 {
-    return GetConnectionInfo(m_connectStr, user, password, alias, port, sid, mode, service);
+    return GetConnectionInfo(Common::str(m_connectStr), user, password, alias, port, sid, mode, service);
 }

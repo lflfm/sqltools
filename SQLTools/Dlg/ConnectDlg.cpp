@@ -38,6 +38,8 @@
 #include "Dlg\ConnectSettingsDlg.h"
 #include "ConnectData\ConnectDataXmlStreamer.h"
 #include <COMMON/InputDlg.h>
+#include <COMMON/MyUtf.h>
+#include <COMMON/AppUtilities.h>
 
     using namespace std;
 
@@ -51,21 +53,21 @@ static char THIS_FILE[] = __FILE__;
 
     const static int TOOLBAT_ID = 1111;
 
-    static const char* MB_TITLE                 = "Connect";
-    static const char* FILE_NAME                = "connections.xml";
-    static const char* DEFAULT_PASSWORD         = "none";
-    static const char* EMPTY_PASSWORD_WARNING   =
-        "You did not provide the master password."
-        "\n\nYour passwords and login script will be encrypted"
-        "\nwith the default master password \"none\".\n";
+    static const wchar_t* MB_TITLE                 = L"Connect";
+    static const wchar_t* FILE_NAME                = L"connections.xml";
+    static const wchar_t* DEFAULT_PASSWORD         = L"none";
+    static const wchar_t* EMPTY_PASSWORD_WARNING   =
+        L"You did not provide the master password."
+        L"\n\nYour passwords and login script will be encrypted"
+        L"\nwith the default master password \"none\".\n";
 
-    std::string CConnectDlg::m_masterPassword = DEFAULT_PASSWORD;
+    std::wstring CConnectDlg::m_masterPassword = DEFAULT_PASSWORD;
     ConnectEntry CConnectDlg::m_last;
     int CConnectDlg::m_sortColumn = -1;
     ListCtrlManager::ESortDir CConnectDlg::m_sortDirection = ListCtrlManager::ASC;
     ListCtrlManager::FilterCollection CConnectDlg::m_filter;
 
-    static void GetTnsEntries (std::vector<string>& entries);
+    static void GetTnsEntries (std::vector<std::wstring>& entries);
 
 CConnectDlg::CConnectDlg(CWnd* pParent /*=NULL*/)
     : CDialog(CConnectDlg::IDD, pParent),
@@ -179,9 +181,9 @@ void CConnectDlg::readProfiles ()
             for (int attempt = 0; !m_data.TestPassword(m_masterPassword); ++attempt)
             {
                 if (attempt
-                && MessageBox("Invalid master password. Try again?   ", MB_TITLE, MB_YESNO|MB_ICONSTOP) == IDNO)
+                && MessageBox(L"Invalid master password. Try again?   ", MB_TITLE, MB_YESNO|MB_ICONSTOP) == IDNO)
                 {
-                    if (MessageBox("Would you like reset master password?   ", MB_TITLE, MB_YESNO|MB_ICONSTOP) == IDYES)
+                    if (MessageBox(L"Would you like reset master password?   ", MB_TITLE, MB_YESNO|MB_ICONSTOP) == IDYES)
                     {
                         CConnectSettingsDlg dlg(this);
                         m_masterPassword.clear();
@@ -199,8 +201,8 @@ void CConnectDlg::readProfiles ()
                 }
 
                 CPasswordDlg dlg(this);
-                dlg.m_title  = "Connect data encrypted";
-                dlg.m_prompt = "Enter password:";
+                dlg.m_title  = L"Connect data encrypted";
+                dlg.m_prompt = L"Enter password:";
 
                 if (dlg.DoModal() == IDCANCEL)
                     continue;
@@ -210,12 +212,12 @@ void CConnectDlg::readProfiles ()
         }
         catch (const EncryptionException& e) {
             
-            MessageBox(e.what(), MB_TITLE, MB_OK|MB_ICONSTOP);
+            MessageBox(Common::wstr(e.what()).c_str(), MB_TITLE, MB_OK|MB_ICONSTOP);
 
-            if (MessageBox("The file connections.xml might be corrupt."
-                    "\n\nWould you like reset master password?" 
-                    "\n\nIf you choose \"Yes\" then all encrypted data will be lost." 
-                    "\n\nPress \"No\" if you want to ignore the error and continue.  ", 
+            if (MessageBox(L"The file connections.xml might be corrupt."
+                    L"\n\nWould you like reset master password?" 
+                    L"\n\nIf you choose \"Yes\" then all encrypted data will be lost." 
+                    L"\n\nPress \"No\" if you want to ignore the error and continue.  ", 
                     MB_TITLE, MB_YESNO|MB_ICONSTOP) == IDYES)
             {
                 CConnectSettingsDlg dlg(this);
@@ -228,15 +230,14 @@ void CConnectDlg::readProfiles ()
             }
         }
     }
-    else 
-    {
-        CConnectSettingsDlg dlg(this);
-        m_masterPassword.clear();
-        showDlg(dlg);
-
-        m_data.ImportFromRegistry(m_masterPassword);
-        streamer << m_data;
-    }
+    //else 
+    //{
+    //    CConnectSettingsDlg dlg(this);
+    //    m_masterPassword.clear();
+    //    showDlg(dlg);
+    //    m_data.ImportFromRegistry(m_masterPassword);
+    //    streamer << m_data;
+    //}
 }
 
 void CConnectDlg::setupProfiles ()
@@ -282,7 +283,7 @@ void CConnectDlg::setupProfiles ()
     int last = -1;
     time_t lastUsage = 0;
 
-    set<string> hosts, ports;
+    set<wstring> hosts, ports;
     ConnectData::EntriesConstIterator 
         begin = m_data.GetConnectEntries().begin(),
         end = m_data.GetConnectEntries().end();
@@ -310,20 +311,20 @@ void CConnectDlg::setupProfiles ()
     }
     m_profiles.SelectEntry(last);
     {
-        std::vector<string> entries;
+        std::vector<std::wstring> entries;
         GetTnsEntries(entries);
-        std::vector<string>::const_iterator it = entries.begin();
+        auto it = entries.begin();
         for (; it != entries.end(); ++it)
             SendDlgItemMessage(IDC_C_CONNECT, CB_ADDSTRING, 0, (LPARAM)it->c_str());
     }
     {
-        set<string>::const_iterator it = hosts.begin();
+        auto it = hosts.begin();
         for (; it != hosts.end(); ++it)
             SendDlgItemMessage(IDC_C_HOST, CB_ADDSTRING, 0, (LPARAM)it->c_str());
     }
     {
-        ports.insert("1521");
-        set<string>::const_iterator it = ports.begin();
+        ports.insert(L"1521");
+        auto it = ports.begin();
         for (; it != ports.end(); ++it)
             SendDlgItemMessage(IDC_C_TCP_PORT, CB_ADDSTRING, 0, (LPARAM)it->c_str());
     }
@@ -373,15 +374,22 @@ try {
         
 } _COMMON_DEFAULT_HANDLER_;
 
-bool CConnectDlg::doTest (bool showMessage, std::string& error) 
+bool CConnectDlg::doTest (bool showMessage, std::wstring& error) 
 {
     UpdateData();
     normalizeCurrent();
     UpdateData(FALSE);
 
     if (m_current.m_Direct)
-        OciConnect::MakeTNSString(m_current.m_Alias, m_current.m_Host.c_str(), 
-            m_current.m_Port.c_str(), m_current.m_Sid.c_str(), m_current.m_UseService);
+    {
+        string buff;
+        OciConnect::MakeTNSString(buff, 
+            Common::str(m_current.m_Host).c_str(), 
+            Common::str(m_current.m_Port).c_str(), 
+            Common::str(m_current.m_Sid).c_str(), 
+            m_current.m_UseService);
+        m_current.m_Alias = Common::wstr(buff);
+    }
 
     try { EXCEPTION_FRAME;
 
@@ -393,26 +401,30 @@ bool CConnectDlg::doTest (bool showMessage, std::string& error)
         case 1: mode = OCI8::ecmSysDba; break;
         case 2: mode = OCI8::ecmSysOper; break;
         }
-        connect.Open(m_current.m_User.c_str(), m_current.m_DecryptedPassword.c_str(), m_current.m_Alias.c_str(), mode, true, true);
+        connect.Open(
+            Common::str(m_current.m_User).c_str(), 
+            Common::str(m_current.m_DecryptedPassword).c_str(), 
+            Common::str(m_current.m_Alias).c_str(), 
+            mode, true, true);
         connect.Close();
 
         if (showMessage)
         {
-            string name;
+            std::wstring name;
             getConnectionDisplayName(name);
             MessageBeep(MB_OK);
-            MessageBox(("The connection \"" + name + "\" is OK.     ").c_str(), 
-                "Connection test", MB_OK|MB_ICONASTERISK);
+            MessageBox((L"The connection \"" + name + L"\" is OK.     ").c_str(), 
+                L"Connection test", MB_OK|MB_ICONASTERISK);
         }
     }
     catch (const OciException& x)
     {
-        error = x.what();
+        error = Common::wstr(x.what());
 
         if (showMessage)
         {
             MessageBeep((UINT)-1);
-            MessageBox(x.what(), "Connection test", MB_OK|MB_ICONHAND);
+            MessageBox(error.c_str(), L"Connection test", MB_OK|MB_ICONHAND);
         }
         return false;
     }
@@ -423,18 +435,18 @@ bool CConnectDlg::doTest (bool showMessage, std::string& error)
 
 void CConnectDlg::OnTest () 
 try { EXCEPTION_FRAME;
-    string dummy;
+    std::wstring dummy;
     doTest(true, dummy);
 }
 _DEFAULT_HANDLER_
 
-void CConnectDlg::getConnectionDisplayName (std::string& name)
+void CConnectDlg::getConnectionDisplayName (std::wstring& name)
 {
     if (!m_current.m_Direct)
-        name = m_current.m_Alias + " - " + m_current.m_User;
+        name = m_current.m_Alias + L" - " + m_current.m_User;
     else
-        name = m_current.m_Host + ':' + m_current.m_Port + ':' 
-            + m_current.m_Sid + " - " + m_current.m_User;
+        name = m_current.m_Host + L":" + m_current.m_Port + L":" 
+            + m_current.m_Sid + L" - " + m_current.m_User;
 
     to_upper_str(name.c_str(), name);
 }
@@ -447,11 +459,11 @@ try { EXCEPTION_FRAME;
     {
         int entry = (int)m_profiles.GetItemData(index);
 
-        std::string name, message;
+        std::wstring name, message;
 
         getConnectionDisplayName(name);
 
-        message = "Are you sure you want to delete \"" + name + "\"?";
+        message = L"Are you sure you want to delete \"" + name + L"\"?";
 
         if (MessageBox(message.c_str(), MB_TITLE, MB_YESNO) == IDYES)
         {
@@ -487,7 +499,7 @@ void CConnectDlg::writeData ()
     }
     else
     {
-        string empty;
+        std::wstring empty;
         m_data.SetTagFilter(empty);
         m_data.SetUserFilter(empty);
         m_data.SetAliasFilter(empty);
@@ -496,7 +508,7 @@ void CConnectDlg::writeData ()
     }
 
     ConnectDataXmlStreamer streamer(FILE_NAME);
-    streamer.SetMasterPassword(m_masterPassword);
+    streamer.SetMasterPassword(Common::str(m_masterPassword));
     streamer << m_data;
 }
 
@@ -612,7 +624,7 @@ void CConnectDlg::setupConnectionType ()
 
 void CConnectDlg::OnSettings ()
 {
-    string oldMasterPassword = m_masterPassword;
+    std::wstring oldMasterPassword = m_masterPassword;
 
     try { EXCEPTION_FRAME;
 
@@ -646,12 +658,12 @@ void CConnectDlg::OnBnClicked_Help()
 #endif
 }
 
-bool GetOciDllPath (string& path)
+bool GetOciDllPath (std::wstring& path)
 {
-    char fullpath[1024], *filename;
-    DWORD length = SearchPath(NULL, "OCI.DLL", NULL, sizeof(fullpath), fullpath, &filename);
+    WCHAR fullpath[1024], *filename;
+    DWORD length = SearchPath(NULL, L"OCI.DLL", NULL, sizeof(fullpath)/sizeof(fullpath[0]), fullpath, &filename);
     
-    if (length > 0 && length < sizeof(fullpath))
+    if (length > 0 && length < sizeof(fullpath)/sizeof(fullpath[0]))
     {
         path.assign(fullpath, filename - fullpath);
         return true;
@@ -660,19 +672,19 @@ bool GetOciDllPath (string& path)
     return false;
 }
 
-bool GetRegValue (string key, const char* name, string& value)
+bool GetRegValue (const std::wstring& key, const wchar_t* name, std::wstring& value)
 {
     HKEY hKey;
-    LONG lRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, key.c_str(), 0, KEY_QUERY_VALUE, &hKey);
+    LONG lRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCWSTR)key.c_str(), 0, KEY_QUERY_VALUE, &hKey);
 
     if (lRet != ERROR_SUCCESS)
         return false;
 
     DWORD type;
-    char buff[1024];
-    DWORD length = sizeof(buff);
+    WCHAR buff[1024];
+    DWORD length = sizeof(buff)/sizeof(buff[0]);
     lRet = RegQueryValueEx(hKey, name, NULL, &type, (LPBYTE)buff, &length);
-    buff[sizeof(buff)-1] = 0;
+    buff[sizeof(buff)/sizeof(buff[0])-1] = 0;
 
     RegCloseKey(hKey);
 
@@ -686,9 +698,9 @@ bool GetRegValue (string key, const char* name, string& value)
     return true;
 }
 
-bool GetSubkeys (string key, vector<string>& _subkeys)
+bool GetSubkeys (const std::wstring& key, vector<std::wstring>& _subkeys)
 {
-    vector<string> subkeys;
+    vector<std::wstring> subkeys;
 
     HKEY hKey;
     LONG lRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, key.c_str(), 0, KEY_QUERY_VALUE|KEY_ENUMERATE_SUB_KEYS, &hKey);
@@ -698,12 +710,12 @@ bool GetSubkeys (string key, vector<string>& _subkeys)
     
     for (DWORD i = 0; true; i++) 
     { 
-        char buff[1024];
-        DWORD length = sizeof(buff)-1;
+        WCHAR buff[1024];
+        DWORD length = sizeof(buff)/sizeof(buff[0])-1;
         FILETIME ftLastWriteTime;
         lRet = RegEnumKeyEx(hKey, i, buff, &length, NULL, NULL, NULL, &ftLastWriteTime);
         if (ERROR_SUCCESS != lRet) break;
-        buff[sizeof(buff)-1] = 0;
+        buff[sizeof(buff)/sizeof(buff[0])-1] = 0;
         subkeys.push_back(buff);
     } 
 
@@ -720,19 +732,20 @@ tnsnames.ora lookup works in the way like oracle does
 3) registry key TNS_ADMIN
 4) default location
 */
-bool GetTnsPath (string& path)
+bool GetTnsPath (std::wstring& path)
 {
-    string value;
+    std::wstring value;
 
-    char buff[MAX_PATH];
-    if (GetCurrentDirectory(sizeof(buff)-1, buff))
+    WCHAR buff[MAX_PATH];
+    if (GetCurrentDirectory(sizeof(buff)/sizeof(buff[0])-1, buff))
     {
-        buff[sizeof(buff)-1] = 0;
+        buff[sizeof(buff)/sizeof(buff[0])-1] = 0;
         value = buff;
 
         if (value.size() && *value.rbegin() != '\\')
             value += '\\';
-        value += "TNSNAMES.ORA";
+        
+        value += L"TNSNAMES.ORA";
 
         if (::PathFileExists(value.c_str()))
         {
@@ -741,13 +754,14 @@ bool GetTnsPath (string& path)
         }
     }
 
-    if (const char* tns_admin = getenv("TNS_ADMIN"))
+    if (const wchar_t* tns_admin = _wgetenv(L"TNS_ADMIN"))
     {
         value = tns_admin;
 
         if (value.size() && *value.rbegin() != '\\')
             value += '\\';
-        value += "TNSNAMES.ORA";
+
+        value += L"TNSNAMES.ORA";
 
         if (::PathFileExists(value.c_str()))
         {
@@ -756,29 +770,29 @@ bool GetTnsPath (string& path)
         }
     }
 
-    string ocipath;
+    std::wstring ocipath;
 
     if (GetOciDllPath(ocipath))
     {
-        vector<string> subkeys;
-        if (GetSubkeys("SOFTWARE\\ORACLE", subkeys))
+        vector<std::wstring> subkeys;
+        if (GetSubkeys(L"SOFTWARE\\ORACLE", subkeys))
         {
-            vector<string>::const_iterator it = subkeys.begin();
+            auto it = subkeys.begin();
             for (; it != subkeys.end(); ++it)
             {
-                if (!strnicmp(it->c_str(), "KEY_", sizeof("KEY_")-1)
-                || !strnicmp(it->c_str(), "HOME", sizeof("HOME")-1))
+                if (!wcsnicmp(it->c_str(), L"KEY_", sizeof("KEY_")-1)
+                || !wcsnicmp(it->c_str(), L"HOME", sizeof("HOME")-1))
                 {
-                    string key = string("SOFTWARE\\ORACLE\\") + *it;
+                    std::wstring key = L"SOFTWARE\\ORACLE\\" + *it;
                     
-                    if (GetRegValue(key, "ORACLE_HOME", value))
+                    if (GetRegValue(key, L"ORACLE_HOME", value))
                     {
-                        if (!stricmp(ocipath.c_str(), (value + "\\BIN\\").c_str())) 
+                        if (!wcsicmp(ocipath.c_str(), (value + L"\\BIN\\").c_str())) 
                         {
-                            if (GetRegValue(key, "TNS_ADMIN", value))
-                                path = value + "\\TNSNAMES.ORA";
+                            if (GetRegValue(key, L"TNS_ADMIN", value))
+                                path = value + L"\\TNSNAMES.ORA";
                             else
-                                path = value + "\\NETWORK\\ADMIN\\TNSNAMES.ORA";
+                                path = value + L"\\NETWORK\\ADMIN\\TNSNAMES.ORA";
 
                             return true;
                         }
@@ -792,9 +806,9 @@ bool GetTnsPath (string& path)
 }
 
 static
-void GetTnsEntries (std::vector<string>& entries)
+void GetTnsEntries (std::vector<std::wstring>& entries)
 {
-    string tnsnames;
+    std::wstring tnsnames;
     if (!GetTnsPath(tnsnames)) return;
 
     std::ifstream in(tnsnames.c_str());
@@ -804,7 +818,7 @@ void GetTnsEntries (std::vector<string>& entries)
 
     while (getline(in, line) && balance >= 0)
     {
-        for (string::const_iterator it = line.begin(); it != line.end(); ++it)
+        for (auto it = line.begin(); it != line.end(); ++it)
         {
             if (*it == '#') break;
             
@@ -816,7 +830,7 @@ void GetTnsEntries (std::vector<string>& entries)
                 {
                     trim_symmetric(entry);
                     to_lower_str(entry.c_str(), entry);
-                    entries.push_back(entry);
+                    entries.push_back(Common::wstr(entry));
                     entry.clear();
                     decription = true;
                 }
@@ -871,21 +885,15 @@ try { EXCEPTION_FRAME;
 
     if (OpenClipboard() && EmptyClipboard())
     {
-        string str = m_current.m_User;
+        std::wstring str = m_current.m_User;
         
         if (m_current.m_Direct)
-            str += '@' + m_current.m_Host + ':' + m_current.m_Port + ':' + m_current.m_Sid;
+            str += L"@" + m_current.m_Host + L":" + m_current.m_Port + L":" + m_current.m_Sid;
         else
-            str += '@' + m_current.m_Alias;
+            str += L"@" + m_current.m_Alias;
 
         if (!str.empty())
-        {
-            HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, str.size() + 1);
-            char* dest = (char*)GlobalLock(hData);
-            if (dest)
-                strcpy(dest, str.c_str());
-            SetClipboardData(CF_TEXT, hData);
-        }
+            Common::AppSetClipboardText(str.c_str(), str.length());
 
         CloseClipboard();
     }
@@ -899,21 +907,15 @@ try { EXCEPTION_FRAME;
 
     if (OpenClipboard() && EmptyClipboard())
     {
-        string str = m_current.m_User + '/' + m_current.m_DecryptedPassword;
+        std::wstring str = m_current.m_User + L"/" + m_current.m_DecryptedPassword;
         
         if (m_current.m_Direct)
-            str += '@' + m_current.m_Host + ':' + m_current.m_Port + ':' + m_current.m_Sid;
+            str += L"@" + m_current.m_Host + L":" + m_current.m_Port + L":" + m_current.m_Sid;
         else
-            str += '@' + m_current.m_Alias;
+            str += L"@" + m_current.m_Alias;
 
         if (!str.empty())
-        {
-            HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, str.size() + 1);
-            char* dest = (char*)GlobalLock(hData);
-            if (dest)
-                strcpy(dest, str.c_str());
-            SetClipboardData(CF_TEXT, hData);
-        }
+            Common::AppSetClipboardText(str.c_str(), str.length());
 
         CloseClipboard();
     }
@@ -927,18 +929,20 @@ try { EXCEPTION_FRAME;
 
     if (OpenClipboard() && EmptyClipboard())
     {
-        string str;
-        OciConnect::MakeTNSString(str, m_current.m_Host.c_str(), m_current.m_Port.c_str(), 
-            m_current.m_Sid.c_str(), m_current.m_UseService);
-        str = m_current.m_Sid + "=" + str;
+        std::string str;
+        
+        OciConnect::MakeTNSString(str, 
+            Common::str(m_current.m_Host).c_str(), 
+            Common::str(m_current.m_Port).c_str(), 
+            Common::str(m_current.m_Sid).c_str(), 
+            m_current.m_UseService);
+        
+        str = Common::str(m_current.m_Sid) + "=" + str;
 
         if (!str.empty())
         {
-            HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, str.size() + 1);
-            char* dest = (char*)GlobalLock(hData);
-            if (dest)
-                strcpy(dest, str.c_str());
-            SetClipboardData(CF_TEXT, hData);
+            std::wstring wstr = Common::wstr(str);
+            Common::AppSetClipboardText(wstr.c_str(), wstr.length());
         }
 
         CloseClipboard();
@@ -955,24 +959,24 @@ try { EXCEPTION_FRAME;
 
     while (index != -1 && index < count)
     {
-        string error;
+        std::wstring error;
         bool ok = CConnectDlg::doTest(false, error); 
 
         if (!ok)
         {
             found = true;
 
-            string name;
+            std::wstring name;
             getConnectionDisplayName(name);
 
             MessageBeep((UINT)-1);
 
-            switch (MessageBox(("The connection \"" + name + "\" is invalid.     "
-                "\n\n" + error + 
-                "\n<Yes> \t- to delete,"
-                "\n<No> \t- to skip and find the next invalid or"
-                "\n<Cancel> - to stop cleanup.").c_str(), 
-                "Connection cleanup", 
+            switch (MessageBox((L"The connection \"" + name + L"\" is invalid.     "
+                L"\n\n" + error + 
+                L"\n<Yes> \t- to delete,"
+                L"\n<No> \t- to skip and find the next invalid or"
+                L"\n<Cancel> - to stop cleanup.").c_str(), 
+                L"Connection cleanup", 
                 MB_YESNOCANCEL|MB_ICONEXCLAMATION))
             {
             case IDYES:
@@ -1001,7 +1005,7 @@ try { EXCEPTION_FRAME;
     if (!found)
     {
         MessageBeep(MB_OK);
-        MessageBox("There is no invalid connection.", "Connection cleanup", MB_OK|MB_ICONINFORMATION);
+        MessageBox(L"There is no invalid connection.", L"Connection cleanup", MB_OK|MB_ICONINFORMATION);
     }
 
 } 

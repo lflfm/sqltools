@@ -147,11 +147,11 @@ void GridSourceBase::PaintCell (DrawCellContexts& dcc) const
             //_ASSERTE(GetCount(edVert));
             if (GetCount(edVert))
             {
-                string text;
+                std::wstring text;
                 GetCellStr(text, dcc.m_Row, dcc.m_Col);
                 if (text.length() <= 1024)
                 {
-                    dcc.m_Dc->DrawText(text.data(), text.length(), _rc,
+                    ::DrawText(dcc.m_Dc->m_hDC, text.data(), text.length(), _rc,
                         GetColAlignment((IsTableOrientation() ? dcc.m_Col : dcc.m_Row)) == ecaLeft
                         ? DT_LEFT|DT_VCENTER|DT_EXPANDTABS|DT_NOPREFIX|DT_WORD_ELLIPSIS
                         : DT_RIGHT|DT_VCENTER|DT_EXPANDTABS|DT_NOPREFIX|DT_WORD_ELLIPSIS);             
@@ -160,8 +160,8 @@ void GridSourceBase::PaintCell (DrawCellContexts& dcc) const
                 // 2016.06.05 bug fix, if multiline clob with very long first line is shown as single-lined 
                 else
                 {
-                    string line, buffer;
-                    istringstream in(text);
+                    std::wstring line, buffer;
+                    std::wistringstream in(text);
                     
                     int nrows = dcc.m_Rect.Height() / dcc.m_CharSize[edVert];
                     int ncols = dcc.m_Rect.Width() / dcc.m_CharSize[edHorz] * 2;
@@ -170,13 +170,13 @@ void GridSourceBase::PaintCell (DrawCellContexts& dcc) const
                     {
                         buffer += line.substr(0, ncols);
                         if ((int)line.length() > ncols) 
-                            buffer += "...";
+                            buffer += L"...";
                         buffer += '\n';
                     }
                     if (i)
-                        buffer += "...";
+                        buffer += L"...";
                     
-                    dcc.m_Dc->DrawText(buffer.data(), buffer.length(), _rc,
+                    ::DrawText(dcc.m_Dc->m_hDC, buffer.data(), buffer.length(), _rc,
                         GetColAlignment((IsTableOrientation() ? dcc.m_Col : dcc.m_Row)) == ecaLeft
                         ? DT_LEFT|DT_VCENTER|DT_EXPANDTABS|DT_NOPREFIX|DT_WORD_ELLIPSIS
                         : DT_RIGHT|DT_VCENTER|DT_EXPANDTABS|DT_NOPREFIX|DT_WORD_ELLIPSIS);             
@@ -196,7 +196,8 @@ void GridSourceBase::PaintCell (DrawCellContexts& dcc) const
             {
                 DrawDecFrame(dcc);
                 const string& text = GetColHeader(IsTableOrientation() ? dcc.m_Col : dcc.m_Row);
-                dcc.m_Dc->DrawText(text.data(), text.length(), _rc, DT_LEFT|DT_VCENTER|DT_NOPREFIX|DT_WORD_ELLIPSIS);
+                std::wstring wtext = Common::wstr(text);
+                ::DrawTextW(dcc.m_Dc->m_hDC, wtext.data(), wtext.length(), _rc, DT_LEFT|DT_VCENTER|DT_NOPREFIX|DT_WORD_ELLIPSIS);
             }
             else if (dcc.m_Type[IsTableOrientation() ? 1 : 0] == efNone && dcc.m_Type[IsTableOrientation() ? 0 : 1] == efFirst)
             {
@@ -207,7 +208,7 @@ void GridSourceBase::PaintCell (DrawCellContexts& dcc) const
                 if (m_ShowRowEnumeration)
                 {
                     char buffer[18];
-                    dcc.m_Dc->DrawText(itoa(IsTableOrientation() ? dcc.m_Row + 1 : dcc.m_Col + 1, buffer, 10), -1, _rc, DT_RIGHT|DT_VCENTER|DT_NOPREFIX|DT_WORD_ELLIPSIS);
+                    ::DrawTextA(dcc.m_Dc->m_hDC, itoa(IsTableOrientation() ? dcc.m_Row + 1 : dcc.m_Col + 1, buffer, 10), -1, _rc, DT_RIGHT|DT_VCENTER|DT_NOPREFIX|DT_WORD_ELLIPSIS);
                 }
                 if (m_ImageList)
                 {
@@ -238,7 +239,7 @@ void GridSourceBase::CalculateCell (DrawCellContexts& dcc, size_t maxTextLength)
                 string text;
                 GetCellStr(text, dcc.m_Row, dcc.m_Col);
 
-                dcc.m_Dc->DrawText(text.data(), min(text.length(), maxTextLength), dcc.m_Rect, DT_CALCRECT|DT_EXPANDTABS|DT_NOPREFIX);
+                ::DrawTextA(dcc.m_Dc->m_hDC, text.data(), min(text.length(), maxTextLength), dcc.m_Rect, DT_CALCRECT|DT_EXPANDTABS|DT_NOPREFIX);
 
                 dcc.m_Rect.InflateRect(-dcc.m_CellMargin.cx, -dcc.m_CellMargin.cy);
             }
@@ -250,7 +251,7 @@ void GridSourceBase::CalculateCell (DrawCellContexts& dcc, size_t maxTextLength)
             {
                 const string& text = GetColHeader(IsTableOrientation() ? dcc.m_Col : dcc.m_Row);
 
-                dcc.m_Dc->DrawText(text.data(), min(text.length(), maxTextLength), dcc.m_Rect, DT_CALCRECT|DT_NOPREFIX);
+                ::DrawTextA(dcc.m_Dc->m_hDC, text.data(), min(text.length(), maxTextLength), dcc.m_Rect, DT_CALCRECT|DT_NOPREFIX);
 
                 dcc.m_Rect.InflateRect(-dcc.m_CellMargin.cx, -dcc.m_CellMargin.cy);
             }
@@ -313,10 +314,11 @@ CWnd* GridSourceBase::BeginEdit (int row, int col, CWnd* parent, const CRect& re
 
         m_Editor = new CellEditor;
         m_Editor->Create(dwStyle, rect, parent, 999);
-        m_Editor->SetWindowText(ostr.str().data());
+        std::wstring wstr = Common::wstr(ostr.str());
+        m_Editor->SetWindowText(wstr.c_str());
 
         if (nlines <= 1)
-            m_Editor->SetSel(0, ostr.str().length());
+            m_Editor->SetSel(0, wstr.length());
     }
     return m_Editor;
 }
@@ -337,6 +339,7 @@ void GridSourceBase::CancelEdit () // end edit session
     m_Editor = 0;
 }
 
+    // TODO: convert to unicode
     static
     void CopyHTML (const char *html) {
         // Create temporary buffer for HTML header...
@@ -345,7 +348,7 @@ void GridSourceBase::CancelEdit () // end edit session
 
         // Get clipboard id for HTML format...
         static int cfid = 0;
-        if(!cfid) cfid = RegisterClipboardFormat("HTML Format");
+        if(!cfid) cfid = RegisterClipboardFormat(L"HTML Format");
 
         // Create a template string for the HTML header...
         strcpy(buf,
@@ -371,19 +374,19 @@ void GridSourceBase::CancelEdit () // end edit session
         // string when you overwrite it so you follow up with code to replace
         // the 0 appended at the end with a '\r'...
         char *ptr = strstr(buf, "StartHTML");
-        wsprintf(ptr+10, "%08u", strstr(buf, "<html>") - buf);
+        wsprintfA(ptr+10, "%08u", strstr(buf, "<html>") - buf);
         *(ptr+10+8) = '\r';
 
         ptr = strstr(buf, "EndHTML");
-        wsprintf(ptr+8, "%08u", strlen(buf));
+        wsprintfA(ptr+8, "%08u", strlen(buf));
         *(ptr+8+8) = '\r';
 
         ptr = strstr(buf, "StartFragment");
-        wsprintf(ptr+14, "%08u", strstr(buf, "<!--StartFrag") - buf);
+        wsprintfA(ptr+14, "%08u", strstr(buf, "<!--StartFrag") - buf);
         *(ptr+14+8) = '\r';
 
         ptr = strstr(buf, "EndFragment");
-        wsprintf(ptr+12, "%08u", strstr(buf, "<!--EndFrag") - buf);
+        wsprintfA(ptr+12, "%08u", strstr(buf, "<!--EndFrag") - buf);
         *(ptr+12+8) = '\r';
 
         // Now you have everything in place ready to put on the
@@ -428,16 +431,21 @@ void GridSourceBase::DoEditCopy (int row, int nrows, int col, int ncols, ECopyWh
             if (actualFormat == etfHtml)
                 CopyHTML(buff.c_str());
 
-            HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, buff.length()+1);
+            std::wstring wbuff = Common::wstr(buff);
+            int size = (wbuff.length() + 1)  * sizeof(wchar_t);
+            HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, size);
             char* dest = (char*)GlobalLock(hData);
-            if (dest) memcpy(dest, buff.c_str(), buff.length());
-            SetClipboardData(CF_TEXT, hData);
+            if (dest) memcpy(dest, wbuff.c_str(), size);
+            SetClipboardData(CF_UNICODETEXT, hData);
 
-            HGLOBAL hCodeSignature =  NULL;
-            hCodeSignature = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, sizeof("{code}"));
-            char* codeSignature = (char*)GlobalLock(hCodeSignature);
-            if (codeSignature) memcpy(codeSignature, "{code}", sizeof("{code}"));
-            SetClipboardData(CF_PRIVATEFIRST, hCodeSignature);
+            if (!(ncols == -1 || ncols == GetCount(edHorz)))
+            {
+                HGLOBAL hCodeSignature =  NULL;
+                hCodeSignature = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, sizeof("{code}"));
+                char* codeSignature = (char*)GlobalLock(hCodeSignature);
+                if (codeSignature) memcpy(codeSignature, "{code}", sizeof("{code}"));
+                SetClipboardData(CF_PRIVATEFIRST, hCodeSignature);
+            }
         }
     }
 }
@@ -545,7 +553,8 @@ void GridSourceBase::DoEditCut ()
             : m_pSource(pSource), m_row(row), m_nrows(nrows), m_col(col), m_ncols(ncols), m_what(what)
         {
             DelayRenderData(CF_TEXT);
-            DelayRenderData(CF_PRIVATEFIRST);
+            if (!(ncols == -1 || ncols == pSource->GetCount(edHorz)))
+                DelayRenderData(CF_PRIVATEFIRST);
         }
 
         virtual BOOL OnRenderGlobalData(LPFORMATETC lpFormatEtc, HGLOBAL* phGlobal)

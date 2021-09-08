@@ -21,6 +21,7 @@
 #define __DBSOURCEWND_H__
 #pragma once
 
+#include <list>
 #include <OCI8/Connect.h>
 #include <COMMON/FixedArray.h>
 #include "DbBrowser\DbBrowserList.h"
@@ -77,11 +78,11 @@ public:
 	BOOL m_AllSchemas;
     BOOL m_bShowTabTitles;
 	string m_defSchema;
-	std::vector<string> m_recentSchemas;
+	std::list<std::wstring> m_recentSchemas;
 
     enum SchemaListStatus { SLS_EMPTY, SLS_CURRENT_ONLY, SLS_LOADING, SLS_LOADED } m_schemaListStatus;
 
-	void addToRecentSchemas (const string&);
+	void addToRecentSchemas (const wchar_t*);
 
 // Operations
 public:

@@ -33,7 +33,7 @@
 class ExtractDDLSettingsXmlStreamer : XmlStreamerBase
 {
 public:
-    ExtractDDLSettingsXmlStreamer (const std::string& filename, bool backup = false);
+    ExtractDDLSettingsXmlStreamer (const std::wstring& filename, bool backup = false);
 
     void operator >> (ExtractDDLSettings& settings)           { XmlStreamerBase::read(&settings); }
     void operator << (const ExtractDDLSettings& settings)     { XmlStreamerBase::write(&settings); }

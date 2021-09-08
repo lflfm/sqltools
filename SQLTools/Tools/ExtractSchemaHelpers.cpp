@@ -42,9 +42,9 @@ namespace ExtractSchemaHelpers
 
 /// FileList is a produced files list ///
 
-FileList::FileList (const char* strFileName)
+FileList::FileList (const wchar_t* strFileName)
 {
-    m_pFile = fopen(strFileName, "wt");
+    m_pFile = _wfopen(strFileName, L"wt");
     CHECK_OPEN_ERROR(m_pFile ? true : false);
 }
 
@@ -67,7 +67,7 @@ void FileList::Cleanup ()
     m_pFile = 0;
 }
 
-void FileList::Push (const std::string& str, EStage stage)
+void FileList::Push (const std::wstring& str, EStage stage)
 {
     m_lists[stage].push_back(str);
 }
@@ -82,8 +82,8 @@ void FileList::write ()
     CHECK_WRITE_ERROR(fputs("PROMPT ====================================================\n",   m_pFile) != EOF);
     CHECK_WRITE_ERROR(fputs("\nspool DO.log\n\n",   m_pFile) != EOF);
 
-    std::set<std::string> processed;
-    std::list<std::string>::const_iterator it, beg, end;
+    std::set<std::wstring> processed;
+    std::list<std::wstring>::const_iterator it, beg, end;
 
     for (int i(0); i < 2; i++) {
         it = beg = m_lists[i].begin();
@@ -93,7 +93,7 @@ void FileList::write ()
             if (processed.find(*it) == processed.end())
             {
                 CHECK_WRITE_ERROR(fputs("@@", m_pFile) != EOF);
-                CHECK_WRITE_ERROR(fputs((*it).c_str(), m_pFile) != EOF);
+                CHECK_WRITE_ERROR(fputs(Common::str((*it)).c_str(), m_pFile) != EOF);
                 CHECK_WRITE_ERROR(fputc('\n', m_pFile) != EOF);
                 processed.insert(*it);
             }
@@ -107,12 +107,12 @@ void FileList::write ()
 
 /// FastFileOpen is a last opened file cash
 
-FILE* FastFileOpen::Open (const std::string& name, const char* mode)
+FILE* FastFileOpen::Open (const std::wstring& name, const wchar_t* mode)
 {
     if (m_strFileName != name) {
         Close();
         m_strFileName = name;
-        m_pFile = fopen(m_strFileName.c_str(), mode);
+        m_pFile = _wfopen(m_strFileName.c_str(), mode);
         CHECK_OPEN_ERROR(m_pFile ? true : false);
     }
     return m_pFile;
@@ -140,7 +140,7 @@ void FastFileOpen::Cleanup ()
 
 
 /// WriteContext is a common data for file writing iterations ///
-const std::string WriteContext::strNull;
+const std::wstring WriteContext::strNull;
 
 void WriteContext::Cleanup ()
 {
@@ -149,17 +149,17 @@ void WriteContext::Cleanup ()
 }
 
 // don't close a file after use
-FILE* WriteContext::OpenFile (const std::string& _name, FileList::EStage stage, const char* mode)
+FILE* WriteContext::OpenFile (const std::wstring& _name, FileList::EStage stage, const wchar_t* mode)
 {
     if (!m_bSingleStream) {
-        std::string path, name;
+        std::wstring path, name;
         // 03.03.2004 bug fix, export DDL fails if an object name contains on of \/:*?"<>|
         Common::make_safe_filename(_name.c_str(), name);
 
-        if (m_strSubDir.size()) path += m_strSubDir + '\\';
-        path += name + m_strSuffix + '.' + m_strDefExt;
+        if (m_strSubDir.size()) path += m_strSubDir + L"\\";
+        path += name + m_strSuffix + L"." + m_strDefExt;
         
-        std::string fullPath = m_strPath + '\\' + path;
+        std::wstring fullPath = m_strPath + L"\\" + path;
 
         bool idem = m_fastFileOpen.Idem(fullPath);
         /*FILE* pFile =*/ m_fastFileOpen.Open(fullPath, mode);
@@ -171,16 +171,16 @@ FILE* WriteContext::OpenFile (const std::string& _name, FileList::EStage stage, 
     return m_fastFileOpen.GetStream();
 }
 
-void WriteContext::BeginSingleStream (const std::string& name, FileList::EStage stage, const char* mode)
+void WriteContext::BeginSingleStream (const std::wstring& name, FileList::EStage stage, const wchar_t* mode)
 {
     _ASSERTE(!m_bSingleStream);
     m_fastFileOpen.Close();
 
-    std::string path;
-    if (m_strSubDir.size()) path += m_strSubDir + '\\';
-    path += name + m_strSuffix + '.' + m_strDefExt;
+    std::wstring path;
+    if (m_strSubDir.size()) path += m_strSubDir + L"\\";
+    path += name + m_strSuffix + L"." + m_strDefExt;
 
-    m_fastFileOpen.Open(m_strPath + '\\' + path, mode);
+    m_fastFileOpen.Open(m_strPath + L"\\" + path, mode);
     m_fileList.Push(path, stage);
     m_bSingleStream = true;
 }
@@ -205,7 +205,7 @@ void write_object (DbObject& object, void* param)
     _ASSERTE(param);
     WriteContext& context = *reinterpret_cast<WriteContext*>(param);
 
-    FILE* pFile = context.OpenFile(object.m_strName);
+    FILE* pFile = context.OpenFile(Common::wstr(object.m_strName));
     TextOutputInFILE out(*pFile, context.GetDDLSettings().m_LowerNames ? true : false);
     try {
         object.Write(out, context.GetDDLSettings());
@@ -219,7 +219,7 @@ void write_table_definition (DbObject& object, void* param)
     Table& table = static_cast<Table&>(object);
     WriteContext& context = *reinterpret_cast<WriteContext*>(param);
 
-    FILE* pFile = context.OpenFile(object.m_strName);
+    FILE* pFile = context.OpenFile(Common::wstr(object.m_strName));
     TextOutputInFILE out(*pFile, context.GetDDLSettings().m_LowerNames ? true : false);
     try {
         table.WriteDefinition(out, context.GetDDLSettings());
@@ -242,7 +242,7 @@ void write_table_indexes (DbObject& object, void* param)
 
     if (out.GetLength() > 0) 
     {
-        FILE* pFile = context.OpenFile(object.m_strName + "~INX");
+        FILE* pFile = context.OpenFile(Common::wstr(object.m_strName) + L"~INX");
         CHECK_WRITE_ERROR(static_cast<int>(fwrite(out.GetData(), 1, out.GetLength(), pFile)) >= out.GetLength());
     }
 } 
@@ -261,7 +261,7 @@ void write_table_chk_constraint (DbObject& object, void* param)
 
     if (out.GetLength() > 0) 
     {
-        FILE* pFile = context.OpenFile(object.m_strName + "~CHK");
+        FILE* pFile = context.OpenFile(Common::wstr(object.m_strName) + L"~CHK");
         CHECK_WRITE_ERROR(static_cast<int>(fwrite(out.GetData(), 1, out.GetLength(), pFile)) >= out.GetLength());
     }
 } 
@@ -284,7 +284,7 @@ void write_table_unq_constraint (DbObject& object, void* param)
 
     if (out.GetLength() > 0) 
     {
-        FILE* pFile = context.OpenFile(object.m_strName + "~UNQ");
+        FILE* pFile = context.OpenFile(Common::wstr(object.m_strName) + L"~UNQ");
         CHECK_WRITE_ERROR(static_cast<int>(fwrite(out.GetData(), 1, out.GetLength(), pFile)) >= out.GetLength());
     }
 } 
@@ -304,7 +304,7 @@ void write_table_fk_constraint (DbObject& object, void* param)
 
     if (out.GetLength() > 0) 
     {
-        FILE* pFile = context.OpenFile(object.m_strName + "~FK");
+        FILE* pFile = context.OpenFile(Common::wstr(object.m_strName) + L"~FK");
         CHECK_WRITE_ERROR(static_cast<int>(fwrite(out.GetData(), 1, out.GetLength(), pFile)) >= out.GetLength());
     }
 } 
@@ -314,7 +314,7 @@ void write_grant (const Grant& object, void* param)
     _ASSERTE(param);
     WriteContext& context = *reinterpret_cast<WriteContext*>(param);
 
-    FILE* pFile = context.OpenFile(object.m_strGrantee);
+    FILE* pFile = context.OpenFile(Common::wstr(object.m_strGrantee));
     TextOutputInFILE out(*pFile, context.GetDDLSettings().m_LowerNames ? true : false);
     object.Write(out, context.GetDDLSettings());
 } 
@@ -335,7 +335,7 @@ void write_incopmlete_type (OraMetaDict::DbObject& object, void* param)
     _ASSERTE(param);
     WriteContext& context = *reinterpret_cast<WriteContext*>(param);
 
-    FILE* pFile = context.OpenFile(object.m_strName);
+    FILE* pFile = context.OpenFile(Common::wstr(object.m_strName));
     TextOutputInFILE out(*pFile, context.GetDDLSettings().m_LowerNames ? true : false);
 
     try {

@@ -28,19 +28,20 @@ namespace Common
     {
         CString m_strBuffer;
     public:
+        SimpleDragDataSource (const wchar_t*);
         SimpleDragDataSource (const char*);
         virtual BOOL OnRenderGlobalData (LPFORMATETC lpFormatEtc, HGLOBAL* phGlobal);
     };
 
-    class SimpleDragDataSourceExt : public SimpleDragDataSource
-    {
-        CString m_strPrivateText;
-        CLIPFORMAT m_clipFormat;
+    //class SimpleDragDataSourceExt : public SimpleDragDataSource
+    //{
+    //    CString m_strPrivateText;
+    //    CLIPFORMAT m_clipFormat;
 
-    public:
-        SimpleDragDataSourceExt (const char*, const char*, CLIPFORMAT = CF_PRIVATEFIRST);
-        virtual BOOL OnRenderGlobalData (LPFORMATETC lpFormatEtc, HGLOBAL* phGlobal);
-    };
+    //public:
+    //    SimpleDragDataSourceExt (const char*, const char*, CLIPFORMAT = CF_PRIVATEFIRST);
+    //    virtual BOOL OnRenderGlobalData (LPFORMATETC lpFormatEtc, HGLOBAL* phGlobal);
+    //};
 
 }
 

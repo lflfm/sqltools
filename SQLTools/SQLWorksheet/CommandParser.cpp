@@ -37,7 +37,7 @@
 
 #define BOOST_REGEX_NO_LIB
 #define BOOST_REGEX_STATIC_LINK
-#include <boost/regex.hpp>
+#include <boost/cregex.hpp>
 using namespace boost;
 
 #ifdef _DEBUG
@@ -259,14 +259,14 @@ void CommandParser::finalizeAndExecuteSql ()
                 && m_text.at(last_line_beg + ofs.offset) == ';')
                 {
                     string rest = m_text.substr(last_line_beg + ofs.offset);
-                    regex_t error_regex;
-                    regcomp(&error_regex, ";\\s*--.*", REG_EXTENDED);
+                    regex_tA error_regex;
+                    regcompA(&error_regex, ";\\s*--.*", REG_EXTENDED);
 
                     regmatch_t match[1];
                     memset(match, 0, sizeof(match));
                     match[0].rm_eo = rest.size(); // to
 
-                    if (!regexec(&error_regex, rest.c_str(), sizeof(match)/sizeof(match[0]), match, REG_STARTEND))
+                    if (!regexecA(&error_regex, rest.c_str(), sizeof(match)/sizeof(match[0]), match, REG_STARTEND))
                     {
                         m_performer.DoMessage(*this, "Warning: the rest of the last line after \";\" is ignored \"" + rest + "\"");
                         m_text.resize(last_line_beg + ofs.offset);
@@ -397,14 +397,14 @@ void CommandParser::GetSelectErrorPos (int error, const char* error_text, int of
     if (error == 29536) //ORA-29536: badly formed source: Encountered "\"UPDATE EMPLOYEES \"" at line 17, column 25.
     {
         const char* error_pattern = "ORA-29536.+at line ([0-9]+), column ([0-9]+).";
-        regex_t error_regex;
-        regcomp(&error_regex, error_pattern, REG_EXTENDED);
+        regex_tA error_regex;
+        regcompA(&error_regex, error_pattern, REG_EXTENDED);
 
         regmatch_t match[3];
         memset(match, 0, sizeof(match));
         match[0].rm_eo = strlen(error_text); // to
 
-        if (!regexec(&error_regex, error_text, sizeof(match)/sizeof(match[0]), match, REG_STARTEND))
+        if (!regexecA(&error_regex, error_text, sizeof(match)/sizeof(match[0]), match, REG_STARTEND))
         {
             string buff;
             
@@ -426,14 +426,14 @@ void CommandParser::GetSelectErrorPos (int error, const char* error_text, int of
     else if (error == 921) //ORA-00921: unexpected end of SQL command ORA-06512: at line 4
     {
         const char* error_pattern = "ORA-06512: +at line ([0-9]+)";
-        regex_t error_regex;
-        regcomp(&error_regex, error_pattern, REG_EXTENDED);
+        regex_tA error_regex;
+        regcompA(&error_regex, error_pattern, REG_EXTENDED);
 
         regmatch_t match[3];
         memset(match, 0, sizeof(match));
         match[0].rm_eo = strlen(error_text); // to
 
-        if (!regexec(&error_regex, error_text, sizeof(match)/sizeof(match[0]), match, REG_STARTEND))
+        if (!regexecA(&error_regex, error_text, sizeof(match)/sizeof(match[0]), match, REG_STARTEND))
         {
             string buff;
             

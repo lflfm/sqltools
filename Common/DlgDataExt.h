@@ -22,7 +22,9 @@
 
 void DDX_Check      (CDataExchange* pDX, int nIDC, bool& value);
 void DDX_Text       (CDataExchange* pDX, int nIDC, std::string& value);
+void DDX_Text       (CDataExchange* pDX, int nIDC, std::wstring& value);
 void DDV_MaxChars   (CDataExchange* pDX, const std::string& value, int nChars);
-void DDX_CBString   (CDataExchange* pDX, int nIDC, std::string& _value);
+void DDV_MaxChars   (CDataExchange* pDX, const std::wstring& value, int nChars);
+void DDX_CBString   (CDataExchange* pDX, int nIDC, std::wstring& _value);
 
 #endif//__DlgDataExt_h__

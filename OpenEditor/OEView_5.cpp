@@ -35,6 +35,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace OpenEditor;
 
+//#define ADJUST_FONT_BY_WIDEST
 
     /////////////////////////////////////////////////////////////////////////////
     // Print helpers
@@ -46,7 +47,7 @@ using namespace OpenEditor;
 
         void SetShape (const char*);
         void SetSubstVariables (int pages, const char* file);
-        void GetHeaderPart (string& dest, EPart part, int page, int width);
+        void GetHeaderPart (std::wstring& dest, EPart part, int page, int width);
         bool IsEmpty () const;
 
     private:
@@ -79,6 +80,7 @@ using namespace OpenEditor;
 
             // screen position to pixel coordinate (inline)
             int operator ()(int inx) const { return inx * m_CharSize + m_Indent; }
+            int PosToPix (int inx) const { return inx * m_CharSize + m_Indent; }
         }
         m_Rulers[2];
 
@@ -122,7 +124,7 @@ using namespace OpenEditor;
 
 BOOL COEditorView::OnPreparePrinting (CPrintInfo* pInfo)
 {
-	return DoPreparePrinting(pInfo);
+    return DoPreparePrinting(pInfo);
 }
 
     inline void HIMETRICtoLP(CDC* pDC, CPoint& pt)
@@ -162,7 +164,7 @@ void COEditorView::OnBeginPrinting (CDC* pDC, CPrintInfo* pInfo)
     pInfo->m_rectDraw.right  = pInfo->m_rectDraw.left + phsicalWidth  - rcMargins.right  - rcMargins.left;
     pInfo->m_rectDraw.bottom = pInfo->m_rectDraw.top  + phsicalHeight - rcMargins.bottom - rcMargins.top;
 
-	pDC->DPtoLP(&pInfo->m_rectDraw);
+    pDC->DPtoLP(&pInfo->m_rectDraw);
 
     const VisualAttributesSet& set = GetSettings().GetVisualAttributesSet();
     const VisualAttribute& textAttr = set.FindByName("Text");
@@ -194,7 +196,7 @@ void COEditorView::OnBeginPrinting (CDC* pDC, CPrintInfo* pInfo)
     logfont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
     logfont.lfQuality        = DEFAULT_QUALITY;
     logfont.lfPitchAndFamily = FIXED_PITCH;
-    strncpy(logfont.lfFaceName, textAttr.m_FontName.c_str(), LF_FACESIZE-1);
+    wcsncpy(logfont.lfFaceName, Common::wstr(textAttr.m_FontName).c_str(), LF_FACESIZE-1);
 
     for (int i = 0; i < 8; i++)
     {
@@ -272,8 +274,8 @@ void COEditorView::OnBeginPrinting (CDC* pDC, CPrintInfo* pInfo)
     MoveToPage(pInfo, &pages);
     pInfo->SetMaxPage(pages);
     // substitute the number of pages, the file name and others
-    pc.m_header.SetSubstVariables(pages, GetDocument()->GetTitle());
-    pc.m_footer.SetSubstVariables(pages, GetDocument()->GetTitle());
+    pc.m_header.SetSubstVariables(pages, Common::str(GetDocument()->GetTitle()).c_str());
+    pc.m_footer.SetSubstVariables(pages, Common::str(GetDocument()->GetTitle()).c_str());
 
     // 17/08/2002 bug fix, wrong print highlighting after print preview
     pc.m_highlighter = HighlighterFactory::CreateHighlighter(GetSettings().GetLanguage());
@@ -300,6 +302,57 @@ void COEditorView::OnPrepareDC (CDC*, CPrintInfo* pInfo)
             pInfo->m_bContinuePrinting = FALSE;
     }
     _OE_DEFAULT_HANDLER_;
+}
+
+
+    inline
+    int get_text_width (CDC& dc, const wchar_t* str, int len)
+    {
+        CSize sz;
+        GetTextExtentPoint32(dc.m_hDC, str, len, &sz);
+        return sz.cx;
+    }
+
+inline
+void COEditorView::TextOutToPrinter (CDC& dc, const CPoint& pt, const CSize& chSz, const wchar_t* str, int len)
+{
+    int expectedWidth =  chSz.cx * len;
+    int actualWidth = get_text_width(dc, str, len);
+    if (actualWidth - expectedWidth > chSz.cx/3 
+    || Common::is_right_to_left_lang(str[0]))
+    {
+        CRect rc; 
+        rc.top = pt.y;
+        rc.bottom = pt.y + chSz.cy - 1;
+        for (int chInx = 0; chInx < len; chInx++)
+        {
+            rc.left = pt.x + chInx * chSz.cx;
+            rc.right = pt.x + chSz.cx * (chInx + 1) - 1;
+            int charWidth = get_text_width(dc, str + chInx, 1);
+
+            if (charWidth - chSz.cx > chSz.cx / 3 
+            || Common::is_right_to_left_lang(str[chInx]))
+            {
+                CBrush* pOrgBrush = (CBrush*)dc.SelectStockObject(NULL_BRUSH);
+                CPen* pOrgdPen = dc.SelectObject(&m_paintAccessories->m_TextForegroundPen);
+                dc.Rectangle(CRect(
+                    rc.left + chSz.cx/10, rc.top + 2*chSz.cy/10, 
+                    rc.right - chSz.cx/10, rc.bottom - 2*chSz.cy/10)
+                );
+                dc.SelectObject(pOrgdPen);
+                dc.SelectObject(pOrgBrush);
+            }
+            else
+                dc.TextOut(pt.x + chInx * chSz.cx, pt.y, str + chInx, 1);
+        }
+    }
+    else if (actualWidth != expectedWidth)
+    {
+        for (int chInx = 0; chInx < len; chInx++)
+            dc.TextOut(pt.x + chInx * chSz.cx, pt.y, str + chInx, 1);
+    }
+    else
+        TextOut(dc.m_hDC, pt.x, pt.y, str, len);
 }
 
 void COEditorView::OnPrint (CDC* pDC, CPrintInfo* pInfo)
@@ -370,8 +423,8 @@ void COEditorView::OnPrint (CDC* pDC, CPrintInfo* pInfo)
                 UINT orgAlign = pDC->GetTextAlign();
 
                 char buff[80];
-                //_snprintf(buff, sizeof(buff), "%d:", pageLine+1);
-                //buff[sizeof(buff)-1] = 0;
+                //_snprintf(buff, sizeof(buff)/sizeof(buff[0]), "%d:", pageLine+1);
+                //buff[sizeof(buff)/sizeof(buff[0])-1] = 0;
                 itoa(pageLine+1, buff, 10);
                 
                 if (!pc.m_blackAndWhite) 
@@ -379,14 +432,16 @@ void COEditorView::OnPrint (CDC* pDC, CPrintInfo* pInfo)
 
                 pDC->SetTextAlign(TA_RIGHT);
                 pDC->SelectObject(&pc.m_Fonts[0]);
-                pDC->TextOut(pc.m_Rulers[0](0/*-1*/)-pc.m_Rulers[0].m_CharSize/2, pc.m_Rulers[1](pageLine), buff, strlen(buff));
+                TextOutA(pDC->m_hDC, pc.m_Rulers[0](0/*-1*/)-pc.m_Rulers[0].m_CharSize/2, pc.m_Rulers[1](pageLine), buff, strlen(buff));
 
                 pDC->SetTextAlign(orgAlign);
             }
 
-            const char* currentLine; 
-            int currentLineLength;
-            GetLine(pc.m_cacheLine, currentLine, currentLineLength);
+            OEStringW lineBuff;
+            GetLineW(pc.m_cacheLine, lineBuff);
+            const wchar_t* currentLine = lineBuff.data(); 
+            int currentLineLength = lineBuff.length();
+
             tokenizer.StartScan(currentLine, currentLineLength);
 
             if (phighlighter)
@@ -398,7 +453,7 @@ void COEditorView::OnPrint (CDC* pDC, CPrintInfo* pInfo)
             while (!tokenizer.Eol())
             {
                 int pos, len;
-                const char* str;
+                const wchar_t* str;
 
                 tokenizer.GetCurentWord(str, pos, len);
 
@@ -442,7 +497,9 @@ void COEditorView::OnPrint (CDC* pDC, CPrintInfo* pInfo)
                     if (len > m_Rulers[0].m_Count+1)
                         len = m_Rulers[0].m_Count+1;
 
-                    pDC->TextOut(pc.m_Rulers[0](pos), pc.m_Rulers[1](pageLine), str, len);
+                    //pDC->TextOut(pc.m_Rulers[0](pos), pc.m_Rulers[1](pageLine), str, len);
+                    TextOutToPrinter(*pDC, CPoint(pc.m_Rulers[0](pos), pc.m_Rulers[1](pageLine)), 
+                        CSize(pc.m_Rulers[0].m_CharSize, pc.m_Rulers[1].m_CharSize), str, len);
                 }
 
                 tokenizer.Next();
@@ -500,15 +557,17 @@ void COEditorView::MoveToPage (CPrintInfo* pInfo, int* pMaxPage)
     while (pc.m_cacheLine < lineCount 
     && pc.m_cachePage < static_cast<int>(pInfo->m_nCurPage))
     {
-        const char* currentLine; 
-        int currentLineLength;
-        GetLine(pc.m_cacheLine, currentLine, currentLineLength);
+        OEStringW lineBuff;
+        GetLineW(pc.m_cacheLine, lineBuff);
+        const wchar_t* currentLine = lineBuff.data(); 
+        int currentLineLength = lineBuff.length();
+
         tokenizer.StartScan(currentLine, currentLineLength);
 
         while (!tokenizer.Eol())
         {
             int pos, len;
-            const char* str;
+            const wchar_t* str;
 
             tokenizer.GetCurentWord(str, pos, len);
 
@@ -554,21 +613,21 @@ void COEditorView::PrintHeader (CDC* pDC, CPrintInfo* pInfo)
 
     if (pc.m_hasHeader)
     {
-        string text;
+        std::wstring text;
         UINT align = pDC->GetTextAlign();
 
         int width = pc.m_Rulers[0].m_Count + pc.m_lineNumbersColumnWidth;
         pc.m_header.GetHeaderPart(text, PrintHeader::epLeft, pInfo->m_nCurPage, width);
         pDC->SetTextAlign(TA_LEFT);
-        pDC->TextOut(pc.m_Rulers[0](-pc.m_lineNumbersColumnWidth), pc.m_Rulers[1](-2), text.c_str(), text.size());
+        TextOut(pDC->m_hDC, pc.m_Rulers[0](-pc.m_lineNumbersColumnWidth), pc.m_Rulers[1](-2), text.c_str(), text.size());
 
         pc.m_header.GetHeaderPart(text, PrintHeader::epCenter, pInfo->m_nCurPage, width);
         pDC->SetTextAlign(TA_CENTER);
-        pDC->TextOut(pc.m_Rulers[0](width/2), pc.m_Rulers[1](-2), text.c_str(), text.size());
+        TextOut(pDC->m_hDC, pc.m_Rulers[0](width/2), pc.m_Rulers[1](-2), text.c_str(), text.size());
 
         pc.m_header.GetHeaderPart(text, PrintHeader::epRight, pInfo->m_nCurPage, width);
         pDC->SetTextAlign(TA_RIGHT);
-        pDC->TextOut(pc.m_Rulers[0](pc.m_Rulers[0].m_Count), pc.m_Rulers[1](-2), text.c_str(), text.size());
+        TextOut(pDC->m_hDC, pc.m_Rulers[0](pc.m_Rulers[0].m_Count), pc.m_Rulers[1](-2), text.c_str(), text.size());
 
         pDC->SetTextAlign(align);
     }
@@ -580,20 +639,20 @@ void COEditorView::PrintFooter (CDC* pDC, CPrintInfo* pInfo)
 
     if (pc.m_hasFooter)
     {
-        string text;
+        std::wstring text;
         UINT align = pDC->GetTextAlign();
 
         pc.m_footer.GetHeaderPart(text, PrintHeader::epLeft, pInfo->m_nCurPage, pc.m_Rulers[1].m_Count);
         pDC->SetTextAlign(TA_LEFT);
-        pDC->TextOut(pc.m_Rulers[0](0), pc.m_Rulers[1](pc.m_Rulers[1].m_Count+1), text.c_str(), text.size());
+        TextOut(pDC->m_hDC, pc.m_Rulers[0](0), pc.m_Rulers[1](pc.m_Rulers[1].m_Count+1), text.c_str(), text.size());
 
         pc.m_footer.GetHeaderPart(text, PrintHeader::epCenter, pInfo->m_nCurPage, pc.m_Rulers[1].m_Count);
         pDC->SetTextAlign(TA_CENTER);
-        pDC->TextOut(pc.m_Rulers[0](pc.m_Rulers[0].m_Count/2), pc.m_Rulers[1](pc.m_Rulers[1].m_Count+1), text.c_str(), text.size());
+        TextOut(pDC->m_hDC, pc.m_Rulers[0](pc.m_Rulers[0].m_Count/2), pc.m_Rulers[1](pc.m_Rulers[1].m_Count+1), text.c_str(), text.size());
 
         pc.m_footer.GetHeaderPart(text, PrintHeader::epRight, pInfo->m_nCurPage, pc.m_Rulers[1].m_Count);
         pDC->SetTextAlign(TA_RIGHT);
-        pDC->TextOut(pc.m_Rulers[0](pc.m_Rulers[0].m_Count), pc.m_Rulers[1](pc.m_Rulers[1].m_Count+1), text.c_str(), text.size());
+        TextOut(pDC->m_hDC, pc.m_Rulers[0](pc.m_Rulers[0].m_Count), pc.m_Rulers[1](pc.m_Rulers[1].m_Count+1), text.c_str(), text.size());
 
         pDC->SetTextAlign(align);
     }
@@ -603,17 +662,17 @@ void COEditorView::GetMargins (CRect& rc) const
 {
     if (!GetPrintMarginMeasurement()) // millimeters
     {
-	    rc.left   = (LONG)(GetPrintLeftMargin()   * 100);
-	    rc.right  = (LONG)(GetPrintRightMargin()  * 100);
-	    rc.top    = (LONG)(GetPrintTopMargin()    * 100);
-	    rc.bottom = (LONG)(GetPrintBottomMargin() * 100);
+        rc.left   = (LONG)(GetPrintLeftMargin()   * 100);
+        rc.right  = (LONG)(GetPrintRightMargin()  * 100);
+        rc.top    = (LONG)(GetPrintTopMargin()    * 100);
+        rc.bottom = (LONG)(GetPrintBottomMargin() * 100);
     }
     else // U.S. system
     {
-	    rc.left   = (LONG)(GetPrintLeftMargin()   * 25.2 * 100);
-	    rc.right  = (LONG)(GetPrintRightMargin()  * 25.2 * 100);
-	    rc.top    = (LONG)(GetPrintTopMargin()    * 25.2 * 100);
-	    rc.bottom = (LONG)(GetPrintBottomMargin() * 25.2 * 100);
+        rc.left   = (LONG)(GetPrintLeftMargin()   * 25.2 * 100);
+        rc.right  = (LONG)(GetPrintRightMargin()  * 25.2 * 100);
+        rc.top    = (LONG)(GetPrintTopMargin()    * 25.2 * 100);
+        rc.bottom = (LONG)(GetPrintBottomMargin() * 25.2 * 100);
     }
 }
 
@@ -637,24 +696,24 @@ void PrintHeader::SetShape (const char* shape)
 
 void PrintHeader::SetSubstVariables (int pages, const char* file)
 {
-    char buffer[80];
+    TCHAR buffer[80];
     // the file name
     m_substMap['F'] = file;
-    itoa(pages, buffer, 10);
+    _itow(pages, buffer, 10);
     // the number of pages
-    m_substMap['P'] = buffer;
+    m_substMap['P'] = Common::str(buffer);
     // local format time
-    GetTimeFormat(LOCALE_USER_DEFAULT, 0, 0, 0, buffer, sizeof(buffer));
-    m_substMap['t'] = buffer;
+    GetTimeFormat(LOCALE_USER_DEFAULT, 0, 0, 0, buffer, sizeof(buffer)/sizeof(buffer[0]));
+    m_substMap['t'] = Common::str(buffer);
     // 24H format time
-    GetTimeFormat(LOCALE_USER_DEFAULT, TIME_FORCE24HOURFORMAT, 0, 0, buffer, sizeof(buffer));
-    m_substMap['T'] = buffer;
+    GetTimeFormat(LOCALE_USER_DEFAULT, TIME_FORCE24HOURFORMAT, 0, 0, buffer, sizeof(buffer)/sizeof(buffer[0]));
+    m_substMap['T'] = Common::str(buffer);
     // short format date
-    GetDateFormat(LOCALE_USER_DEFAULT, DATE_SHORTDATE, 0, 0,  buffer, sizeof(buffer));
-    m_substMap['d'] = buffer;
+    GetDateFormat(LOCALE_USER_DEFAULT, DATE_SHORTDATE, 0, 0,  buffer, sizeof(buffer)/sizeof(buffer[0]));
+    m_substMap['d'] = Common::str(buffer);
     // long format date
-    GetDateFormat(LOCALE_USER_DEFAULT, DATE_LONGDATE, 0, 0,  buffer, sizeof(buffer));
-    m_substMap['D'] = buffer;
+    GetDateFormat(LOCALE_USER_DEFAULT, DATE_LONGDATE, 0, 0,  buffer, sizeof(buffer)/sizeof(buffer[0]));
+    m_substMap['D'] = Common::str(buffer);
 
     // pre-print substitution
     for (int i = 0; i < 3; i++)
@@ -672,7 +731,7 @@ bool PrintHeader::IsEmpty () const
     return retVal;
 }
 
-void PrintHeader::GetHeaderPart (string& dest, EPart part, int page, int width)
+void PrintHeader::GetHeaderPart (std::wstring& text, EPart part, int page, int width)
 {
     // count existing parts
     int divisor = 0;
@@ -693,22 +752,29 @@ void PrintHeader::GetHeaderPart (string& dest, EPart part, int page, int width)
             itoa(page, pageStr, 10);
             m_substMap['p'] = pageStr;
 
+            string buff;
+
             // if non complite then substitute a page number
             if (!m_part[part].comleted)
-                substitute(m_part[part].text, dest, dummy);
+                substitute(m_part[part].text, buff, dummy);
             else
-                dest = m_part[part].text;
+                buff = m_part[part].text;
 
-            if (dest.size() > partWidth)
+            std::wstring bufferW = Common::wstr(buff);
+
+            if (bufferW.size() > partWidth)
             {
-                dest.resize(partWidth - 3);
-                dest.resize(partWidth, '.');
+                bufferW.resize(partWidth - 3);
+                bufferW.resize(partWidth, '.');
 
                 if (m_part[part].comleted)
-                    m_part[part].text = dest;
+                    m_part[part].text = Common::str(bufferW);
             }
+
+            text = bufferW;
         }
     }
+
 }
 
 void PrintHeader::substitute (const string& shape, string& dest, bool& comleted)

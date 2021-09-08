@@ -29,6 +29,7 @@
 #include "ExtactSchemaMainPage.h"
 #include "OCI8/BCursor.h"
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -93,7 +94,7 @@ void CExtactSchemaMainPage::SetStatusText (const char* szMessage)
 
     if (hStatusWnd) 
     {
-        ::SetWindowText(hStatusWnd, szMessage);
+        ::SetWindowText(hStatusWnd, Common::wstr(szMessage).c_str());
         UpdateWindow();
     }
 }
@@ -107,7 +108,7 @@ void CExtactSchemaMainPage::ShowFullPath ()
 void CExtactSchemaMainPage::OnSelectFolder() 
 {
     UpdateData();
-    CDirSelectDlg dirDlg("Put In", this, m_DDLSettings.m_strFolder.c_str());
+    CDirSelectDlg dirDlg(L"Put In", this, m_DDLSettings.m_strFolder.c_str());
 
     if (dirDlg.DoModal() == IDOK) 
     {
@@ -134,6 +135,8 @@ void CExtactSchemaMainPage::OnSelectFolder()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor curs(connect, "SELECT tablespace_name FROM user_tablespaces ORDER BY 1");
                 curs.Execute();
                 while (curs.Fetch())
@@ -160,8 +163,9 @@ void CExtactSchemaMainPage::OnSelectFolder()
 
                 for (; it != m_tablespaces.end(); ++it)
                 {
-                    ::SendMessage(m_hwndTableTablespace, CB_ADDSTRING, 0, (LPARAM)it->c_str());
-                    ::SendMessage(m_hwndIndexTablespace, CB_ADDSTRING, 0, (LPARAM)it->c_str());
+                    wstring buff = Common::wstr(*it);
+                    ::SendMessage(m_hwndTableTablespace, CB_ADDSTRING, 0, (LPARAM)buff.c_str());
+                    ::SendMessage(m_hwndIndexTablespace, CB_ADDSTRING, 0, (LPARAM)buff.c_str());
                 }
 
                 ::EnableWindow(::GetDlgItem(::GetParent(::GetParent(m_hwndTableTablespace)), IDOK), TRUE);
@@ -177,7 +181,7 @@ BOOL CExtactSchemaMainPage::OnInitDialog()
 
         CWaitCursor wait;
 
-	    AppRestoreHistory(m_wndFolder, "ExtactSchemaDDL", "FolderHistory",  7);
+	    AppRestoreHistory(m_wndFolder, L"ExtactSchemaDDL", L"FolderHistory",  7);
         ShowFullPath();
 	
         BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_PopulateTablespaceList(m_wndTableTablespace, m_wndIndexTablespace)));
@@ -280,8 +284,8 @@ void CExtactSchemaMainPage::UpdateDataAndSaveHistory ()
 {
     UpdateData();
 
-    AppSaveHistory(m_wndFolder, "ExtactSchemaDDL", "FolderHistory",  7);
-    AppRestoreHistory(m_wndFolder, "ExtactSchemaDDL", "FolderHistory",  7);
+    AppSaveHistory(m_wndFolder, L"ExtactSchemaDDL", L"FolderHistory",  7);
+    AppRestoreHistory(m_wndFolder, L"ExtactSchemaDDL", L"FolderHistory",  7);
 
     CPropertyPage::OnOK();
 }

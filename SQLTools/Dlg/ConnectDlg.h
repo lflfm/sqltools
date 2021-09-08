@@ -28,23 +28,24 @@
 
     class ConnectInfoAdapter : public Common::ListCtrlDataProvider, Common::ListCtrlDataProviderHelper
     {
-        mutable char m_buffer[128];
+        mutable wchar_t m_buffer[128];
+        const int m_buff_size = sizeof(m_buffer)/sizeof(m_buffer[0]);
 
-        const char* getAliasStr (const ConnectEntry& entry) const { 
+        const wchar_t* getAliasStr (const ConnectEntry& entry) const { 
             if (entry.GetDirect()) {
-                strncpy(m_buffer, entry.GetSid().c_str(), sizeof m_buffer);
-                strncat(m_buffer, ":"         , sizeof m_buffer);
-                strncat(m_buffer, entry.GetHost().c_str(), sizeof m_buffer);
-                m_buffer[sizeof(m_buffer)-1] = 0;
+                wcsncpy(m_buffer, entry.GetSid().c_str(), m_buff_size);
+                wcsncat(m_buffer, L":", m_buff_size);
+                wcsncat(m_buffer, entry.GetHost().c_str(), m_buff_size);
+                m_buffer[m_buff_size-1] = 0;
                 return m_buffer; 
             }
-            return entry.GetAlias().c_str();
+            return getStr(entry.GetAlias());
         }
 
         static int compAliases (const ConnectEntry& entry1, const ConnectEntry& entry2) { 
             if (int r = comp(entry1.GetDirect() ? entry1.GetSid() : entry1.GetAlias(), entry2.GetDirect() ? entry2.GetSid() : entry2.GetAlias()))
                 return r;
-            return comp(entry1.GetDirect() ? entry1.GetHost() : string(), entry2.GetDirect() ? entry2.GetHost() : string());
+            return comp(entry1.GetDirect() ? entry1.GetHost() : std::wstring(), entry2.GetDirect() ? entry2.GetHost() : std::wstring());
         }
 
         const std::vector<ConnectEntry>& m_entries;
@@ -69,18 +70,18 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case 0: return "Tag";       
-            case 1: return "User";       
-            case 2: return "Alias";
-            case 3: return "Count";      
-            case 4: return "Last usage";    
+            case 0: return L"Tag";       
+            case 1: return L"User";       
+            case 2: return L"Alias";
+            case 3: return L"Count";      
+            case 4: return L"Last usage";    
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case 0: return getStr(data(row).GetTag());
             case 1: return getStr(data(row).GetUser());
@@ -88,7 +89,7 @@
             case 3: return getStr(data(row).GetUsageCounter());
             case 4: return getStrTimeT(data(row).GetLastUsage());
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {
@@ -117,7 +118,7 @@
 
 class CConnectDlg : public CDialog
 {
-    static std::string m_masterPassword;
+    static std::wstring m_masterPassword;
     static ConnectEntry m_last;
     static int m_sortColumn;
     static Common::ListCtrlManager::ESortDir m_sortDirection;
@@ -134,8 +135,8 @@ class CConnectDlg : public CDialog
     void setupProfiles ();
     void writeData ();
     void normalizeCurrent ();
-    bool doTest (bool showMessage, std::string& error);
-    void getConnectionDisplayName (std::string&);
+    bool doTest (bool showMessage, std::wstring& error);
+    void getConnectionDisplayName (std::wstring&);
 
     void setupConnectionType ();
 

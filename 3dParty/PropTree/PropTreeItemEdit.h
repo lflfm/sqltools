@@ -40,12 +40,12 @@ public:
 	virtual void DrawAttribute(CDC* pDC, const RECT& rc);
 
 	// Retrieve the item's attribute value
-	LPCSTR GetItemValue () const;
+	LPCTSTR GetItemValue () const;
 	void GetItemValue (int&) const;
 	void GetItemValue (double&) const;
 
 	// Set the item's attribute value
-	void SetItemValue (LPCSTR);
+	void SetItemValue (LPCTSTR);
 	void SetItemValue (int);
 	void SetItemValue (double);
 

@@ -1,5 +1,5 @@
 /* 
-	SQLTools is a tool for Oracle database developers and DBAs.
+    SQLTools is a tool for Oracle database developers and DBAs.
     Copyright (C) 1997-2015 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
@@ -24,9 +24,9 @@
 #include "stdafx.h"
 #include <map>
 #include "OpenEditor/OEHelpers.h"
-#include <COMMON/ExceptionHelper.h>
-#include <COMMON/PlSqlParser.h>
-#include <COMMON/StrHelpers.h>
+#include "ExceptionHelper.h"
+#include "PlSqlParser.h"
+#include "StrHelpers.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,10 +39,10 @@ namespace Common
 namespace PlsSql
 {
     using std::map;
-	OpenEditor::DelimitersMap m_Delimiters(" \t\'\"\\()[]{}+-*/.,!?;:=><%|@&^");
+    OpenEditor::DelimitersMap m_Delimiters(" \t\'\"\\()[]{}+-*/.,!?;:=><%|@&^");
 
 PlSqlParser::PlSqlParser (SyntaxAnalyser* analyzer, TokenMapPtr tokenMap, ReservedPtr reserved)
-	: m_analyzer(analyzer),
+    : m_analyzer(analyzer),
     m_tokenMap(tokenMap),
     m_reserved(reserved),
     m_sequenceOfLength(0)
@@ -64,49 +64,51 @@ void PlSqlParser::SetTokenMap (TokenMapPtr tokenMap)
 
 void PlSqlParser::PutEOF (int line)
 {
-	Token token;
-	token = etEOF;
+    Token token;
+    token = etEOF;
     token.line = line;
     token.offset = 0;
-	token.length = 0;
-	m_analyzer->PutToken(token);
+    token.length = 0;
+    m_analyzer->PutToken(token);
 }
 
-bool PlSqlParser::PutLine (int line, const char* str, int length)
+bool PlSqlParser::PutLine (int line, const wchar_t* str, int length)
 {
     //TRACE("PutLine: %4d:%s\n", line+1, string(str, length).c_str());
 
     Token token;
 
-	for (int offset = 0; offset < length; )
+    for (int offset = 0; offset < length; )
     {
         token = etUNKNOWN;
         token.line = line;
         token.offset = static_cast<Token::size_pos>(offset);
-		token.length = 0;
+        token.length = 0;
         token.reserved = 0;
+        token.value.clear();
 
-        string buffer;
+        wstring buffer;
 
         if (m_sequenceOf == eNone)
         {
             // skip white space
-            for (; offset < length && isspace(str[offset]); offset++)
+            for (; offset < length && iswspace(str[offset]); offset++)
                 {}
 
             // check EOL
             if (!(offset < length))
                 break;
 
-			token.offset = static_cast<Token::size_pos>(offset);
+            token.offset = static_cast<Token::size_pos>(offset);
             // read string token
             if (m_Delimiters[str[offset]])
                 buffer += str[offset++];
             else
                 for (; offset < length && !m_Delimiters[str[offset]]; offset++)
-                    buffer += toupper(str[offset]);
+                    buffer += towupper(str[offset]);
 
-			token.length = static_cast<Token::size_pos>(buffer.length());
+            token.length = static_cast<Token::size_pos>(buffer.length());
+            token.value = buffer;
         }
         else
         {
@@ -114,9 +116,10 @@ bool PlSqlParser::PutLine (int line, const char* str, int length)
             {
             case eEndLineComment:
                 m_sequenceOfLength += length - offset;
+                m_sequenceToken.value = wstring(str + m_sequenceToken.offset, m_sequenceOfLength);
                 offset = length;
                 m_sequenceOf = eNone;
-				token = m_sequenceToken;
+                token = m_sequenceToken;
                 break;
             case eQuotedString:
                 for (; offset < length; offset++)
@@ -126,7 +129,7 @@ bool PlSqlParser::PutLine (int line, const char* str, int length)
                     {
                         offset++;
                         m_sequenceOf = eNone;
-						token = m_sequenceToken;
+                        token = m_sequenceToken;
                         break;
                     }
                 }
@@ -139,7 +142,7 @@ bool PlSqlParser::PutLine (int line, const char* str, int length)
                     {
                         offset++;
                         m_sequenceOf = eNone;
-						token = m_sequenceToken;
+                        token = m_sequenceToken;
                         break;
                     }
                 }
@@ -148,11 +151,13 @@ bool PlSqlParser::PutLine (int line, const char* str, int length)
                 for (; offset < length; offset++)
                 {
                     m_sequenceOfLength++;
+                    m_sequenceToken.value += str[offset];
+
                     if (offset && str[offset-1] == '*' && str[offset] == '/')
                     {
                         offset++;
                         m_sequenceOf = eNone;
-						token = m_sequenceToken;
+                        token = m_sequenceToken;
                         break;
                     }
                 }
@@ -170,53 +175,56 @@ bool PlSqlParser::PutLine (int line, const char* str, int length)
 
         if (token == etUNKNOWN && !buffer.empty())
         {
-            // TODO: merge m_tokenMap and m_reservedSet
             Reserved::const_iterator resIt = m_reserved->find(buffer);
             token.reserved = (resIt != m_reserved->end()) ? resIt->second : 0;
-            std::map<string, int>::const_iterator it = m_tokenMap->find(buffer);
+            std::map<wstring, int>::const_iterator it = m_tokenMap->find(buffer);
 
             if (it != m_tokenMap->end())
             {
-				token = (EToken)it->second;
+                token = (EToken)it->second;
 
                 switch (token)
                 {
                 case etQUOTE:
                     m_sequenceOf = eQuotedString; // start string accumulation
-					m_sequenceToken = etQUOTED_STRING;
-					m_sequenceToken.line = token.line;
-					m_sequenceToken.offset = token.offset;
-					m_sequenceToken.length = token.length;
+                    m_sequenceToken = etQUOTED_STRING;
+                    m_sequenceToken.line = token.line;
+                    m_sequenceToken.offset = token.offset;
+                    m_sequenceToken.length = token.length;
+                    m_sequenceToken.value.clear();
                     m_sequenceOfLength = 1;
                     break;
                 case etDOUBLE_QUOTE:
                     m_sequenceOf = eDblQuotedString; // start string accumulation
-					m_sequenceToken = etDOUBLE_QUOTED_STRING;
-					m_sequenceToken.line = token.line;
-					m_sequenceToken.offset = token.offset;
-					m_sequenceToken.length = token.length;
+                    m_sequenceToken = etDOUBLE_QUOTED_STRING;
+                    m_sequenceToken.line = token.line;
+                    m_sequenceToken.offset = token.offset;
+                    m_sequenceToken.length = token.length;
+                    m_sequenceToken.value.clear();
                     m_sequenceOfLength = 1;
                     break;
                 case etMINUS:
-                    if (str[offset] == '-')
+                    if (offset < length && str[offset] == '-')
                     {
                         m_sequenceOf = eEndLineComment; // skip line remainer
-						m_sequenceToken = etCOMMENT;
-						m_sequenceToken.line = token.line;
-						m_sequenceToken.offset = token.offset;
-						m_sequenceToken.length = token.length;
+                        m_sequenceToken = etCOMMENT;
+                        m_sequenceToken.line = token.line;
+                        m_sequenceToken.offset = token.offset;
+                        m_sequenceToken.length = token.length;
+                        m_sequenceToken.value.clear();
                         m_sequenceOfLength = 2;
                         offset++;
                     }
                     break;
                 case etSLASH:
-                    if (str[offset] == '*')
+                    if (offset < length && str[offset] == '*')
                     {
                         m_sequenceOf = eComment; // skip comment
-						m_sequenceToken = etCOMMENT;
-						m_sequenceToken.line = token.line;
-						m_sequenceToken.offset = token.offset;
-						m_sequenceToken.length = token.length;
+                        m_sequenceToken = etCOMMENT;
+                        m_sequenceToken.line = token.line;
+                        m_sequenceToken.offset = token.offset;
+                        m_sequenceToken.length = token.length;
+                        m_sequenceToken.value = L"/*";
                         m_sequenceOfLength = 2;
                         offset++;
                     }
@@ -235,23 +243,25 @@ bool PlSqlParser::PutLine (int line, const char* str, int length)
             seg(5,2)   1,0
             */
             if (token == etSLASH 
-            && Common::is_blank_line(str,  token.offset)
-            && Common::is_blank_line(str + token.offset + token.length, length - token.offset - token.length))
+            && is_blank_line(str,  token.offset)
+            && is_blank_line(str + token.offset + token.length, length - token.offset - token.length))
                 token = etEOS;
-			m_analyzer->PutToken(token);
+            m_analyzer->PutToken(token);
         }
     }
 
     if (m_sequenceOf == eEndLineComment)
         m_sequenceOf = eNone;
-	
+    else if (m_sequenceOf == eComment)
+        m_sequenceToken.value += '\n';
+    
     if (m_sequenceOf == eNone)
     {
         token = etEOL;
-	    token.line = line;
-	    token.offset = static_cast<Token::size_pos>(length);
-	    m_sequenceToken.length = 0;
-	    m_analyzer->PutToken(token);
+        token.line = line;
+        token.offset = static_cast<Token::size_pos>(length);
+        m_sequenceToken.length = 0;
+        m_analyzer->PutToken(token);
     }
 
     return true;

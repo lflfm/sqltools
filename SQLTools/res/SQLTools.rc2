@@ -13,7 +13,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "OpenEditor\OpenEditorInc.rc"
 #include "RES\VersionInfo.rc"
-#include "Common\ManagedListCtrlFilterDlg.rc"
 #include "PropTree.rc"
 
 #ifndef NOMANIFEST

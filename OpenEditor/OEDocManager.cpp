@@ -32,6 +32,7 @@
 #include "OpenEditor/OEDocument.h"
 #include "OpenEditor/OENewFileDlg.h"
 #include <Common/AppUtilities.h>
+#include <Common/MyUtf.h>
 #include "OpenEditor/RecentFileList.h"
 #include "OpenEditor/OEWorkspaceManager.h"
 
@@ -82,13 +83,13 @@ bool convert_extensions (const string& extensions, string& ofn_extensions, const
 }
 
 static 
-void make_filter (CString& filter, OPENFILENAME& ofn, const char* def_ext)
+void make_filter (CString& filter, OPENFILENAME& ofn, LPCWSTR def_ext)
 {
-	// append the "*.*" all files filter
-	filter += "All Files (*.*)";
-	filter += (TCHAR)'\0';   // next string please
-	filter += _T("*.*");
-	filter += (TCHAR)'\0';   // last string
+    // append the "*.*" all files filter
+    filter += "All Files (*.*)";
+    filter += (WCHAR)'\0';   // next string please
+    filter += _T("*.*");
+    filter += (WCHAR)'\0';   // last string
     ofn.nFilterIndex = 1;
 
     const SettingsManager& settingMgrl = COEDocument::GetSettingsManager();
@@ -100,7 +101,7 @@ void make_filter (CString& filter, OPENFILENAME& ofn, const char* def_ext)
 
         string ofn_extensions;
         
-        if (convert_extensions(extensions, ofn_extensions, def_ext))
+        if (convert_extensions(extensions, ofn_extensions, Common::str(def_ext).c_str()))
             ofn.nFilterIndex = i + 2; // this index is 1 based + 1 for "All files"
 
         filter += name.c_str();
@@ -113,7 +114,7 @@ void make_filter (CString& filter, OPENFILENAME& ofn, const char* def_ext)
     }
 
     filter += '\0'; // close
-	ofn.lpstrFilter = filter;
+    ofn.lpstrFilter = filter;
 }
 
 IMPLEMENT_DYNAMIC(COEDocManager, CDocManager)
@@ -124,12 +125,12 @@ COEDocManager::COEDocManager ()
 }
 
 BOOL COEDocManager::doPromptFileName (
-    LPCSTR fromDir, CString& fileName, UINT nIDSTitle, DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* /*pTemplate*/
+    LPCWSTR fromDir, CString& fileName, UINT nIDSTitle, DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* /*pTemplate*/
 )
 {
     // it would be better to append a class default extension (for example .sql for pl/sql class)
     // but it's not available right here so extract an extension from fileName and use it as default
-    LPCSTR defExt = ::PathFindExtension(fileName);
+    LPCWSTR defExt = ::PathFindExtension(fileName);
     if (defExt && *defExt == '.') defExt++;
 
    CFileDialog dlgFile(bOpenFileDialog, NULL, NULL,
@@ -137,15 +138,15 @@ BOOL COEDocManager::doPromptFileName (
             | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT/* | OFN_EXPLORER*/ | OFN_ENABLESIZING | OFN_NOCHANGEDIR,
         NULL, NULL, 0);
 
-	CString title;
-	VERIFY(title.LoadString(nIDSTitle));
+    CString title;
+    VERIFY(title.LoadString(nIDSTitle));
 
-	dlgFile.m_ofn.Flags |= lFlags;
+    dlgFile.m_ofn.Flags |= lFlags;
 
-	CString strFilter;
+    CString strFilter;
     make_filter(strFilter, dlgFile.m_ofn, defExt);
 
-	dlgFile.m_ofn.lpstrTitle = title;
+    dlgFile.m_ofn.lpstrTitle = title;
     
     if (bOpenFileDialog)
         dlgFile.m_ofn.nFilterIndex = m_nFilterIndex;
@@ -157,9 +158,9 @@ BOOL COEDocManager::doPromptFileName (
 #define PATH_BUFFER 64*1024-1
 #endif
     dlgFile.m_ofn.nMaxFile = PATH_BUFFER;
-	dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(dlgFile.m_ofn.nMaxFile);
+    dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(dlgFile.m_ofn.nMaxFile);
     //dlgFile.m_ofn.lpstrFile[0] = 0; // 26.05.2003 bug fix, no file name on "Save As" or "Save" for a new file
-	
+    
     // overwrite initial dir
     dlgFile.m_ofn.lpstrInitialDir = fromDir;
 
@@ -168,9 +169,9 @@ BOOL COEDocManager::doPromptFileName (
     if (bOpenFileDialog)
         m_nFilterIndex = dlgFile.m_ofn.nFilterIndex;
 
-	fileName.ReleaseBuffer();
+    fileName.ReleaseBuffer();
 
-	return nResult == IDOK;
+    return nResult == IDOK;
 }
 
 BOOL COEDocManager::DoPromptFileName (
@@ -180,28 +181,29 @@ BOOL COEDocManager::DoPromptFileName (
     return doPromptFileName(NULL, fileName, nIDSTitle, lFlags, bOpenFileDialog, pTemplate);
 }
 
-void COEDocManager::doFileOpen (LPCSTR initialDir)
+void COEDocManager::doFileOpen (LPCWSTR initialDir)
 {
-	// prompt the user (with all document templates)
-	CString newName;
-	
+    // prompt the user (with all document templates)
+    CString newName;
+    
     if (!doPromptFileName(initialDir, newName, AFX_IDS_OPENFILE, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, TRUE, NULL))
-		return; // open cancelled
+        return; // open cancelled
 
-    const char* pszBuffer = newName.LockBuffer();
-    const char* pszName = strchr(pszBuffer, 0);
+    // open multiple files separated by 0
+    LPCWSTR pszBuffer = newName.LockBuffer();
+    LPCWSTR pszName = _tcschr(pszBuffer, 0);
   
     _ASSERTE(pszName);
 
     if (*(++pszName) == 0)
-	    AfxGetApp()->OpenDocumentFile(newName);
+        AfxGetApp()->OpenDocumentFile(newName);
     else 
     {
         do 
         {
             CString strFileName(pszBuffer);
-   	        OpenDocumentFile(strFileName + '\\' + pszName);
-            pszName = strchr(pszName, 0);
+            OpenDocumentFile(strFileName + '\\' + pszName);
+            pszName = wcschr(pszName, 0);
         } 
         while (pszName && (*(++pszName) != 0));
     }
@@ -215,7 +217,7 @@ void COEDocManager::OnFileOpen ()
     doFileOpen(NULL);
 }
 
-CDocument* COEDocManager::OpenDocumentFile (LPCTSTR lpszPath)
+CDocument* COEDocManager::OpenDocumentFile (LPCWSTR lpszPath)
 {
     if (!(!lpszPath || ::PathFileExists(lpszPath))) // added to fix not removing dead entries from recent file list
         return NULL;
@@ -223,14 +225,14 @@ CDocument* COEDocManager::OpenDocumentFile (LPCTSTR lpszPath)
     if (lpszPath
     && !Common::AppIsFolder(lpszPath, false))
     {
-        if (const char* ext = ::PathFindExtension(lpszPath))
+        if (LPCWSTR ext = ::PathFindExtension(lpszPath))
         {
-            if (!stricmp(OEWorkspaceManager::Get().GetWorkspaceExtension(), ext))
+            if (!_wcsicmp(OEWorkspaceManager::Get().GetWorkspaceExtension(), ext))
             {
                 OEWorkspaceManager::Get().WorkspaceOpen(lpszPath, false);
                 return NULL;
             }
-            else if (!stricmp(OEWorkspaceManager::Get().GetSnapshotExtension(), ext))
+            else if (!_wcsicmp(OEWorkspaceManager::Get().GetSnapshotExtension(), ext))
             {
                 OEWorkspaceManager::Get().WorkspaceOpen(lpszPath, true);
                 return NULL;
@@ -246,42 +248,42 @@ CDocument* COEDocManager::OpenDocumentFile (LPCTSTR lpszPath)
 
 BOOL COEDocManager::SaveAllModified ()
 {
-    AfxMessageBox("COEDocManager::SaveAllModified is obsolete. \n\nPlease notify the developer!", MB_OK|MB_ICONERROR);
+    AfxMessageBox(L"COEDocManager::SaveAllModified is obsolete. \n\nPlease notify the developer!", MB_OK|MB_ICONERROR);
     return FALSE;
 }
 
 BOOL COEDocManager::SaveAllModified (bool skipNew, bool saveSilently, bool canUseWorksapce, bool onExit)
 {
-	POSITION pos = m_templateList.GetHeadPosition();
-	while (pos != NULL)
-	{
-		CDocTemplate* pTemplate = (CDocTemplate*)m_templateList.GetNext(pos);
-		ASSERT_KINDOF(CDocTemplate, pTemplate);
+    POSITION pos = m_templateList.GetHeadPosition();
+    while (pos != NULL)
+    {
+        CDocTemplate* pTemplate = (CDocTemplate*)m_templateList.GetNext(pos);
+        ASSERT_KINDOF(CDocTemplate, pTemplate);
 
         if (pTemplate->IsKindOf(RUNTIME_CLASS(COEMultiDocTemplate)))
         {
-		    if (!((COEMultiDocTemplate*)pTemplate)->SaveAllModified(skipNew, saveSilently, canUseWorksapce, onExit))
-			    return FALSE;
+            if (!((COEMultiDocTemplate*)pTemplate)->SaveAllModified(skipNew, saveSilently, canUseWorksapce, onExit))
+                return FALSE;
         }
         else
         {
-		    if (!pTemplate->SaveAllModified())
-			    return FALSE;
+            if (!pTemplate->SaveAllModified())
+                return FALSE;
         }
-	}
-	return TRUE;
+    }
+    return TRUE;
 }
 
 BOOL COEDocManager::SaveAndCloseAllDocuments ()
 {
     BOOL retVal = TRUE;
-	POSITION pos = m_templateList.GetHeadPosition();
-	while (pos != NULL)
-	{
-		CDocTemplate* pTemplate = (CDocTemplate*)m_templateList.GetNext(pos);
-		
+    POSITION pos = m_templateList.GetHeadPosition();
+    while (pos != NULL)
+    {
+        CDocTemplate* pTemplate = (CDocTemplate*)m_templateList.GetNext(pos);
+        
         ASSERT_KINDOF(CDocTemplate, pTemplate);
-		
+        
         if (pTemplate->IsKindOf(RUNTIME_CLASS(COEMultiDocTemplate)))
         {
             if (!((COEMultiDocTemplate*)(pTemplate))->SaveAndCloseAllDocuments(NULL))
@@ -290,12 +292,12 @@ BOOL COEDocManager::SaveAndCloseAllDocuments ()
         else
         {
             if (pTemplate->SaveAllModified())
-		        pTemplate->CloseAllDocuments(FALSE);
+                pTemplate->CloseAllDocuments(FALSE);
             else
                 retVal = FALSE;
         }
-	}
-	return retVal;
+    }
+    return retVal;
 }
 
 
@@ -309,13 +311,13 @@ COEMultiDocTemplate::COEMultiDocTemplate (UINT nIDResource, CRuntimeClass* pDocC
 {
 }
 
-CDocument* COEMultiDocTemplate::OpenWorkspaceFile (LPCTSTR lpszPathName)
+CDocument* COEMultiDocTemplate::OpenWorkspaceFile (LPCWSTR lpszPathName)
 {
     DisableEditStateRestoring disabler(*this);
     return OpenDocumentFile(lpszPathName, TRUE);
 }
 
-CDocument* COEMultiDocTemplate::OpenDocumentFile (LPCTSTR lpszPathName, BOOL bMakeVisible)
+CDocument* COEMultiDocTemplate::OpenDocumentFile (LPCWSTR lpszPathName, BOOL bMakeVisible)
 {
     if (lpszPathName)
         return CMultiDocTemplate::OpenDocumentFile(lpszPathName, bMakeVisible);
@@ -336,16 +338,18 @@ CDocument* COEMultiDocTemplate::OpenDocumentFile (LPCTSTR lpszPathName, BOOL bMa
 
             bool modified = false;
             GlobalSettingsPtr globalSerringsPtr = COEDocument::GetSettingsManager().GetGlobalSettings();
-            if (globalSerringsPtr->GetDefaultClass() != m_category)
+            string category = Common::str(m_category);
+            if (globalSerringsPtr->GetDefaultClass() != category)
             {
-                globalSerringsPtr->SetDefaultClass(m_category);
+                globalSerringsPtr->SetDefaultClass(category);
                 modified = true;
             }
 
-            OpenEditor::ClassSettings& classSettings = COEDocument::GetSettingsManager().GetByName(m_category);
-            if (classSettings.GetFilenameTemplate() != dlg.GetTemplate())
+            OpenEditor::ClassSettings& classSettings = COEDocument::GetSettingsManager().GetByName(category);
+            string templ = Common::str(dlg.GetTemplate());
+            if (classSettings.GetFilenameTemplate() != templ)
             {
-                classSettings.SetFilenameTemplate(dlg.GetTemplate());
+                classSettings.SetFilenameTemplate(templ);
                 modified = true;
             }
 
@@ -354,20 +358,20 @@ CDocument* COEMultiDocTemplate::OpenDocumentFile (LPCTSTR lpszPathName, BOOL bMa
         }
         else
         {
-            m_category = COEDocument::GetSettingsManager().GetGlobalSettings()->GetDefaultClass();
+            m_category = Common::wstr(COEDocument::GetSettingsManager().GetGlobalSettings()->GetDefaultClass()).c_str();
         }
 
         pDocument = CMultiDocTemplate::OpenDocumentFile(lpszPathName, bMakeVisible);
     
-        m_filename.clear();
-        m_category.clear();
+        m_filename.Empty();
+        m_category.Empty();
     }
     _OE_DEFAULT_HANDLER_;
 
     return pDocument;
 }
 
-CDocument* COEMultiDocTemplate::OpenDocumentFile (LPCTSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible)
+CDocument* COEMultiDocTemplate::OpenDocumentFile (LPCWSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible)
 {
     CDocument* pDocument = __super::OpenDocumentFile(lpszPathName, bAddToMRU, bMakeVisible);
 
@@ -391,10 +395,10 @@ void COEMultiDocTemplate::SetDefaultTitle (CDocument* pDocument)
 
         if (COEDocument* pOEDocument = DYNAMIC_DOWNCAST(COEDocument, pDocument))
         {
-            pOEDocument->SetClassSetting(m_category.c_str());
-            if (m_filename.empty())
-                FormatTitle(pOEDocument->GetSettings().GetFilenameTemplate().c_str(), m_filename);
-            pOEDocument->SetTitle(m_filename.c_str());
+            pOEDocument->SetClassSetting(Common::str(m_category).c_str());
+            if (m_filename.IsEmpty())
+                FormatTitle(Common::wstr(pOEDocument->GetSettings().GetFilenameTemplate()).c_str(), m_filename);
+            pOEDocument->SetTitle(m_filename);
         }
         else
             CMultiDocTemplate::SetDefaultTitle(pDocument);
@@ -404,7 +408,7 @@ void COEMultiDocTemplate::SetDefaultTitle (CDocument* pDocument)
 
 BOOL COEMultiDocTemplate::SaveAllModified ()
 {
-    AfxMessageBox("COEMultiDocTemplate::SaveAllModified is obsolete. \n\nPlease notify the developer!", MB_OK|MB_ICONERROR);
+    AfxMessageBox(L"COEMultiDocTemplate::SaveAllModified is obsolete. \n\nPlease notify the developer!", MB_OK|MB_ICONERROR);
     return FALSE;
 }
 
@@ -437,33 +441,33 @@ BOOL COEMultiDocTemplate::SaveAllModified (bool skipNew, bool saveSilently, bool
 
         DocSavingList saveList;
 
-	    POSITION pos = GetFirstDocPosition();
-    	
+        POSITION pos = GetFirstDocPosition();
+        
         while (pos != NULL)
-	    {
-		    CDocument* pDoc = GetNextDoc(pos);
-    		
+        {
+            CDocument* pDoc = GetNextDoc(pos);
+            
             if (pDoc->IsModified())
                 saveList.push_back(std::pair<CDocument*, bool>(pDoc, true));
-	    }
+        }
 
         if (saveList.size())
         {
             BOOL thereIsActiveWorkspace =  OEWorkspaceManager::Get().HasActiveWorkspace();
 
-            BOOL quickSaveInWorkspace = AfxGetApp()->GetProfileInt("SaveModifiedDlg", "quickSaveInWorkspace",  FALSE);
+            BOOL quickSaveInWorkspace = AfxGetApp()->GetProfileInt(L"SaveModifiedDlg", L"quickSaveInWorkspace",  FALSE);
 
             switch (COESaveModifiedDlg(saveList, quickSaveInWorkspace, thereIsActiveWorkspace).DoModal())
             {
             case IDOK:
-			    {
-                    AfxGetApp()->WriteProfileInt("SaveModifiedDlg", "quickSaveInWorkspace",  quickSaveInWorkspace);
+                {
+                    AfxGetApp()->WriteProfileInt(L"SaveModifiedDlg", L"quickSaveInWorkspace",  quickSaveInWorkspace);
 
                     if (!quickSaveInWorkspace)
                     {
-				        for (DocSavingListConst_Iterator it = saveList.begin(); it != saveList.end(); ++it)
-					        if (it->second) 
-						        failed |= !it->first->DoFileSave();
+                        for (DocSavingListConst_Iterator it = saveList.begin(); it != saveList.end(); ++it)
+                            if (it->second) 
+                                failed |= !it->first->DoFileSave();
 
                         if (thereIsActiveWorkspace)
                             OEWorkspaceManager::Get().WorkspaceSave(false);
@@ -475,7 +479,7 @@ BOOL COEMultiDocTemplate::SaveAllModified (bool skipNew, bool saveSilently, bool
                         else
                             OEWorkspaceManager::Get().WorkspaceSaveQuick();
                     }
-			    }
+                }
                 break;
             case IDCANCEL:
                 failed = TRUE;
@@ -486,10 +490,10 @@ BOOL COEMultiDocTemplate::SaveAllModified (bool skipNew, bool saveSilently, bool
     }
     else // it is saveSilently
     {
-	    POSITION pos = GetFirstDocPosition();
-	    while (pos != NULL)
-	    {
-		    COEDocument* pDoc = (COEDocument*)GetNextDoc(pos);
+        POSITION pos = GetFirstDocPosition();
+        while (pos != NULL)
+        {
+            COEDocument* pDoc = (COEDocument*)GetNextDoc(pos);
 
             if (!pDoc->IsModified()) 
                 continue;
@@ -504,9 +508,9 @@ BOOL COEMultiDocTemplate::SaveAllModified (bool skipNew, bool saveSilently, bool
             }
             else if (!pDoc->SaveModified())
                 return FALSE;
-	    }
+        }
     }
-	return TRUE;
+    return TRUE;
 }
 
 BOOL COEMultiDocTemplate::SaveAndCloseAllDocuments (const CDocument* pButThis)
@@ -515,17 +519,17 @@ BOOL COEMultiDocTemplate::SaveAndCloseAllDocuments (const CDocument* pButThis)
 
     if (retVal)
     {
-	    POSITION pos = GetFirstDocPosition();
+        POSITION pos = GetFirstDocPosition();
 
-	    while (pos != NULL)
+        while (pos != NULL)
         {
             CDocument* pDoc = GetNextDoc(pos);
             if (pButThis != pDoc)
-		        pDoc->OnCloseDocument();
+                pDoc->OnCloseDocument();
         }
     }
 
-	return retVal;
+    return retVal;
 }
 
 BOOL COEMultiDocTemplate::OnIdle (LONG lCount, CFrameWnd* pFrameWnd)
@@ -536,16 +540,16 @@ BOOL COEMultiDocTemplate::OnIdle (LONG lCount, CFrameWnd* pFrameWnd)
     */
     if (!pFrameWnd) 
     {
-		ASSERT_KINDOF(CFrameWnd, AfxGetMainWnd());
+        ASSERT_KINDOF(CFrameWnd, AfxGetMainWnd());
         pFrameWnd = ((CFrameWnd*)AfxGetMainWnd());
     }
 
     if (CDocument* pActiveDoc = pFrameWnd->GetActiveDocument())
     {
-		ASSERT_KINDOF(COEDocument, pActiveDoc);
+        ASSERT_KINDOF(COEDocument, pActiveDoc);
         if (pActiveDoc->GetDocTemplate() == this)
         {
-		    ASSERT_KINDOF(COEDocument, pActiveDoc);
+            ASSERT_KINDOF(COEDocument, pActiveDoc);
             return ((COEDocument*)pActiveDoc)->OnIdle(lCount);
         }
     }
@@ -554,30 +558,32 @@ BOOL COEMultiDocTemplate::OnIdle (LONG lCount, CFrameWnd* pFrameWnd)
 
     //BOOL retVal = FALSE;
 
-	//POSITION pos = GetFirstDocPosition();
+    //POSITION pos = GetFirstDocPosition();
 
-	//while (pos != NULL)
-	//{
-	//	COEDocument* pDoc = (COEDocument*)GetNextDoc(pos);
-	//	ASSERT_VALID(pDoc);
-	//	ASSERT_KINDOF(COEDocument, pDoc);
-	//	retVal |= pDoc->OnIdle(lCount);
-	//}
+    //while (pos != NULL)
+    //{
+    //	COEDocument* pDoc = (COEDocument*)GetNextDoc(pos);
+    //	ASSERT_VALID(pDoc);
+    //	ASSERT_KINDOF(COEDocument, pDoc);
+    //	retVal |= pDoc->OnIdle(lCount);
+    //}
 
     //return retVal;
 }
 
-void COEMultiDocTemplate::FormatTitle (const char* format, std::string& title) const
+void COEMultiDocTemplate::FormatTitle (const wchar_t* format, CString& title) const
 {
-    Common::FilenameTemplate::Format(format, title, m_nUntitledCount);
+    string buffer;
+    Common::FilenameTemplate::Format(Common::str(format).c_str(), buffer, m_nUntitledCount);
+    title = Common::wstr(buffer).c_str();
 }
 
 void COEMultiDocTemplate::GetWorkspaceState (WorkspaceState& lastState)
 {
     WorkspaceState state;
 
-	POSITION pos = this->GetFirstDocPosition();
-	while (pos != NULL)
+    POSITION pos = this->GetFirstDocPosition();
+    while (pos != NULL)
     {
         CDocument* pDoc = this->GetNextDoc(pos);
         if (COEDocument* pOEDoc = DYNAMIC_DOWNCAST(COEDocument, pDoc))

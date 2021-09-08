@@ -25,7 +25,7 @@
 #endif // _MSC_VER > 1000
 
 #ifndef WINVER
-#define WINVER 0x0501
+#define WINVER _WIN32_WINNT_WIN7
 #endif
 
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
@@ -34,7 +34,7 @@
 #include <afxext.h>         // MFC extensions
 #include <afxdtctl.h>		// MFC support for Internet Explorer 4 Common Controls
 #include <afxcmn.h>			// MFC support for Windows Common Controls
-#include <afxmt.h>
+#include <afxcontrolbars.h> // FRM - MFC support for ribbons and control bars
 
 #pragma warning ( push )
 #pragma warning ( disable : 4786 )
@@ -47,7 +47,8 @@
 #pragma warning (disable : 4005)
 #pragma message ("ATTENTION: stl macros _RAISE & _THROW are redefined for this project")
 #define _RAISE(x)	 do { Common::TraceStackOnThrow(); throw (x); } while(false)
-#define _THROW(x, y) do { Common::TraceStackOnThrow(); throw (x(y)); } while(false)
+#define _THROW(x) do { Common::TraceStackOnThrow(); throw (x); } while(false)
+#define _THROW2(x, y) do { Common::TraceStackOnThrow(); throw (x(y)); } while(false)
 #pragma warning (default : 4005)
 
 
@@ -165,13 +166,6 @@ inline BYTE GetBValue (COLORREF rgb) { return static_cast<BYTE>((0xFF0000 & rgb)
 #include <list>
 #include <vector>
 
-#define _SCB_REPLACE_MINIFRAME
-//#define _SCB_MINIFRAME_CAPTION
-#define baseCMyBar CSizingControlBarCF
-//#define baseCMyBar CSizingControlBarG
-#include "SizeCBar/sizecbar.h"
-#include "SizeCBar/scbarg.h"
-#include "SizeCBar/scbarcf.h"
 #include <afxdlgs.h>
 #include <afxcview.h>
 
@@ -205,4 +199,7 @@ using boost::noncopyable;
 #pragma warning(disable : 4996) 
 #endif
 
+#include "Common/MyUtf.h"
+
 #endif//__AFX_STDAFX_H__
+#include <afxcontrolbars.h>

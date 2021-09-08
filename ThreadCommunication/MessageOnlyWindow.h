@@ -1,5 +1,5 @@
 /*
-	SQLTools is a tool for Oracle database developers and DBAs.
+    SQLTools is a tool for Oracle database developers and DBAs.
     Copyright (C) 1997-2016 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
@@ -35,10 +35,10 @@ public:
     static MessageOnlyWindow& GetWindow ();
 
     // only blocking call currently supprted
-    void Send (Note&, unsigned timeout = (15 * 60 * 1000), bool nothrow = false);
+    void Send (Note&, unsigned timeout = (5 * 60 * 1000), bool nothrow = false);
 
 private:
-	//DECLARE_DYNAMIC(MessageOnlyWindow)
+    //DECLARE_DYNAMIC(MessageOnlyWindow)
 
     static const int UM_NOTE = WM_USER + 111;
     static MessageOnlyWindow* m_pWnd;
@@ -49,9 +49,9 @@ private:
     BOOL Create ();
 
 protected:
-	afx_msg LRESULT OnNote (WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnNote (WPARAM wParam, LPARAM lParam);
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
 };//namespace ThreadCommunication

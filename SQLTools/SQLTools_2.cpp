@@ -1,5 +1,5 @@
 /* 
-	SQLTools is a tool for Oracle database developers and DBAs.
+    SQLTools is a tool for Oracle database developers and DBAs.
     Copyright (C) 1997-2004 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
@@ -208,7 +208,7 @@ void CSQLToolsApp::InitGUICommand ()
     GUICommandDictionary::InsertCommand("View.Toolbar",                    ID_VIEW_TOOLBAR);
     GUICommandDictionary::InsertCommand("View.StatusBar",                  ID_VIEW_STATUS_BAR);
     GUICommandDictionary::InsertCommand("View.FilePanel",                  ID_VIEW_FILE_PANEL);
-    GUICommandDictionary::InsertCommand("View.Workbook",                   ID_VIEW_WORKBOOK);
+    GUICommandDictionary::InsertCommand("View.History",                    ID_VIEW_HISTORY); // FRM
     GUICommandDictionary::InsertCommand("View.NextPane",                   ID_CUSTOM_NEXT_PANE); // there is a big difference
     GUICommandDictionary::InsertCommand("View.PrevPane",                   ID_CUSTOM_PREV_PANE); // between ID_NEXT_PANE and ID_CUSTOM_NEXT_PANE
 //Window
@@ -234,6 +234,7 @@ void CSQLToolsApp::InitGUICommand ()
 
 //SQLTools command set
 //View
+    GUICommandDictionary::InsertCommand("View.OpenFiles",                  ID_VIEW_OPEN_FILES);
     GUICommandDictionary::InsertCommand("View.ObjectTree",                 ID_SQL_OBJ_VIEWER);
     GUICommandDictionary::InsertCommand("View.Properties",                 ID_VIEW_PROPERTIES);
     GUICommandDictionary::InsertCommand("View.ExplainPlan",                ID_SQL_PLAN_VIEWER);
@@ -283,6 +284,8 @@ void CSQLToolsApp::InitGUICommand ()
     GUICommandDictionary::InsertCommand("Window.ActivateSplitter",         ID_WINDOW_SPLIT);
     GUICommandDictionary::InsertCommand("Window.SplitterDown",             ID_CUSTOM_SPLITTER_DOWN);
     GUICommandDictionary::InsertCommand("Window.SplitterUp",               ID_CUSTOM_SPLITTER_UP);
+    GUICommandDictionary::InsertCommand("Window.PrevWindow",               ID_WINDOW_PREV);
+    GUICommandDictionary::InsertCommand("Window.NextWindow",               ID_WINDOW_NEXT);
 //Help
     GUICommandDictionary::InsertCommand("Help.Help",                       ID_HELP);
     GUICommandDictionary::InsertCommand("Help.SqlHelp",                    ID_SQL_HELP);
@@ -296,26 +299,26 @@ void CSQLToolsApp::InitGUICommand ()
     // so we don't need to upgrade those keymaps anymore
     // what is more complicated in the case of multi-user configuration (multiple private config folders)
 
-    string path;
+    std::wstring path;
     std::auto_ptr<std::istream> is;
     string keymap = COEDocument::GetSettingsManager().GetGlobalSettings()->GetKeymapLayout();
     bool custom = !stricmp(keymap.c_str(), "custom");
     keymap += ".keymap";
 
-    if (custom && ConfigFilesLocator::GetFilePath(keymap.c_str(), path))
+    if (custom && ConfigFilesLocator::GetFilePath(wstr(keymap).c_str(), path))
         is.reset(new std::ifstream(path.c_str()));
     else
     {
-		string text;
-		
-		if (AppLoadTextFromResources (keymap.c_str(), "TEXT", text))
-		{
-			is.reset(new std::istringstream(text));
-			if (custom) 
-				std::ofstream(path.c_str(), std::ios_base::out|std::ios_base::binary) << text;
-		}
-		else
-			THROW_APP_EXCEPTION("Cannot load \"" +  keymap + "\" from the application resources.");
+        string text;
+        
+        if (AppLoadTextFromResources(Common::wstr(keymap).c_str(), L"TEXT", text))
+        {
+            is.reset(new std::istringstream(text));
+            if (custom) 
+                std::ofstream(path.c_str(), std::ios_base::out|std::ios_base::binary) << text;
+        }
+        else
+            THROW_APP_EXCEPTION("Cannot load \"" +  keymap + "\" from the application resources.");
     }
 
     GUICommandDictionary::BuildAcceleratorTable(*is.get(), m_accelTable);
@@ -324,11 +327,11 @@ void CSQLToolsApp::InitGUICommand ()
 void CSQLToolsApp::UpdateAccelAndMenu ()
 {
     {
-		POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
-		while (pos != NULL)
-		{
-		    CDocTemplate* pTemplate = m_pDocManager->GetNextDocTemplate(pos);
-			if (pTemplate && pTemplate->IsKindOf(RUNTIME_CLASS(CMultiDocTemplate)))
+        POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
+        while (pos != NULL)
+        {
+            CDocTemplate* pTemplate = m_pDocManager->GetNextDocTemplate(pos);
+            if (pTemplate && pTemplate->IsKindOf(RUNTIME_CLASS(CMultiDocTemplate)))
             {
                 ((CMultiDocTemplate*)pTemplate)->m_hAccelTable = m_accelTable;
                 GUICommandDictionary::AddAccelDescriptionToMenu(((CMultiDocTemplate*)pTemplate)->m_hMenuShared);
@@ -343,6 +346,10 @@ void CSQLToolsApp::UpdateAccelAndMenu ()
 
     }
     
+    if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIMainFrame)))
+        ((CMDIMainFrame*)m_pMainWnd)->UpdateViewerAccelerationKeyLabels();
+
+    // FRM
     if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIMainFrame)))
         ((CMDIMainFrame*)m_pMainWnd)->UpdateViewerAccelerationKeyLabels();
 }
@@ -370,7 +377,7 @@ void CSQLToolsApp::UpdateAccelAndMenu ()
             std::vector<std::pair<Command,string> >::const_iterator it = commands.begin();
 
             for (; it != commands.end(); ++it)
-                menu.AppendMenu(MF_STRING|MF_ENABLED, it->first, it->second.c_str());
+                menu.AppendMenu(MF_STRING|MF_ENABLED, it->first, wstr(it->second).c_str());
 
             CRect rect;
             AfxGetMainWnd()->GetWindowRect(rect);
@@ -409,7 +416,7 @@ BOOL CSQLToolsApp::PreTranslateMessage (MSG* pMsg)
             m_dblKeyAccelInx = -1;
             Global::SetStatusText("", TRUE);
             if (m_pMainWnd) m_pMainWnd->SendMessage(WM_COMMAND, commandId);
-			return FALSE;
+            return FALSE;
         }
         else if((pMsg->message == WM_KEYDOWN)
             || (pMsg->message == WM_COMMAND)
@@ -423,11 +430,11 @@ BOOL CSQLToolsApp::PreTranslateMessage (MSG* pMsg)
             pMsg->message = WM_NULL;
             m_dblKeyAccelInx = -1;
             MessageBeep((UINT)-1);
-			return FALSE;
+            return FALSE;
         }
     }
 
-    return CWinApp::PreTranslateMessage(pMsg);
+    return CWinAppEx::PreTranslateMessage(pMsg);
 }
 
 
@@ -442,8 +449,8 @@ BOOL CSQLToolsApp::AllowThisInstance ()
             return TRUE;
     }
 
-    const char* cszMutex = "Kochware.SQLTools";
-    const char* cszError = "Cannot connect to another program instance. ";
+    const wchar_t* cszMutex = L"Kochware.SQLTools";
+    const wchar_t* cszError = L"Cannot connect to another program instance. ";
 
     m_hMutex = CreateMutex(NULL, FALSE, cszMutex);
     if (m_hMutex == NULL)
@@ -463,13 +470,13 @@ BOOL CSQLToolsApp::AllowThisInstance ()
 
     if (hAnother)
     {
-        std::string data;
-        m_commandLineParser.Pack(data);
+        CString buffer;
+        m_commandLineParser.Pack(buffer);
 
         COPYDATASTRUCT cpdata;
         cpdata.dwData = SQLTOOLS_COPYDATA_ID;
-        cpdata.lpData = (PVOID)data.c_str();
-        cpdata.cbData = data.length();
+        cpdata.cbData = buffer.GetLength() * sizeof(TCHAR); // FRM
+        cpdata.lpData = (cpdata.cbData) ? (LPVOID)(LPCWSTR)buffer : NULL;
 
         DWORD dwResult = TRUE;
         if (SendMessageTimeout(
@@ -488,7 +495,7 @@ BOOL CSQLToolsApp::AllowThisInstance ()
             return FALSE;
         }
         else
-            AfxMessageBox(CString(cszError) + "Request ignored or timeout.", MB_OK|MB_ICONHAND);
+            AfxMessageBox(CString(cszError) + L"Request ignored or timeout.", MB_OK|MB_ICONHAND);
     }
 
     return TRUE;
@@ -502,7 +509,7 @@ BOOL CSQLToolsApp::HandleAnotherInstanceRequest (COPYDATASTRUCT* pCopyDataStruct
         {
             if (pCopyDataStruct->cbData)
             {
-                m_commandLineParser.Unpack((LPCSTR)pCopyDataStruct->lpData, pCopyDataStruct->cbData);
+                m_commandLineParser.Unpack((LPCWSTR)pCopyDataStruct->lpData, pCopyDataStruct->cbData / sizeof(TCHAR)); // FRM
                 PostThreadMessage(m_msgCommandLineProcess, 0, 0);
             }
             return TRUE;

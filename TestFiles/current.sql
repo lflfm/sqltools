@@ -1,3 +1,12 @@
+rem /connect=scott/tiger@192.168.56.1:1521:soadb E:\_CPP\sqlt.20\TestFiles\current.sql
+
+var n NUMBER
+EXEC :n := 1.9999;
+var d date
+EXEC :d := sysdate
+
+
+--/connect=scott/tiger@192.168.56.1:1521:soadb E:\_CPP\sqlt.19\TestFiles\current.sql
 SELECT * FROM pt_range;
 SELECT * FROM quarterly_regional_sales;
 
@@ -19,8 +28,7 @@ SELECT * FROM pt_range partition (SMPL_02APR1999_REST);
 SELECT NULL char_col, To_Number(NULL) num_col, To_Date(NULL) date_col  FROM dual
 UNION ALL
 SELECT 'xxx', -1, SYSDATE FROM dual;
-;
-
+/
 
 BEGIN
   FOR i IN 1..1000 LOOP
@@ -80,8 +88,6 @@ SELECT * FROM user_tab_columns WHERE table_name = 'TEST';
 SELECT * FROM all_tab_cols WHERE table_name = 'TEST';
 --identity_column = 'YES'
 SELECT * FROM user_tab_identity_cols;
-ISEQ$$_126395
-START WITH: 1, INCREMENT BY: 1, MAX_VALUE: 9999999999999999999999999999, MIN_VALUE: 1, CYCLE_FLAG: N, CACHE_SIZE: 0, ORDER_FLAG: Y
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -89,15 +95,31 @@ START WITH: 1, INCREMENT BY: 1, MAX_VALUE: 9999999999999999999999999999, MIN_VAL
 
 CONNECT sys/kolobok@w2k-10g:1521:test10 AS SYSDBA
 
-SELECT '<HTML> <HEAD> <TITLE>Your Title Here</TITLE> </HEAD> <BODY BGCOLOR="FFFFFF"> <CENTER><IMG SRC="clouds.jpg" ALIGN="BOTTOM"> </CENTER> <HR> <a href="http://somegreatsite.com">Link Name</a> is a link to another nifty site <H1>This is a Header</H1> <H2>This is a Medium Header</H2> Send me mail at <a href="mailto:support@yourcompany.com"> support@yourcompany.com</a>. <P> This is a new paragraph! <P> <B>This is a new paragraph!</B> <BR> <B><I>This is a new sentence without a paragraph break, in bold italics.</I></B> <HR> </BODY> </HTML>' FROM dual;
+SELECT '<HTML> <HEAD> <TITLE>Your Title Here</TITLE> </HEAD> <BODY BGCOLOR="FFFFFF"> <CENTER><IMG SRC="clouds.jpg" ALIGN="BOTTOM"> </CENTER> <HR> <a href="http://somegreatsite.com">Link Name (алоывапрло)</a> is a link to another nifty site <H1>This is a Header</H1> <H2>This is a Medium Header</H2> Send me mail at <a href="mailto:support@yourcompany.com"> support@yourcompany.com</a>. <P> This is a new paragraph! <P> <B>This is a new paragraph!</B> <BR> <B><I>This is a new sentence without a paragraph break, in bold italics.</I></B> <HR> </BODY> </HTML>' FROM dual;
+SELECT '<?xml version="1.0" standalone="yes"?><svg width="1in" height="1in"><desc></desc><g class="line" style="fill:#33a9ff;stroke-width:4"><line class="parallel" style="fill:#aa55cc;stroke-width:1.0" /></g></svg>' FROM dual;
+SELECT '<?xml version="1.0" standalone="yes"?>
+<svg width="1in" height="1in">
+<desc></desc>
+<g class="line" style="fill:#33a9ff;stroke-width:4">
+<line class="parallel" style="fill:#aa55cc;stroke-width:1.0" />
+</g>
+</svg>' FROM dual;
+
 
 SELECT * FROM all_sdo_styles;
+SELECT definition FROM all_sdo_styles WHERE ROWNUM < 2;
 
-SELECT * FROM emp;
+BEGIN
+  SELECT 'рол' xxx FROM dual;
+END;
+/
+SELECT t.*, 'рол' FROM emp t;
 EXEC Dbms_Lock.sleep(seconds => 20);
 
+SELECT SYSDATE FROM dual;
 SELECT 'test '' test', current_timestamp FROM dual;
 SELECT 'test '' test', To_Timestamp_TZ('27.11.2017 17:05:58.831 -05:00', 'dd.mm.yyyy hh24:mi:ss.ff3 tzr') FROM dual;
+SELECT 'test '' test', current_timestamp - To_Timestamp_TZ('27.11.2017 17:05:58.831 -05:00', 'dd.mm.yyyy hh24:mi:ss.ff3 tzr') FROM dual;
 
 -- drag & drop
 MANAGER 7839 1981-06-09 00:00:00

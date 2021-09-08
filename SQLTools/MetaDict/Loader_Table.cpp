@@ -499,7 +499,7 @@ void Loader::LoadTables (const char* owner, const char* name, bool useLike)
             p_column->m_charLengthSemantics = USE_CHAR;
 
         p_column->m_bNullable = Loader::IsYes(cur.ToString(cn_col_nullable));
-        p_column->m_bVirtual  = Loader::IsYes(cur.ToString(cn_col_virtual_column));
+        p_column->m_bVirtual  = (p_column->m_strDataType != "XMLTYPE") ? Loader::IsYes(cur.ToString(cn_col_virtual_column)) : false;
         p_column->m_bIdentity = Loader::IsYes(cur.ToString(cn_col_identity_column));
 
         if (p_column->m_bIdentity)

@@ -133,7 +133,7 @@ Edit.PermanentSettings        Ctrl+Q,P
 View.Toolbar
 View.StatusBar
 View.FilePanel                Alt+0
-View.Workbook
+#View.Workbook
 View.NextPane                 F6
 View.PrevPane                 Shift+F6
 #Window
@@ -161,6 +161,7 @@ View.ObjectTree               Alt+1
 View.Properties               Alt+2
 View.ObjectList               Alt+3
 View.FindInFiles              Alt+4
+View.OpenFiles                Alt+9
 #Session
 Session.Connect               Ctrl+D,C
 Session.Disconnect            Ctrl+D,D
@@ -208,6 +209,8 @@ Window.ActivateSplitter       Shift+Alt+P
 Window.SplitterDown           Shift+Ctrl+PgDown
 Window.SplitterUp             Shift+Ctrl+PgUp
 Window.LastWindow             Ctrl+Tab
+Window.NextWindow             Ctrl+PgDown
+Window.PrevWindow             Ctrl+PgUp
 #Help
 Help.Help                     F1
 Help.SqlHelp                  Ctrl+F1

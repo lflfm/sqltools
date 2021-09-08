@@ -71,23 +71,23 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case 0: return "Name"       ; 
-            case 1: return "Table Owner"; 
-            case 2: return "Table"      ; 
-            case 3: return "Type"       ; 
-            case 4: return "Event"      ; 
-            case 5: return "When"       ; 
-            case 6: return "Created"    ; 
-            case 7: return "Modified"   ; 
-            case 8: return "Enabled"    ; 
-            case 9: return "Status"     ; 
+            case 0: return L"Name"       ; 
+            case 1: return L"Table Owner"; 
+            case 2: return L"Table"      ; 
+            case 3: return L"Type"       ; 
+            case 4: return L"Event"      ; 
+            case 5: return L"When"       ; 
+            case 6: return L"Created"    ; 
+            case 7: return L"Modified"   ; 
+            case 8: return L"Enabled"    ; 
+            case 9: return L"Status"     ; 
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {                             
             case 0: return getStr(data(row).trigger_name    );
             case 1: return getStr(data(row).table_owner     );   
@@ -100,7 +100,7 @@
             case 8: return getStr(data(row).enabled         );  
             case 9: return getStr(data(row).status          );  
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {

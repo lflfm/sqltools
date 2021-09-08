@@ -40,21 +40,21 @@ class TiXmlDocument;
 struct ConnectEntry 
 {
     CMN_DECL_PROPERTY_BINDER(ConnectEntry);
-    CD_STREAMABLE_PROPERTY(std::string, Tag);
-    CD_STREAMABLE_PROPERTY(std::string, User);
-    CD_STREAMABLE_PROPERTY(std::string, Password);
-    CD_STREAMABLE_PROPERTY(std::string, Alias);
-    CD_STREAMABLE_PROPERTY(std::string, Host);
-    CD_STREAMABLE_PROPERTY(std::string, Port);
-    CD_STREAMABLE_PROPERTY(std::string, Sid);
-    CD_STREAMABLE_PROPERTY(bool,        Direct);
-    CD_STREAMABLE_PROPERTY(bool,        UseService);
-    CD_STREAMABLE_PROPERTY(int,         Mode);
-    CD_STREAMABLE_PROPERTY(int,         Safety); // changed to ReadOnly
-    CD_STREAMABLE_PROPERTY(time_t,      LastUsage);
-    CD_STREAMABLE_PROPERTY(int,         UsageCounter);
-    CD_STREAMABLE_PROPERTY(bool,        Slow);
-    CD_SIMPLE_PROPERTY(std::string, DecryptedPassword);
+    CD_STREAMABLE_PROPERTY(std::wstring, Tag);
+    CD_STREAMABLE_PROPERTY(std::wstring, User);
+    CD_STREAMABLE_PROPERTY(std::string,  Password);
+    CD_STREAMABLE_PROPERTY(std::wstring, Alias);
+    CD_STREAMABLE_PROPERTY(std::wstring, Host);
+    CD_STREAMABLE_PROPERTY(std::wstring, Port);
+    CD_STREAMABLE_PROPERTY(std::wstring, Sid);
+    CD_STREAMABLE_PROPERTY(bool,         Direct);
+    CD_STREAMABLE_PROPERTY(bool,         UseService);
+    CD_STREAMABLE_PROPERTY(int,          Mode);
+    CD_STREAMABLE_PROPERTY(int,          Safety); // changed to ReadOnly
+    CD_STREAMABLE_PROPERTY(time_t,       LastUsage);
+    CD_STREAMABLE_PROPERTY(int,          UsageCounter);
+    CD_STREAMABLE_PROPERTY(bool,         Slow);
+    CD_SIMPLE_PROPERTY(std::wstring,     DecryptedPassword);
 
     enum Status { UNDEFINED, UPTODATE, MODIFIED, DELETED }; 
     mutable Status m_status;
@@ -77,23 +77,24 @@ public:
 
     CMN_DECL_PROPERTY_BINDER(ConnectData);
     
-    CD_STREAMABLE_PROPERTY(bool, SavePasswords);        // it will nor work if master password is empty
-    CD_STREAMABLE_PROPERTY(std::string, ScriptOnLogin); // should be encrypted
-    CD_STREAMABLE_PROPERTY(std::string, Probe);         // use this value for master password verification
+    CD_STREAMABLE_PROPERTY(bool,         SavePasswords);    // it will nor work if master password is empty
+    CD_STREAMABLE_PROPERTY(std::string,  ScriptOnLogin);    // should be encrypted
+    CD_STREAMABLE_PROPERTY(std::string,  Probe);            // use this value for master password verification
+    CD_SIMPLE_PROPERTY(std::wstring,     DecScriptOnLogin); 
     
     // minor setting - read on startup only
-    CD_STREAMABLE_PROPERTY(int,  SortColumn);
-    CD_STREAMABLE_PROPERTY(int,  SortDirection); // 1 and -1
-    CD_STREAMABLE_PROPERTY(std::string, TagFilter);
-    CD_STREAMABLE_PROPERTY(int,         TagFilterOperation);
-    CD_STREAMABLE_PROPERTY(std::string, UserFilter);
-    CD_STREAMABLE_PROPERTY(int,         UserFilterOperation);
-    CD_STREAMABLE_PROPERTY(std::string, AliasFilter);
-    CD_STREAMABLE_PROPERTY(int,         AliasFilterOperation);
-    CD_STREAMABLE_PROPERTY(std::string, UsageCounterFilter);
-    CD_STREAMABLE_PROPERTY(int,         UsageCounterFilterOperation);
-    CD_STREAMABLE_PROPERTY(std::string, LastUsageFilter);
-    CD_STREAMABLE_PROPERTY(int,         LastUsageFilterOperation);
+    CD_STREAMABLE_PROPERTY(int,          SortColumn);
+    CD_STREAMABLE_PROPERTY(int,          SortDirection); // 1 and -1
+    CD_STREAMABLE_PROPERTY(std::wstring, TagFilter);
+    CD_STREAMABLE_PROPERTY(int,          TagFilterOperation);
+    CD_STREAMABLE_PROPERTY(std::wstring, UserFilter);
+    CD_STREAMABLE_PROPERTY(int,          UserFilterOperation);
+    CD_STREAMABLE_PROPERTY(std::wstring, AliasFilter);
+    CD_STREAMABLE_PROPERTY(int,          AliasFilterOperation);
+    CD_STREAMABLE_PROPERTY(std::wstring, UsageCounterFilter);
+    CD_STREAMABLE_PROPERTY(int,          UsageCounterFilterOperation);
+    CD_STREAMABLE_PROPERTY(std::wstring, LastUsageFilter);
+    CD_STREAMABLE_PROPERTY(int,          LastUsageFilterOperation);
 
 public:
 
@@ -103,16 +104,16 @@ public:
     const Entries& GetConnectEntries () const { return m_entries; }
 
     int  Find (const ConnectEntry&); 
-    void GetConnectEntry (int row, ConnectEntry&, const string& password); 
-    void AppendConnectEntry (const ConnectEntry&, const string& password); 
-    void SetConnectEntry (int row, const ConnectEntry&, const string& password); 
+    void GetConnectEntry (int row, ConnectEntry&, const std::wstring& password); 
+    void AppendConnectEntry (const ConnectEntry&, const std::wstring& password); 
+    void SetConnectEntry (int row, const ConnectEntry&, const std::wstring& password); 
     void MarkedDeleted (int row);
 
-    void ImportFromRegistry (const string& password);
+    //void ImportFromRegistry (const string& password);
     void ClearPasswords ();
-    void ResetPasswordsAndScriptOnLogin (const string& password);
-    void ChangePassword (const string& oldPassword, const string& newPassword);
-    bool TestPassword (const string& password) const;
+    void ResetPasswordsAndScriptOnLogin (const std::wstring& password);
+    void ChangePassword (const std::wstring& oldPassword, const std::wstring& newPassword);
+    bool TestPassword (const std::wstring& password) const;
 
 private:
     static const char* PROBE;

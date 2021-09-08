@@ -1422,7 +1422,7 @@ DWORD CPPToolTip::GetTooltipDirection(DWORD dwDirection, const CPoint & ptPoint,
 
 	//*!* I don't know why but without following lines application fails in Release mode!!!!
 	CString str;
-	str.Format("0x%08X", dwDirection);
+	str.Format(_T("0x%08X"), dwDirection);
 
 	//---------------------------------------------
 	// Offset the body rectangle

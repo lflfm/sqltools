@@ -37,10 +37,10 @@ CTableTruncateOptionsDlg::CTableTruncateOptionsDlg(CWnd* pParent /*=NULL*/)
     , m_keepAllocated(FALSE)
     */
 {
-    m_checkDependencies = AfxGetApp()->GetProfileInt("TableTruncateOptions", "CheckDependencies",  TRUE);
-    m_disableFKs        = AfxGetApp()->GetProfileInt("TableTruncateOptions", "DisableFKs", TRUE);
-    m_scriptOnly        = AfxGetApp()->GetProfileInt("TableTruncateOptions", "ScriptOnly", FALSE);
-    m_keepAllocated     = AfxGetApp()->GetProfileInt("TableTruncateOptions", "KeepAllocated", FALSE);
+    m_checkDependencies = AfxGetApp()->GetProfileInt(L"TableTruncateOptions", L"CheckDependencies",  TRUE);
+    m_disableFKs        = AfxGetApp()->GetProfileInt(L"TableTruncateOptions", L"DisableFKs", TRUE);
+    m_scriptOnly        = AfxGetApp()->GetProfileInt(L"TableTruncateOptions", L"ScriptOnly", FALSE);
+    m_keepAllocated     = AfxGetApp()->GetProfileInt(L"TableTruncateOptions", L"KeepAllocated", FALSE);
 }
 
 CTableTruncateOptionsDlg::~CTableTruncateOptionsDlg()
@@ -66,10 +66,10 @@ void CTableTruncateOptionsDlg::DoDataExchange(CDataExchange* pDX)
 void CTableTruncateOptionsDlg::OnOK()
 {
     CDialog::OnOK();
-    AfxGetApp()->WriteProfileInt("TableTruncateOptions", "CheckDependencies",  m_checkDependencies);
-    AfxGetApp()->WriteProfileInt("TableTruncateOptions", "DisableFKs",         m_disableFKs       );
-    AfxGetApp()->WriteProfileInt("TableTruncateOptions", "ScriptOnly",         m_scriptOnly       );
-    AfxGetApp()->WriteProfileInt("TableTruncateOptions", "KeepAllocated",      m_keepAllocated    );
+    AfxGetApp()->WriteProfileInt(L"TableTruncateOptions", L"CheckDependencies",  m_checkDependencies);
+    AfxGetApp()->WriteProfileInt(L"TableTruncateOptions", L"DisableFKs",         m_disableFKs       );
+    AfxGetApp()->WriteProfileInt(L"TableTruncateOptions", L"ScriptOnly",         m_scriptOnly       );
+    AfxGetApp()->WriteProfileInt(L"TableTruncateOptions", L"KeepAllocated",      m_keepAllocated    );
 }
 
 LRESULT CTableTruncateOptionsDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)

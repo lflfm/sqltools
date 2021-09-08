@@ -25,23 +25,23 @@
 class COENewFileDlg : public CDialog
 {
 // Dialog Data
-	enum { IDD = IDD_OE_NEW_FILE };
-    std::string m_category, m_template, m_filename;
+    enum { IDD = IDD_OE_NEW_FILE };
+    CString m_category, m_template, m_filename;
     CEditWithSelPos m_edtTemplate;
     COEMultiDocTemplate& m_docTemplate;
 
 public:
-	COENewFileDlg (COEMultiDocTemplate&, CWnd* pParent = NULL);
-	virtual ~COENewFileDlg();
+    COENewFileDlg (COEMultiDocTemplate&, CWnd* pParent = NULL);
+    virtual ~COENewFileDlg();
 
-    const std::string& GetFilename () const { return m_filename; }  
-    const std::string& GetCategory () const { return m_category; }  
-    const std::string& GetTemplate () const { return m_template; }  
+    const CString& GetFilename () const { return m_filename; }  
+    const CString& GetCategory () const { return m_category; }  
+    const CString& GetTemplate () const { return m_template; }  
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
+    virtual void DoDataExchange(CDataExchange* pDX);
     virtual BOOL OnInitDialog();
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
     afx_msg void OnCbnSelchange_Category ();
     afx_msg void OnBnClicked_Substitution ();
     afx_msg void OnEnChange_Template ();

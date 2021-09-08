@@ -376,7 +376,7 @@ void PaintGridManager::Paint (CDC& dc, bool erase_flag, const CRect& rect)
         string text = o.str();
         dc.SetBkColor(RGB(255,255,255));
         dc.SetTextColor(RGB(255,0,0));
-        dc.DrawText(text.data(), text.length(), rc, DT_LEFT|DT_TOP);
+        ::DrawTextA(dc.m_hDC, text.data(), text.length(), rc, DT_LEFT|DT_TOP);
     }
 }
 

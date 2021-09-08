@@ -41,7 +41,7 @@ COETemplatesDlg::COETemplatesDlg (CWnd* pParent, Mode mode, const OpenEditor::Te
     m_minKeyLength = m_entry.minLength;
     m_text         = m_entry.text.c_str();
 
-    const char* ptr, *buff;
+    const wchar_t* ptr, *buff;
     buff = ptr = m_text.LockBuffer();
     
     for (int line = m_entry.curLine; ptr && line >= 0; ptr++)
@@ -66,9 +66,9 @@ void COETemplatesDlg::DoDataExchange(CDataExchange* pDX)
 
     if (pDX->m_bSaveAndValidate)
     {
-        if (!m_template.ValidateUniqueness(string(m_name), m_entry.uuid))
+        if (!m_template.ValidateUniqueness(Common::str(m_name), m_entry.uuid))
         {
-            AfxMessageBox(CString("The name \"") + m_name + "\" is not unique!", MB_OK|MB_ICONSTOP);
+            AfxMessageBox(CString(L"The name \"") + m_name + L"\" is not unique!", MB_OK|MB_ICONSTOP);
             pDX->Fail();
         }
     }
@@ -141,7 +141,7 @@ BOOL COETemplatesDlg::OnInitDialog()
     logfont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
     logfont.lfQuality        = DEFAULT_QUALITY;
     logfont.lfPitchAndFamily = FIXED_PITCH;
-    strncpy(logfont.lfFaceName, m_textAttr.m_FontName.c_str(), LF_FACESIZE-1);
+    _tcsncpy(logfont.lfFaceName, Common::wstr(m_textAttr.m_FontName).c_str(), LF_FACESIZE-1);
 
 
     CWnd* pWndText = GetDlgItem(IDC_OETF_TEXT);
@@ -152,13 +152,13 @@ BOOL COETemplatesDlg::OnInitDialog()
     switch (m_mode)
     {
     case emInsert:
-        SetWindowText("Insert Template");
+        SetWindowText(L"Insert Template");
         break;
     case emEdit:
-        SetWindowText("Edit Template");
+        SetWindowText(L"Edit Template");
         break;
     case emDelete:
-        SetWindowText("Delete Template");
+        SetWindowText(L"Delete Template");
         ::EnableWindow(::GetDlgItem(*this, IDC_OETF_NAME), FALSE);
         ::EnableWindow(::GetDlgItem(*this, IDC_OETF_KEYWORD), FALSE);
         ::EnableWindow(::GetDlgItem(*this, IDC_OETF_MIN_LENGTH), FALSE);
@@ -169,7 +169,7 @@ BOOL COETemplatesDlg::OnInitDialog()
     {
         BYTE *pRc = 0;
         UINT size = 0;
-        if (AfxGetApp()->GetProfileBinary("TemplatesDlg", "RECT", &pRc, &size)
+        if (AfxGetApp()->GetProfileBinary(L"TemplatesDlg", L"RECT", &pRc, &size)
         && size == sizeof(RECT))
         {
             CRect rc = *(RECT*)pRc;
@@ -193,15 +193,15 @@ void COETemplatesDlg::OnOk()
 {
     OnOK();
 
-    m_entry.name = m_name;
-    m_entry.keyword = m_keyword;
+    m_entry.name = Common::str(m_name);
+    m_entry.keyword = Common::str(m_keyword);
     m_entry.minLength = m_minKeyLength;
     
     m_entry.curPos = m_entry.curLine = 0;
-    const char* buff = m_text.LockBuffer();
-    const char* pos = strchr(buff, m_cursorPosMarker);
+    LPCTSTR buff = m_text.LockBuffer();
+    LPCTSTR pos = _tcschr(buff, m_cursorPosMarker);
     
-    for (const char* ptr = buff; pos && ptr < pos; ptr++, m_entry.curPos++)
+    for (LPCTSTR ptr = buff; pos && ptr < pos; ptr++, m_entry.curPos++)
     {
         if (*ptr == '\r')
         {
@@ -215,7 +215,7 @@ void COETemplatesDlg::OnOk()
     if (pos)
         m_text.Delete(pos - buff, 1);
 
-    m_entry.text = m_text;
+    m_entry.text = Common::str(m_text);
 }
 
 LRESULT COETemplatesDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
@@ -272,7 +272,7 @@ void COETemplatesDlg::OnDestroy()
         GetWindowRect(rc);
         parent->GetWindowRect(parentRc);
         rc.OffsetRect(-parentRc.left, -parentRc.top);
-        AfxGetApp()->WriteProfileBinary("TemplatesDlg", "RECT", (LPBYTE)(RECT*)&rc, sizeof(RECT));
+        AfxGetApp()->WriteProfileBinary(L"TemplatesDlg", L"RECT", (LPBYTE)(RECT*)&rc, sizeof(RECT));
     }
 
     CDialog::OnDestroy();

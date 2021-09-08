@@ -25,11 +25,20 @@
 
 class CGrepView : public CTreeCtrl
 {
-    int          m_nCounter;
-    CString      m_strLastFileName;
-    HTREEITEM    m_hLastItem;
     CGrepThread* m_pThread;
     CEvent       m_evRun, m_evAbort;
+    
+    struct found_item
+    {
+        HTREEITEM hitem;
+        std::wstring path, text;
+        int line, start, end;
+    };
+
+    CCriticalSection m_criticalSection;
+    std::vector<found_item> m_foundItems;
+    std::wstring m_initialInfo;
+    HTREEITEM m_initialInfoItem;
 
 public:
 	CGrepView();
@@ -37,12 +46,13 @@ public:
 
 protected:
 	DECLARE_DYNCREATE(CGrepView)
+    HTREEITEM addInfo  (const std::wstring& info, bool error = FALSE);
 
 // Operations
 public:
     BOOL Create (CWnd* pFrameWnd);
 
-    BOOL IsRunning () const            { return WaitForSingleObject(m_evRun,   0) == WAIT_OBJECT_0; }
+    BOOL IsRunning () const            { return WaitForSingleObject(m_evRun, 0) == WAIT_OBJECT_0; }
     BOOL QuickIsRunning () const       { return m_pThread ? TRUE : FALSE; }
     BOOL IsAbort () const              { return WaitForSingleObject(m_evAbort, 0) == WAIT_OBJECT_0; }
 
@@ -50,7 +60,12 @@ public:
     afx_msg void AbortProcess ();
     void EndProcess ();
 
-    void AddEntry (const char* szEntry, BOOL bExpanded, BOOL bInfoOnly = FALSE);
+    void AddInitialInfo  (const std::wstring& info);
+    void AddInfo  (const std::wstring& info);
+    void AddError  (const std::wstring& error);
+    void AddFoundMatch (const std::wstring& path, const std::wstring& text, int line, int start, int end, int matchingLines, int totalMatchingLines, bool expanded, bool inMemory = false);
+
+    //void AddEntry (LPCWSTR szEntry, BOOL bExpanded, BOOL bInfoOnly = FALSE, BOOL bError = FALSE);
     void ClearContent ();
    
     void OnExpandAll (UINT);
@@ -61,17 +76,17 @@ public:
 	//}}AFX_VIRTUAL
 
 protected:
-	//{{AFX_MSG(CGrepView)
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	afx_msg void OnRClick(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-	//}}AFX_MSG
+	afx_msg int OnCreate (LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnContextMenu (CWnd* pWnd, CPoint point);
+	afx_msg void OnRClick (NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnLButtonDblClk (UINT nFlags, CPoint point);
     afx_msg void OnEndProcess ();
 	afx_msg void OnOpenFile ();
 	afx_msg void OnCollapseAll ();
 	afx_msg void OnExpandAll ();
 	afx_msg void OnClear ();
+    virtual LRESULT WindowProc (UINT message, WPARAM wParam, LPARAM lParam);
+    virtual BOOL PreTranslateMessage (MSG* pMsg);
 	DECLARE_MESSAGE_MAP()
 };
 

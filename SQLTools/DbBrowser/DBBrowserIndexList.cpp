@@ -26,6 +26,7 @@
 #include "COMMON\StrHelpers.h"
 #include "ServerBackgroundThread\TaskQueue.h"
 #include "SQLUtilities.h" // for SQLUtilities::GetSafeDatabaseObjectName
+#include <ActivePrimeExecutionNote.h>
 
 using namespace OraMetaDict;
 using namespace ServerBackgroundThread;
@@ -91,6 +92,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 Common::Substitutor subst;
                 OCI8::EServerVersion servVer = connect.GetVersion();
                 subst.AddPair("<RULE>", (servVer < OCI8::esvServer10X) ? "/*+RULE*/" : "");
@@ -159,6 +162,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 50, 196);
                 cur.Prepare(csz_index_col_sttm);
                 cur.Bind(":owner", m_schema.c_str());

@@ -19,6 +19,7 @@
 #pragma once
 #include <vector>
 #include <sstream>
+#include "MyUtf.h"
 
 enum EPropertyAwareOpt
 {
@@ -78,6 +79,7 @@ struct PropertyAwareImpl : PropertyAware<T>
     void setAsString (T&, const char*) const;
 
     static void to_string (const std::string& val, std::string& str)   { str = val; }
+    static void to_string (const std::wstring& val, std::string& str)  { str = Common::str(val); }
     static void to_string (int val, std::string& str)                  { char buff[80]; itoa(val, buff, 10); str = buff; }
     static void to_string (__int64 val, std::string& str)              { char buff[80]; _i64toa(val, buff, 10); str = buff; }
     static void to_string (unsigned int val, std::string& str)         { char buff[80]; ultoa(val, buff, 10); str = buff; }
@@ -89,6 +91,7 @@ struct PropertyAwareImpl : PropertyAware<T>
 #endif
 
     static void from_string (const char* str, std::string& val)        { val = str; }
+    static void from_string (const char* str, std::wstring& val)       { val = Common::wstr(str); }
     static void from_string (const char* str, int& val)                { val = str ? atoi(str) : 0; }
     static void from_string (const char* str, __int64& val)            { val = str ? _atoi64(str) : 0; }
     static void from_string (const char* str, unsigned int& val)       { val = str ? (unsigned int)_atoi64(str) : 0U; }

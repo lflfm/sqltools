@@ -28,15 +28,16 @@
 #include "COMMON\AppGlobal.h"
 #include "COMMON\ConfigFilesLocator.h"
 #include "COMMON\ExceptionHelper.h"
-#include "OpenEditor\OEStreams.h"
+
+//TODO: test ALL!!
 
     using namespace std;
     using namespace OpenEditor;
     using namespace Common;
 
-    const char* TheCatalogerName        = "cataloger.dat";
-    const char* TheGlobalKey            = "<This is a global history file>";
-    const char* TheGlobalFileName       = "global.dat";
+    const wchar_t* TheCatalogerName        = L"cataloger.dat";
+    const wchar_t* TheGlobalKey            = L"<This is a global history file>";
+    const wchar_t* TheGlobalFileName       = L"global.dat";
     const int   TheCatalogerVersion     = 1001;
     const int   FILE_NAME_OFFSET        = 16;
     const int   CATALOGER_LOCK_ATTEMPTS = 10;
@@ -55,7 +56,7 @@
     
     HistoryFileManager HistoryFileManager::theInstance;
 
-    bool file_exists (const char* filename)
+    bool file_exists (const wchar_t* filename)
     {
         return AppGetFileAttrs(filename, (DWORD*)0);
     }
@@ -63,9 +64,9 @@
     class FileLock
     {
     public:
-        FileLock (const string& file)
+        FileLock (const std::wstring& file)
             : m_hFile(INVALID_HANDLE_VALUE),
-            m_filename(file + ".$lock$")
+            m_filename(file + L".$lock$")
         {
         }
 
@@ -92,7 +93,7 @@
 
     private:
         HANDLE m_hFile;
-        string m_filename;
+        std::wstring m_filename;
     };
 
 
@@ -125,20 +126,20 @@ HistoryFileManager& HistoryFileManager::GetInstance ()
     if (theInstance.m_folder.empty())
     {
         ASSERT(!Common::ConfigFilesLocator::GetBaseFolder().empty());
-        theInstance.SetFolder((Common::ConfigFilesLocator::GetBaseFolder() + "\\SqlHistory").c_str());
+        theInstance.SetFolder((Common::ConfigFilesLocator::GetBaseFolder() + L"\\SqlHistory").c_str());
     }
 
     return theInstance;
 }
 
-void HistoryFileManager::SetFolder (const char* fldr)
+void HistoryFileManager::SetFolder (const wchar_t* fldr)
 {
-    string folder = fldr;
+    std::wstring folder = fldr;
     m_folder = folder;
 
     if (folder.size())
     {
-        vector<string> subdirs;
+        vector<std::wstring> subdirs;
         // check existent path part
         while (!folder.empty() && *(folder.rbegin()) != ':'
         && GetFileAttributes(folder.c_str()) == 0xFFFFFFFF) {
@@ -152,16 +153,16 @@ void HistoryFileManager::SetFolder (const char* fldr)
         }
 
         // create non-existent path part
-        vector<string>::const_reverse_iterator it(subdirs.rbegin()), end(subdirs.rend());
+        auto it(subdirs.rbegin()), end(subdirs.rend());
         for (; it != end; it++)
             _CHECK_AND_THROW_(CreateDirectory((*it).c_str(), NULL), "Can't create folder!");
     }
 
 }
 
-string HistoryFileManager::getHistoryFile (const char* filename)
+std::wstring HistoryFileManager::getHistoryFile (const wchar_t* filename)
 {
-    string catalogerFilename = m_folder + '\\' + TheCatalogerName;
+    wstring catalogerFilename = m_folder + L"\\" + TheCatalogerName;
 
     FileLock lk(catalogerFilename);
     
@@ -177,8 +178,8 @@ string HistoryFileManager::getHistoryFile (const char* filename)
             if (!catalogerExists)
                 cataloger << TheCatalogerVersion << endl;
 
-            string histFilename;
-            set<string> allHistFiles;
+            std::wstring histFilename;
+            set<std::wstring> allHistFiles;
 
             if (!lookupHistoryFileName(filename, histFilename, &allHistFiles))
             {
@@ -186,28 +187,28 @@ string HistoryFileManager::getHistoryFile (const char* filename)
                 // append a new entry
                 _ASSERTE(histFilename.length() < FILE_NAME_OFFSET);
 
-                string buffer = histFilename;
+                string buffer = Common::str(histFilename);
                 buffer.resize(FILE_NAME_OFFSET, ' ');
-                buffer += filename;
+                buffer += Common::str(filename);
                 cataloger << buffer << endl;
                 cataloger.flush();
             }
 
-            return m_folder + '\\' + histFilename;
+            return m_folder + L"\\" + histFilename;
         }
     }
 
-    return string();
+    return std::wstring();
 }
 
-bool HistoryFileManager::lookupHistoryFileName (const char* _filename, string& _histFilename, set<string>* allHistFiles)
+bool HistoryFileManager::lookupHistoryFileName (const wchar_t* _filename, std::wstring& _histFilename, set<std::wstring>* allHistFiles)
 {
     if (_filename == TheGlobalKey) {
         _histFilename = TheGlobalFileName;
         return true;
     }
 
-    ifstream cataloger((m_folder + '\\' + TheCatalogerName).c_str());
+    ifstream cataloger((m_folder + L"\\" + TheCatalogerName).c_str());
 
     int version;
     if (!(cataloger >> version))
@@ -226,28 +227,28 @@ bool HistoryFileManager::lookupHistoryFileName (const char* _filename, string& _
             histFilename.resize(FILE_NAME_OFFSET);
             trim_symmetric(histFilename);
 
-            if (_filename == filename)
+            if (_filename == Common::wstr(filename))
             {
-                _histFilename = histFilename;
+                _histFilename = Common::wstr(histFilename);
                 return true;
             }
 
             // still executing and collecting all of existing history files
             if (allHistFiles)
-                allHistFiles->insert(histFilename);
+                allHistFiles->insert(Common::wstr(histFilename));
         }
     }
 
     return false;
 }
 
-void HistoryFileManager::createHistoryFileName (string& histFilename, const set<string>& allHistFiles)
+void HistoryFileManager::createHistoryFileName (std::wstring& histFilename, const set<std::wstring>& allHistFiles)
 {
     for (int i = 1; i > 0; i++) 
     {
-        char buff[40];
-        _snprintf(buff, sizeof(buff), "%08x.dat", i);
-        buff[sizeof(buff)-1] = 0;
+        wchar_t buff[40];
+        _snwprintf(buff, sizeof(buff)/sizeof(buff[0])-1, L"%08x.dat", i);
+        buff[sizeof(buff)/sizeof(buff[0])-1] = 0;
         histFilename = buff;
         
         if (allHistFiles.find(histFilename) == allHistFiles.end())
@@ -269,7 +270,7 @@ counted_ptr<HistorySource> HistoryFileManager::CreateSource ()
     return counted_ptr<HistorySource>(new HistorySource);
 }
 
-void HistoryFileManager::Load (HistorySource& src, const char* filename)
+void HistoryFileManager::Load (HistorySource& src, const wchar_t* filename)
 {
     const SQLToolsSettings& settings = GetSQLToolsSettings();
 
@@ -284,10 +285,10 @@ void HistoryFileManager::Load (HistorySource& src, const char* filename)
 
         ifstream in;
 
-        string histFilename;
+        std::wstring histFilename;
         if (lookupHistoryFileName(filename, histFilename))
         {
-            histFilename = m_folder + '\\' + histFilename;
+            histFilename = m_folder + L"\\" + histFilename;
             in.open(histFilename.c_str());
         }
 
@@ -305,7 +306,7 @@ void HistoryFileManager::Load (HistorySource& src, const char* filename)
             {
                 getline(in, buffer);
 
-                _ASSERT(buffer == filename);
+                _ASSERT(buffer == Common::str(filename));
 
                 while (getline(in, buffer))
                 {
@@ -322,7 +323,7 @@ void HistoryFileManager::Load (HistorySource& src, const char* filename)
             {
                 getline(in, buffer);
 
-                _ASSERT(buffer == filename);
+                _ASSERT(buffer == Common::str(filename));
 
                 while (getline(in, buffer))
                 {
@@ -347,7 +348,7 @@ void HistoryFileManager::Load (HistorySource& src, const char* filename)
             {
                 getline(in, buffer);
 
-                _ASSERT(buffer == filename);
+                _ASSERT(buffer == Common::str(filename));
 
                 while (getline(in, buffer))
                 {
@@ -376,7 +377,7 @@ void HistoryFileManager::Load (HistorySource& src, const char* filename)
     }
 }
 
-void HistoryFileManager::Save (HistorySource& src, const char* filename)
+void HistoryFileManager::Save (HistorySource& src, const wchar_t* filename)
 {
     const SQLToolsSettings& settings = GetSQLToolsSettings();
 
@@ -388,7 +389,7 @@ void HistoryFileManager::Save (HistorySource& src, const char* filename)
         && filename != TheGlobalKey)
             return;           
 
-        string histFilename = getHistoryFile(filename);
+        std::wstring histFilename = getHistoryFile(filename);
         FileLock lk(histFilename);
    
         if (lk.Lock(GLOBAL_LOCK_ATTEMPTS, GLOBAL_LOCK_TIMEOUT))
@@ -402,7 +403,7 @@ void HistoryFileManager::Save (HistorySource& src, const char* filename)
            
                 if (src.GetHistoryFileTime() != lastWriteTime) // merging
                 {
-                    string tmpHistFilename = histFilename + ".$temp$";
+                    std::wstring tmpHistFilename = histFilename + L".$temp$";
 
                     {
                         stringstream s1;
@@ -437,7 +438,7 @@ void HistoryFileManager::Save (HistorySource& src, const char* filename)
     }
 }
 
-void HistoryFileManager::save (HistorySource& src, const char* filename, std::ostream& out)
+void HistoryFileManager::save (HistorySource& src, const wchar_t* filename, std::ostream& out)
 {
     out << TheHistoryFileVersion << endl;
     out << filename << endl;

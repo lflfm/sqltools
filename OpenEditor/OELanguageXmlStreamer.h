@@ -30,7 +30,7 @@ namespace OpenEditor
     class LanguageXmlStreamer
     {
     public:
-        LanguageXmlStreamer (const std::string& filename) : m_filename(filename) {}
+        LanguageXmlStreamer (const std::wstring& filename) : m_filename(filename) {}
 
         void operator >> (LanguagesCollection&);
         void operator << (const LanguagesCollection&);
@@ -42,7 +42,7 @@ namespace OpenEditor
         void write (const Language&, TiXmlElement*);
         void write (const LanguageKeywordMapPtr&, const vector<string>&, TiXmlElement*);
 
-        const std::string m_filename;
+        const std::wstring m_filename;
     };
 
 };//namespace OpenEditor

@@ -31,6 +31,7 @@
 #include "SQLUtilities.h"
 #include "ServerBackgroundThread\TaskQueue.h"
 #include "ConnectionTasks.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace OraMetaDict;
 using namespace Common;
@@ -85,6 +86,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 Common::Substitutor subst;
                 OCI8::EServerVersion servVer = connect.GetVersion();
                 subst.AddPair("<RULE>", (servVer < OCI8::esvServer10X) ? "/*+RULE*/" : "");
@@ -148,6 +151,8 @@ void DBBrowserViewList::Refresh (bool force)
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 Common::Substitutor subst;
                 OCI8::EServerVersion servVer = connect.GetVersion();
                 subst.AddPair("<RULE>", (servVer < OCI8::esvServer10X) ? "/*+RULE*/" : "");
@@ -197,18 +202,18 @@ void DBBrowserViewList::ApplyQuickFilter (bool valid, bool invalid)
     GetFilter(filter);
 
     for (int i = 0, n = m_dataAdapter.getColCount(); i < n; ++i)
-        if (!stricmp(m_dataAdapter.getColHeader(i), "status"))
+        if (!wcsicmp(m_dataAdapter.getColHeader(i), L"status"))
         {
-            const char* val = 0;
+            const wchar_t* val = 0;
 
             if (valid && invalid)
-                val = "";
+                val = L"";
             else if (valid)
-                val = "VALID";
+                val = L"VALID";
             else if  (invalid)
-                val = "INVALID";
+                val = L"INVALID";
             else
-                val = "NA";
+                val = L"NA";
 
             if (val != filter.at(i).value
             || ListCtrlManager::EXACT_MATCH != filter.at(i).operation)
@@ -225,8 +230,8 @@ void DBBrowserViewList::ExtendContexMenu (CMenu* pMenu)
 {
     UINT grayed = IsSelectionEmpty() ? MF_GRAYED : 0;
 
-    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_COMPILE, "&Compile");                      
-    pMenu->AppendMenu(MF_STRING|grayed, ID_SQL_QUICK_QUERY, "&Query");                      
+    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_COMPILE, L"&Compile");                      
+    pMenu->AppendMenu(MF_STRING|grayed, ID_SQL_QUICK_QUERY, L"&Query");                      
     pMenu->AppendMenu(MF_SEPARATOR);
 }
 

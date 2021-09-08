@@ -242,12 +242,12 @@ void OciGridSource::SetCursor (OciGridView& view, std::auto_ptr<OCI8::AutoCursor
             SetSilent(true);
         }
 
-        void setActivePrimeExecution (bool on, bool nothrow = false)
+        void setActivePrimeExecution (bool on, bool _nothrow = false)
         {
             try {
                 ThreadCommunication::MessageOnlyWindow::GetWindow().Send(ActivePrimeExecutionNoteI2(on));
             } catch (...) {
-                if (!nothrow) throw;
+                if (!_nothrow) throw;
             }
         }
 
@@ -285,7 +285,7 @@ void OciGridSource::SetCursor (OciGridView& view, std::auto_ptr<OCI8::AutoCursor
 
                                 if (!ignoreSize && (m_bytesAllocated > (500 * 1024 * 1024)))
                                 {
-                                    if (AfxMessageBox("The size of fetched data reached the safe limit 500 Mb!"
+                                    if (AfxMessageBox(L"The size of fetched data reached the safe limit 500 Mb!"
                                         "\n\nPlease choose one of the following options: " 
                                         "\n      press <Yes> to stop fetching and close the cursor, "
                                         "\n      press <No> to continue at your own risk", 
@@ -397,7 +397,7 @@ void OciGridSource::Fetch (OciGridView& view, int rowsToFetch)
     {
         if (theApp.GetActivePrimeExecution())
         {
-            AfxMessageBox("The connection is busy.\n\nPlease try again later.", MB_OK|MB_ICONASTERISK);
+            AfxMessageBox(L"The connection is busy.\n\nPlease try again later.", MB_OK|MB_ICONASTERISK);
             AfxThrowUserException();
         }
         FrgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_GridFetch(view, *this, rowsToFetch)));
@@ -589,6 +589,8 @@ bool OciGridSource::IsTextField (int col) const
 
 void OciGridSource::CopyColumnNames (std::string& buff, int from, int to) const
 {
+    // TODO: remove that in the next major release - return whatever you see in the data grid
+
     if (!m_headersInLowerCase)
     {
         int nCols = m_ColumnInfo.size();

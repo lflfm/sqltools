@@ -58,11 +58,11 @@ void RecentFilesListCtrl::Initialize ()
     m_initialized = true;
 }
 
-void RecentFilesListCtrl::LoadEntry (const string& path, time_t last_used)
+void RecentFilesListCtrl::LoadEntry (const std::wstring& path, time_t last_used)
 {
     RecentFilesEntry entry;
     entry.name = ::PathFindFileName(path.c_str());
-    entry.path = entry.name != path ? path.substr(0, path.size()-entry.name.size()) : "";
+    entry.path = entry.name != path ? path.substr(0, path.size()-entry.name.size()) : L"";
     entry.last_used = last_used;
 
     SHFILEINFO shFinfo;
@@ -75,11 +75,11 @@ void RecentFilesListCtrl::LoadEntry (const string& path, time_t last_used)
     m_entries.push_back(entry);
 }
 
-void RecentFilesListCtrl::UpdateEntry (const string& path, time_t last_used)
+void RecentFilesListCtrl::UpdateEntry (const std::wstring& path, time_t last_used)
 {
     RecentFilesEntry entry;
     entry.name = ::PathFindFileName(path.c_str());
-    entry.path = entry.name != path ? path.substr(0, path.size()-entry.name.size()) : "";
+    entry.path = entry.name != path ? path.substr(0, path.size()-entry.name.size()) : L"";
     entry.last_used = last_used;
 
     RecentFilesCollection::iterator it = std::find(m_entries.begin(), m_entries.end(), entry);
@@ -117,13 +117,13 @@ void RecentFilesListCtrl::RemoveEntry (unsigned int index)
     if (index < m_entries.size())
     {
         if (m_pRecentFileList.get())
-            m_pRecentFileList->RemoveDocument(GetPath(index));
+            m_pRecentFileList->RemoveDocument(GetPath(index).c_str());
 
         OnDeleteEntry(index);
     }
 }
 
-void RecentFilesListCtrl::RemoveEntry (const string& path)
+void RecentFilesListCtrl::RemoveEntry (const std::wstring& path)
 {
     unsigned int index = FindEntry(path);
 
@@ -133,15 +133,15 @@ void RecentFilesListCtrl::RemoveEntry (const string& path)
         m_pRecentFileList->RemoveDocument(path);
 }
 
-string RecentFilesListCtrl::GetPath (unsigned int index) const
+std::wstring RecentFilesListCtrl::GetPath (unsigned int index) const
 {
     if (index < m_entries.size())
         return m_entries.at(index).path + m_entries.at(index).name;
 
-    return string();
+    return std::wstring();
 }
 
-unsigned int RecentFilesListCtrl::FindEntry (const string& path)  const
+unsigned int RecentFilesListCtrl::FindEntry (const std::wstring& path)  const
 {
     unsigned int index(0), count(m_entries.size());
 

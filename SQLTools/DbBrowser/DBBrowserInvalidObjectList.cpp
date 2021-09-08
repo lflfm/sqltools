@@ -24,6 +24,7 @@
 #include "COMMON\StrHelpers.h"
 #include "COMMON\AppGlobal.h"
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace Common;
 using namespace ServerBackgroundThread;
@@ -74,6 +75,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 50, 196);
                 cur.Prepare(csz_sttm);
                 cur.Bind(":owner", m_schema.c_str());
@@ -157,6 +160,8 @@ void DBBrowserInvalidObjectList::Refresh (bool force)
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 1, 196);
                 cur.Prepare(csz_refresh_sttm);
                 cur.Bind(":owner", m_schema.c_str());
@@ -230,8 +235,8 @@ void DBBrowserInvalidObjectList::ExtendContexMenu (CMenu* pMenu)
 {
     UINT grayed = IsSelectionEmpty() ? MF_GRAYED : 0;
 
-    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_COMPILE, "&Compile");                      
-    pMenu->AppendMenu(MF_STRING,        ID_DS_COMPILE_ALL,  "Compile All with Dbms_&Utility");
+    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_COMPILE,     L"&Compile");                      
+    pMenu->AppendMenu(MF_STRING,        ID_DS_COMPILE_ALL, L"Compile All with Dbms_&Utility");
     pMenu->AppendMenu(MF_SEPARATOR);
 }
 
@@ -270,6 +275,8 @@ void DBBrowserInvalidObjectList::OnCompile ()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 string sttm = "begin Dbms_Utility.compile_schema(schema => '";
                 sttm += m_schema;
                 sttm += "', compile_all => false); end;";

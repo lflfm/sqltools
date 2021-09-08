@@ -60,7 +60,7 @@ public:
     void PutErrors (vector<ErrorLoader::comp_error>&);
 
     int  GetLineCount ();
-    void GetLine (int line, string&);
+    void GetLine (int line, std::wstring&);
     bool AskIfUserWantToStopOnError ();
     bool InputValue (const string& prompt, string& value);
     void DoSqlExplainPlan (const string&);

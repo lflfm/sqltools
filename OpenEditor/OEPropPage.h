@@ -39,31 +39,31 @@ class COEPropPage : public CPropertyPage
     bool m_dataInitialized;
     const SettingsManager& m_manager;
     Settings& m_settings;
-	
+    
     void doSelChangeLanguage ();
 
 public:
-	COEPropPage (const SettingsManager&, Settings&);
-	~COEPropPage ();
+    COEPropPage (const SettingsManager&, Settings&);
+    ~COEPropPage ();
 
-	//{{AFX_DATA(COEPropPage)
-	enum { IDD = IDD_OE_FILE_SETTINGS };
-	//}}AFX_DATA
+    //{{AFX_DATA(COEPropPage)
+    enum { IDD = IDD_OE_FILE_SETTINGS };
+    //}}AFX_DATA
 
 
-	//{{AFX_VIRTUAL(COEPropPage)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-	//}}AFX_VIRTUAL
+    //{{AFX_VIRTUAL(COEPropPage)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);
+    virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+    //}}AFX_VIRTUAL
 
 protected:
-	//{{AFX_MSG(COEPropPage)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnSelChangeLanguage();
+    //{{AFX_MSG(COEPropPage)
+    virtual BOOL OnInitDialog();
+    afx_msg void OnSelChangeLanguage();
     afx_msg void OnChangeData();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

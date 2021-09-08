@@ -141,7 +141,7 @@ private:
     //CToolTipCtrl m_wndToolTip;
     
 protected:
-    void DoOpen (ETextFormat frm, const char* ext);
+    void DoOpen (ETextFormat frm, const wchar_t* ext);
     void DoFileSave (const SQLToolsSettings&, int format, bool shellOpen);
     CPLSWorksheetDoc* DoOpenInEditor (const SQLToolsSettings&, int format);
 

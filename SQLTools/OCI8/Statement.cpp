@@ -1,6 +1,6 @@
 /* 
 	SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -90,7 +90,9 @@ void Statement::Prepare (const char* sttm)
     //              This problem was introduced in 8.1.6
     if (Connect::GetClientVersion() >= ecvClient9X)
         CHECK(OCIAttrSet(m_sttmp, OCI_HTYPE_STMT, &m_prefetch, 0, OCI_ATTR_PREFETCH_ROWS, GetOCIError()));
-    CHECK(OCIStmtPrepare(m_sttmp, GetOCIError(), (oratext*)sttm, strlen(sttm), OCI_NTV_SYNTAX, OCI_DEFAULT));
+
+    std::wstring wsttm = Common::wstr(sttm);
+    CHECK(OCIStmtPrepare(m_sttmp, GetOCIError(), (oratext*)wsttm.c_str(), wsttm.length()*sizeof(wchar_t), OCI_NTV_SYNTAX, OCI_DEFAULT));
 }
 
 void Statement::Execute (ub4 iters, bool guaranteedSafe)

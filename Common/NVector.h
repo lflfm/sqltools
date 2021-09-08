@@ -58,7 +58,7 @@ private:
 
 	void _Xran() const
 		{	// report an out_of_range error
-            _THROW(std::out_of_range, std::string("invalid vector<T> subscript, class::object = ") + m_name);
+            _THROW2(std::out_of_range, std::string("invalid vector<T> subscript, class::object = ") + m_name);
 		}
 };
 
@@ -96,7 +96,7 @@ private:
 
 	void _Xran() const
 		{	// report an out_of_range error
-            _THROW(std::out_of_range, std::string("invalid deque<T> subscript, class::object = ") + m_name);
+            _THROW2(std::out_of_range, std::string("invalid deque<T> subscript, class::object = ") + m_name);
 		}
 };
 

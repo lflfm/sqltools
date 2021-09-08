@@ -24,13 +24,13 @@
 // COESortDlg dialog
 IMPLEMENT_DYNAMIC(COESortDlg, CDialog)
 COESortDlg::COESortDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(COESortDlg::IDD, pParent)
+    : CDialog(COESortDlg::IDD, pParent)
 {
-    mKeyOrder           = AfxGetApp()->GetProfileInt("Editor\\Sort", "KeyOrder1", 1);
-    mKeyStartColumn     = AfxGetApp()->GetProfileInt("Editor\\Sort", "KeyStartColumn1", 1);
-    mKeyLength          = AfxGetApp()->GetProfileInt("Editor\\Sort", "KeyLength1", 0);
-    mRemoveDuplicates   = AfxGetApp()->GetProfileInt("Editor\\Sort", "RemoveDuplicates", 0) ? true : false;
-    mIgnoreCase         = AfxGetApp()->GetProfileInt("Editor\\Sort", "IgnoreCase", 0) ? true : false;
+    mKeyOrder           = AfxGetApp()->GetProfileInt(L"Editor\\Sort", L"KeyOrder1", 1);
+    mKeyStartColumn     = AfxGetApp()->GetProfileInt(L"Editor\\Sort", L"KeyStartColumn1", 1);
+    mKeyLength          = AfxGetApp()->GetProfileInt(L"Editor\\Sort", L"KeyLength1", 0);
+    mRemoveDuplicates   = AfxGetApp()->GetProfileInt(L"Editor\\Sort", L"RemoveDuplicates", 0) ? true : false;
+    mIgnoreCase         = AfxGetApp()->GetProfileInt(L"Editor\\Sort", L"IgnoreCase", 0) ? true : false;
 }
 
 COESortDlg::~COESortDlg()
@@ -39,20 +39,20 @@ COESortDlg::~COESortDlg()
 
 void COESortDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+    CDialog::DoDataExchange(pDX);
 
-	DDX_Radio(pDX, IDC_OES_ASC, mKeyOrder);
-	
+    DDX_Radio(pDX, IDC_OES_ASC, mKeyOrder);
+    
     DDX_Text(pDX, IDC_OES_START_COL, mKeyStartColumn);
     DDV_MinMaxInt(pDX, mKeyStartColumn,  1, INT_MAX);
     SendDlgItemMessage(IDC_OES_START_COL_SPIN, UDM_SETRANGE32, 1, INT_MAX);
 
-	DDX_Text(pDX, IDC_OES_KEY_LENGTH, mKeyLength);
+    DDX_Text(pDX, IDC_OES_KEY_LENGTH, mKeyLength);
     DDV_MinMaxInt(pDX, mKeyLength, 0, INT_MAX);
     SendDlgItemMessage(IDC_OES_KEY_LENGTH_SPIN, UDM_SETRANGE32, 0, INT_MAX);
 
-	DDX_Check(pDX, IDC_OES_REMOVE_DUPLICATES, mRemoveDuplicates);
-	DDX_Check(pDX, IDC_OES_IGNORE_CASE, mIgnoreCase);
+    DDX_Check(pDX, IDC_OES_REMOVE_DUPLICATES, mRemoveDuplicates);
+    DDX_Check(pDX, IDC_OES_IGNORE_CASE, mIgnoreCase);
 }
 
 BEGIN_MESSAGE_MAP(COESortDlg, CDialog)
@@ -64,9 +64,9 @@ void COESortDlg::OnOK()
 {
     CDialog::OnOK();
 
-    AfxGetApp()->WriteProfileInt("Editor\\Sort", "KeyOrder1",         mKeyOrder        );
-    AfxGetApp()->WriteProfileInt("Editor\\Sort", "KeyStartColumn1",   mKeyStartColumn  );
-    AfxGetApp()->WriteProfileInt("Editor\\Sort", "KeyLength1",        mKeyLength       );
-    AfxGetApp()->WriteProfileInt("Editor\\Sort", "RemoveDuplicates",  mRemoveDuplicates);
-    AfxGetApp()->WriteProfileInt("Editor\\Sort", "IgnoreCase",        mIgnoreCase      );
+    AfxGetApp()->WriteProfileInt(L"Editor\\Sort", L"KeyOrder1",         mKeyOrder        );
+    AfxGetApp()->WriteProfileInt(L"Editor\\Sort", L"KeyStartColumn1",   mKeyStartColumn  );
+    AfxGetApp()->WriteProfileInt(L"Editor\\Sort", L"KeyLength1",        mKeyLength       );
+    AfxGetApp()->WriteProfileInt(L"Editor\\Sort", L"RemoveDuplicates",  mRemoveDuplicates);
+    AfxGetApp()->WriteProfileInt(L"Editor\\Sort", L"IgnoreCase",        mIgnoreCase      );
 }

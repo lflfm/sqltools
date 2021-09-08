@@ -27,6 +27,7 @@
 #include "COMMON\AppGlobal.h"
 #include "ServerBackgroundThread\TaskQueue.h"
 #include "SQLUtilities.h" // for SQLUtilities::GetSafeDatabaseObjectName
+#include <ActivePrimeExecutionNote.h>
 
 using std::map;
 using namespace Common;
@@ -86,6 +87,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 50, 196);
 
                 Common::Substitutor subst;
@@ -167,6 +170,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 50, 196);
                 cur.Prepare(csz_index_col_sttm);
                 cur.Bind(":owner", m_schema.c_str());
@@ -241,6 +246,8 @@ void DBBrowserConstraintList::Refresh (bool force)
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 1, 196);
 
                 Common::Substitutor subst;
@@ -308,8 +315,8 @@ void DBBrowserConstraintList::ExtendContexMenu (CMenu* pMenu)
 {
     UINT grayed = IsSelectionEmpty() ? MF_GRAYED : 0;
 
-    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_ENABLE,  "&Enable");                      
-    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_DISABLE, "&Disable");                      
+    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_ENABLE,  L"&Enable");                      
+    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_DISABLE, L"&Disable");                      
     pMenu->AppendMenu(MF_SEPARATOR);
 
     //pMenu->DeleteMenu(ID_SQL_DESCRIBE, MF_BYCOMMAND);

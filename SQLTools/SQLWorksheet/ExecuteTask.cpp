@@ -47,12 +47,13 @@ void BackgroundTask_Execute::DoInBackground (OciConnect& connect)
         int nlines = m_proxy.GetLineCount();
         for (; line < nlines && line <= m_ctx.selection.end.line; line++)
         {
-            string str;
-            m_proxy.GetLine(line, str);
+            std::wstring wstr;
+            m_proxy.GetLine(line, wstr);
 
-            int len = (line == m_ctx.selection.end.line) ? min<int>(str.length(), m_ctx.selection.end.column) : str.length();
+            int len = (line == m_ctx.selection.end.line) ? min<int>(wstr.length(), m_ctx.selection.end.column) : wstr.length();
+            string utf8str = Common::str((len - offset > 0) ? &wstr.at(offset) : L"", (len - offset > 0) ? len - offset : 0);
 
-            commandParser.PutLine((len - offset > 0) ? &str.at(offset) : "", len - offset);
+            commandParser.PutLine(utf8str.c_str(), utf8str.length());
             offset = 0;
 
             if (m_ctx.IsSingleStatement() && performer.GetStatementCount())

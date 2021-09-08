@@ -1,3 +1,61 @@
++ finish adding ActivePrimeExecutionOnOff
++ Implement "Open Files" docking window
++ disable help button in setting dialog
++ replace context menu filer with simple checks
++ autocomplte is broken for subobjects
++ add help to "Find in Files"
+
+add edge viewer for html values
+restore workspace as workspace instead of snapshot
+add nuclear "cancel" - abandom the current connection
+
+unicode coverion todo list:
+    *) FF: avoid scanning same file twice
+    *) FF: add mutex for acessing some members
+    *) FF: open file with selectin match, convert inx to pos
+    *) FF: add regExp menu
+    *-) FF: add menu-button to add/delete/replace folder components (use _AfxAbbreviateName)
+    *) FF: polish the dialog
+    * ) FF: in memory search for open files
+    
+    * ) FF: grab the current word or selection, shared context with editor search (F3)
+    * ) FF: implement taranslate backslash sequences
+    * ) FF: add default for mask list 
+    * ) FF: fix context menu - enable/disable items depends on node type
+    * ) FF: close Result window on Cancel
+    - ) FF: move focus to editor on double click
+    * ) FF: select the first item in the result list
+    * ) FF: handle <Enter> in the result list
+    - ) FF: save windows position
+    - ) FF: vaidate composite folders [and file masks]
+
+    6 ) FF: configurable font for output window
+    7 ) FF: posible new shortut for go next / prev match
+    8 ) FF: <curr-file-folder>, {open-file-folders}
+    9 ) FF: append result instead of replacing or pin result
+    10) FF: posibly show line before and after in the tooltip (for text and sql files)
+
+    3) GetLineW use insted of GetLineA for all external use of OE
+    4?) conver to unicode version of GetCellStr
+    5) review and conver all oci procedures to unicode regardles their usage in the project
+    6) resizable connect dialog
+
+    *) restored tooltip functionality for mdi tabs
+    *) added paranoic filter to the custom shell context menu
+    *) find why object list is running on startup while it is sill hidden
+    *) fixed status bar messages
+    *) SELECT Dump('поро') FROM dual; cuts the output value
+    *) SELECT * FROM all_sdo_styles;
+    *) add coding page menu!
+    *) fix popup viewer wich truncates the content of cell
+    *) fix drag & drop from the grid into the editor
+
+
+
+
+
+/c=scott/tiger@w2k-10g:1521:test10 E:\_CPP\sqlt.19\TestFiles\current.sql
+
     exlore posibilty to use double acceplerators like Ctrl+K,Ctrl+F
 
     + one xml choice with dedicted customization page
@@ -10,11 +68,12 @@
 + fix presentation of column autocomplete
 + add CASE to sql analyzer
 code formatter
+*    http://www.dpriver.com/pp/sqlformat.htm
     http://beza1e1.tuxen.de/articles/formatting_code.html
     http://journal.stuffwithstuff.com/2015/09/08/the-hardest-program-ive-ever-written/
-    http://www.dpriver.com/pp/sqlformat.htm
     https://solutioncenter.apexsql.com/sql-formatting-standards-joins-lists-structure-operations/
     https://github.com/jdorn/sql-formatter/blob/master/lib/SqlFormatter.php
+    https://sourceforge.net/projects/fsqlf/?source=navbar
 
     grid popup viewer -> with xml/html support, activate on Ctrl+F2 or Ctrl+Lefft Mouse Button, do not calcel scrolling on ctrl, shift and alt
         save window position and tab choice

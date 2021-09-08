@@ -14,7 +14,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-    std::string m_Passwords[2];
+    std::wstring m_Passwords[2];
     bool m_SavePasswords;
     std::string m_ScriptOnLogin;
 protected:

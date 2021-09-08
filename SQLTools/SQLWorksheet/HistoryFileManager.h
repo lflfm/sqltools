@@ -34,10 +34,10 @@ public:
     static HistoryFileManager& GetInstance ();
 
     // set history folder, create/open cataloger
-    void SetFolder (const char*);
+    void SetFolder (const wchar_t*);
 
-    void Load  (HistorySource&, const char* filename);
-    void Save  (HistorySource&, const char* filename);
+    void Load  (HistorySource&, const wchar_t* filename);
+    void Save  (HistorySource&, const wchar_t* filename);
 
     // this method creates a new history source or returns an globale one
     counted_ptr<HistorySource> CreateSource ();
@@ -48,14 +48,14 @@ private:
     HistoryFileManager (); 
     ~HistoryFileManager ();
 
-    std::string getHistoryFile (const char*);
-    bool lookupHistoryFileName (const char*, std::string&, std::set<std::string>* = 0);
-    void createHistoryFileName (std::string&, const std::set<std::string>&);
+    std::wstring getHistoryFile (const wchar_t*);
+    bool lookupHistoryFileName (const wchar_t*, std::wstring&, std::set<std::wstring>* = 0);
+    void createHistoryFileName (std::wstring&, const std::set<std::wstring>&);
 
-    void save  (HistorySource&, const char* filename, std::ostream&);
+    void save  (HistorySource&, const wchar_t* filename, std::ostream&);
     bool merge (std::istream&, std::istream&, std::ostream&);
 
-    std::string m_folder;
+    std::wstring m_folder;
     counted_ptr<HistorySource> m_globalSource;
 
     static HistoryFileManager theInstance;

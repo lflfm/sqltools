@@ -17,8 +17,8 @@
 */
 
 #include "stdafx.h"
-#include "COMMON\AppGlobal.h"
-
+#include "AppGlobal.h"
+#include "MyUtf.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,47 +38,53 @@ HWND SetStatusHwnd (HWND hWnd)
     return _hWnd;
 }
 
+
 void SetStatusText (const char* text, BOOL update)
+{
+    SetStatusText (Common::wstr(text).c_str(), update);
+}
+
+void SetStatusText (const wchar_t* text, BOOL update)
 {
     if (hWndStatus)
     {
         CWnd* wnd = CWnd::FromHandle(hWndStatus);
-        if (wnd && wnd->IsKindOf(RUNTIME_CLASS(CStatusBar)))
+        if (wnd && wnd->IsKindOf(RUNTIME_CLASS(CMFCStatusBar)))
         {
-            ((CStatusBar*)wnd)->SetWindowText(text);
+            ((CMFCStatusBar*)wnd)->SetWindowText(text);
             if (update)
-                ((CStatusBar*)wnd)->UpdateWindow();
+                ((CMFCStatusBar*)wnd)->UpdateWindow();
         }
     }
 }
 
-void GetHelpPath (std::string& path)
+void GetHelpPath (CString& path)
 {
-    path = AfxGetApp()->GetProfileString("Roots", "Help");
+    path = AfxGetApp()->GetProfileString(_T("Roots"), _T("Help"));
     
-    if (path.empty())
+    if (path.IsEmpty())
         Common::AppGetPath(path);
 }
 
-void GetHistoryPath (std::string& path)
+void GetHistoryPath (CString& path)
 {
-    path = AfxGetApp()->GetProfileString("Roots", "History");
+    path = AfxGetApp()->GetProfileString(_T("Roots"), _T("History"));
     
-    if (path.empty())
+    if (path.IsEmpty())
     {
         Common::AppGetPath(path);
-        path += "\\sql-history";
+        path += L"\\sql-history";
     }
 }
 
-void GetSettingsPath (std::string& path)
+void GetSettingsPath (CString& path)
 {
-    path = AfxGetApp()->GetProfileString("Roots", "Settings");
+    path = AfxGetApp()->GetProfileString(_T("Roots"), _T("Settings"));
     
-    if (path.empty()) 
+    if (path.IsEmpty()) 
     {
         Common::AppGetPath(path);
-        path += "\\data";
+        path += L"\\data";
     }
 }
 

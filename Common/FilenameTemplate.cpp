@@ -52,12 +52,12 @@ void FilenameTemplate::Format (const char* format, std::string& title, int count
         if (it->timeFormat)
         {
             CString buff = tm.Format(it->timeFormat);
-            subst.AddPair(it->displayFormat, buff);
+            subst.AddPair(it->displayFormat, Common::str(buff));
         }
 
     CString buff;
-    buff.Format("%d", counter + 1);
-    subst.AddPair("&n", buff);
+    buff.Format(L"%d", counter + 1);
+    subst.AddPair("&n", Common::str(buff));
 
     subst << format;
 

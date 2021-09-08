@@ -23,12 +23,8 @@
 
 #include <string>
 #include "MetaDict/MetaSettings.h"
-#include <OpenEditor/OEStreams.h>
 
     using std::string;
-    using OpenEditor::Stream;
-    using OpenEditor::InStream;
-    using OpenEditor::OutStream;
 
 class ExtractDDLSettings : public OraMetaDict::WriteSettings
 {
@@ -50,64 +46,37 @@ public:
     CMN_DECL_PUBLIC_PROPERTY(bool,   UseDbAlias);
     CMN_DECL_PUBLIC_PROPERTY(int,    UseDbAliasAs);
 
-    CMN_DECL_PUBLIC_PROPERTY(string, TableFolder);
-    CMN_DECL_PUBLIC_PROPERTY(string, TriggerFolder);
-    CMN_DECL_PUBLIC_PROPERTY(string, ViewFolder);
-    CMN_DECL_PUBLIC_PROPERTY(string, SequenceFolder);
-    CMN_DECL_PUBLIC_PROPERTY(string, TypeFolder);
-    CMN_DECL_PUBLIC_PROPERTY(string, TypeBodyFolder);
-    CMN_DECL_PUBLIC_PROPERTY(string, FunctionFolder);
-    CMN_DECL_PUBLIC_PROPERTY(string, ProcedureFolder);
-    CMN_DECL_PUBLIC_PROPERTY(string, PackageFolder);
-    CMN_DECL_PUBLIC_PROPERTY(string, PackageBodyFolder);
-    CMN_DECL_PUBLIC_PROPERTY(string, GrantFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, TableFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, TriggerFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, ViewFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, SequenceFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, TypeFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, TypeBodyFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, FunctionFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, ProcedureFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, PackageFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, PackageBodyFolder);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, GrantFolder);
 
-    CMN_DECL_PUBLIC_PROPERTY(string, TableExt);
-    CMN_DECL_PUBLIC_PROPERTY(string, TriggerExt); 
-    CMN_DECL_PUBLIC_PROPERTY(string, ViewExt);
-    CMN_DECL_PUBLIC_PROPERTY(string, SequenceExt);
-    CMN_DECL_PUBLIC_PROPERTY(string, TypeExt);
-    CMN_DECL_PUBLIC_PROPERTY(string, TypeBodyExt);
-    CMN_DECL_PUBLIC_PROPERTY(string, FunctionExt);
-    CMN_DECL_PUBLIC_PROPERTY(string, ProcedureExt);
-    CMN_DECL_PUBLIC_PROPERTY(string, PackageExt);
-    CMN_DECL_PUBLIC_PROPERTY(string, PackageBodyExt);
-    CMN_DECL_PUBLIC_PROPERTY(string, GrantExt);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, TableExt);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, TriggerExt); 
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, ViewExt);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, SequenceExt);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, TypeExt);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, TypeBodyExt);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, FunctionExt);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, ProcedureExt);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, PackageExt);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, PackageBodyExt);
+    CMN_DECL_PUBLIC_PROPERTY(std::wstring, GrantExt);
 
 public:
-    std::string	
+    std::wstring	
         m_strSchema,
 	    m_strFolder,
         m_strDbAlias,
         m_strTableTablespace,
         m_strIndexTablespace;
-};
-
-
-class ExtractDDLSettingsReader
-{
-public:
-    ExtractDDLSettingsReader (InStream& in) : m_in(in) {}
-    virtual ~ExtractDDLSettingsReader () {}
-
-    void operator >> (ExtractDDLSettings&);
-
-protected:
-    InStream& m_in;
-    int       m_version;
-};
-
-
-class ExtractDDLSettingsWriter
-{
-public:
-    ExtractDDLSettingsWriter (OutStream& out) : m_out(out) {}
-    virtual ~ExtractDDLSettingsWriter () {}
-
-    void operator << (const ExtractDDLSettings&);
-
-protected:
-    OutStream& m_out;
 };
 
 #endif//__ExtractDDLSettings_H__

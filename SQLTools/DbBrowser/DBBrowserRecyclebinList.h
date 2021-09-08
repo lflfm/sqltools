@@ -79,23 +79,23 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case 0: return "Name"       ;
-            case 1: return "Oper"       ;
-            case 2: return "Type"       ;
-            case 3: return "Partition"  ;
-            case 4: return "Tablespace" ;
-            case 5: return "Created"    ;
-            case 6: return "Dropped"    ;
-            case 7: return "Can Undrop" ;
-            case 8: return "Can Purge"  ;
-            case 9: return "Space (blk)";
+            case 0: return L"Name"       ;
+            case 1: return L"Oper"       ;
+            case 2: return L"Type"       ;
+            case 3: return L"Partition"  ;
+            case 4: return L"Tablespace" ;
+            case 5: return L"Created"    ;
+            case 6: return L"Dropped"    ;
+            case 7: return L"Can Undrop" ;
+            case 8: return L"Can Purge"  ;
+            case 9: return L"Space (blk)";
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case 0: return getStr(data(row).original_name );
             case 1: return getStr(data(row).operation     );
@@ -108,7 +108,7 @@
             case 8: return getStr(data(row).can_purge     );
             case 9: return getStr(data(row).space         );
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {

@@ -1,6 +1,6 @@
 /*
 	SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,30 +20,14 @@
 #include "stdafx.h"
 #include "SQLTools.h"
 #include "ConnectionBar.h"
-
-
-    static UINT BASED_CODE styles[] =
-    {
-	    ID_SQL_CONNECT,
-	    ID_SQL_DISCONNECT,
-        ID_SQL_RECONNECT,
-	    ID_SEPARATOR,
-	    ID_SEPARATOR, // for indicator
-    };
-
-    static const int cnIndicatorInx = 4;
-    static const int cnIndicatorId  = 111;
-    static const CSize g_buttonSize = CSize(19, 19);
-    static const CRect g_toolbarBorders = CRect(1, 1, 1, 1);
+#include "ConnectionButton.h"
 
 // ConnectionBar
 /*
-IMPLEMENT_DYNAMIC(ConnectionBar, CToolBar)
+IMPLEMENT_DYNAMIC(ConnectionBar, CMFCToolBar)
 */
 ConnectionBar::ConnectionBar()
 {
-	m_btnDelta.cx = m_sizeButton.cx - m_sizeImage.cx;
-	m_btnDelta.cy = m_sizeButton.cy - m_sizeImage.cy;
 }
 
 ConnectionBar::~ConnectionBar()
@@ -52,71 +36,67 @@ ConnectionBar::~ConnectionBar()
 
 BOOL ConnectionBar::Create (CWnd* pParent, UINT id)
 {
-	if (!CreateEx(pParent, 0, WS_CHILD | WS_VISIBLE | CBRS_TOP
-		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC, g_toolbarBorders, id)
-    || !LoadBitmap(IDB_CONNECT)
-    || !SetButtons(styles, sizeof(styles)/sizeof(UINT)))
+	if (!CreateEx(pParent, TBSTYLE_FLAT, 
+        WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC, 
+        CRect(1,1,1,1), id)
+    || !LoadToolBar(IDT_CONNECT)
+    )
 	{
         TRACE0("ConnectionBar::Create: CreateEx failed\n");
 		return FALSE;
 	}
-    ModifyStyle(0, TBSTYLE_FLAT);
     EnableDocking(CBRS_ALIGN_TOP|CBRS_ALIGN_BOTTOM);
 
-    SetSizes(CSize(g_buttonSize.cx + m_btnDelta.cx, g_buttonSize.cy + m_btnDelta.cy), g_buttonSize);
-	SetButtonInfo(cnIndicatorInx, cnIndicatorId, TBBS_SEPARATOR, 240);
-
-    CRect rect;
-	GetItemRect(cnIndicatorInx, &rect);
-    rect.InflateRect(CSize(-2, -2));
-
     ModifyStyleEx(0, WS_EX_COMPOSITED); // to impove animation smoothness
-	if (!m_wndLabel.CreateEx(WS_EX_STATICEDGE, "Static", NULL,
-            WS_CHILDWINDOW|WS_VISIBLE|SS_OWNERDRAW, rect, this, cnIndicatorId))
-	{
-        TRACE0("ConnectionBar::Create: m_wndLabel.CreateEx failed\n");
-		return FALSE;
-	}
 
-	HFONT hfont = (HFONT)::GetStockObject(DEFAULT_GUI_FONT);
-
-    if (!hfont)
-        hfont = (HFONT)::GetStockObject(SYSTEM_FONT);
-
-    m_wndLabel.SendMessage(WM_SETFONT, (WPARAM)hfont, (LPARAM)TRUE);
+	ConnectionButton comboButtonConfig(ID_SQL_CONN_DESCRIPTION, GetCmdMgr()->GetCmdImage(ID_SQL_CONN_DESCRIPTION, FALSE), CBS_DROPDOWNLIST);
+	ReplaceButton(ID_SQL_CONN_DESCRIPTION, comboButtonConfig);
 
     return TRUE;
 }
 
 /*
-BEGIN_MESSAGE_MAP(ConnectionBar, CToolBar)
+BEGIN_MESSAGE_MAP(ConnectionBar, CMFCToolBar)
 END_MESSAGE_MAP()
 */
 
-// ConnectionBar message handlers
-
-void CConnectionLabel::SetConnectionDescription (LPCSTR pText, COLORREF color)
+LabelWithWaitBar* ConnectionBar::GetLabel () const
 {
-    m_text = pText;
-    m_textColor = color;
-    if (m_hWnd) Invalidate(TRUE);
+	ConnectionButton* pConnectionBar = NULL;
+
+	CObList listButtons;
+	if (CMFCToolBar::GetCommandButtons(ID_SQL_CONN_DESCRIPTION, listButtons) > 0)
+	{
+		for (POSITION pos = listButtons.GetHeadPosition(); pConnectionBar == NULL && pos != NULL; )
+			pConnectionBar = DYNAMIC_DOWNCAST(ConnectionButton, listButtons.GetNext(pos));
+	}
+
+    return pConnectionBar ? pConnectionBar->GetLabel() : NULL;
 }
 
-void CConnectionLabel::DrawItem (LPDRAWITEMSTRUCT lpDrawItemStruct)
-{
-    if (lpDrawItemStruct)
-    {
-        HBRUSH hbrush = CreateSolidBrush(GetSysColor(COLOR_3DFACE));
-        ::FillRect(lpDrawItemStruct->hDC, &lpDrawItemStruct->rcItem, hbrush);
-        ::DeleteObject(hbrush);
+const CString ConnectionBar::GetText() const 
+{ 
+    if (LabelWithWaitBar* label = GetLabel())
+        label->GetText();
 
-        ::SetTextColor(lpDrawItemStruct->hDC, m_textColor);
-
-        RECT rc = lpDrawItemStruct->rcItem;
-        ::DrawText(lpDrawItemStruct->hDC, m_text, -1, &rc, DT_CALCRECT|DT_VCENTER|DT_SINGLELINE);
-
-        BOOL fit = ((rc.right - rc.left) < (lpDrawItemStruct->rcItem.right - lpDrawItemStruct->rcItem.left)) ? TRUE : FALSE;
-
-        ::DrawText(lpDrawItemStruct->hDC, m_text, -1, &lpDrawItemStruct->rcItem, fit ? DT_CENTER|DT_VCENTER|DT_SINGLELINE : DT_LEFT|DT_VCENTER|DT_SINGLELINE);
-    }
+    return L"";
 }
+
+void ConnectionBar::SetConnectionDescription (LPCTSTR pText, COLORREF color)
+{ 
+    if (LabelWithWaitBar* label = GetLabel())
+        label->SetText(pText, color);
+}
+
+void ConnectionBar::SetColor (COLORREF color)
+{ 
+    if (LabelWithWaitBar* label = GetLabel())
+        label->SetText(label->GetText(), color); 
+}
+
+void ConnectionBar::StartAnimation (bool animation)
+{ 
+    if (LabelWithWaitBar* label = GetLabel())
+        label->StartAnimation(animation); 
+}
+

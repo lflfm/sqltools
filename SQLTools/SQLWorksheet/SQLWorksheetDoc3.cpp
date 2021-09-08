@@ -56,14 +56,14 @@ void CPLSWorksheetDoc::OnSqlExecuteInSQLPlus ()
     if (!theApp.GetConnectOpen())
     {
         MessageBeep((UINT)-1);
-        AfxMessageBox("Not connected to database.", MB_OK|MB_ICONSTOP);
+        AfxMessageBox(L"Not connected to database.", MB_OK|MB_ICONSTOP);
         return;
     }
 
     string sqlplus = "SQLPLUS";
 
     bool bWriteToTempFile;
-    string sFilename;
+    std::wstring sFilename;
     OpenEditor::Square sel;
     m_pEditor->GetSelection(sel);
     sel.normalize();
@@ -75,7 +75,7 @@ void CPLSWorksheetDoc::OnSqlExecuteInSQLPlus ()
     {
         if (IsModified())
         {
-            switch (AfxMessageBox("Do you want to save the file before executing SQL*Plus?", MB_YESNOCANCEL|MB_ICONQUESTION))
+            switch (AfxMessageBox(L"Do you want to save the file before executing SQL*Plus?", MB_YESNOCANCEL|MB_ICONQUESTION))
             {
             case IDCANCEL:
                 return;
@@ -100,10 +100,10 @@ void CPLSWorksheetDoc::OnSqlExecuteInSQLPlus ()
         else
         {
             sFilename = GetPathName();
-            if (sFilename.empty() || (sFilename == ""))
+            if (sFilename.empty() || (sFilename == L""))
             {
                 MessageBeep((UINT)-1);
-                AfxMessageBox("Running an empty document in SQL*Plus is not supported.", MB_OK|MB_ICONSTOP);
+                AfxMessageBox(L"Running an empty document in SQL*Plus is not supported.", MB_OK|MB_ICONSTOP);
                 return;
             }
         }
@@ -118,7 +118,7 @@ void CPLSWorksheetDoc::OnSqlExecuteInSQLPlus ()
         sel.start.column = m_pEditor->PosToInx(sel.start.line, sel.start.column);
         sel.end.column   = m_pEditor->PosToInx(sel.end.line, sel.end.column);
 
-        sFilename = TempFilesManager::CreateFile("SQL");
+        sFilename = TempFilesManager::CreateFile(L"SQL");
 
         if (!sFilename.empty())
         {
@@ -127,26 +127,29 @@ void CPLSWorksheetDoc::OnSqlExecuteInSQLPlus ()
             if (hFile == INVALID_HANDLE_VALUE)
             {
                 MessageBeep((UINT)-1);
-                AfxMessageBox("Cannot open temporary file for SQL*Plus.", MB_OK|MB_ICONSTOP);
+                AfxMessageBox(L"Cannot open temporary file for SQL*Plus.", MB_OK|MB_ICONSTOP);
                 return;
             }
             DWORD written;
 
             int line = sel.start.line;
             int offset = sel.start.column;
-            int len;
-            const char* str;
             const char lf[] = "\r\n";
 
+//TODO: test!
             for (; line < nlines && line <= sel.end.line; line++)
             {
-                m_pEditor->GetLine(line, str, len);
+                Common::OEStringW wbuff;
+                m_pEditor->GetLineW(line, wbuff);
 
+                int len = wbuff.length();
                 if (line == sel.end.line)
                     len = min(len, sel.end.column);
 
-                if (len > 0)
-                    WriteFile(hFile, str + offset, len - offset, &written, 0);
+                string utf8buff = Common::str(wbuff.data() + offset, len - offset);
+
+                if (utf8buff.length() > 0)
+                    WriteFile(hFile, utf8buff.c_str(), utf8buff.length(), &written, 0);
 
                 WriteFile(hFile, lf, sizeof(lf) - 1, &written, 0);
                 
@@ -158,7 +161,7 @@ void CPLSWorksheetDoc::OnSqlExecuteInSQLPlus ()
         else
         {
             MessageBeep((UINT)-1);
-            AfxMessageBox("Cannot generate a temporary file for SQL*Plus.", MB_OK|MB_ICONSTOP);
+            AfxMessageBox(L"Cannot generate a temporary file for SQL*Plus.", MB_OK|MB_ICONSTOP);
             return;
         }
     }
@@ -175,11 +178,11 @@ void CPLSWorksheetDoc::OnSqlExecuteInSQLPlus ()
     }
     subst.AddPair("$(SYS_PRIVS)", sys_privs);
     subst.AddPair("$(CONNECT_STRING)", theApp.GetConnectAlias());
-    subst.AddPair("$(FILENAME)", string(string("\"") + sFilename + "\"").c_str());
+    subst.AddPair("$(FILENAME)", Common::str(L"\"" + sFilename + L"\"").c_str());
     subst << GetSQLToolsSettings().GetSQLPlusExecutable().c_str()
         << " " << GetSQLToolsSettings().GetSQLPlusCommandLine().c_str();
 
-    string sParameter = subst.GetResult();
+    std::wstring sParameter = Common::wstr(subst.GetResult());
 
     {
         CString path = bWriteToTempFile ? sFilename.c_str() : GetPathName();
@@ -204,7 +207,7 @@ void CPLSWorksheetDoc::OnSqlExecuteInSQLPlus ()
 
     // Start the child process. 
     if( !CreateProcess( NULL, // module name
-        (LPSTR) sParameter.c_str(),// Command line
+        (LPWSTR) sParameter.c_str(),// Command line
         NULL,           // Process handle not inheritable
         NULL,           // Thread handle not inheritable
         FALSE,          // Set handle inheritance to FALSE                              `
@@ -216,7 +219,7 @@ void CPLSWorksheetDoc::OnSqlExecuteInSQLPlus ()
     ) 
     {
         MessageBeep((UINT)-1);
-        AfxMessageBox((string("Spawning SQL*Plus failed. Command line used:\n") + sParameter).c_str(), MB_OK|MB_ICONSTOP);
+        AfxMessageBox(((L"Spawning SQL*Plus failed. Command line used:\n") + sParameter).c_str(), MB_OK|MB_ICONSTOP);
         return;
     }
 }

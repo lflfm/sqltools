@@ -1,0 +1,81 @@
+<HTML>
+    <HEAD>
+        <TITLE></TITLE>
+        <META content="Microsoft Visual Studio 7.0" name="GENERATOR">
+        <LINK href="_sqltools.css" type="text/css" rel="stylesheet">
+        <style type="text/css">
+            .auto-style1 {
+                width: 231px;
+            }
+        </style>
+    </HEAD>
+    <BODY>
+        <OBJECT id="Object1" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e" type="application/x-oleobject"
+            VIEWASTEXT>
+            <PARAM NAME="Keyword" VALUE="Find in Files">
+            <PARAM NAME="Keyword" VALUE="Find">
+            <PARAM NAME="Keyword" VALUE="Grep">
+        </OBJECT>
+        <H3></A>Find in Files</H3>
+        <HR SIZE="3">
+        <P><strong>Find in Files</strong> allows you to search a specified set of files. The matches found and actions taken are listed in the <strong>Find Results</strong> window</P>
+        <H4>Find what</H4>
+        <P>To search for a new text string or expression, specify it in the box. Choose the adjacent Expression Builder button if you want to use one or more regular expressions in your search string. </P>
+        <H4>File masks</H4>
+        <P>This comma delimited list indicates the masks (with wildcards ? and *) of files to search through in the <strong>Look in</strong> directories. If this field is blank, all of the files in the <strong>Look in</strong> directories will be searched.</P>
+        <H4>Look in</H4>
+        <P>Specify the folder or multiple folders where the searching takes place. This is semi-colon delimited list. Click the Browse (...) button to add or modify any component of the list.</P>
+        <P>You can combine the following placeholders with explicitly entered pathes: </P>
+        <P>
+            <table>
+                <tr>
+                    <th class="auto-style1">Placeholders</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td class="auto-style1">&lt;CURRENT_DIR&gt; or &lt;CD&gt;</td>
+                    <td>The directory of the active file. If the file is new then te directory of the open workspace will be used otherwise it is undefined.</td>
+                </tr>
+                <tr>
+                    <td class="auto-style1">&lt;WORKSTACE_DIR&gt; or &lt;WD&gt;</td>
+                    <td>The directory of the active workspace. </td>
+                </tr>
+                <tr>
+                    <td class="auto-style1">&lt;OPEN_DIRS&gt; or &lt;OD&gt;</td>
+                    <td>The directories of all open files.</td>
+                </tr>
+                <tr>
+                    <td class="auto-style1">&lt;BACKUP_DIR&gt; or &lt;BD&gt;</td>
+                    <td>The program backup folder.</td>
+                </tr>
+            </table>
+        </P>
+        <H4>Math whole word only</H4>
+        <P>When selected, the Find Results windows will only return whole word matches.</P>
+        <H4>Match case</H4>
+        <P>When selected, a Find Results search will be case-sensitive.</P>
+        <H4>Regular Expressions</H4>
+        <P>If this check box is selected, you can use special notations to define patterns of text to match in the <strong>Find what</strong> text box.</P>
+        <H4>Backslash expressions</H4>
+        <P>Check this option if you want to use the followin unprintable characters in Find what:<br>
+                &nbsp;&nbsp;&nbsp;
+                \a&nbsp;&nbsp;&nbsp;&nbsp; Bell (alert) <br>
+                &nbsp;&nbsp;&nbsp;
+                \b&nbsp;&nbsp;&nbsp;&nbsp; Backspace <br>
+                &nbsp;&nbsp;&nbsp;
+                \f&nbsp;&nbsp;&nbsp;&nbsp; Formfeed <br>
+                &nbsp;&nbsp;&nbsp;
+                \t&nbsp;&nbsp;&nbsp;&nbsp; Horizontal tab <br>
+                &nbsp;&nbsp;&nbsp;
+                \v&nbsp;&nbsp;&nbsp;&nbsp; Vertical tab <br>
+        </P>
+        <H4>Share search context with editor search (F3)</H4>
+        <P>Check this option to share Find in File options with Edior Search.</P>
+        <H4>Look in subfolders</H4>
+        <P>Search also sub-folders of the specified folder(s).</P>
+        <H4>Search in open files</H4>
+        <P>Check this option if you want to search matching open files rather than their saved versions.</P>
+        <H4>Collapsed search results</H4>
+        <P>Check this option if you want to see only file names in Find Results. You will be able to expand a file item and see matching lines.</P>
+    </BODY>
+</HTML>

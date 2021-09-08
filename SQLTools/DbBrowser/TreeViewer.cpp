@@ -19,7 +19,7 @@
 
 /*
     09.05.2016 Count query (Ctrl+F11) fails from Object Viewer if table/view selected w/o columns
-    2018.02.24 Object Viewer "Query" and "Count" commands work with partitions and subpartitions 
+    2018.02.24 Object Viewer "Query" and "Count" commands work with partitions2 and subpartitions 
     2018.02.24 Added help for Data grid and Object Viewer
 */
 #include "stdafx.h"
@@ -40,6 +40,7 @@
 #include <Common/StrHelpers.h>
 #include "ServerBackgroundThread\TaskQueue.h"
 #include "ConnectionTasks.h"
+#include "ActivePrimeExecutionNote.h"
 
 using namespace ObjectTree;
 using namespace ServerBackgroundThread;
@@ -130,13 +131,13 @@ void CTreeViewer::OnInit ()
         menu.CreatePopupMenu();
 
         //BuildContexMenu(menu, 0);
-        menu.AppendMenu(MF_STRING, ID_EDIT_COPY,  "dummy");
-        menu.AppendMenu(MF_STRING, ID_SQL_LOAD,  "dummy");
-        menu.AppendMenu(MF_STRING, ID_SQL_LOAD_WITH_DBMS_METADATA,  "dummy");
-        menu.AppendMenu(MF_STRING, ID_SQL_QUICK_QUERY,  "dummy");
-        menu.AppendMenu(MF_STRING, ID_SQL_QUICK_COUNT,  "dummy");
-        menu.AppendMenu(MF_STRING, ID_OV_PURGE_CACHE,  "dummy");
-        menu.AppendMenu(MF_STRING, ID_OV_SETTING,  "dummy");
+        menu.AppendMenu(MF_STRING, ID_EDIT_COPY,  L"dummy");
+        menu.AppendMenu(MF_STRING, ID_SQL_LOAD,  L"dummy");
+        menu.AppendMenu(MF_STRING, ID_SQL_LOAD_WITH_DBMS_METADATA,  L"dummy");
+        menu.AppendMenu(MF_STRING, ID_SQL_QUICK_QUERY,  L"dummy");
+        menu.AppendMenu(MF_STRING, ID_SQL_QUICK_COUNT,  L"dummy");
+        menu.AppendMenu(MF_STRING, ID_OV_PURGE_CACHE,  L"dummy");
+        menu.AppendMenu(MF_STRING, ID_OV_SETTING,  L"dummy");
 
 		m_accelTable = Common::GUICommandDictionary::GetMenuAccelTable(menu.m_hMenu);
 	}
@@ -227,14 +228,14 @@ void CTreeViewer::ShowObject (const ObjectDescriptor& objDesc, const std::vector
 
     if (Object* object = m_pNodePool->CreateObject(objDesc))
     {
-        string label = object->GetLabel(0).c_str();
+        std::wstring label = Common::wstr(object->GetLabel(0));
 
         TV_INSERTSTRUCT  tvstruct;
         memset(&tvstruct, 0, sizeof(tvstruct));
         tvstruct.hParent      = TVI_ROOT;
         tvstruct.hInsertAfter = TVI_LAST;
         tvstruct.item.mask    = TVIF_TEXT|TVIF_PARAM|TVIF_CHILDREN|TVIF_IMAGE|TVIF_SELECTEDIMAGE;
-        tvstruct.item.pszText = (LPSTR)label.c_str();
+        tvstruct.item.pszText = (LPWSTR)label.c_str();
         tvstruct.item.lParam  = reinterpret_cast<LPARAM>(static_cast<TreeNode*>(object));
         tvstruct.item.iImage  =
         tvstruct.item.iSelectedImage = object->GetImage();
@@ -280,6 +281,8 @@ void CTreeViewer::ShowObject (const ObjectDescriptor& objDesc, const std::vector
 
         void DoInBackground (OciConnect& connect)
         {
+            // cannot use ActivePrimeExecutionOnOff onOff; here bewcause of messaging on drag&drop
+
             vector<TreeNode*>::iterator it = m_cloned.begin();
             for (; it != m_cloned.end(); ++it)
                 if (*it)
@@ -367,17 +370,17 @@ const string CTreeViewer::GetSelectedItemsAsText (bool shift /*= false*/, bool c
         bool use_alias = false;
         if ((GetAsyncKeyState(VK_MENU) & 0x8000) != 0)
         {
-            static string table_alias;
+            static std::wstring table_alias;
             Common::CInputDlg dlg;
-            dlg.m_title  = "SQLTools";
-            dlg.m_prompt = "&Input table alias:";
+            dlg.m_title  = L"SQLTools";
+            dlg.m_prompt = L"&Input table alias:";
             dlg.m_value  = table_alias;
 
             if (dlg.DoModal() == IDOK)
             {
                 use_alias = true;
-                ctx.m_table_alias = 
                 table_alias = dlg.m_value;
+                ctx.m_table_alias = Common::str(dlg.m_value);
             }
         }
 
@@ -400,7 +403,7 @@ const string CTreeViewer::GetSelectedItemsAsText (bool shift /*= false*/, bool c
             if (WaitForSingleObject(m_bkgrSyncEvent, 3000) == WAIT_OBJECT_0)
                 task->ReturnInForeground();
             else
-                AfxMessageBox("Timeout error while loading object(s).\nPlease try again.", MB_ICONERROR | MB_OK); 
+                AfxMessageBox(L"Timeout error while loading object(s).\nPlease try again.", MB_ICONERROR | MB_OK); 
 
         }
 
@@ -460,6 +463,8 @@ void CTreeViewer::EvOnDisconnect ()
 
         void DoInBackground (OciConnect& connect)
         {
+            ActivePrimeExecutionOnOff onOff;
+
             if (m_cloned)
                 m_cloned->Load(connect);
 
@@ -480,7 +485,7 @@ void CTreeViewer::EvOnDisconnect ()
             else if (node)
             {
                 // remove (Loading...)
-                m_viewer.SetItemText(m_hItem, (node->GetLabel(0) + "\t(error)").c_str());
+                m_viewer.SetItemText(m_hItem, Common::wstr(node->GetLabel(0) + "\t(error)").c_str());
             }
         }
 
@@ -499,12 +504,12 @@ void CTreeViewer::ExpandItem (HTREEITEM hItem)
 
         if (node)
         {
-            string label;
+            std::wstring label1;
             bool expandFirstChild = false;
             {
                 HTREEITEM hParent = GetParentItem(hItem);
                 SafeTreeNodePtr parent(m_pNodePool, (hParent ? GetItemData(hParent) : 0));
-                label = node->GetLabel(parent.get()).c_str(); // label might be modified on load
+                label1 = Common::wstr(node->GetLabel(parent.get())); // label might be modified on load
                 if (!hParent && node->GetType() == "SYNONYM")
                     expandFirstChild = true;
             }
@@ -514,7 +519,7 @@ void CTreeViewer::ExpandItem (HTREEITEM hItem)
                 TV_ITEM item;
                 item.hItem     = hItem;
                 item.mask      = TVIF_CHILDREN | TVIF_TEXT;
-                item.pszText   = (LPSTR)label.c_str();
+                item.pszText   = (LPWSTR)label1.c_str();
                 item.cChildren = node->IsComplete() ? node->GetChildrenCount() : 1;
                 SetItem(&item);
 
@@ -528,8 +533,8 @@ void CTreeViewer::ExpandItem (HTREEITEM hItem)
                 {
                     TreeNode* child = node->GetChild(i);
 
-                    string label = child->GetLabel(node.get()).c_str();
-                    tvstruct.item.pszText = (LPSTR)label.c_str();
+                    std::wstring label2 = Common::wstr(child->GetLabel(node.get()));
+                    tvstruct.item.pszText = (LPWSTR)label2.c_str();
                     tvstruct.item.lParam  = reinterpret_cast<LPARAM>(static_cast<TreeNode*>(child));
                     tvstruct.item.iImage  =
                     tvstruct.item.iSelectedImage = child->GetImage();
@@ -546,8 +551,8 @@ void CTreeViewer::ExpandItem (HTREEITEM hItem)
                 TV_ITEM item;
                 item.hItem     = hItem;
                 item.mask      = TVIF_CHILDREN | TVIF_TEXT;
-                label          +=  "\t(loading...)";
-                item.pszText   = (LPSTR)label.c_str();
+                label1         +=  L"\t(loading...)";
+                item.pszText   = (LPWSTR)label1.c_str();
                 item.cChildren = node->IsComplete() ? node->GetChildrenCount() : 1;
                 SetItem(&item);
 
@@ -596,9 +601,9 @@ void CTreeViewer::BuildContexMenu (CMenu& menu, HTREEITEM hItem)
     bool canLoadDDL = (selectedCount == 1) && (object && object->IsTrueObject()) ? true : false;
 
 
-    menu.AppendMenu(node ? MF_STRING : MF_STRING|MF_GRAYED, ID_EDIT_COPY,  "&Copy");
-    menu.AppendMenu(canLoadDDL ? MF_STRING : MF_STRING|MF_GRAYED, ID_SQL_LOAD,   "&Load DDL");
-    menu.AppendMenu(canLoadDDL ? MF_STRING : MF_STRING|MF_GRAYED, ID_SQL_LOAD_WITH_DBMS_METADATA,   "Load DDL with Dbms_&Metadata");
+    menu.AppendMenu(node ? MF_STRING : MF_STRING|MF_GRAYED, ID_EDIT_COPY, L"&Copy");
+    menu.AppendMenu(canLoadDDL ? MF_STRING : MF_STRING|MF_GRAYED, ID_SQL_LOAD, L"&Load DDL");
+    menu.AppendMenu(canLoadDDL ? MF_STRING : MF_STRING|MF_GRAYED, ID_SQL_LOAD_WITH_DBMS_METADATA, L"Load DDL with Dbms_&Metadata");
     menu.AppendMenu(MF_SEPARATOR);
 
     Table* table    = object ? dynamic_cast<Table*>(object) : 0;
@@ -622,8 +627,8 @@ void CTreeViewer::BuildContexMenu (CMenu& menu, HTREEITEM hItem)
 
     if (table || view)
     {
-        menu.AppendMenu(MF_STRING, ID_SQL_QUICK_QUERY, "&Query");
-        menu.AppendMenu(MF_STRING, ID_SQL_QUICK_COUNT, "&Count query");
+        menu.AppendMenu(MF_STRING, ID_SQL_QUICK_QUERY, L"&Query");
+        menu.AppendMenu(MF_STRING, ID_SQL_QUICK_COUNT, L"&Count query");
         menu.AppendMenu(MF_SEPARATOR);
     }
 
@@ -632,8 +637,8 @@ void CTreeViewer::BuildContexMenu (CMenu& menu, HTREEITEM hItem)
         CMenu srtMenu;
         srtMenu.CreateMenu();
 
-        srtMenu.AppendMenu(MF_STRING,  ID_OV_SORT_NATURAL,      "&Natural");
-        srtMenu.AppendMenu(MF_STRING,  ID_OV_SORT_ALPHABETICAL, "&Alphabetical");
+        srtMenu.AppendMenu(MF_STRING,  ID_OV_SORT_NATURAL,      L"&Natural");
+        srtMenu.AppendMenu(MF_STRING,  ID_OV_SORT_ALPHABETICAL, L"&Alphabetical");
 
         switch(node->GetSortOrder())
         {
@@ -644,19 +649,19 @@ void CTreeViewer::BuildContexMenu (CMenu& menu, HTREEITEM hItem)
             srtMenu.CheckMenuRadioItem(ID_OV_SORT_NATURAL, ID_OV_SORT_ALPHABETICAL, ID_OV_SORT_ALPHABETICAL, MF_BYCOMMAND);
             break;
         }
-        menu.AppendMenu(MF_POPUP, reinterpret_cast<UINT_PTR>(srtMenu.m_hMenu), "&Sort order");
+        menu.AppendMenu(MF_POPUP, reinterpret_cast<UINT_PTR>(srtMenu.m_hMenu), L"&Sort order");
         srtMenu.Detach();
     }
     else
     {
-        menu.AppendMenu(MF_STRING|MF_GRAYED, ID_OV_SORT_NATURAL, "&Sort order");
+        menu.AppendMenu(MF_STRING|MF_GRAYED, ID_OV_SORT_NATURAL, L"&Sort order");
     }
 
     menu.AppendMenu(MF_SEPARATOR);
-    menu.AppendMenu((selectedCount == 1) && (node && node->IsRefreshable()) ? MF_STRING : MF_STRING|MF_GRAYED,  ID_OV_REFRESH,  "&Refresh");
-    menu.AppendMenu(MF_STRING,  ID_OV_PURGE_CACHE,  "&Purge Cache");
+    menu.AppendMenu((selectedCount == 1) && (node && node->IsRefreshable()) ? MF_STRING : MF_STRING|MF_GRAYED, ID_OV_REFRESH, L"&Refresh");
+    menu.AppendMenu(MF_STRING, ID_OV_PURGE_CACHE, L"&Purge Cache");
     menu.AppendMenu(MF_SEPARATOR);
-    menu.AppendMenu(MF_STRING, ID_OV_SETTING,  "&Settings...");
+    menu.AppendMenu(MF_STRING, ID_OV_SETTING, L"&Settings...");
 
     Common::GUICommandDictionary::AddAccelDescriptionToMenu(menu.m_hMenu);
 }
@@ -924,7 +929,7 @@ void CTreeViewer::OnNMCustomdraw (NMHDR *pNMHDR, LRESULT *pResult)
 
                     if (tabPos != -1) 
                     {
-                        LPSTR buff = text.GetBuffer();
+                        LPWSTR buff = text.GetBuffer();
                         buff[tabPos] = 0;
                         text.ReleaseBuffer();
                     }
@@ -977,11 +982,11 @@ void CTreeViewer::OnSettings()
     SQLToolsSettings settings = GetSQLToolsSettings();
 
     CObjectViewerPage page(settings);
-    page.m_psp.pszTitle = "Object Viewer / List";
+    page.m_psp.pszTitle = L"Object Viewer / List";
     page.m_psp.dwFlags |= PSP_USETITLE;
 
     static UINT gStarPage = 0;
-    Common::CPropertySheetMem sheet("Settings", gStarPage);
+    Common::CPropertySheetMem sheet(L"Settings", gStarPage);
     sheet.m_psh.dwFlags |= PSH_NOAPPLYNOW;
     sheet.m_psh.dwFlags &= ~PSH_HASHELP;
     sheet.AddPage(&page);
@@ -1126,8 +1131,8 @@ void CTreeViewer::OnSqlQuickQuery()
                 if (Partition* parent = dynamic_cast<Partition*>(partition->GetParent()))
                     partition = parent;
 
-                if (Partitions* partitions = dynamic_cast<Partitions*>(partition->GetParent()))
-                    if (Partitioning* partitioning = dynamic_cast<Partitioning*>(partitions->GetParent()))
+                if (Partitions* partitions2 = dynamic_cast<Partitions*>(partition->GetParent()))
+                    if (Partitioning* partitioning = dynamic_cast<Partitioning*>(partitions2->GetParent()))
                         parents.insert(dynamic_cast<Table*>(partitioning->GetParent()));
             }
             else
@@ -1222,8 +1227,8 @@ void CTreeViewer::OnSqlQuickCount()
                 if (Partition* parent = dynamic_cast<Partition*>(partition->GetParent()))
                     partition = parent;
 
-                if (Partitions* partitions = dynamic_cast<Partitions*>(partition->GetParent()))
-                    if (Partitioning* partitioning = dynamic_cast<Partitioning*>(partitions->GetParent()))
+                if (Partitions* partitions2 = dynamic_cast<Partitions*>(partition->GetParent()))
+                    if (Partitioning* partitioning = dynamic_cast<Partitioning*>(partitions2->GetParent()))
                         parents.insert(dynamic_cast<Table*>(partitioning->GetParent()));
             }
             else

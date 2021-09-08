@@ -87,23 +87,23 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case e_index_name      : return "Index"; 
-            case e_table_name      : return "Table"; 
-            case e_index_type      : return "Type"; 
-            case e_uniqueness      : return "Unique"; 
-            case e_tablespace_name : return "Tablespace"; 
-            case e_partitioned     : return "Partitioned"; 
-            case e_created         : return "Created"; 
-            case e_last_ddl_time   : return "Modified"; 
-            case e_last_analyzed   : return "Last analyzed"; 
-            case e_column_list     : return "Columns";    
+            case e_index_name      : return L"Index"; 
+            case e_table_name      : return L"Table"; 
+            case e_index_type      : return L"Type"; 
+            case e_uniqueness      : return L"Unique"; 
+            case e_tablespace_name : return L"Tablespace"; 
+            case e_partitioned     : return L"Partitioned"; 
+            case e_created         : return L"Created"; 
+            case e_last_ddl_time   : return L"Modified"; 
+            case e_last_analyzed   : return L"Last analyzed"; 
+            case e_column_list     : return L"Columns";    
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case e_index_name      : return getStr(data(row).index_name     );
             case e_table_name      : return getStr(data(row).table_name     );   
@@ -116,7 +116,7 @@
             case e_last_analyzed   : return getStr(data(row).last_analyzed  );     
             case e_column_list     : return getStr(data(row).column_list    );     
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {

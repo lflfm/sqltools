@@ -26,6 +26,7 @@
 #include "ServerBackgroundThread\TaskQueue.h"
 #include <COMMON\InputDlg.h>
 #include <Common\AppGlobal.h>
+#include <ActivePrimeExecutionNote.h>
 
 //TODO#2: decide if AfxMessageBox if safe to use from background thread
 
@@ -89,7 +90,7 @@ ETransaction check_open_trasaction (OciConnect& connect)
             if (!connect.IsOpen())
             {
                 MessageBeep(MB_ICONSTOP);
-                AfxMessageBox(x.what(), MB_OK|MB_ICONSTOP);
+                AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONSTOP);
                 transaction = etConnectionLost;
             }
             else // most likely connection was lost but it was not detected by some reason
@@ -106,7 +107,7 @@ ETransaction check_open_trasaction (OciConnect& connect)
                     if (!connect.IsOpen())
                     {
                         MessageBeep(MB_ICONSTOP);
-                        AfxMessageBox(x.what(), MB_OK|MB_ICONSTOP);
+                        AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONSTOP);
                         transaction = etConnectionLost;
                     }
                 }
@@ -146,10 +147,10 @@ bool before_closing_connect (OciConnect& connect, bool autoCommit, int commitOnD
             {
                 int retVal = AfxMessageBox(
                         (transaction == etUnknown)
-                            ? "Auto commit is disabled and the current session may have an open transaction."
-                            "\nDo you want to perform a commit before closing this session?"
-                            : "SQLTools detected that the current session has an open transaction."
-                            "\nDo yo want to perform commit before closing this session?",
+                            ? L"Auto commit is disabled and the current session may have an open transaction."
+                              L"\nDo you want to perform a commit before closing this session?"
+                            : L"SQLTools detected that the current session has an open transaction."
+                              L"\nDo yo want to perform commit before closing this session?",
                         MB_YESNOCANCEL|MB_ICONEXCLAMATION);
 
                 switch (retVal)
@@ -333,7 +334,7 @@ void after_opening_connect (OciConnect&  connect)
 
     struct PasswordDlgNote : public ThreadCommunication::Note
     {
-        string m_prompt, m_password;
+        std::wstring m_prompt, m_password;
         bool m_retVal;
 
         PasswordDlgNote () : m_retVal(false)
@@ -378,19 +379,19 @@ void DoConnect (
             if (!uid.empty() && password.empty())
             {
                 PasswordDlgNote note;
-                note.m_prompt = "Enter password for \"" + uid; 
+                note.m_prompt = L"Enter password for \"" + Common::wstr(uid); 
                 if (!direct) 
-                    note.m_prompt += '@' + alias;
+                    note.m_prompt += L"@" + Common::wstr(alias);
                 else
-                    note.m_prompt += host + ':' + port + ':' + sid;
-                note.m_prompt += "\":";
+                    note.m_prompt += Common::wstr(host + ':' + port + ':' + sid);
+                note.m_prompt += L"\":";
 
                 ThreadCommunication::MessageOnlyWindow::GetWindow().Send(note);
 
                 if (!note.m_retVal)
                     throw Common::AppException("User canceled conection!");
 
-                password = note.m_password;
+                password = Common::str(note.m_password);
             }
 
             if (!direct)
@@ -405,7 +406,7 @@ void DoConnect (
             connect.Close(true);
 
             MessageBeep(MB_ICONSTOP);
-			AfxMessageBox(x.what(), MB_OK|MB_ICONSTOP);
+			AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONSTOP);
 
             if (x == 1017) // invalid password
                 password.clear(); // let's try again
@@ -466,6 +467,8 @@ void ConnectTask::DoInBackground (OciConnect& connect)
 {
     try
     {
+        ActivePrimeExecutionOnOff onOff; // can i do that here?
+
         DoConnect (
             connect,
             m_uid, 
@@ -496,7 +499,7 @@ void ConnectTask::ReturnInForeground ()
     if (!m_error.empty())
     {
         MessageBeep((UINT)-1);
-        AfxMessageBox(m_error.c_str(), MB_OK|MB_ICONSTOP);
+        AfxMessageBox(Common::wstr(m_error).c_str(), MB_OK|MB_ICONSTOP);
         theApp.OnSqlConnect();
     }
     // after_opening_connect will update the app status faster than thru request queue processing
@@ -553,6 +556,8 @@ void SubmitConnectTask (const string& uid, const string& password, const string&
                 if (!before_closing_connect(connect, m_autocommit, m_commitOnDisconnect))
                     return;
 
+                ActivePrimeExecutionOnOff onOff; // can i do that here?
+
                 try
                 {
                     connect.Close();
@@ -562,7 +567,7 @@ void SubmitConnectTask (const string& uid, const string& password, const string&
                     connect.Close(true);
 
                     MessageBeep(MB_ICONSTOP);
-                    AfxMessageBox(x.what(), MB_OK|MB_ICONSTOP);
+                    AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONSTOP);
                 }
             }
             // call it regardless because connection can be lost earlier
@@ -595,6 +600,8 @@ void SubmitDisconnectTask (bool exit /*= false*/)
             {
                 try
                 {
+                    ActivePrimeExecutionOnOff onOff;
+
                     OciStatement sttm(connect, "begin null; end;");
                     sttm.Execute(1, true);
                 }
@@ -606,14 +613,16 @@ void SubmitDisconnectTask (bool exit /*= false*/)
             if (!connect.IsOpen())
             {
                 try
-		        {
+                {
+                    ActivePrimeExecutionOnOff onOff;
+
                     connect.Reconnect();
                     after_opening_connect(connect);
                 }
                 catch (const OciException& x)
                 {
                     MessageBeep(MB_ICONSTOP);
-                    AfxMessageBox(x.what(), MB_OK|MB_ICONSTOP);
+                    AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONSTOP);
                 }
             }
         }
@@ -644,6 +653,8 @@ void SubmitReconnectTask ()
         { 
             if (!connect.IsReadOnly() && !m_autocommit)
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 bool check_needed = true;
 
                 switch (m_commitOnDisconnect)
@@ -666,10 +677,10 @@ void SubmitReconnectTask ()
                     {
                         int retVal = AfxMessageBox(
                                 (transaction == etUnknown)
-                                    ? "Auto commit is disabled and the current session may have an open transaction."
-                                    "\nDo you want to perform a commit before switching to READ-ONLY mode?"
-                                    : "SQLTools detected that the current session has an open transaction."
-                                    "\nDo yo want to perform commit before switching to READ-ONLY mode?",
+                                    ? L"Auto commit is disabled and the current session may have an open transaction."
+                                      L"\nDo you want to perform a commit before switching to READ-ONLY mode?"
+                                    : L"SQLTools detected that the current session has an open transaction."
+                                      L"\nDo yo want to perform commit before switching to READ-ONLY mode?",
                                 MB_YESNOCANCEL|MB_ICONEXCLAMATION);
 
                         switch (retVal)
@@ -721,6 +732,7 @@ void SubmitToggleReadOnlyTask ()
 
         void DoInBackground (OciConnect& connect)
         {
+            ActivePrimeExecutionOnOff onOff;
             connect.GetCurrentUserAndSchema(m_user, m_schema);
             m_event.SetEvent();
         }

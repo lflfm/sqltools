@@ -30,21 +30,24 @@ public:
     // trys to locate a key config file and recognize a base folder
     // it can be either %APPDATA%\<privateFolder> for personal settings
     // or <program executable folder>\<sharedFolder> in the case of shared settings.
-    // prompts to choose either personal or shrared config to use if a key file does not exist 
-    static void Initialize (const char* privateFolder, const char* sharedFolder, const char* keyFile);
+    // prompts to choose either personal or shared config to use if a key file does not exist 
+    // it returns true if the call created a new configuration 
+    static bool Initialize (LPCTSTR privateFolder, LPCTSTR sharedFolder, LPCTSTR keyFile);
+
+    static void ImportFromOldConfiguration (LPCTSTR oldPrivateFolder, LPCTSTR oldSharedFolder, LPCTSTR keyFile, LPCTSTR files);
 
     // adds unconditional file location 
-    static void RegisterExplicitly (const char* file, const char* path);
+    static void RegisterExplicitly (LPCTSTR file, LPCTSTR path);
 
     // returns false if a file does not exist
-    static bool GetFilePath (const char* file, std::string& path);
+    static bool GetFilePath (LPCTSTR file, std::wstring& path);
 
     // returns base folder BUT it might be not initialized yet!
-    static const std::string& GetBaseFolder () { return m_baseFolder; };
+    static const std::wstring& GetBaseFolder () { return m_baseFolder; };
 
 private:
-    static std::string m_baseFolder;
-    static std::map<std::string, std::string> m_filenameMap;
+    static std::wstring m_baseFolder;
+    static std::map<std::wstring, std::wstring> m_filenameMap;
 };
 
 };//namespace Common

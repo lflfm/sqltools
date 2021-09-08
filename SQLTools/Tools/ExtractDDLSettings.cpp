@@ -42,29 +42,29 @@ static char THIS_FILE[] = __FILE__;
     CMN_IMPL_PROPERTY(ExtractDDLSettings, UseDbAlias,             false);
     CMN_IMPL_PROPERTY(ExtractDDLSettings, UseDbAliasAs,           0);
 
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, TableFolder             ,"Table");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, TriggerFolder           ,"Trigger");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, ViewFolder              ,"View");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, SequenceFolder          ,"Sequence");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, TypeFolder              ,"Type");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, TypeBodyFolder          ,"TypeBody");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, FunctionFolder          ,"Function");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, ProcedureFolder         ,"Procedure");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, PackageFolder           ,"Package");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, PackageBodyFolder       ,"PackageBody");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, GrantFolder             ,"Grant");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, TableFolder             ,L"Table");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, TriggerFolder           ,L"Trigger");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, ViewFolder              ,L"View");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, SequenceFolder          ,L"Sequence");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, TypeFolder              ,L"Type");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, TypeBodyFolder          ,L"TypeBody");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, FunctionFolder          ,L"Function");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, ProcedureFolder         ,L"Procedure");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, PackageFolder           ,L"Package");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, PackageBodyFolder       ,L"PackageBody");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, GrantFolder             ,L"Grant");
                                                               
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, TableExt                ,"sql");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, TriggerExt              ,"sql"); 
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, ViewExt                 ,"sql");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, SequenceExt             ,"sql");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, TypeExt                 ,"sql");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, TypeBodyExt             ,"sql");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, FunctionExt             ,"sql");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, ProcedureExt            ,"sql");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, PackageExt              ,"sql");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, PackageBodyExt          ,"sql");
-    CMN_IMPL_PROPERTY(ExtractDDLSettings, GrantExt                ,"sql");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, TableExt                ,L"sql");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, TriggerExt              ,L"sql"); 
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, ViewExt                 ,L"sql");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, SequenceExt             ,L"sql");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, TypeExt                 ,L"sql");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, TypeBodyExt             ,L"sql");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, FunctionExt             ,L"sql");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, ProcedureExt            ,L"sql");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, PackageExt              ,L"sql");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, PackageBodyExt          ,L"sql");
+    CMN_IMPL_PROPERTY(ExtractDDLSettings, GrantExt                ,L"sql");
 
 
 ExtractDDLSettings::ExtractDDLSettings ()

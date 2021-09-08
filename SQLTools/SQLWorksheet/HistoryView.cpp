@@ -54,12 +54,12 @@ CHistoryView::~CHistoryView()
     _DESTRUCTOR_HANDLER_;
 }
 
-void CHistoryView::Load (const char* fileNmame)
+void CHistoryView::Load (const wchar_t* fileNmame)
 {
     HistoryFileManager::GetInstance().Load(*m_pHistorySource, fileNmame);
 }
 
-void CHistoryView::Save (const char* fileNmame)
+void CHistoryView::Save (const wchar_t* fileNmame)
 {
     HistoryFileManager::GetInstance().Save(*m_pHistorySource, fileNmame);
 }

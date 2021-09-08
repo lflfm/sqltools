@@ -47,10 +47,10 @@ public:
     int  m_WhereReplace; // 0 - in selection, 1 - in whole file
 
 private:
-    void toPrintableStr (const char* from, std::string& _to);
-    void toUnprintableStr (const char* from, std::string& _to, bool skipEscDgt);
+    void toPrintableStr (const wchar_t* from, std::wstring& _to);
+    void toUnprintableStr (const wchar_t* from, std::wstring& _to, bool skipEscDgt);
 
-    COEditorView* m_pView;
+    COEditorView* m_pEditorView;
 
     CComboBox m_wndSearchText;
     CComboBox m_wndReplaceText;

@@ -61,18 +61,18 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case 0: return "Synonym";
-            case 1: return "Owner"  ;
-            case 2: return "Object" ;
-            case 3: return "DB Link";
-            case 4: return "Status" ;
+            case 0: return L"Synonym";
+            case 1: return L"Owner"  ;
+            case 2: return L"Object" ;
+            case 3: return L"DB Link";
+            case 4: return L"Status" ;
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case 0: return getStr(data(row).synonym_name);
             case 1: return getStr(data(row).table_owner );   
@@ -80,7 +80,7 @@
             case 3: return getStr(data(row).db_link     );
             case 4: return getStr(data(row).status      );  
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {

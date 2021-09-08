@@ -21,7 +21,7 @@
 #define __AppGlobal_h__
 
 #include <string>
-#include "COMMON\AppUtilities.h"
+#include "AppUtilities.h"
 
 
 namespace Global
@@ -29,14 +29,18 @@ namespace Global
 
     HWND SetStatusHwnd (HWND);
     void SetStatusText (const char* text, BOOL update = FALSE);
-    void SetStatusText (const std::string text, bool update = false);
+    void SetStatusText (const wchar_t* text, BOOL update = FALSE);
+    void SetStatusText (const std::wstring& text, bool update = false);
 
-    void GetHelpPath (std::string&);
-    void GetSettingsPath (std::string&);
-    void GetHistoryPath (std::string&);
+    void GetHelpPath (CString&);
+    void GetSettingsPath (CString&);
+    void GetHistoryPath (CString&);
 
     inline
-    void SetStatusText (const std::string text, bool update)
+    void SetStatusText (const std::string& text, bool update)
+        { SetStatusText (text.c_str(), update ? TRUE : FALSE); }
+    inline
+    void SetStatusText (const std::wstring& text, bool update)
         { SetStatusText (text.c_str(), update ? TRUE : FALSE); }
 };//namespace Common
 

@@ -39,6 +39,7 @@
 #include "SessionCache.h"
 #include "ServerBackgroundThread\TaskQueue.h"
 #include "ServerBackgroundThread\Thread.h"
+#include <ActivePrimeExecutionNote.h>
 
 /*
     31.03.2003 bug fix, redundant sqltools settings saving
@@ -70,6 +71,7 @@ static char THIS_FILE[] = __FILE__;
 
         virtual void DoInBackground (OciConnect& connect)
         {
+            ActivePrimeExecutionOnOff onOff;
             ServerBackgroundThread::g_keepAlivePeriod = m_keepAlivePeriod;
             connect.EnableOutput(m_outputEnabled, m_outputSize);
             connect.SetNlsDateFormat(m_dateFormat);
@@ -97,6 +99,7 @@ void CSQLToolsApp::OnSettingsChanged ()
         {
             UpdateApplicationTitle();
             ((CMDIMainFrame*)m_pMainWnd)->SetIndicators();
+            ((CMDIMainFrame*)m_pMainWnd)->SetupMDITabbedGroups(); //FRM2
         }
     }
     _DEFAULT_HANDLER_
@@ -107,7 +110,7 @@ void CSQLToolsApp::OnSettingsChanged ()
 
 void CSQLToolsApp::LoadSettings ()
 {
-    SQLToolsSettingsXmlStreamer("sqltools.xml") >> getSettings();
+    SQLToolsSettingsXmlStreamer(L"sqltools.xml") >> getSettings();
 
     // 31.03.2003 bug fix, redundant sqltools settings saving
     g_isLoading = true;
@@ -125,7 +128,7 @@ void CSQLToolsApp::LoadSettings ()
 void CSQLToolsApp::SaveSettings ()
 {
     static bool s_isBackupDone = false;
-    SQLToolsSettingsXmlStreamer("sqltools.xml", !s_isBackupDone) << getSettings();
+    SQLToolsSettingsXmlStreamer(L"sqltools.xml", !s_isBackupDone) << getSettings();
     s_isBackupDone = true;
 }
 
@@ -161,7 +164,7 @@ struct SettingsDialogCallback : COEDocument::SettingsDialogCallback
         m_ok(false)
     {
         m_vaPage.Init(m_settings.GetVASets());
-        m_vaPage.m_psp.pszTitle = "SQLTools::Font and Color";
+        m_vaPage.m_psp.pszTitle = L"SQLTools::Font and Color";
         m_vaPage.m_psp.dwFlags |= PSP_USETITLE;
     }
 
@@ -207,8 +210,6 @@ void CSQLToolsApp::OnAppSettings ()
 
         setlocale(LC_ALL, COEDocument::GetSettingsManager().GetGlobalSettings()->GetLocale().c_str());
         UpdateAccelAndMenu();
-        ((CMDIMainFrame*)m_pMainWnd)->SetCloseFileOnTabDblClick(
-            COEDocument::GetSettingsManager().GetGlobalSettings()->GetDoubleClickCloseTab() ? TRUE : FALSE);
 
         SetupFileManager((CMDIMainFrame*)m_pMainWnd);
     }
@@ -217,10 +218,10 @@ void CSQLToolsApp::OnAppSettings ()
 
 bool ShowDDLPreferences (SQLToolsSettings& settings, bool bLocal)
 {
-    BOOL showOnShiftOnly = AfxGetApp()->GetProfileInt("showOnShiftOnly", "DDLPreferences",  FALSE);
+    BOOL showOnShiftOnly = AfxGetApp()->GetProfileInt(L"showOnShiftOnly", L"DDLPreferences",  FALSE);
 
     static UINT gStartPage = 0;
-    Common::CPropertySheetMem sheet(bLocal ? "Local DDL Preferences" : "Global DDL Preferences", gStartPage);
+    Common::CPropertySheetMem sheet(bLocal ? L"Local DDL Preferences" : L"Global DDL Preferences", gStartPage);
     sheet.SetTreeViewMode(/*bTreeViewMode =*/TRUE, /*bPageCaption =*/FALSE, /*bTreeImages =*/FALSE);
     sheet.m_psh.dwFlags |= PSH_NOAPPLYNOW;
     sheet.m_psh.dwFlags &= ~PSH_HASHELP;
@@ -250,7 +251,7 @@ bool ShowDDLPreferences (SQLToolsSettings& settings, bool bLocal)
                 GetSQLToolsSettingsForUpdate().NotifySettingsChanged();
             }
             else
-                AfxGetApp()->WriteProfileInt("showOnShiftOnly", "DDLPreferences",  commonPage.m_bShowOnShiftOnly);
+                AfxGetApp()->WriteProfileInt(L"showOnShiftOnly", L"DDLPreferences",  commonPage.m_bShowOnShiftOnly);
 
             return true;
         } 
@@ -279,13 +280,13 @@ void CSQLToolsApp::SetupFileManager (CMDIMainFrame* pMainWnd)
         CString filter;
 
         int curPos = 0;
-        CString token = extensions.Tokenize(" ",curPos);
+        CString token = extensions.Tokenize(L" ",curPos);
         while (!token.IsEmpty())
         {
             if (!filter.IsEmpty()) filter += ';';
             filter += "*.";
             filter += token;
-            token = extensions.Tokenize(" ",curPos);
+            token = extensions.Tokenize(L" ",curPos);
         }
         name += " ("; name += filter; name += ")";
         names.Add(name);
@@ -293,20 +294,30 @@ void CSQLToolsApp::SetupFileManager (CMDIMainFrame* pMainWnd)
     }
 
     int currentFilter = pMainWnd->GetFilePanelWnd().GetSelectedFilter();
-    CFilePanelWnd& fileManager = pMainWnd->GetFilePanelWnd();
+    FileExplorerWnd& fileManager = pMainWnd->GetFilePanelWnd();
     fileManager.SetFileCategoryFilter(names, filters, currentFilter);
 
     GlobalSettingsPtr globalSerringsPtr = COEDocument::GetSettingsManager().GetGlobalSettings();
     fileManager.SetTooltips              (globalSerringsPtr->GetFileManagerTooltips             ());
     fileManager.SetPreviewInTooltips     (globalSerringsPtr->GetFileManagerPreviewInTooltips    ());
     fileManager.SetPreviewLines          (globalSerringsPtr->GetFileManagerPreviewLines         ());
-    fileManager.SetShellContexMenu       (globalSerringsPtr->GetFileManagerShellContexMenu      ());
-    fileManager.SetShellContexMenuFilter (globalSerringsPtr->GetFileManagerShellContexMenuFilter().c_str());
+
+    fileManager.SetShellContexMenuFileProperties (globalSerringsPtr->GetFileManagerShellContexMenuProperties());
+    fileManager.SetShellContexMenuTortoiseGit    (globalSerringsPtr->GetFileManagerShellContexMenuTortoiseGIT());
+    fileManager.SetShellContexMenuTortoiseSvn    (globalSerringsPtr->GetFileManagerShellContexMenuTortoiseSVN());
+
+    pMainWnd->SetShellContexMenuFileProperties (globalSerringsPtr->GetFileManagerShellContexMenuProperties());
+    pMainWnd->SetShellContexMenuTortoiseGit    (globalSerringsPtr->GetFileManagerShellContexMenuTortoiseGIT());
+    pMainWnd->SetShellContexMenuTortoiseSvn    (globalSerringsPtr->GetFileManagerShellContexMenuTortoiseSVN());
+
+    pMainWnd->GetOpenFilesWnd().SetShellContexMenuFileProperties (globalSerringsPtr->GetFileManagerShellContexMenuProperties());
+    pMainWnd->GetOpenFilesWnd().SetShellContexMenuTortoiseGit    (globalSerringsPtr->GetFileManagerShellContexMenuTortoiseGIT());
+    pMainWnd->GetOpenFilesWnd().SetShellContexMenuTortoiseSvn    (globalSerringsPtr->GetFileManagerShellContexMenuTortoiseSVN());
 }
 
 void CSQLToolsApp::SetupRecentFileList (CMDIMainFrame* pMainWnd)
 {
     if (m_pRecentFileList.get())
-        pMainWnd->GetFilePanelWnd().GetRecentFilesListCtrl().Link(m_pRecentFileList);
+        pMainWnd->GetRecentFilesListCtrl().Link(m_pRecentFileList); // FRM
 }
 

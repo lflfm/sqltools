@@ -26,6 +26,7 @@
 #include <string>
 #include <exception>
 #include <COMMON/SEException.h>
+#include <COMMON/MyUtf.h>
 
 
 namespace Common
@@ -38,8 +39,10 @@ namespace Common
     class AppException : public std::exception
     {
     public:
-        explicit AppException (const char* what)         : std::exception(what)          {}
-        explicit AppException (const std::string& what)  : std::exception(what.c_str())  {}
+        explicit AppException (const char* what)          : std::exception(what) {}
+        explicit AppException (const std::string& what)   : std::exception(what.c_str()) {}
+        explicit AppException (const wchar_t* what)       : std::exception(str(what).c_str()) {}
+        explicit AppException (const std::wstring& what)  : std::exception(str(what).c_str()) {}
     };
 
     typedef void (*AppInfoFn)(std::string& programName, std::string& infoText, std::string& reportPrefix);

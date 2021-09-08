@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 ///////////////////////////////////////////////////////////////////////////
 // SQLToolsSettingsXmlStreamer
 ///////////////////////////////////////////////////////////////////////////
-SQLToolsSettingsXmlStreamer::SQLToolsSettingsXmlStreamer (const std::string& filename, bool backup) 
+SQLToolsSettingsXmlStreamer::SQLToolsSettingsXmlStreamer (const std::wstring& filename, bool backup) 
 : XmlStreamerBase(filename, backup)
 {
 }
@@ -77,7 +77,7 @@ void SQLToolsSettingsXmlStreamer::read  (const TiXmlDocument& doc, void* ctx)
             }
         }
         else 
-            THROW_APP_EXCEPTION("\"" + getFilename() + "\" does not contain settings.");
+            THROW_APP_EXCEPTION(L"\"" + getFilename() + L"\" does not contain settings.");
     }
 }
 

@@ -64,22 +64,22 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case e_name       : return "Name";   
-            case e_keyword    : return "Keyword";      
-            case e_min_length : return "MinLen";     
+            case e_name       : return L"Name";   
+            case e_keyword    : return L"Keyword";      
+            case e_min_length : return L"MinLen";     
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case e_name       : return getStr(data(row).name     );
             case e_keyword    : return getStr(data(row).keyword  );
             case e_min_length : return getStr(data(row).minLength);
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {

@@ -17,12 +17,17 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 */
 
+/*
+    2018-03-30 bug fix, compatibility with non enterprise version of 8i
+*/
+
 #include "stdafx.h"
 #include "SQLTools.h"
 #include "DbBrowser\DBBrowserCodeList.h"
 #include "OCI8/BCursor.h"
 #include "COMMON\StrHelpers.h"
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace Common;
 using namespace ServerBackgroundThread;
@@ -46,6 +51,17 @@ END_MESSAGE_MAP()
     const int cn_status        = 2;
     const int cn_created       = 3;
     const int cn_last_ddl_time = 4;  
+
+    static const char* csz_sttm_8i =
+        "SELECT"
+        "  owner,"        
+        "  object_name,"
+        "  status,"
+        "  created,"      
+        "  last_ddl_time "
+        "FROM sys.all_objects"
+        "  WHERE owner = :owner"
+        "    AND object_type = :type";
 
     static const char* csz_sttm =
         "SELECT * FROM ("
@@ -73,8 +89,10 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 50, 196);
-                cur.Prepare(csz_sttm);
+                cur.Prepare(connect.GetVersion() < OCI8::esvServer9X ? csz_sttm_8i : csz_sttm);
                 cur.Bind(":owner", m_schema.c_str());
                 cur.Bind(":type",  m_monoType.c_str());
 
@@ -131,8 +149,10 @@ void DBBrowserCodeList::Refresh (bool force)
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OciCursor cur(connect, 1, 196);
-                cur.Prepare((string(csz_sttm) + " and object_name = :name").c_str());
+                cur.Prepare((string(connect.GetVersion() < OCI8::esvServer9X ? csz_sttm_8i : csz_sttm) + " and object_name = :name").c_str());
                 cur.Bind(":owner", m_schema.c_str());
                 cur.Bind(":type", m_monoType.c_str());
                 cur.Bind(":name", m_dataEntry.object_name.c_str());
@@ -174,18 +194,18 @@ void DBBrowserCodeList::ApplyQuickFilter (bool valid, bool invalid)
     GetFilter(filter);
 
     for (int i = 0, n = m_dataAdapter.getColCount(); i < n; ++i)
-        if (!stricmp(m_dataAdapter.getColHeader(i), "status"))
+        if (!wcsicmp(m_dataAdapter.getColHeader(i), L"status"))
         {
-            const char* val = 0;
+            const wchar_t* val = 0;
 
             if (valid && invalid)
-                val = "";
+                val = L"";
             else if (valid)
-                val = "VALID";
+                val = L"VALID";
             else if  (invalid)
-                val = "INVALID";
+                val = L"INVALID";
             else
-                val = "NA";
+                val = L"NA";
 
             if (val != filter.at(i).value
             || ListCtrlManager::EXACT_MATCH != filter.at(i).operation)
@@ -202,7 +222,7 @@ void DBBrowserCodeList::ExtendContexMenu (CMenu* pMenu)
 {
     UINT grayed = IsSelectionEmpty() ? MF_GRAYED : 0;
 
-    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_COMPILE, "&Compile");                      
+    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_COMPILE, L"&Compile");                      
     pMenu->AppendMenu(MF_SEPARATOR);
 }
 

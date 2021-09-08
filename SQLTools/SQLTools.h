@@ -46,7 +46,7 @@
 
     using arg::counted_ptr;
 
-class CSQLToolsApp : public CWinApp, SettingsSubscriber
+class CSQLToolsApp : public CWinAppEx, SettingsSubscriber
 {
 	DECLARE_DYNCREATE(CSQLToolsApp)
 
@@ -125,7 +125,7 @@ public:
     ~CSQLToolsApp ();
 
     CMultiDocTemplate* GetPLSDocTemplate()      { return m_pPLSDocTemplate; }
-    LPCSTR GetDisplayConnectionString ()        { return m_displayConnectionString; }
+    LPCWSTR GetDisplayConnectionString ()        { return m_displayConnectionString; }
     counted_ptr<RecentFileList> GetRecentFileList () { return m_pRecentFileList; }
     counted_ptr<FavoritesList>  GetFavoritesList ()  { return m_pFavoritesList;  }
 

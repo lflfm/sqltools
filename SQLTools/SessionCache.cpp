@@ -28,6 +28,7 @@
 #include "SQLTools.h"
 #include "SQLUtilities.h"
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 
 //TODO#TEST: retest this class
 
@@ -120,7 +121,7 @@
                 end = orgKeywordMap->end();
             for (it; it != end; ++it)
                 if (it->second.groupIndex != m_userObjectsGroup)
-                    m_newKeywordMap->insert(pair<string, LanguageKeyword>(it->first, it->second));
+                    m_newKeywordMap->insert(pair<std::wstring, LanguageKeyword>(it->first, it->second));
         }
 
         void DoInBackground (OciConnect& connect)
@@ -142,15 +143,17 @@
 
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 string lookupQuery = lookupQuery1;
 
                 // TODO: check if it is required for 8i or 9i
-		        if (connect.GetVersion() >= OCI8::esvServer10X)
+                if (connect.GetVersion() >= OCI8::esvServer10X)
                 {
                     lookupQuery += lookupQuery1b;
                 }
                 
-		        if (connect.GetVersion() >= OCI8::esvServer81X)
+                if (connect.GetVersion() >= OCI8::esvServer81X)
                 {
                     string user, schema;
                     connect.GetCurrentUserAndSchema(user, schema);
@@ -164,12 +167,14 @@
 
                 vector<Template::Entry> entries;
 
-                LanguageKeyword keyword;
-                keyword.groupIndex = m_userObjectsGroup;
+                LanguageKeyword lkw;
+                lkw.groupIndex = m_userObjectsGroup;
                 while (cursor.Fetch())
                 {
-                    cursor.GetString(0, keyword.keyword);
-                    m_newKeywordMap->insert(pair<string, LanguageKeyword>(keyword.keyword, keyword));
+                    string buff;
+                    cursor.GetString(0, buff);
+                    lkw.keyword = Common::wstr(buff);
+                    m_newKeywordMap->insert(pair<std::wstring, LanguageKeyword>(lkw.keyword, lkw));
                     
                     Template::Entry entry;
                     cursor.GetString(1, entry.name);
@@ -339,7 +344,7 @@ void SessionCache::resetLanguageKeywordMap ()
         end = orgKeywordMap->end();
     for (it; it != end; ++it)
         if (it->second.groupIndex != userObjectsGroup)
-            newKeywordMap->insert(pair<string, LanguageKeyword>(it->first, it->second));
+            newKeywordMap->insert(pair<std::wstring, LanguageKeyword>(it->first, it->second));
 
     lang->SetLanguageKeywordMap(newKeywordMap);
     AfxGetMainWnd()->RedrawWindow(NULL, NULL, RDW_INVALIDATE|RDW_NOERASE|RDW_NOFRAME|RDW_ALLCHILDREN);

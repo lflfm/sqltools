@@ -34,6 +34,7 @@
 #include "SQLWorksheet\SQLWorksheetDoc.h"
 #include "ServerBackgroundThread\TaskQueue.h"
 #include "ObjectTree_Builder.h" // for ObjectTree::ObjectDescriptor
+#include <ActivePrimeExecutionNote.h>
 
 // 24.09.2007 some improvements taken from sqltools++ by Randolf Geist
 
@@ -118,6 +119,8 @@ bool DbBrowserList::IsSelectionEmpty () const
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 connect.ExecuteStatement(m_statement.c_str());
             }
             catch (const OciException& x)
@@ -128,7 +131,7 @@ bool DbBrowserList::IsSelectionEmpty () const
                     << "\tfailed with the following error:" << endl
                     << x.what();
 
-                if (AfxMessageBox(msg.str().c_str(), MB_ICONHAND|MB_OKCANCEL) == IDCANCEL)
+                if (AfxMessageBox(Common::wstr(msg.str()).c_str(), MB_ICONHAND|MB_OKCANCEL) == IDCANCEL)
                 {
                     //SetError(x.what());
                     BkgdRequestQueue::Get().RemoveGroup(GetGroupId());
@@ -178,6 +181,8 @@ void DbBrowserList::DoSqlForSel (const char* taskName, const char* sttm, bool re
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 //Sleep(10000);
                 Loader loader(connect, m_dictionary);
                 loader.Init();
@@ -283,6 +288,8 @@ void DbBrowserList::MakeDropSql (int entry, std::string& sql) const
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 connect.ExecuteStatement(m_statement.c_str());
             }
             catch (const OciException& x)
@@ -303,7 +310,7 @@ void DbBrowserList::DoDrop (int entry)
     BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_ListDrop(*this, entry)));
 }
 
-void DbBrowserList::GetListSelectionAsText (string& text)
+void DbBrowserList::GetListSelectionAsText (CString& text)
 {
     if (!IsSelectionEmpty())
     {
@@ -320,10 +327,10 @@ void DbBrowserList::GetListSelectionAsText (string& text)
             out.PutOwnerAndName (GetSchema(), GetObjectName(*it), b_schema_name);
         }
 
-	    text = out;
+	    text = Common::wstr(out).c_str();
     }
     else
-        text.clear();
+        text.Empty();
 }
 
 void DbBrowserList::DoShowInObjectView (const string& schema, const string& name, const string& type, const std::vector<std::string>& drilldown)
@@ -410,32 +417,32 @@ void DbBrowserList::BuildContexMenu (CMenu* pMenu)
 {
     UINT grayed = IsSelectionEmpty() ? MF_GRAYED : 0;
 
-    pMenu->AppendMenu(MF_STRING,        ID_DS_REFRESH,         "&Refresh");
+    pMenu->AppendMenu(MF_STRING,        ID_DS_REFRESH,         L"&Refresh");
     pMenu->AppendMenu(MF_SEPARATOR);
-    pMenu->AppendMenu(MF_STRING|grayed, ID_SQL_DESCRIBE,       "Show in &Object Viewer");
-    pMenu->AppendMenu(MF_STRING|grayed, ID_SQL_LOAD,           "&Load DDL");
-    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_LOAD_ALL_IN_ONE, "L&oad DDL in one file");
-    pMenu->AppendMenu(MF_STRING|grayed, ID_SQL_LOAD_WITH_DBMS_METADATA, "Load DDL with Dbms_&Metadata");
+    pMenu->AppendMenu(MF_STRING|grayed, ID_SQL_DESCRIBE,       L"Show in &Object Viewer");
+    pMenu->AppendMenu(MF_STRING|grayed, ID_SQL_LOAD,           L"&Load DDL");
+    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_LOAD_ALL_IN_ONE, L"L&oad DDL in one file");
+    pMenu->AppendMenu(MF_STRING|grayed, ID_SQL_LOAD_WITH_DBMS_METADATA, L"Load DDL with Dbms_&Metadata");
     pMenu->AppendMenu(MF_SEPARATOR);
-    pMenu->AppendMenu(MF_STRING|grayed, ID_EDIT_DELETE_WORD_TO_RIGHT,        "&Drop");
+    pMenu->AppendMenu(MF_STRING|grayed, ID_EDIT_DELETE_WORD_TO_RIGHT,   L"&Drop");
     pMenu->AppendMenu(MF_SEPARATOR);
 
     ExtendContexMenu(pMenu);
 
-    pMenu->AppendMenu(MF_STRING|grayed, ID_EDIT_COPY,          "&Copy");
-    pMenu->AppendMenu(MF_STRING|grayed, ID_EDIT_SELECT_ALL,    "Select &All");
+    pMenu->AppendMenu(MF_STRING|grayed, ID_EDIT_COPY,          L"&Copy");
+    pMenu->AppendMenu(MF_STRING|grayed, ID_EDIT_SELECT_ALL,    L"Select &All");
     pMenu->AppendMenu(MF_SEPARATOR);
-    pMenu->AppendMenu(MF_STRING,        ID_DS_FILTER,          "&Filter...");                      
+    pMenu->AppendMenu(MF_STRING,        ID_DS_FILTER,          L"&Filter...");                      
     pMenu->AppendMenu(MF_SEPARATOR);
 
     {
         CMenu viewMenu;
         viewMenu.CreateMenu();
 
-        viewMenu.AppendMenu(MF_STRING,        ID_DS_TAB_TITLES,      "Tab Titles");
+        viewMenu.AppendMenu(MF_STRING,        ID_DS_TAB_TITLES,      L"Tab Titles");
         viewMenu.AppendMenu(MF_SEPARATOR);
-        viewMenu.AppendMenu(MF_STRING,        IDC_DS_AS_LIST,        "Short &List");
-        viewMenu.AppendMenu(MF_STRING,        IDC_DS_AS_REPORT,      "&Detail List");
+        viewMenu.AppendMenu(MF_STRING,        IDC_DS_AS_LIST,        L"Short &List");
+        viewMenu.AppendMenu(MF_STRING,        IDC_DS_AS_REPORT,      L"&Detail List");
         
         if (CDbSourceWnd* parent = static_cast<CDbSourceWnd*>(GetParent()))
             if (parent->AreTabTitlesVisible())
@@ -445,12 +452,12 @@ void DbBrowserList::BuildContexMenu (CMenu* pMenu)
             (LVS_LIST == (LVS_TYPEMASK & GetWindowLong(m_hWnd, GWL_STYLE))) 
             ? IDC_DS_AS_LIST : IDC_DS_AS_REPORT, MF_BYCOMMAND);
         
-        pMenu->AppendMenu(MF_POPUP, reinterpret_cast<UINT_PTR>(viewMenu.m_hMenu), "&View");
+        pMenu->AppendMenu(MF_POPUP, reinterpret_cast<UINT_PTR>(viewMenu.m_hMenu), L"&View");
         viewMenu.Detach();
     }
 
     pMenu->AppendMenu(MF_SEPARATOR);
-    pMenu->AppendMenu(MF_STRING,        ID_DS_SETTINGS,        "DDL &Preferences...");                      
+    pMenu->AppendMenu(MF_STRING,        ID_DS_SETTINGS,        L"DDL &Preferences...");                      
 
     pMenu->SetDefaultItem(GetDefaultContextCommand(false));
     Common::GUICommandDictionary::AddAccelDescriptionToMenu(pMenu->m_hMenu, 4);
@@ -493,9 +500,9 @@ void DbBrowserList::OnNMDblclk(NMHDR* pNMHDR, LRESULT *pResult)
 
 void DbBrowserList::OnLvnBegindrag (NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
-	string test;
+	CString test;
     GetListSelectionAsText(test);
-	Common::SimpleDragDataSource(test.c_str()).DoDragDrop(DROPEFFECT_COPY);
+	Common::SimpleDragDataSource(test).DoDragDrop(DROPEFFECT_COPY);
 
     *pResult = 0;
 }
@@ -578,7 +585,7 @@ void DbBrowserList::OnDrop ()
                 dropIt = true;
             else
             {
-                dlg.m_strText.Format("Are you sure you want to drop \"%s\"?", GetObjectName(*it));
+                dlg.m_strText.Format(L"Are you sure you want to drop \"%s\"?", Common::wstr(GetObjectName(*it)).c_str());
                 int retVal = dlg.DoModal();
                 SetFocus();
 
@@ -605,7 +612,7 @@ void DbBrowserList::OnDrop ()
                 MessageBeep(MB_ICONHAND);
                 ostringstream msg;
                 msg << "Drop \"" << GetObjectName(*it) << "\" failed with the following error:\n\n" << x.what();
-                if (AfxMessageBox(msg.str().c_str(), MB_ICONHAND|MB_OKCANCEL) == IDCANCEL)
+                if (AfxMessageBox(Common::wstr(msg.str()).c_str(), MB_ICONHAND|MB_OKCANCEL) == IDCANCEL)
                     AfxThrowUserException();
 
             }
@@ -629,10 +636,10 @@ void DbBrowserList::OnCopy ()
 
     if (!IsSelectionEmpty()) 
     {
-        string text;
+        CString text;
         GetListSelectionAsText(text);
 		Common::AppCopyTextToClipboard(text);
-		Global::SetStatusText("Copied to clipboard: " + text);
+		Global::SetStatusText(L"Copied to clipboard: " + text);
     }
 }
 

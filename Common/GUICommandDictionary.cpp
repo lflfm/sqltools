@@ -1,4 +1,4 @@
-/*
+/* 
     Copyright (C) 2002 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 */
 
 // 28.08.2002 improvement, double key accelerator, for example "Ctrl+K,B"
@@ -27,8 +27,9 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include "COMMON/AppUtilities.h"
-#include "COMMON/GUICommandDictionary.h"
+#include "AppUtilities.h"
+#include "GUICommandDictionary.h"
+#include "MyUtf.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -59,7 +60,7 @@ namespace Common
 
     static DescToCmdMap g_descToCmdMap;
 
-    struct DblKeyAccel
+    struct DblKeyAccel 
     {
         ACCEL       m_firstKeyAccel;
         KeyToCmdMap m_keyToCmdMap;
@@ -67,7 +68,7 @@ namespace Common
     typedef vector<DblKeyAccel> DblKeyAccelVector;
 
     static HACCEL g_accelTable = NULL;
-
+    
     static DblKeyAccelVector g_dblKeyAccels;
 
     static struct VkMap
@@ -168,7 +169,7 @@ namespace Common
                 desc += key_name;
             else
                 desc += (char)accel.key;
-
+            
             if (vKey)
             {
                 desc += ", ";
@@ -203,7 +204,7 @@ bool findCommand (const string& cmd_name, Command& cmd_id)
 
 bool GUICommandDictionary::BuildAcceleratorTable (std::istream& is, HACCEL& accelTable)
 {
-    if (g_accelTable)
+    if (g_accelTable) 
     {
         DestroyAcceleratorTable(g_accelTable);
         g_accelTable = NULL;
@@ -247,7 +248,7 @@ bool GUICommandDictionary::BuildAcceleratorTable (std::istream& is, HACCEL& acce
                     {
                         accels[i++].cmd = command_id;
                     }
-                    // double key acceleration
+                    // double key acceleration 
                     else
                     {
                         if (addDblKeyAccel(accels[i], vk_key[1], command_id))
@@ -310,9 +311,9 @@ bool readAcceleratorSeq (istream& istr, bool& control, bool& shift, bool& alt, V
         string token;
 
         // read word
-        for (int j(0);
-            !isspace(istr.peek())
-            && !istr.eof()
+        for (int j(0); 
+            !isspace(istr.peek()) 
+            && !istr.eof() 
             && (!j || isalnum(istr.peek()))
             ; j++)
         {
@@ -377,16 +378,16 @@ static void walk_menu (HMENU& hMenu, MenuItemVector& menuitems)
 
     for (int i = 0; i < nitems; i++)
     {
-        char buffer[MENU_ITEM_TEXT_SIZE];
+        WCHAR buffer[MENU_ITEM_TEXT_SIZE];
         mii.dwTypeData = buffer;
-        mii.cch = sizeof buffer;
+        mii.cch = sizeof(buffer)/sizeof(WCHAR);
 
         if (GetMenuItemInfo(hMenu, i, TRUE, &mii))
         {
             _ASSERTE(mii.cch < sizeof buffer);
 
-            buffer[sizeof buffer - 1] = '\0';
-            const char* text = (const char*)mii.dwTypeData;
+            buffer[sizeof(buffer)/sizeof(buffer[0])-1] = '\0';
+            LPCWSTR text = (LPCWSTR)mii.dwTypeData;
 
             if (mii.hSubMenu != NULL)
             {
@@ -401,7 +402,7 @@ static void walk_menu (HMENU& hMenu, MenuItemVector& menuitems)
 
                 menuitem.m_hmenu   = hMenu;
                 menuitem.m_command = static_cast<Command>(mii.wID);
-                menuitem.m_text    = text;
+                menuitem.m_text    = Common::str(text);
 
                 menuitems.push_back(menuitem);
             }
@@ -429,18 +430,17 @@ void GUICommandDictionary::AddAccelDescriptionToMenu (HMENU& hMenu, unsigned int
         g_vkMap.make_accel_desc(AccelTable[i], desc);
 
         CmdToDescMap::iterator it = accelDesc.find(AccelTable[i].cmd);
-
+        
         if (it == accelDesc.end())
             accelDesc.insert(CmdToDescMap::value_type(AccelTable[i].cmd, desc));
         else
         {
-            it->second += "; ";
+            it->second += "; "; 
             it->second += desc.c_str();
         }
     }
 
-    DblKeyAccelVector::const_iterator it = g_dblKeyAccels.begin();
-    for (; it != g_dblKeyAccels.end(); ++it)
+    for (auto it = g_dblKeyAccels.begin(); it != g_dblKeyAccels.end(); ++it)
     {
         KeyToCmdMap::const_iterator it2 = it->m_keyToCmdMap.begin();
         for (; it2 != it->m_keyToCmdMap.end(); it2++)
@@ -454,19 +454,19 @@ void GUICommandDictionary::AddAccelDescriptionToMenu (HMENU& hMenu, unsigned int
                 accelDesc.insert(CmdToDescMap::value_type(it2->second, desc));
             else
             {
-                it3->second += "; ";
+                it3->second += "; "; 
                 it3->second += desc.c_str();
             }
         }
     }
 
     //TRACE("Change menu labels\n");
-    for (MenuItemVector::iterator it = menuitems.begin(); it != menuitems.end(); ++it)
-    {
+    for (auto it = menuitems.begin(); it != menuitems.end(); ++it)
+     {
         MenuItem& menuitem = *it;
-            // for reinitalizing
+        // for reinitalizing
         string::size_type pos = menuitem.m_text.find('\t');
-            if (pos != string::npos)
+            if (pos != string::npos) 
             menuitem.m_text.resize(pos);
 
         string extra(extraSpaces, ' ');
@@ -474,12 +474,13 @@ void GUICommandDictionary::AddAccelDescriptionToMenu (HMENU& hMenu, unsigned int
         if (descIt != accelDesc.end())
             menuitem.m_text += '\t' + descIt->second + extra;
 
+        wstring text = wstr(menuitem.m_text);
         MENUITEMINFO mii;
         memset(&mii, 0, sizeof mii);
         mii.cbSize     = MENUITEMINFO_OLD_SIZE; // 07.04.2003 bug fix, no menu shortcut labels on Win95,... because of SDK incompatibility
         mii.fMask      = MIIM_TYPE;
-        mii.dwTypeData = const_cast<char*>(menuitem.m_text.c_str());
-        mii.cch        = menuitem.m_text.size();
+        mii.dwTypeData = (LPWSTR)text.c_str();
+        mii.cch        = text.size();
 
         VERIFY(SetMenuItemInfo(hMenu, menuitem.m_command, FALSE, &mii));
     }
@@ -492,7 +493,7 @@ bool addDblKeyAccel (ACCEL& accel, VKey vKey, Command commandId)
     DblKeyAccelVector::iterator it = g_dblKeyAccels.begin();
 
     for (; it != g_dblKeyAccels.end(); ++it)
-        if (it->m_firstKeyAccel.fVirt == accel.fVirt
+        if (it->m_firstKeyAccel.fVirt == accel.fVirt 
             && it->m_firstKeyAccel.key == accel.key)
             break;
 
@@ -501,14 +502,14 @@ bool addDblKeyAccel (ACCEL& accel, VKey vKey, Command commandId)
         g_dblKeyAccels.resize(g_dblKeyAccels.size()+1);
         g_dblKeyAccels.rbegin()->m_firstKeyAccel = accel;
         g_dblKeyAccels.rbegin()->m_keyToCmdMap[vKey] = commandId;
-        accel.cmd = static_cast<Command>(GUICommandDictionary::m_firstDblKeyAccelCommandId
+        accel.cmd = static_cast<Command>(GUICommandDictionary::m_firstDblKeyAccelCommandId 
             + g_dblKeyAccels.size() - 1);
         retCode = true;
     }
     else
     {
         it->m_keyToCmdMap[vKey] = commandId;
-        accel.cmd = static_cast<WORD>(GUICommandDictionary::m_firstDblKeyAccelCommandId
+        accel.cmd = static_cast<WORD>(GUICommandDictionary::m_firstDblKeyAccelCommandId 
             + (it - g_dblKeyAccels.begin()));
     }
 
@@ -559,7 +560,7 @@ bool GUICommandDictionary::GetCommandAccelLabel (Command command, string& label)
     size = g_dblKeyAccels.size();
     for (i = 0; i < size; i++)
     {
-        KeyToCmdMap::const_iterator
+        KeyToCmdMap::const_iterator 
             it = g_dblKeyAccels[i].m_keyToCmdMap.begin(),
             end = g_dblKeyAccels[i].m_keyToCmdMap.end();
 
@@ -572,7 +573,7 @@ bool GUICommandDictionary::GetCommandAccelLabel (Command command, string& label)
             }
         }
     }
-
+    
     return false;
 }
 
@@ -647,7 +648,7 @@ void GUICommandDictionary::GetDblKeyCommnds (int dblKeyAccelInx, std::vector<std
             label += '&';
             label += (char)it->first;
             label += '\t';
-            label += (LPCSTR)text;
+            label += str(text);
 
             commands.push_back(std::pair<Command,string>(it->second, label));
         }

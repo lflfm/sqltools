@@ -35,12 +35,13 @@ class OEWorkspaceManager : private boost::noncopyable
     COEMultiDocTemplate* m_pDocTemplate;
     arg::counted_ptr<RecentFileList> m_pRecentFileList;
     arg::counted_ptr<FavoritesList>  m_pFavoritesList;
-    string m_workspaceExtension, m_snapshotExtension;
+    CString m_workspaceExtension, m_snapshotExtension;
     typedef std::map<COEDocument*, unsigned> WorkspaceState;
     WorkspaceState m_lastBackupState, m_activeWorkspaceSavedState;
-    string m_sUuid, m_sLockFile, m_lastFolder;
+    std::wstring m_sUuid;
+    std::wstring m_sLockFile, m_lastFolder;
     HANDLE m_hLockFile;
-    string m_workspacePath;
+    std::wstring m_workspacePath;
     CFile m_workspaceFile;
     std::map<COEDocument*, unsigned> m_workspaceDocLastAcitions;
 
@@ -61,8 +62,8 @@ public:
     static void Destroy ();
 
     void Init (COEDocManager* pDocManager, COEMultiDocTemplate* pDocTemplate, arg::counted_ptr<RecentFileList>&, arg::counted_ptr<FavoritesList>&);
-    void SetWorkspaceExtetion (const string& extension) { m_workspaceExtension = extension; }
-    void SetSnapshotExtetion (const string& extension)  { m_snapshotExtension = extension; }
+    void SetWorkspaceExtetion (LPCTSTR extension) { m_workspaceExtension = extension; }
+    void SetSnapshotExtetion (LPCTSTR extension)  { m_snapshotExtension = extension; }
     CWinThread* Shutdown ();
     CWinThread* ImmediateShutdown ();
 
@@ -72,14 +73,14 @@ public:
 
     int  AskToCloseAllDocuments ();
     void BuildDocumentList (std::vector<COEDocument*>&);
-    void DoSave (CFile&, bool use_relative, const string& base = string());
-    void DoOpen (CFile&, const string& path);
+    void DoSave (CFile&, bool use_relative, const std::wstring& base = std::wstring());
+    void DoOpen (CFile&, const std::wstring& path);
 
     void WorkspaceCopy  ();
     void WorkspacePaste ();
 
     void WorkspaceSave  (bool SaveAs);
-    string WorkspaceSaveQuick ();
+    void WorkspaceSaveQuick ();
 
     void WorkspaceOpen  ();
     void WorkspaceOpenAutosaved ();
@@ -92,15 +93,15 @@ public:
     CString GetSnapshotFilter () const;
     CString GetWorkspaceExtension () const;
     CString GetSnapshotExtension () const;
-    CString GetWorkspaceFilename (const char* format) const;
+    CString GetWorkspaceFilename (LPCTSTR format) const;
     CString GetBackupFilename () const;
 
-    string GetInstanceFolder () const;
-    string GetBackupFolder (bool* byDefault = NULL) const;
+    std::wstring GetInstanceFolder () const;
+    std::wstring GetBackupFolder (bool* byDefault = NULL) const;
 
     HANDLE GetLockFileHandle ()      { return m_hLockFile; }
     bool HasActiveWorkspace () const { return (m_workspaceFile != INVALID_HANDLE_VALUE) ? TRUE : FALSE; }
-    string GetWorkspacePath () const { return m_workspacePath; }
+    std::wstring GetWorkspacePath () const { return m_workspacePath; }
     const WorkspaceState GetActiveWorkspaceSavedState () const { return m_activeWorkspaceSavedState; }
 
     void SetUpdateApplicationTitle (UpdateApplicationTitle ptr) { m_onUpdateApplicationTitle = ptr; }

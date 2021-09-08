@@ -35,6 +35,7 @@
 #include "ServerBackgroundThread\TaskQueue.h"
 #include "Tools\TableTransformer.h"
 #include "ConnectionTasks.h"
+#include <ActivePrimeExecutionNote.h>
 
 using namespace OraMetaDict;
 using namespace ServerBackgroundThread;
@@ -123,6 +124,8 @@ END_MESSAGE_MAP()
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 Common::Substitutor subst;
                 OCI8::EServerVersion servVer = connect.GetVersion();
 
@@ -252,12 +255,12 @@ void DBBrowserTableList::ExtendContexMenu (CMenu* pMenu)
 {
     UINT grayed = IsSelectionEmpty() ? MF_GRAYED : 0;
 
-    pMenu->InsertMenu(1, MF_BYPOSITION|MF_STRING|grayed, ID_SQL_QUICK_QUERY, "&Query");
+    pMenu->InsertMenu(1, MF_BYPOSITION|MF_STRING|grayed, ID_SQL_QUICK_QUERY, L"&Query");
     pMenu->InsertMenu(1, MF_BYPOSITION|MF_SEPARATOR);
 //    pMenu->AppendMenu(MF_STRING|grayed, ID_SQL_QUICK_QUERY, "&Query");                      
 //    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_DELETE,   "Dele&te");                     
-    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_TRUNCATE, "Tr&uncate");                   
-    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_TRANSFORM_TABLE, "Create Transformation &Script");                   
+    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_TRUNCATE, L"Tr&uncate");                   
+    pMenu->AppendMenu(MF_STRING|grayed, ID_DS_TRANSFORM_TABLE, L"Create Transformation &Script");                   
     pMenu->AppendMenu(MF_SEPARATOR);
 }
 
@@ -412,7 +415,7 @@ void check_fk_dependencies (OciConnect& connect, const std::set<std::string> tab
                     "\nPress <Abort> to stop, <Retry> to continue this checking"
                     "\nor <Ignore> to skip it for the rest of tables.";
                 
-                switch (AfxMessageBox(subst.GetResult(), MB_ABORTRETRYIGNORE|MB_ICONWARNING))
+                switch (AfxMessageBox(Common::wstr(subst.GetResult()).c_str(), MB_ABORTRETRYIGNORE|MB_ICONWARNING))
                 {
                 case IDIGNORE: 
                     ignore = true; 
@@ -454,6 +457,8 @@ void check_fk_dependencies (OciConnect& connect, const std::set<std::string> tab
 
         void DoInBackground (OciConnect& connect)
         {
+            ActivePrimeExecutionOnOff onOff;
+
             try {
 
                 if (m_disableFKs || m_checkDependencies)

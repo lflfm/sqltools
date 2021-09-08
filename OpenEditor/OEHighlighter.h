@@ -64,31 +64,31 @@ namespace OpenEditor
     class HighlighterBase
     {
     public:
-	    HighlighterBase ();
-	    virtual ~HighlighterBase () {};
+        HighlighterBase ();
+        virtual ~HighlighterBase () {};
 
-	    virtual void Init (const VisualAttributesSet&)  = 0;
-	    virtual void NextLine (const char*, int)        = 0;
-	    virtual void NextWord (const char*, int, int)   = 0;
+        virtual void Init (const VisualAttributesSet&)  = 0;
+        virtual void NextLine (const wchar_t*, int)        = 0;
+        virtual void NextWord (const wchar_t*, int, int)   = 0;
 
         virtual void SetMultilineQuotesState (int, int, bool) = 0;
         virtual void InitStorageScanner (MultilineQuotesScanner&) const = 0;
 
-	    COLORREF GetTextColor () const;
-	    unsigned GetFontIndex () const;
-	    bool IsSpacePrintable () const; // for underlined spaces in string and comments
+        COLORREF GetTextColor () const;
+        unsigned GetFontIndex () const;
+        bool IsSpacePrintable () const; // for underlined spaces in string and comments
         const DelimitersMap& GetDelimiters () const;
 
         enum EFontMask { efmNormal = 0x00, efmBold = 0x01, efmItalic = 0x02, efmUnderline = 0x04 };
 
         // export some additional functionality
-        virtual bool IsKeyword (const char* str, int len, string&) = 0;
+        virtual bool IsKeyword (const wchar_t* str, int len, std::wstring&) = 0;
         virtual bool IsPlainText () = 0;
     protected:
         struct Attrib
         {
-	        COLORREF color;
-	        unsigned font;
+            COLORREF color;
+            unsigned font;
 
             void operator = (const VisualAttribute&);
         }
@@ -103,41 +103,41 @@ namespace OpenEditor
     class CommonHighlighter : public HighlighterBase
     {
     public:
-	    CommonHighlighter (const char* language);
+        CommonHighlighter (const char* language);
 
-	    virtual void Init (const VisualAttributesSet&);
-	    virtual void NextLine (const char*, int);
-	    virtual void NextWord (const char*, int, int);
+        virtual void Init (const VisualAttributesSet&);
+        virtual void NextLine (const wchar_t*, int);
+        virtual void NextWord (const wchar_t*, int, int);
         
         virtual void SetMultilineQuotesState (int, int, bool);
         virtual void InitStorageScanner (MultilineQuotesScanner&) const;
 
         // export some additional functionality
-        virtual bool IsKeyword (const char* str, int len, string&);
+        virtual bool IsKeyword (const wchar_t* str, int len, std::wstring&);
         virtual bool IsPlainText () { return m_seqOf & ePlainText? true : false; };
     protected:
-        bool openingOfSeq (const char* str, int len, int pos);
-        bool closingOfSeq (const char* str, int len, int pos);
-        bool isKeyword (const char* str, int len);
-        bool isDigit (const char* str, int len);
+        bool openingOfSeq (const wchar_t* str, int len, int pos);
+        bool closingOfSeq (const wchar_t* str, int len, int pos);
+        bool isKeyword (const wchar_t* str, int len);
+        bool isDigit (const wchar_t* str, int len);
 
         // language attributes
-        bool                    m_caseSensiteve;
-        vector<string>          m_keywordGroups;
-        pair<string, string>    m_commentPair;
-        string                  m_endLineComment;
-        int                     m_endLineCommentCol;    
-        set<string>             m_startLineComment;
-        string                  m_escapeChar;
-        pair<string, string>    m_stringPair;
-        pair<string, string>    m_charPair;
-        LanguageKeywordMapPtr   m_LanguageKeywordMap;
+        bool                              m_caseSensiteve;
+        vector<string>                    m_keywordGroups;
+        pair<std::wstring, std::wstring>  m_commentPair;
+        std::wstring                      m_endLineComment;
+        int                               m_endLineCommentCol;
+        set<std::wstring>                 m_startLineComment;
+        std::wstring                      m_escapeChar;
+        pair<std::wstring, std::wstring>  m_stringPair;
+        pair<std::wstring, std::wstring>  m_charPair;
+        LanguageKeywordMapPtr             m_LanguageKeywordMap;
         
-        Fastmap<bool> m_symbolFastMap;
-        Fastmap<bool> m_lineCommentFastMap;
+        FastmapW<bool> m_symbolFastMap;
+        FastmapW<bool> m_lineCommentFastMap;
 
         // whole line required for for some checks !!!
-        const char* m_currentLine;
+        const wchar_t* m_currentLine;
         int m_currentLineLength;
 
         // current state
@@ -153,7 +153,7 @@ namespace OpenEditor
         ESeqOf m_seqOf;
         bool m_isStartLine;
 
-  		Attrib m_textAttr, 
+        Attrib m_textAttr, 
                m_commentAttr, m_lineCommentAttr,
                m_characterAttr, m_stringAttr,
                m_numberAttr;
@@ -176,13 +176,13 @@ namespace OpenEditor
     public:
         CPlusPlusHighlighter ();
 
-	    virtual void Init (const VisualAttributesSet&);
-	    virtual void NextLine (const char*, int);
-	    virtual void NextWord (const char*, int, int);
+        virtual void Init (const VisualAttributesSet&);
+        virtual void NextLine (const wchar_t*, int);
+        virtual void NextWord (const wchar_t*, int, int);
 
     private:
         bool m_includeDirective;
-        char m_openBrace;
+        wchar_t m_openBrace;
         Attrib m_preprocessorAttrs;
     };
 
@@ -193,13 +193,13 @@ namespace OpenEditor
     public:
         PlSqlHighlighter ();
 
-	    virtual void Init (const VisualAttributesSet&);
-	    virtual void NextLine (const char*, int);
-	    virtual void NextWord (const char*, int, int);
-        virtual bool IsKeyword (const char* str, int len, string&);
+        virtual void Init (const VisualAttributesSet&);
+        virtual void NextLine (const wchar_t*, int);
+        virtual void NextWord (const wchar_t*, int, int);
+        virtual bool IsKeyword (const wchar_t* str, int len, std::wstring&);
         virtual bool IsPlainText ();
     private:
-        char m_openBrace;
+        wchar_t m_openBrace;
         Attrib m_bindVarAttrs;
         Attrib m_substitutionAttrs;
         Attrib m_fileNameAttrs;
@@ -213,8 +213,8 @@ namespace OpenEditor
     public:
         SqrHighlighter ();
 
-	    virtual void Init (const VisualAttributesSet&);
-	    virtual void NextWord (const char*, int, int);
+        virtual void Init (const VisualAttributesSet&);
+        virtual void NextWord (const wchar_t*, int, int);
 
     private:
         Attrib m_variablesAttrs;
@@ -228,9 +228,9 @@ namespace OpenEditor
     public:
         ShellHighlighter ();
 
-	    virtual void Init (const VisualAttributesSet&);
-	    virtual void NextLine (const char*, int);
-	    virtual void NextWord (const char*, int, int);
+        virtual void Init (const VisualAttributesSet&);
+        virtual void NextLine (const wchar_t*, int);
+        virtual void NextWord (const wchar_t*, int, int);
 
     private:
         bool m_isSubstitution;
@@ -245,9 +245,9 @@ namespace OpenEditor
     public:
         XmlHighlighter ();
 
-	    virtual void Init (const VisualAttributesSet&);
-	    virtual void NextLine (const char*, int);
-	    virtual void NextWord (const char*, int, int);
+        virtual void Init (const VisualAttributesSet&);
+        virtual void NextLine (const wchar_t*, int);
+        virtual void NextWord (const wchar_t*, int, int);
 
         void SetMultilineQuotesState (int state, int quoteId, bool parsing);
         void InitStorageScanner (MultilineQuotesScanner&) const;
@@ -271,8 +271,8 @@ namespace OpenEditor
     public:
         PerlHighlighter ();
 
-	    virtual void Init (const VisualAttributesSet&);
-	    virtual void NextWord (const char*, int, int);
+        virtual void Init (const VisualAttributesSet&);
+        virtual void NextWord (const wchar_t*, int, int);
 
     private:
         bool m_variable;
@@ -286,11 +286,11 @@ namespace OpenEditor
         { return m_current.color; }
 
     inline
-	unsigned HighlighterBase::GetFontIndex () const
+    unsigned HighlighterBase::GetFontIndex () const
         { return m_current.font; }
 
     inline
-	bool HighlighterBase::IsSpacePrintable () const
+    bool HighlighterBase::IsSpacePrintable () const
         { return m_printableSpaces; }
 
     inline

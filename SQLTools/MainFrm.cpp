@@ -1,5 +1,5 @@
 /* 
-	SQLTools is a tool for Oracle database developers and DBAs.
+    SQLTools is a tool for Oracle database developers and DBAs.
     Copyright (C) 1997-2004 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
@@ -37,6 +37,7 @@
     16.11.2003 bug fix, shortcut F1 has been disabled until sqltools help can be worked out 
     20.04.2005 bug fix, (ak) changing style after toolbar creation is a workaround for toolbar background artifacts
     2016.07.06 improvement, new implementation of recent file list
+    2018-03-30 bug fix, compatibility with WinXp
 */
 
 #ifdef _DEBUG
@@ -45,13 +46,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-    LPCSTR CMDIMainFrame::m_cszClassName = "Kochware.SQLTools.MainFrame";
-    static const char lpszProfileName[] = "Workspace_1.6.0\\";
-    static const char lpszQuickViewer[] = "Object Viewer";
-    static const char lpszObjectsList[] = "Objects List";
-    static const char lpszFindInFiles[] = "Find in Files";
-    static const char lpszFilePanel[]   = "File Panel";
-    static const char lpszPropTreePanel[]  = "Properties";
+    LPCWSTR CMDIMainFrame::m_cszClassName = L"Kochware.SQLTools.MainFrame";
+    static LPCWSTR lpszQuickViewer    = L"Object Viewer";
+    static LPCWSTR lpszObjectsList    = L"Objects List";
+    static LPCWSTR lpszFindInFiles    = L"Find in Files Results";
+    static LPCWSTR lpszFilePanel      = L"File Panel";
+    static LPCWSTR lpszFileHistory    = L"History";
+    static LPCWSTR lpszOpenFiles      = L"Open Files";
+    static LPCWSTR lpszPropTreePanel  = L"Properties";
 
 /////////////////////////////////////////////////////////////////////////////
 // CMDIMainFrame
@@ -59,37 +61,36 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNAMIC(CMDIMainFrame, CWorkbookMDIFrame)
 
 BEGIN_MESSAGE_MAP(CMDIMainFrame, CWorkbookMDIFrame)
-	//{{AFX_MSG_MAP(CMDIMainFrame)
-	ON_WM_CREATE()
-	ON_COMMAND(ID_SQL_OBJ_VIEWER, OnSqlObjViewer)
-	ON_UPDATE_COMMAND_UI(ID_SQL_OBJ_VIEWER, OnUpdate_SqlObjViewer)
-	ON_COMMAND(ID_SQL_DB_SOURCE, OnSqlDbSource)
-	ON_UPDATE_COMMAND_UI(ID_SQL_DB_SOURCE, OnUpdate_SqlDbSource)
-	ON_COMMAND(ID_FILE_FIND_IN_FILE, OnFileGrep)
-	ON_COMMAND(ID_FILE_SHOW_GREP_OUTPUT, OnFileShowGrepOutput)
-	ON_UPDATE_COMMAND_UI(ID_FILE_SHOW_GREP_OUTPUT, OnUpdate_FileShowGrepOutput)
-	ON_UPDATE_COMMAND_UI(ID_FILE_FIND_IN_FILE, OnUpdate_FileGrep)
-	ON_COMMAND(ID_VIEW_PROPERTIES, OnViewProperties)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_PROPERTIES, OnUpdate_ViewProperties)
-	//}}AFX_MSG_MAP
-	ON_COMMAND(ID_VIEW_FILE_TOOLBAR, OnViewFileToolbar)
-	ON_COMMAND(ID_VIEW_SQL_TOOLBAR, OnViewSqlToolbar)
-	ON_COMMAND(ID_VIEW_CONNECT_TOOLBAR, OnViewConnectToolbar)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_FILE_TOOLBAR, OnUpdate_FileToolbar)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_SQL_TOOLBAR, OnUpdate_SqlToolbar)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_CONNECT_TOOLBAR, OnUpdate_ConnectToolbar)
-	ON_NOTIFY(TCN_SELCHANGE, IDC_WORKBOOK_TAB, OnChangeWorkbookTab)
-	// Global help commands
+    //{{AFX_MSG_MAP(CMDIMainFrame)
+    ON_WM_CREATE()
+    ON_COMMAND(ID_SQL_OBJ_VIEWER, OnSqlObjViewer)
+    ON_UPDATE_COMMAND_UI(ID_SQL_OBJ_VIEWER, OnUpdate_SqlObjViewer)
+    ON_COMMAND(ID_SQL_DB_SOURCE, OnSqlDbSource)
+    ON_UPDATE_COMMAND_UI(ID_SQL_DB_SOURCE, OnUpdate_SqlDbSource)
+    ON_COMMAND(ID_FILE_FIND_IN_FILE, OnFileGrep)
+    ON_COMMAND(ID_FILE_SHOW_GREP_OUTPUT, OnFileShowGrepOutput)
+    ON_UPDATE_COMMAND_UI(ID_FILE_SHOW_GREP_OUTPUT, OnUpdate_FileShowGrepOutput)
+    ON_UPDATE_COMMAND_UI(ID_FILE_FIND_IN_FILE, OnUpdate_FileGrep)
+    ON_COMMAND(ID_VIEW_PROPERTIES, OnViewProperties)
+    ON_UPDATE_COMMAND_UI(ID_VIEW_PROPERTIES, OnUpdate_ViewProperties)
+    ON_COMMAND(ID_VIEW_OPEN_FILES, OnViewOpenFiles)
+    ON_UPDATE_COMMAND_UI(ID_VIEW_OPEN_FILES, OnUpdate_ViewOpenFiles)
+    //}}AFX_MSG_MAP
+    ON_COMMAND(ID_VIEW_FILE_TOOLBAR, OnViewFileToolbar)
+    ON_COMMAND(ID_VIEW_SQL_TOOLBAR, OnViewSqlToolbar)
+    ON_COMMAND(ID_VIEW_CONNECT_TOOLBAR, OnViewConnectToolbar)
+    ON_UPDATE_COMMAND_UI(ID_VIEW_FILE_TOOLBAR, OnUpdate_FileToolbar)
+    ON_UPDATE_COMMAND_UI(ID_VIEW_SQL_TOOLBAR, OnUpdate_SqlToolbar)
+    ON_UPDATE_COMMAND_UI(ID_VIEW_CONNECT_TOOLBAR, OnUpdate_ConnectToolbar)
+    // Global help commands
     ON_COMMAND(ID_HELP, CWorkbookMDIFrame::OnHelp)
-	ON_COMMAND(ID_HELP_FINDER, CWorkbookMDIFrame::OnHelpFinder)
-	ON_COMMAND(ID_CONTEXT_HELP, CWorkbookMDIFrame::OnContextHelp)
-	ON_COMMAND(ID_DEFAULT_HELP, CWorkbookMDIFrame::OnHelpFinder)
+    ON_COMMAND(ID_HELP_FINDER, CWorkbookMDIFrame::OnHelpFinder)
+    ON_COMMAND(ID_CONTEXT_HELP, CWorkbookMDIFrame::OnContextHelp)
+    ON_COMMAND(ID_DEFAULT_HELP, CWorkbookMDIFrame::OnHelpFinder)
     ON_WM_COPYDATA()
     ON_WM_ACTIVATEAPP()   // 22.03.2003 bug fix, checking for changes works even the program is inactive - checking only on activation now
-//    ON_WM_SIZE()
     ON_WM_CLOSE()
     ON_MESSAGE(WM_SETMESSAGESTRING, &CMDIMainFrame::OnSetMessageString)
-    ON_NOTIFY(TBN_DROPDOWN, (AFX_IDW_CONTROLBAR_FIRST - 1), OnPlanDropDown)
     ON_MESSAGE(CSQLToolsApp::UM_REQUEST_QUEUE_NOT_EMPTY, RequestQueueNotEmpty)
     ON_MESSAGE(CSQLToolsApp::UM_REQUEST_QUEUE_EMPTY,     RequestQueueEmpty)
 
@@ -102,6 +103,7 @@ static UINT g_indicators[] =
     ID_SEPARATOR,           // status line indicator
     ID_INDICATOR_OCIGRID,
     ID_INDICATOR_WORKSPACE_NAME,
+    ID_INDICATOR_ENCODING,
     ID_INDICATOR_FILE_TYPE,
     ID_INDICATOR_BLOCK_TYPE,
 //    ID_INDICATOR_FILE_LINES,
@@ -114,8 +116,9 @@ static UINT g_indicators[] =
 // CMDIMainFrame construction/destruction
 
 CMDIMainFrame::CMDIMainFrame()
+    : m_wndOpenFilesFrame(m_wndOpenFiles)
 {
-    m_cszProfileName = lpszProfileName;
+    m_bCanConvertControlBarToMDIChild = TRUE;
 }
 
 CMDIMainFrame::~CMDIMainFrame()
@@ -161,146 +164,171 @@ const int IDC_MF_DBTREE_BAR    = (AFX_IDW_CONTROLBAR_LAST - 11);
 const int IDC_MF_DBPLAN_BAR    = (AFX_IDW_CONTROLBAR_LAST - 12);
 const int IDC_MF_GREP_BAR      = (AFX_IDW_CONTROLBAR_LAST - 13);
 const int IDC_MF_PROPTREE_BAR  = (AFX_IDW_CONTROLBAR_LAST - 14);
+const int IDC_MF_OPENFILES_BAR = (AFX_IDW_CONTROLBAR_LAST - 15);
 
 int CMDIMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
     if (CWorkbookMDIFrame::OnCreate(lpCreateStruct) == -1)
         return -1;
 
-    if (!m_wndFileToolBar.CreateEx(this, 0,
-                                  //WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_TOOLTIPS | CBRS_FLYBY ,
-                                  WS_CHILD | WS_VISIBLE | CBRS_GRIPPER | CBRS_TOP | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,
-                                  CRect(1, 1, 1, 1),
-                                  AFX_IDW_CONTROLBAR_FIRST - 1)
-    || !m_wndFileToolBar.LoadToolBar(IDT_FILE))
+    // FRM
+    CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows7));
+    CDockingManager::SetDockingMode(DT_SMART);
+    EnableAutoHidePanes(CBRS_ALIGN_ANY);
+
+    SetupMDITabbedGroups();
+
+    if (!m_wndToolBar.CreateEx(
+           this, TBSTYLE_FLAT,
+            WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC, 
+            CRect(4, 2, 4, 2), AFX_IDW_CONTROLBAR_FIRST - 1)
+    || !m_wndToolBar.LoadToolBar(IDT_FILE))
     {
-		TRACE0("Failed to create tool bar\n");
+        TRACE0("Failed to create tool bar\n");
         return -1;
     }
-    // 20.4.2005 bug fix, (ak) changing style after toolbar creation is a workaround for toolbar background artifacts
-    m_wndFileToolBar.ModifyStyle(0, TBSTYLE_FLAT);
-    m_wndFileToolBar.GetToolBarCtrl().SetExtendedStyle(TBSTYLE_EX_DRAWDDARROWS);
-    m_wndFileToolBar.SetButtonInfo(1, ID_FILE_OPEN, BTNS_DROPDOWN, 1);
-    m_wndFileToolBar.SetButtonInfo(4+1/*1 for separator*/, ID_WORKSPACE_OPEN, BTNS_DROPDOWN, 4);
-    m_wndFileToolBar.SetButtonInfo(6+2/*2 for separators*/, ID_WORKSPACE_OPEN_AUTOSAVED, BTNS_DROPDOWN, 6);
 
-    m_wndFileToolBar.EnableDocking(CBRS_ALIGN_ANY);
+    // FRM
+    m_wndToolBar.SetWindowText(L"File");
+    {
+        CMenu menu;
+        menu.CreatePopupMenu();
+        menu.AppendMenu(MF_STRING|MF_DISABLED,  ID_FILE_MRU_FIRST, _T("Recent File"));
+        m_wndToolBar.ReplaceButton(ID_FILE_OPEN, 
+            CMFCToolBarMenuButton(ID_FILE_OPEN, menu.GetSafeHmenu(), 1, nullptr, FALSE));
+    }
+    {
+        CMenu menu;
+        menu.CreatePopupMenu();
+        menu.AppendMenu(MF_STRING|MF_DISABLED,  ID_WORKSPACE_MRU_FIRST, _T("Recent Workspace"));
+        m_wndToolBar.ReplaceButton(ID_WORKSPACE_OPEN, 
+            CMFCToolBarMenuButton(ID_WORKSPACE_OPEN, menu.GetSafeHmenu(), 4, nullptr, FALSE));
+    }
+    {
+        CMenu menu;
+        menu.CreatePopupMenu();
+        menu.AppendMenu(MF_STRING|MF_DISABLED,  ID_WORKSPACE_QUICK_MRU_FIRST, _T("Recent Quicksaved Snapshot"));
+        m_wndToolBar.ReplaceButton(ID_WORKSPACE_OPEN_AUTOSAVED, 
+            CMFCToolBarMenuButton(ID_WORKSPACE_OPEN_AUTOSAVED, menu.GetSafeHmenu(), 6, nullptr, FALSE));
+    }
 
-    if (!m_wndSqlToolBar.CreateEx(this, 0,
-                                  //WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_TOOLTIPS | CBRS_FLYBY ,
-                                  WS_CHILD | WS_VISIBLE | CBRS_GRIPPER | CBRS_TOP | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,
-                                  CRect(1, 1, 1, 1),
-                                  AFX_IDW_CONTROLBAR_FIRST - 2)
+    if (!m_wndSqlToolBar.CreateEx(
+           this, TBSTYLE_FLAT,
+            WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC, 
+            CRect(4, 2, 4, 2), AFX_IDW_CONTROLBAR_FIRST - 2)
     || !m_wndSqlToolBar.LoadToolBar(IDT_SQL))
     {
-		TRACE0("Failed to create tool bar\n");
+        TRACE0("Failed to create tool bar\n");
         return -1;
     }
-    m_wndSqlToolBar.ModifyStyle(0, TBSTYLE_FLAT);
-    m_wndSqlToolBar.EnableDocking(CBRS_ALIGN_ANY);
 
     if (!m_wndConnectionBar.Create(this, AFX_IDW_CONTROLBAR_FIRST - 3))
     {
-		TRACE0("Failed to create tool bar\n");
+        TRACE0("Failed to create tool bar\n");
         return -1;
     }
 
     if (!m_wndStatusBar.Create(this))
-	{
-		TRACE0("Failed to create status bar\n");
-		return -1;
-	}
+    {
+        TRACE0("Failed to create status bar\n");
+        return -1;
+    }
     SetIndicators();
 
-	EnableDocking(CBRS_ALIGN_ANY);
-#ifdef _SCB_REPLACE_MINIFRAME
-    // EnableDocking overrides m_pFloatingFrameClass so change it to RUNTIME_CLASS(CSCBMiniDockFrameWnd)
-    m_pFloatingFrameClass = RUNTIME_CLASS(CSCBMiniDockFrameWnd);
-#endif //_SCB_REPLACE_MINIFRAME
+    EnableDocking(CBRS_ALIGN_ANY);
+    m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
+    m_wndSqlToolBar.EnableDocking(CBRS_ALIGN_ANY);
+    DockPane(&m_wndToolBar);
+    //DockPane(&m_wndConnectionBar);
+    DockPane(&m_wndSqlToolBar);
+    DockPaneLeftOf(&m_wndConnectionBar, &m_wndSqlToolBar);
 
-    DockControlBar(&m_wndFileToolBar);
-    DockControlBar(&m_wndConnectionBar);
-    DockControlBarLeftOf(&m_wndSqlToolBar, &m_wndConnectionBar);
-    //DockControlBar(&m_wndSqlToolBar);
 
     if (!m_wndObjectViewerFrame.Create(lpszQuickViewer, this, CSize(200, 300), TRUE, IDC_MF_DBTREE_BAR)
     || !m_wndObjectViewer.Create(&m_wndObjectViewerFrame))
     {
-		TRACE("Failed to create Object Viewer\n");
-		return -1;
+        TRACE("Failed to create Object Viewer\n");
+        return -1;
     }
-    m_wndObjectViewer.LoadAndSetImageList(IDB_SQL_GENERAL_LIST);
-    //m_wndObjectViewer.ModifyStyleEx(0, WS_EX_CLIENTEDGE);
-
-    ShowControlBar(&m_wndObjectViewerFrame, FALSE, FALSE);
-    m_wndObjectViewerFrame.ModifyStyle(0, WS_CLIPCHILDREN, 0);
-	m_wndObjectViewerFrame.SetSCBStyle(m_wndObjectViewerFrame.GetSCBStyle()|SCBS_SIZECHILD);
-    m_wndObjectViewerFrame.SetBarStyle(m_wndObjectViewerFrame.GetBarStyle()|CBRS_TOOLTIPS|CBRS_FLYBY|CBRS_SIZE_DYNAMIC);
-	m_wndObjectViewerFrame.EnableDocking(CBRS_ALIGN_LEFT|CBRS_ALIGN_RIGHT);
-	DockControlBar(&m_wndObjectViewerFrame, AFX_IDW_DOCKBAR_RIGHT);
+    HICON hObjectViewerIcon = (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_OBJECT_VIEWER), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+    m_wndObjectViewerFrame.SetIcon(hObjectViewerIcon, FALSE);
+    m_wndObjectViewerFrame.SetClient(&m_wndObjectViewer);
+    m_wndObjectViewerFrame.EnableDocking(CBRS_ALIGN_ANY);
+    DockPane(&m_wndObjectViewerFrame, AFX_IDW_DOCKBAR_RIGHT);
 
     if (!m_wndPropTreeFrame.Create(lpszQuickViewer, this, CSize(200, 300), TRUE, IDC_MF_PROPTREE_BAR)
-    //|| !m_wndPropTree.Create(WS_CHILD | WS_VISIBLE, CRect(0,0,0,0), &m_wndPropTreeFrame, 1))
-    || !m_wndPropTree.CreateEx(0, NULL, "PropertyGrid", WS_CHILD | WS_VISIBLE, CRect(0,0,0,0), &m_wndPropTreeFrame, 1)
+    || !m_wndPropTree.CreateEx(0, NULL, L"PropertyGrid", WS_CHILD | WS_VISIBLE, CRect(0,0,0,0), &m_wndPropTreeFrame, 1)
     )
     {
-		TRACE("Failed to create Properties Viewer\n");
-		return -1;
+        TRACE("Failed to create Properties Viewer\n");
+        return -1;
     }
-    //m_wndPropTree.ModifyStyleEx(0, WS_EX_CLIENTEDGE);
+    HICON hPropIcon = (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_PROPERTIES), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+    m_wndPropTreeFrame.SetIcon(hPropIcon/*AfxGetApp()->LoadIcon(IDI_PROPERTIES)*/, FALSE);
+    m_wndPropTreeFrame.SetClient(&m_wndPropTree);
+    m_wndPropTreeFrame.EnableDocking(CBRS_ALIGN_ANY);
+    //DockPane(&m_wndPropTreeFrame);
+    m_wndPropTreeFrame.AttachToTabWnd(&m_wndObjectViewerFrame, DM_SHOW, FALSE);
 
-    ShowControlBar(&m_wndPropTreeFrame, FALSE, FALSE);
-    m_wndPropTreeFrame.ModifyStyle(0, WS_CLIPCHILDREN, 0);
-	m_wndPropTreeFrame.SetSCBStyle(m_wndPropTreeFrame.GetSCBStyle()|SCBS_SIZECHILD);
-    m_wndPropTreeFrame.SetBarStyle(m_wndPropTreeFrame.GetBarStyle()|CBRS_TOOLTIPS|CBRS_FLYBY|CBRS_SIZE_DYNAMIC);
-	m_wndPropTreeFrame.EnableDocking(CBRS_ALIGN_LEFT|CBRS_ALIGN_RIGHT);
-	DockControlBar(&m_wndPropTreeFrame, AFX_IDW_DOCKBAR_RIGHT);
 
     if (!m_wndDbSourceFrame.Create(lpszObjectsList, this, CSize(680, 400), TRUE, IDC_MF_DBSOURCE_BAR)
     || !m_wndDbSourceWnd.Create(&m_wndDbSourceFrame))
     {
-		TRACE("Failed to create DB Objects Viewer\n");
-		return -1;
+        TRACE("Failed to create DB Objects Viewer\n");
+        return -1;
     }
-    ShowControlBar(&m_wndDbSourceFrame, FALSE, FALSE);
-    m_wndDbSourceFrame.ModifyStyle(0, WS_CLIPCHILDREN, 0);
-	m_wndDbSourceFrame.SetSCBStyle(m_wndDbSourceFrame.GetSCBStyle()|SCBS_SIZECHILD);
-    m_wndDbSourceFrame.SetBarStyle(m_wndDbSourceFrame.GetBarStyle()|CBRS_TOOLTIPS|CBRS_FLYBY|CBRS_SIZE_DYNAMIC);
-	m_wndDbSourceFrame.EnableDocking(CBRS_ALIGN_LEFT|CBRS_ALIGN_RIGHT);
-	DockControlBar(&m_wndDbSourceFrame, AFX_IDW_DOCKBAR_LEFT);
-	FloatControlBar(&m_wndDbSourceFrame, CPoint(200,200));
+    HICON hObjectListIcon = (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_OBJECT_LIST), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+    m_wndDbSourceFrame.SetIcon(hObjectListIcon, FALSE);
+    m_wndDbSourceFrame.SetClient(&m_wndDbSourceWnd);
+    m_wndDbSourceFrame.EnableDocking(CBRS_ALIGN_ANY);
+    AddPane(&m_wndDbSourceFrame); // TEST if that is enough 
+    m_wndDbSourceFrame.FloatPane(CRect(CPoint(100, 100), CSize(680, 400)));
+    m_wndDbSourceFrame.ShowPane(FALSE, FALSE, TRUE); // hidden by default
+    m_wndDbSourceFrame.SetCanBeTabbedDocument(TRUE);
+    if (AfxGetApp()->GetProfileInt(m_cszProfileName, L"IsObjectListTabbed", FALSE))
+        m_wndDbSourceFrame.ConvertToTabbedDocument();
+    m_wndDbSourceFrame.ShowPane(FALSE, FALSE, TRUE); // hidden by default
+
 
     if (!m_wndGrepFrame.Create(lpszFindInFiles, this, CSize(600, 200), TRUE, IDC_MF_GREP_BAR)
     || !m_wndGrepViewer.Create(&m_wndGrepFrame)) {
-		TRACE("Failed to create Grep Viewer\n");
-		return -1;
+        TRACE("Failed to create Grep Viewer\n");
+        return -1;
     }
-    m_wndGrepViewer.ModifyStyleEx(0, WS_EX_CLIENTEDGE);
+    HICON hFindInFilesIcon = (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_FIND_IN_FILES), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+    m_wndGrepFrame.SetIcon(hFindInFilesIcon, FALSE);
+    m_wndGrepFrame.SetClient(&m_wndGrepViewer);
+    m_wndGrepFrame.EnableDocking(CBRS_ALIGN_ANY);
+    DockPane(&m_wndGrepFrame, AFX_IDW_DOCKBAR_BOTTOM);
+    m_wndGrepFrame.ShowPane(FALSE, FALSE, TRUE); // hidden by default
 
-    ShowControlBar(&m_wndGrepFrame, FALSE, FALSE);
-    m_wndGrepFrame.ModifyStyle(0, WS_CLIPCHILDREN, 0);
-	m_wndGrepFrame.SetSCBStyle(m_wndGrepFrame.GetSCBStyle()|SCBS_SIZECHILD);
-    m_wndGrepFrame.SetBarStyle(m_wndGrepFrame.GetBarStyle()|CBRS_TOOLTIPS|CBRS_FLYBY|CBRS_SIZE_DYNAMIC);
-	m_wndGrepFrame.EnableDocking(CBRS_ALIGN_TOP|CBRS_ALIGN_BOTTOM);
-	DockControlBar(&m_wndGrepFrame, AFX_IDW_DOCKBAR_BOTTOM);
 
-    if (CWorkbookMDIFrame::DoCreate(FALSE) == -1)
+
+    if (!m_wndOpenFilesFrame.Create(lpszOpenFiles, this, CSize(200, 300), TRUE, IDC_MF_OPENFILES_BAR)
+    || !m_wndOpenFiles.CreateEx(0, WS_CHILD | WS_VISIBLE |LVS_REPORT|LVS_SORTASCENDING|LVS_NOCOLUMNHEADER |LVS_SHOWSELALWAYS|LVS_SINGLESEL, CRect(0,0,0,0), &m_wndOpenFilesFrame, 1)
+    )
+    {
+        TRACE("Failed to create Open Files controlr\n");
+        return -1;
+    }
+    m_wndOpenFiles.InsertColumn(0, (LPCTSTR)NULL);
+    m_wndOpenFiles.SetExtendedStyle(m_wndOpenFiles.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
+    m_wndOpenFiles.ModifyStyleEx(0, WS_EX_STATICEDGE/*WS_EX_CLIENTEDGE*/, 0);
+    m_wndOpenFiles.SetImageList(&m_wndFilePanel.GetSysImageList(), LVSIL_SMALL);
+
+    HICON hOpenFilesIcon = (HICON)::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_OPEN_FILES), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+    m_wndOpenFilesFrame.SetIcon(hOpenFilesIcon, FALSE);
+    m_wndOpenFilesFrame.SetClient(&m_wndOpenFiles);
+    m_wndOpenFilesFrame.EnableDocking(CBRS_ALIGN_ANY);
+    //DockPane(&m_wndOpenFilesFrame);
+
+    if (CWorkbookMDIFrame::DoCreate() == -1)
     {
         TRACE0("CMDIMainFrame::OnCreate: Failed to create CWorkbookMDIFrame\n");
         return -1;
     }
 
-    //DockControlBarLeftOf(&m_wndFilePanelBar, &m_wndObjectViewerFrame);
-    ShowControlBar(&m_wndFilePanelBar, FALSE, FALSE);
-
-    CWorkbookMDIFrame::LoadBarState();
-
-    // 30.03.2003 bug fix, updated a control bars initial state
-    ShowControlBar(&m_wndFilePanelBar, !m_wndFilePanelBar.IsFloating() && m_wndFilePanelBar.IsVisible(), FALSE);
-    ShowControlBar(&m_wndDbSourceFrame, !m_wndDbSourceFrame.IsFloating() && m_wndDbSourceFrame.IsVisible(), FALSE);
-    ShowControlBar(&m_wndObjectViewerFrame, !m_wndObjectViewerFrame.IsFloating() && m_wndObjectViewerFrame.IsVisible(), FALSE);
-    ShowControlBar(&m_wndPropTreeFrame, !m_wndPropTreeFrame.IsFloating() && m_wndPropTreeFrame.IsVisible(), FALSE);
-    ShowControlBar(&m_wndGrepFrame, !m_wndGrepFrame.IsFloating() && m_wndGrepFrame.IsVisible(), FALSE);
+    m_wndOpenFilesFrame.AttachToTabWnd(&m_wndFilePanel, DM_SHOW, FALSE);
 
     Global::SetStatusHwnd(m_wndStatusBar.m_hWnd);
 
@@ -312,6 +340,8 @@ int CMDIMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CMDIMainFrame::OnClose()
 {
+    AfxGetApp()->WriteProfileInt(m_cszProfileName, L"IsObjectListTabbed", m_wndDbSourceFrame.IsMDITabbed());
+
     // let's try to close connection first 
     // because an user can cancel if there is an open transaction
 
@@ -319,7 +349,7 @@ void CMDIMainFrame::OnClose()
     {
         if (theApp.GetConnectOpen() && theApp.GetActivePrimeExecution())
         {
-            if (AfxMessageBox("There is an active query/statement. \n\nDo you really want to ignore that and close application?", 
+            if (AfxMessageBox(L"There is an active query/statement. \n\nDo you really want to ignore that and close application?", 
                 MB_YESNO|MB_ICONEXCLAMATION|MB_DEFBUTTON2) == IDYES
             )
             {
@@ -347,60 +377,65 @@ void CMDIMainFrame::OnClose()
         CWorkbookMDIFrame::OnClose();
 }
 
+
+void CMDIMainFrame::TogglePane (CDockablePane& pane)
+{
+    bool focus = has_focus(pane);
+
+    if (!pane.IsWindowVisible()) // in case if it is hidden behind another docking control
+        pane.ShowPane(TRUE, FALSE, TRUE);
+    else 
+        pane.ShowPane(!pane.IsVisible(), FALSE, TRUE);
+
+    if (focus && !pane.IsVisible())
+        SetFocus();
+}
+
+
 void CMDIMainFrame::OnSqlObjViewer()
 {
-    bool focus = has_focus(m_wndObjectViewerFrame);
-
-    ShowControlBar(&m_wndObjectViewerFrame, !m_wndObjectViewerFrame.IsVisible(), FALSE);
-    
-    if (focus && !m_wndObjectViewerFrame.IsVisible())
-        SetFocus();
+    TogglePane(m_wndObjectViewerFrame);
 }
 
 void CMDIMainFrame::OnUpdate_SqlObjViewer(CCmdUI* pCmdUI)
 {
-	pCmdUI->SetCheck(m_wndObjectViewerFrame.IsWindowVisible());
+    pCmdUI->SetCheck(m_wndObjectViewerFrame.IsWindowVisible());
 }
 
 void CMDIMainFrame::OnViewProperties()
 {
-    bool focus = has_focus(m_wndPropTreeFrame);
-
-    ShowControlBar(&m_wndPropTreeFrame, !m_wndPropTreeFrame.IsVisible(), FALSE);
-    
-    if (focus && !m_wndPropTreeFrame.IsVisible())
-        SetFocus();
+    TogglePane(m_wndPropTreeFrame);
 }
 
 void CMDIMainFrame::OnUpdate_ViewProperties(CCmdUI* pCmdUI)
+{
+    pCmdUI->SetCheck(m_wndOpenFilesFrame.IsWindowVisible());
+}
+
+void CMDIMainFrame::OnViewOpenFiles()
+{
+    TogglePane(m_wndOpenFilesFrame);
+}
+
+void CMDIMainFrame::OnUpdate_ViewOpenFiles(CCmdUI* pCmdUI)
 {
     pCmdUI->SetCheck(m_wndPropTreeFrame.IsWindowVisible());
 }
 
 void CMDIMainFrame::OnSqlDbSource()
 {
-    bool focus = has_focus(m_wndDbSourceFrame);
-
-    ShowControlBar(&m_wndDbSourceFrame, !m_wndDbSourceFrame.IsVisible(), FALSE);
-    
-    if (focus && !m_wndDbSourceFrame.IsVisible())
-        SetFocus();
+    TogglePane(m_wndDbSourceFrame);
 }
 
 void CMDIMainFrame::OnUpdate_SqlDbSource(CCmdUI* pCmdUI)
 {
-	pCmdUI->SetCheck(m_wndDbSourceFrame.IsWindowVisible());
+    pCmdUI->SetCheck(m_wndDbSourceFrame.IsWindowVisible());
 }
 
 void CMDIMainFrame::OnFileGrep ()
 {
-    if (m_wndGrepViewer.IsRunning()
-    && AfxMessageBox("Abort already running grep process?", MB_ICONQUESTION|MB_YESNO) == IDYES)
-        m_wndGrepViewer.AbortProcess();
-
-    if (!m_wndGrepViewer.IsRunning()
-    && CGrepDlg(this, &m_wndGrepViewer).DoModal() == IDOK)
-       ShowControlBar(&m_wndGrepFrame, TRUE, FALSE); // 23.03.2003 bug fix, "Find in Files" does not show the output automatically
+    if (CGrepDlg(this, &m_wndGrepViewer, nullptr).DoModal() == IDOK)
+       m_wndGrepFrame.ShowPane(TRUE, FALSE, TRUE);
 }
 
 void CMDIMainFrame::OnUpdate_FileGrep (CCmdUI* pCmdUI)
@@ -410,37 +445,33 @@ void CMDIMainFrame::OnUpdate_FileGrep (CCmdUI* pCmdUI)
 
 void CMDIMainFrame::OnFileShowGrepOutput()
 {
-    bool focus = has_focus(m_wndGrepFrame);
-
-    ShowControlBar(&m_wndGrepFrame, !m_wndGrepFrame.IsVisible(), FALSE);
-    
-    if (focus && !m_wndGrepFrame.IsVisible())
-        SetFocus();
+    TogglePane(m_wndGrepFrame);
 }
 
 void CMDIMainFrame::OnUpdate_FileShowGrepOutput(CCmdUI* pCmdUI)
 {
-	pCmdUI->SetCheck(m_wndGrepFrame.IsWindowVisible());
+    pCmdUI->SetCheck(m_wndGrepFrame.IsWindowVisible());
 }
 
 void CMDIMainFrame::OnViewFileToolbar ()
 {
-    ShowControlBar(&m_wndFileToolBar, !m_wndFileToolBar.IsVisible(), FALSE);
+
+    ShowPane(&m_wndToolBar, !m_wndToolBar.IsVisible(), FALSE, FALSE);
 }
 
 void CMDIMainFrame::OnViewSqlToolbar ()
 {
-    ShowControlBar(&m_wndSqlToolBar, !m_wndSqlToolBar.IsVisible(), FALSE);
+    ShowPane(&m_wndSqlToolBar, !m_wndSqlToolBar.IsVisible(), FALSE, FALSE);
 }
 
 void CMDIMainFrame::OnViewConnectToolbar ()
 {
-    ShowControlBar(&m_wndConnectionBar, !m_wndConnectionBar.IsVisible(), FALSE);
+    ShowPane(&m_wndConnectionBar, !m_wndConnectionBar.IsVisible(), FALSE, FALSE);
 }
 
 void CMDIMainFrame::OnUpdate_FileToolbar (CCmdUI* pCmdUI)
 {
-    pCmdUI->SetCheck(m_wndFileToolBar.IsVisible());
+    pCmdUI->SetCheck(m_wndToolBar.IsVisible());
 }
 
 void CMDIMainFrame::OnUpdate_SqlToolbar (CCmdUI* pCmdUI)
@@ -453,21 +484,16 @@ void CMDIMainFrame::OnUpdate_ConnectToolbar (CCmdUI* pCmdUI)
     pCmdUI->SetCheck(m_wndConnectionBar.IsVisible());
 }
 
-#define MAX_TIT_LEN 48
-    static void append_striped_string (CString& outStr, const char* inStr)
-    {
-        for (int i(0); i < MAX_TIT_LEN && inStr && *inStr && *inStr != '\n'; i++, inStr++) {
-            if (*inStr == '\t') outStr += ' ';
-            else                outStr += *inStr;
-        }
-        if (i == MAX_TIT_LEN || (inStr && inStr[0] == '\n' && inStr[1] != 0))
-            outStr += "...";
-    }
-
 CObjectViewerWnd& CMDIMainFrame::ShowTreeViewer ()
 {
-    ShowControlBar(&m_wndObjectViewerFrame, TRUE, FALSE);
+    ShowPane(&m_wndObjectViewerFrame, TRUE, FALSE, TRUE);
     return m_wndObjectViewer;
+}
+
+CGrepView& CMDIMainFrame::ShowGrepViewer ()
+{
+    ShowPane(&m_wndGrepFrame, TRUE, FALSE, TRUE);
+    return m_wndGrepViewer;
 }
 
 void CMDIMainFrame::SetIndicators ()
@@ -489,14 +515,14 @@ void CMDIMainFrame::SetIndicators ()
 
 void CMDIMainFrame::ShowProperties (std::vector<std::pair<string, string> >& properties, bool readOnly) 
 {
-    ShowControlBar(&m_wndPropTreeFrame, TRUE, FALSE);
+    ShowPane(&m_wndPropTreeFrame, TRUE, FALSE, TRUE);
     m_wndPropTree.ShowProperties(properties, readOnly); 
 }
 
 BOOL CMDIMainFrame::OnCopyData (CWnd*, COPYDATASTRUCT* pCopyDataStruct)
 {
     // 30.03.2003 improvement, command line support, try sqltools /h to get help
-	if (theApp.HandleAnotherInstanceRequest(pCopyDataStruct))
+    if (theApp.HandleAnotherInstanceRequest(pCopyDataStruct))
     {
         if (IsIconic()) OpenIcon();
         return TRUE;
@@ -511,43 +537,26 @@ void CMDIMainFrame::OnActivateApp(BOOL bActive, DWORD dwThreadID)
     theApp.OnActivateApp(bActive);
 }
 
-//void CMDIMainFrame::OnSize (UINT nType, int cx, int cy)
-//{
-//    CWorkbookMDIFrame::OnSize(nType, cx, cy);
-//
-//    if (nType == SIZE_MINIMIZED)
-//    {
-//        m_orgTitle = GetTitle();
-//        CString title(m_orgTitle);
-//        title += '\n';
-//        title += m_wndConnectionBar.GetText();
-//        title += '\n';
-//        SetTitle(title);
-//        OnUpdateFrameTitle(FALSE);
-//    }
-//    else if (!m_orgTitle.IsEmpty())
-//    {
-//        SetTitle(m_orgTitle);
-//        OnUpdateFrameTitle(FALSE);
-//        m_orgTitle.Empty();
-//    }
-//}
-
-    static void update_label (CWorkbookControlBar& ctrlBar, UINT command, LPCSTR orgTitle)
+    static void updateLabel (CDockablePane& ctrlBar, UINT command, CString orgTitle)
     {
+        int inx = orgTitle.Find(L" (");
+        if (inx != -1)
+            orgTitle = orgTitle.Left(inx);
+
         std::string label;
         if (Common::GUICommandDictionary::GetCommandAccelLabel(static_cast<Common::Command>(command), label))
-            label = " (" + label + ")";
-        ctrlBar.SetWindowText((orgTitle + label).c_str());
+            ctrlBar.SetWindowText(orgTitle + L" (" + Common::wstr(label).c_str() + L")");
     }
 
 void CMDIMainFrame::UpdateViewerAccelerationKeyLabels ()
 {
-    update_label(m_wndObjectViewerFrame, ID_SQL_OBJ_VIEWER, lpszQuickViewer);
-    update_label(m_wndDbSourceFrame, ID_SQL_DB_SOURCE, lpszObjectsList);
-    update_label(m_wndGrepFrame, ID_FILE_SHOW_GREP_OUTPUT, lpszFindInFiles);
-    update_label(m_wndFilePanelBar, ID_VIEW_FILE_PANEL, lpszFilePanel);
-    update_label(m_wndPropTreeFrame, ID_VIEW_PROPERTIES, lpszPropTreePanel);
+    updateLabel(m_wndObjectViewerFrame, ID_SQL_OBJ_VIEWER, lpszQuickViewer);
+    updateLabel(m_wndDbSourceFrame,     ID_SQL_DB_SOURCE, lpszObjectsList);
+    updateLabel(m_wndGrepFrame,         ID_FILE_SHOW_GREP_OUTPUT, lpszFindInFiles);
+    updateLabel(m_wndFilePanel,         ID_VIEW_FILE_PANEL, lpszFilePanel);
+    updateLabel(m_wndRecentFile,        ID_VIEW_HISTORY,    lpszFileHistory);
+    updateLabel(m_wndPropTreeFrame,     ID_VIEW_PROPERTIES, lpszPropTreePanel);
+    updateLabel(m_wndOpenFilesFrame,    ID_VIEW_OPEN_FILES, lpszOpenFiles);
 }
 
 LRESULT CMDIMainFrame::OnSetMessageString (WPARAM wParam, LPARAM lParam)
@@ -587,38 +596,6 @@ LRESULT CMDIMainFrame::OnSetMessageString (WPARAM wParam, LPARAM lParam)
     return CWorkbookMDIFrame::OnSetMessageString(wParam, lParam);
 }
 
-void CMDIMainFrame::OnPlanDropDown (NMHDR* pNMHDR, LRESULT* lResult)
-{
-    LPNMTOOLBAR pNMTB = (LPNMTOOLBAR)pNMHDR;
-
-    if (pNMTB)
-    {
-        CMenu menu;
-        menu.CreatePopupMenu();
-
-        switch (pNMTB->iItem)
-        {
-        case ID_FILE_OPEN:
-            menu.AppendMenu(MF_STRING|MF_DISABLED,  ID_FILE_MRU_FIRST, "Recent File");
-            break;
-        case ID_WORKSPACE_OPEN:
-            menu.AppendMenu(MF_STRING|MF_DISABLED,  ID_WORKSPACE_MRU_FIRST, "Recent Workspace");
-            break;
-        case ID_WORKSPACE_OPEN_AUTOSAVED:
-            menu.AppendMenu(MF_STRING|MF_DISABLED,  ID_WORKSPACE_QUICK_MRU_FIRST, "Recent Quicksaved Snapshot");
-            break;
-        }
-
-        CRect rc;
-        m_wndFileToolBar.SendMessage(TB_GETRECT, pNMTB->iItem, (LPARAM)&rc);
-        m_wndFileToolBar.ClientToScreen(&rc);
-
-        menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_VERTICAL, rc.left, rc.bottom, this, &rc);
-    }
-
-    *lResult = TBDDRET_DEFAULT;
-}
-
 LRESULT CMDIMainFrame::RequestQueueNotEmpty (WPARAM, LPARAM)
 {
     try { EXCEPTION_FRAME;
@@ -644,7 +621,7 @@ LRESULT CMDIMainFrame::RequestQueueEmpty (WPARAM, LPARAM)
     return 0L;
 }
 
-
+// TODO implement the same in OE
 #include "OpenEditor/OEWorkspaceManager.h"
 
 void CMDIMainFrame::OnEndSession(BOOL bEnding)
@@ -654,7 +631,7 @@ void CMDIMainFrame::OnEndSession(BOOL bEnding)
         CWinThread* pWorkspaceManagerThread = OEWorkspaceManager::Get().ImmediateShutdown();
 
         if (pWorkspaceManagerThread)
-	        WaitForSingleObject(*pWorkspaceManagerThread, 5000);
+            WaitForSingleObject(*pWorkspaceManagerThread, 5000);
     }
     _DEFAULT_HANDLER_
 
@@ -665,13 +642,108 @@ BOOL CMDIMainFrame::OnQueryEndSession()
 {
     try { EXCEPTION_FRAME;
 
-        ShutdownBlockReasonCreate(m_hWnd, L"Auto-saving the data!");
+        // for WinXP compatibility
+        HINSTANCE user32_dll = NULL;
+
+        if (!user32_dll) 
+            user32_dll = LoadLibrary(L"USER32.DLL");
+
+        typedef BOOL (WINAPI *ShutdownBlockReasonCreate_t)(HWND, LPCWSTR);
+        FARPROC p_ShutdownBlockReasonCreate = NULL;
+
+        if (!p_ShutdownBlockReasonCreate && user32_dll) 
+            p_ShutdownBlockReasonCreate = GetProcAddress(user32_dll, "ShutdownBlockReasonCreate");
+
+        //ShutdownBlockReasonCreate(m_hWnd, L"Auto-saving the data!");
+        if (p_ShutdownBlockReasonCreate)
+            ((ShutdownBlockReasonCreate_t)p_ShutdownBlockReasonCreate)(m_hWnd, L"Auto-saving the data!");
 
         OEWorkspaceManager::Get().InstantAutosave();
-        
-        ShutdownBlockReasonCreate(m_hWnd, L"");
+
+        typedef BOOL (WINAPI *ShutdownBlockReasonDestroy_t)(HWND);
+        FARPROC p_ShutdownBlockReasonDestroy = NULL;
+
+        if (!p_ShutdownBlockReasonDestroy && user32_dll) 
+            p_ShutdownBlockReasonDestroy = GetProcAddress(user32_dll, "ShutdownBlockReasonDestroy");
+
+        //ShutdownBlockReasonDestroy(m_hWnd);
+        if (p_ShutdownBlockReasonDestroy)
+            ((ShutdownBlockReasonDestroy_t)p_ShutdownBlockReasonDestroy)(m_hWnd);
     }
     _DEFAULT_HANDLER_
 
     return CWorkbookMDIFrame::OnQueryEndSession();
 }
+
+// FRM2
+void CMDIMainFrame::SetupMDITabbedGroups ()
+{
+    auto settings = COEDocument::GetSettingsManager().GetGlobalSettings();
+
+    CWorkbookMDIFrame::m_MDITabsCtrlTabSwitchesToPrevActive = settings->GetMDITabsCtrlTabSwitchesToPrevActive() ? TRUE : FALSE;
+
+    CMDITabInfo mdiTabParams;
+    mdiTabParams.m_tabLocation = settings->GetMDITabsOnTop() ? CMFCTabCtrl::LOCATION_TOP : CMFCTabCtrl::LOCATION_BOTTOM;
+    mdiTabParams.m_style = settings->GetMDITabsRectangularLook() ? CMFCTabCtrl::STYLE_3D : CMFCTabCtrl::STYLE_3D_ONENOTE;
+    mdiTabParams.m_bActiveTabCloseButton = settings->GetMDITabsActiveTabCloseButton() ? TRUE : FALSE;
+    mdiTabParams.m_bAutoColor = settings->GetMDITabsAutoColor() ? TRUE : FALSE;
+    mdiTabParams.m_bDocumentMenu = settings->GetMDITabsDocumentMenuButton() ? TRUE : FALSE;
+
+    mdiTabParams.m_bTabIcons = FALSE;    
+    mdiTabParams.m_bTabCustomTooltips = TRUE;
+    mdiTabParams.m_bFlatFrame = TRUE;
+    EnableMDITabbedGroups(TRUE, mdiTabParams);
+
+    RecalcLayout();
+}
+
+void CMDIMainFrame::OnCreateChild (CMDIChildWnd* pWnd)
+{
+    static CString strTitle;
+    pWnd->GetWindowText(strTitle);
+
+    {
+        LVITEM item;
+        memset(&item, 0, sizeof(item));
+        item.mask    = LVIF_TEXT|LVIF_PARAM;
+        item.pszText = (LPWSTR)(LPCWSTR)strTitle;
+        item.lParam  = (LPARAM)pWnd;
+        m_wndOpenFiles.OpenFiles_Append(item);
+    }
+}
+
+void CMDIMainFrame::OnDestroyChild (CMDIChildWnd* pWnd)
+{
+    m_wndOpenFiles.OpenFiles_RemoveByParam((LPARAM)pWnd);
+}
+
+void CMDIMainFrame::OnActivateChild (CMDIChildWnd* pWnd)
+{
+    __super::OnActivateChild(pWnd);
+    m_wndOpenFiles.OpenFiles_ActivateByParam((LPARAM)pWnd);
+}
+
+void CMDIMainFrame::OnRenameChild (CMDIChildWnd* pWnd, LPCTSTR szTitle)
+{
+    LPARAM selected = m_wndOpenFiles.OpenFiles_GetCurSelParam();
+    int iImage = GetImageByDocument(pWnd->GetActiveDocument());
+
+    {
+        LVITEM item;
+        memset(&item, 0, sizeof(item));
+        item.mask    = LVIF_TEXT|LVIF_PARAM;
+        item.pszText = (LPTSTR)szTitle;
+        item.lParam  = (LPARAM)pWnd;
+        //if (iImage != -1) 
+        //{
+            item.iImage = iImage;
+            item.mask |= LVIF_IMAGE;
+        //}
+        m_wndOpenFiles.OpenFiles_UpdateByParam((LPARAM)pWnd, item);
+    }
+
+    // 2017-12-01 bug fix, restoring selection after item being renamed 
+    if (selected)
+        m_wndOpenFiles.OpenFiles_ActivateByParam(selected);
+}
+

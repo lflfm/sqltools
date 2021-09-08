@@ -33,31 +33,31 @@
 
 class COEClassPage : public CPropertyPage
 {
-    CString m_className;
+    std::string m_className;
     SettingsManager& m_manager;
     bool m_dataInitialized;
 public:
-	COEClassPage(SettingsManager&, LPCSTR name);
-	~COEClassPage();
+    COEClassPage(SettingsManager&, LPCSTR name);
+    ~COEClassPage();
 
-	//{{AFX_DATA(COEClassPage)
-	enum { IDD = IDD_OE_CLASSES };
-	//}}AFX_DATA
+    //{{AFX_DATA(COEClassPage)
+    enum { IDD = IDD_OE_CLASSES };
+    //}}AFX_DATA
 
-	//{{AFX_VIRTUAL(COEClassPage)
-	public:
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-	//}}AFX_VIRTUAL
+    //{{AFX_VIRTUAL(COEClassPage)
+    public:
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);
+    virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+    //}}AFX_VIRTUAL
 
 protected:
-	//{{AFX_MSG(COEClassPage)
-	afx_msg void OnSelChangeLanguage();
-	virtual BOOL OnInitDialog();
-	afx_msg void OnChangeData();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(COEClassPage)
+    afx_msg void OnSelChangeLanguage();
+    virtual BOOL OnInitDialog();
+    afx_msg void OnChangeData();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

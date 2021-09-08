@@ -99,7 +99,7 @@ END_MESSAGE_MAP()
             vector<string>::const_iterator it = m_schemas.begin();
             
             for (; it != m_schemas.end(); ++it)
-                m_wndSchemaList.AddString(it->c_str());
+                m_wndSchemaList.AddString(Common::wstr(*it).c_str());
 
             // TODO: reimplement PUBLIC support! Forgot how :(
             //m_wndSchemaList.AddString("PUBLIC");
@@ -125,7 +125,7 @@ void CSchemaList::OnSetFocus()
     {
         try { EXCEPTION_FRAME;
 
-            BkgdRequestQueue::Get().Push(TaskPtr(new PopulateSchemaListTask(*this, (LPCSTR)m_defSchema, m_allSchemas ? true : false)));
+            BkgdRequestQueue::Get().Push(TaskPtr(new PopulateSchemaListTask(*this, Common::str(m_defSchema).c_str(), m_allSchemas ? true : false)));
         }
         _DEFAULT_HANDLER_
     }
@@ -154,7 +154,7 @@ void CSchemaList::OnSetFocus()
         void ReturnInForeground ()
         {
             m_wndSchemaList.m_defSchema = m_defSchema.c_str();
-            m_wndSchemaList.SetCurSel(m_wndSchemaList.AddString(m_defSchema.c_str()));
+            m_wndSchemaList.SetCurSel(m_wndSchemaList.AddString(Common::wstr(m_defSchema).c_str()));
             
             NMHDR nmh;
             nmh.code = CSchemaList::NM_LIST_LOADED;    // Message type defined by control.

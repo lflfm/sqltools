@@ -60,7 +60,7 @@ MemoryMappedFile::~MemoryMappedFile ()
     _DESTRUCTOR_HANDLER_;
 }
 
-void MemoryMappedFile::Open (const char* filename, unsigned options, unsigned long length)
+void MemoryMappedFile::Open (const wchar_t* filename, unsigned options, unsigned long length)
 {
     try 
     {

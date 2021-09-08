@@ -164,13 +164,14 @@ void Streamer::writeCell (std::ostream& of, int row, int col) const
         void writeText (std::ostream& of, const string& str, int width, EColumnAlignment align) const;
         Common::nvector<size_t> m_maxColLen;
         size_t m_maxHeadersLen;
-        bool m_OutputWithHeader;
+        bool m_OutputWithHeader, m_endingCR;
         char m_FieldDelimiterChar;
     };
 
 PlainTextStreamer::PlainTextStreamer (const GridStringSource& source, int startRow, int rowCount, int startCol, int colCount)
     : Streamer (source, startRow, rowCount, startCol, colCount),
-    m_maxColLen("PlainTextStreamer::m_maxColLen")
+    m_maxColLen("PlainTextStreamer::m_maxColLen"),
+    m_endingCR(colCount == -1 || colCount == m_source.GetCount(edHorz))
 { 
     if (startRow != -1)
         m_source.GetMaxColumnWidthByFirstLine(m_maxColLen, startRow, startRow + rowCount - 1); 
@@ -256,7 +257,7 @@ void PlainTextStreamer::writeRow (std::ostream& of, int row) const
     
     Streamer::writeRow(of, row);
 
-    if (row < m_startRow + m_rowCount - 1)
+    if (m_endingCR || ( row < m_startRow + m_rowCount - 1))
         of << '\n';
 }
 
@@ -436,7 +437,7 @@ void PlainTextStreamer::writeCell (std::ostream& of, int row, int col) const
             if (!m_IsTableOrientation)
             {
                 MessageBeep((UINT)-1);
-                AfxMessageBox("INSERTs can be genereated only from normally-oriented data grid!", MB_OK|MB_ICONSTOP);
+                AfxMessageBox(L"INSERTs can be genereated only from normally-oriented data grid!", MB_OK|MB_ICONSTOP);
                 AfxThrowUserException();
             }
         }

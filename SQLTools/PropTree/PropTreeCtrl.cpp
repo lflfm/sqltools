@@ -50,9 +50,9 @@ void PropTreeCtrl::ShowProperties (std::vector<std::pair<string, string> >& prop
     {
 	    CPropTreeItemEdit* pEdit;
 	    pEdit = (CPropTreeItemEdit*)InsertItem(new CPropTreeItemEdit(), pRoot);
-        pEdit->SetLabelText(it->first.c_str());
+        pEdit->SetLabelText(Common::wstr(it->first).c_str());
 	    //pEdit->SetInfoText(_T("Edit text attribute"));
-	    pEdit->SetItemValue(it->second.c_str());
+	    pEdit->SetItemValue(Common::wstr(it->second).c_str());
         if (readOnly) pEdit->ReadOnly();
     }
 }

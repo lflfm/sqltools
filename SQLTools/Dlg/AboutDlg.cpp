@@ -30,7 +30,7 @@ CAboutDlg::CAboutDlg(CWnd* pParent /*=NULL*/)
 //    , m_license(_T(""))
 {
     m_license = SQLTOOLS_VERSION
-        "\r\nDevelopment tools for Oracle 8i/9i/10g/11g"
+        "\r\nDevelopment tools for Oracle 8i/9i/10g/11g/12c"
         "\r\nwww.sqltools.net"
         "\r\n" SQLTOOLS_COPYRIGHT
         //"\r\n\r\nThis program is free software; you can redistribute it and/or modify it" 
@@ -60,13 +60,13 @@ CAboutDlg::CAboutDlg(CWnd* pParent /*=NULL*/)
     m_license += "\r\nOCI version: ";
     m_license += Common::getDllVersionProperty("OCI.DLL", "FileVersion").c_str();
 
-    if (HMODULE hModule = ::GetModuleHandle("OCI.DLL"))
+    if (HMODULE hModule = ::GetModuleHandle(L"OCI.DLL"))
     {
         m_license += "\r\nOCI Path: ";
-	    char filename[_MAX_PATH];
-	    GetModuleFileName(hModule, filename, sizeof(filename));
-        filename[sizeof(filename)-1] = 0;
-        m_license +=  filename;
+	    wchar_t filename[_MAX_PATH];
+	    GetModuleFileName(hModule, filename, sizeof(filename)/sizeof(filename[0]));
+        filename[sizeof(filename)/sizeof(filename[0])-1] = 0;
+        m_license += filename;
     }
 
     if (const char* oracle_home = getenv("ORACLE_HOME"))

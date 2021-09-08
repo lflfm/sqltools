@@ -26,13 +26,13 @@
 class CEditWithSelPos : public CEdit
 {
 public:
-	CEditWithSelPos();
+    CEditWithSelPos();
     BOOL SubclassComboBoxEdit (HWND);
 
-    void InsertAtCurPos (const char*, int offset);
+    void InsertAtCurPos (LPCTSTR, int offset);
 protected:
     int m_nStartChar, m_nEndChar;
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
     afx_msg void OnKillFocus(CWnd* pNewWnd);
 };
 

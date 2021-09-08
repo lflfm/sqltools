@@ -31,39 +31,39 @@
 class COEEditingPage : public CPropertyPage
 {
 public:
-	COEEditingPage (SettingsManager& manager);
-	~COEEditingPage ();
+    COEEditingPage (SettingsManager& manager);
+    ~COEEditingPage ();
 
 // Dialog Data
-	//{{AFX_DATA(COEEditingPage)
-	enum { IDD = IDD_OE_EDITING };
-	UINT	m_MaxUndoCount;
+    //{{AFX_DATA(COEEditingPage)
+    enum { IDD = IDD_OE_EDITING };
+    UINT	m_MaxUndoCount;
     UINT	m_UndoMemLimit;
     BOOL    m_UndoAfterSaving;
-	BOOL	m_CursorBeyondEOL;
-	BOOL	m_CursorBeyondEOF;
-	BOOL	m_TruncateSpaces;
+    BOOL	m_CursorBeyondEOL;
+    BOOL	m_CursorBeyondEOF;
+    BOOL	m_TruncateSpaces;
     BOOL	m_LineNumbers;
     BOOL	m_VisibleSpaces;
     BOOL    m_EOFMark;
     BOOL    m_UseSmartHome;
     BOOL    m_UseSmartEnd;
     CString m_TimestampFormat;
-	//}}AFX_DATA
+    //}}AFX_DATA
     SettingsManager& m_manager;
 
 
-	//{{AFX_VIRTUAL(COEEditingPage)
-	public:
-	virtual BOOL OnApply();
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    //{{AFX_VIRTUAL(COEEditingPage)
+    public:
+    virtual BOOL OnApply();
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
 protected:
-	//{{AFX_MSG(COEEditingPage)
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(COEEditingPage)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 public:
     afx_msg void OnBnClicked_CursorBeyondEol();
 };

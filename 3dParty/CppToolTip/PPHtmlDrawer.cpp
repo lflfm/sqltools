@@ -1688,7 +1688,7 @@ SIZE CPPHtmlDrawer::DrawHtmlString (CPPString & sHtml, LPCRECT lpRect)
 {
 	SIZE szTextArea = {0, 0};
 
-	COLORREF clrShadow = m_bIsEnable ? m_crShadow : GetColorByName("");
+	COLORREF clrShadow = m_bIsEnable ? m_crShadow : GetColorByName(_T(""));
 
 	//ENG: For any string we are add a <body> tag as wrapper
 	//RUS: Для любой строки добавляем тэг <body>
@@ -1966,7 +1966,7 @@ SIZE CPPHtmlDrawer::DrawHtmlString (CPPString & sHtml, LPCRECT lpRect)
 											if (m_bIsEnable)
 												m_defStyle.crText = GetStyleColor(sValue, m_defStyle.crText);
 											else
-												m_defStyle.crText = GetColorByName("");
+												m_defStyle.crText = GetColorByName(_T(""));
 										}
 										else if (sParameter == _T("style"))
 											GetStyleFontShortForm(sValue);
@@ -2127,7 +2127,7 @@ SIZE CPPHtmlDrawer::DrawHtmlString (CPPString & sHtml, LPCRECT lpRect)
 										if (m_bIsEnable)
 											csTemp.crText = GetStyleColor(sValue, csTemp.crText);
 										else
-											csTemp.crText = GetColorByName("");
+											csTemp.crText = GetColorByName(_T(""));
 									}
 								} //if
 							} //while
@@ -3510,7 +3510,7 @@ void CPPHtmlDrawer::UnpackTextStyle(CPPString strStyle, _STRUCT_CHANGESTYLE & cs
 					if (m_bIsEnable)
 						cs.crText = GetStyleColor(strParameter, cs.crText);
 					else
-						cs.crText = GetColorByName("");
+						cs.crText = GetColorByName(_T(""));
 				}
 				else if (strName == _T("background-color"))
 				{
@@ -3537,7 +3537,7 @@ void CPPHtmlDrawer::UnpackTextStyle(CPPString strStyle, _STRUCT_CHANGESTYLE & cs
 					if (m_bIsEnable)
 						cs.crBorderLight = GetStyleColor(strParameter, cs.crBorderLight);
 					else
-						cs.crBorderLight = GetColorByName("");
+						cs.crBorderLight = GetColorByName(_T(""));
 					cs.crBorderDark = cs.crBorderLight;
 				}
 				else if ((strName == _T("border-width")) || (strName == _T("size")))
@@ -3672,7 +3672,7 @@ int CPPHtmlDrawer::GetStyleTextTransform(CPPString & str, int nDefault)
 COLORREF CPPHtmlDrawer::GetStyleColor(CPPString & str, COLORREF crDefault)
 {
 //	if (!m_bIsEnable)
-//		return GetColorByName("");
+//		return GetColorByName(_T(""));
 	
 	if (!str.IsEmpty())
 	{
@@ -4489,7 +4489,7 @@ SIZE CPPHtmlDrawer::AnalyseCellParam(CPPString & sProperties, _STRUCT_CHANGESTYL
 			if (m_bIsEnable)
 				cs.crBorderLight = GetStyleColor(sValue, cs.crBorderLight);
 			else
-				cs.crBorderLight = GetColorByName("");
+				cs.crBorderLight = GetColorByName(_T(""));
 			cs.crBorderDark = cs.crBorderLight;
 		}
 		else if (sParameter == _T("bordercolorlight"))
@@ -4497,14 +4497,14 @@ SIZE CPPHtmlDrawer::AnalyseCellParam(CPPString & sProperties, _STRUCT_CHANGESTYL
 			if (m_bIsEnable)
 				cs.crBorderLight = GetStyleColor(sValue, cs.crBorderLight);
 			else
-				cs.crBorderLight = GetColorByName("");
+				cs.crBorderLight = GetColorByName(_T(""));
 		}
 		else if (sParameter == _T("bordercolordark"))
 		{
 			if (m_bIsEnable)
 				cs.crBorderDark = GetStyleColor(sValue, cs.crBorderDark);
 			else
-				cs.crBorderDark = GetColorByName("");
+				cs.crBorderDark = GetColorByName(_T(""));
 		}
 		else if (sParameter == _T("bgcolor"))
 		{

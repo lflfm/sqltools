@@ -28,7 +28,7 @@
 #include <map>
 #include <arg_shared.h>
 #include <COMMON/QuickArray.h>
-#include <COMMON/FixedString.h>
+#include <COMMON/OEString.h>
 #include <COMMON/Fastmap.h>
 #include <COMMON/NVector.h>
 
@@ -40,7 +40,7 @@ namespace OpenEditor
     using std::pair;
     using std::map;
     using arg::counted_ptr;
-    using Common::Fastmap;
+    using Common::FastmapW;
 
     class Storage;
 
@@ -67,7 +67,6 @@ namespace OpenEditor
         virtual void OnSettingsChanged () = 0;
     };
 
-
     union Position
     {
         struct
@@ -81,8 +80,6 @@ namespace OpenEditor
         bool operator != (const Position other) const;
         bool operator < (const Position other) const;
     };
-
-
 
     union Square
     {
@@ -102,47 +99,47 @@ namespace OpenEditor
         bool operator != (const Square& other) const;
     };
 
-
-
 #pragma pack(push, 1)
-    class String : public Common::FixedString
+    struct Tag
+    {
+        unsigned status   : STRING_STATUS_SIZE;
+        unsigned id       : STRING_ID_SIZE;
+        unsigned bookmark : RANDOM_BOOKMARK_SIZE;
+        unsigned bmkmask  : BOOKMARK_GROUPS_SIZE;
+    };
+
+    template <class T>
+    class StorageString : public Common::OEString<T>
     {
     public:
         // overflow of 24-bit id is theoretically possible 
         // - we can either expand it to 32-bit integer 
         // - or assign id only on request "GetLineId"
-        struct Tag
-        {
-            unsigned status   : STRING_STATUS_SIZE;
-            unsigned id       : STRING_ID_SIZE;
-            unsigned bookmark : RANDOM_BOOKMARK_SIZE;
-            unsigned bmkmask  : BOOKMARK_GROUPS_SIZE;
-        } tag;
+        Tag tag;
 
-        String ();
-        String (const String& other);
-        void operator = (const String& other);
+        StorageString ();
+        StorageString (const StorageString& other);
+        void operator = (const StorageString& other);
 
         ELineStatus get_status () const      { return (ELineStatus)tag.status; }
         void set_status (ELineStatus status) { tag.status = status; }
     };
 #pragma pack(pop)
 
+    typedef StorageString<char> StorageStringA;
+    typedef Common::QuickArray<StorageStringA> StringArrayA;
+    typedef StorageString<wchar_t> StorageStringW;
+    typedef Common::QuickArray<StorageStringW> StringArrayW;
 
-typedef Common::QuickArray<String> StringArray;
-
-
-    struct DelimitersMap : Fastmap<bool>
+    struct DelimitersMap : FastmapW<bool>
     {
         DelimitersMap ();
-        DelimitersMap (const char*);
+        DelimitersMap (const char*); // utf8 string
 
         void Set (const char*);
         void Get (string&);
 
         static const char* m_cszDefDelimiters;
-    private:
-        Fastmap<bool> m_Data;
     };
 
     class LineId
@@ -159,8 +156,6 @@ typedef Common::QuickArray<String> StringArray;
         unsigned m_id;
     };
 
-
-    
     class SequenceId
     {
     public:
@@ -178,7 +173,6 @@ typedef Common::QuickArray<String> StringArray;
         unsigned m_id;
     };
 
-
     class Sequence : public SequenceId
     {
     public:
@@ -190,7 +184,6 @@ typedef Common::QuickArray<String> StringArray;
         Sequence (const Sequence&);
         Sequence& operator = (const Sequence&);
     };
-
 
     class RandomBookmark
     {
@@ -208,8 +201,6 @@ typedef Common::QuickArray<String> StringArray;
     private:
         unsigned char m_id;
     };
-
-
 
     class RandomBookmarkArray
     {
@@ -232,42 +223,37 @@ typedef Common::QuickArray<String> StringArray;
         RandomBookmarkArray& operator = (const RandomBookmarkArray&);
     };
 
-
-
     class LineTokenizer
     {
     public:
-        static const unsigned char cbSpaceChar;
-        static const unsigned char cbVirtSpaceChar;
-        static const unsigned char cbTabChar;
+        static const wchar_t cbSpaceChar;
+        static const wchar_t cbVirtSpaceChar;
+        static const wchar_t cbTabChar;
 
         LineTokenizer (bool showWhiteSpace, int tabSpacing, const DelimitersMap&);
 
-        void StartScan (const char* str, int len);
+        void StartScan (const wchar_t* str, int len);
         bool Next ();
-        bool IsSpace () const   { return isspace(m_Buffer[m_Offset]) ? true : false; }
+        bool IsSpace () const   { return iswspace(m_Buffer[m_Offset]) ? true : false; }
         bool Eol () const       { return m_Offset == m_Length; }
 
-        void GetCurentWord (const char*& str, int& pos, int& len) const;
+        void GetCurentWord (const wchar_t*& str, int& pos, int& len) const;
 
-        void EnableProcessSpaces (bool);
+        void EnableProcessSpaces (bool enable) { m_processSpaces = enable; }
 
     private:
         const DelimitersMap m_delimiters;
-        const char* m_Buffer;
+        const wchar_t* m_Buffer;
         int   m_Length,
               m_Offset,
               m_Position,
               m_TabSpacing;
         bool  m_showWhiteSpace, m_processSpaces;
-        unsigned char m_spaceChar;
-        unsigned char m_virtSpaceChar;
-        unsigned char m_tabChar;
-        mutable string m_Whitespaces;
-
-        friend class EditContext;
+        wchar_t m_spaceChar;
+        wchar_t m_virtSpaceChar;
+        wchar_t m_tabChar;
+        mutable std::wstring m_Whitespaces;
     };
-
 
     class MultilineQuotesScanner
     {
@@ -288,21 +274,21 @@ typedef Common::QuickArray<String> StringArray;
 
         void Invalidate (int from_line);
         void Scan (int to_line, int& state, int& quoteId, bool& parsing);
-        bool ScanLine (const char* str, int length, int& state, int& quoteId, bool& parsing, int* parsingLength = 0) const;
+        bool ScanLine (const wchar_t* str, int len, int& state, int& quoteId, bool& parsing, int* parsingLength = 0) const;
 
     private:
         void buildMap (int to_line);
         void buildOpeningFastMap () const;
-        bool is_equal (const char* str, int length, int offset, const string& shape) const;
+        bool is_equal (const wchar_t* str, int length, int offset, const std::wstring& shape) const;
 
         Storage& m_Storage;
         DelimitersMap m_delimiters;
 
         bool m_bCaseSensitive;
-        vector<string> m_StartLineQuotes;  // actual from line start to end
-        vector<string> m_SingleLineQuotes; // actual any line position to end
-        vector<pair<string, string> > m_MultilineQuotes; // opening & closing quotes pair
-        string m_escapeChar;
+        vector<std::wstring> m_StartLineQuotes;  // actual from line start to end
+        vector<std::wstring> m_SingleLineQuotes; // actual any line position to end
+        vector<pair<std::wstring, std::wstring> > m_MultilineQuotes; // opening & closing quotes pair
+        std::wstring m_escapeChar;
 
         enum eQuoteType
         {
@@ -312,7 +298,7 @@ typedef Common::QuickArray<String> StringArray;
             eqtOpeningParse = 0x10,
             eqtClosingParse = 0x40,
         };
-        mutable Fastmap<char> m_OpeningFastMap;
+        mutable FastmapW<char> m_OpeningFastMap;
         mutable bool m_OpeningFastMapDirty;
 
         struct Entry
@@ -327,7 +313,7 @@ typedef Common::QuickArray<String> StringArray;
         int m_nQuotesValidLimit;
 
         bool m_bParsingAlways;
-        pair<string, string> m_ParsingQuotes; // <> for XML
+        pair<std::wstring, std::wstring> m_ParsingQuotes; // <> for XML
     };
 
     enum ESearchBatch { esbCount, esbMark, esbReplace };
@@ -345,13 +331,15 @@ typedef Common::QuickArray<String> StringArray;
         // out
         bool m_eofPassed;
         // in
-        string m_text;
+        std::wstring m_text;
 
         FindCtx () 
         { 
-            memset(this, 0, sizeof(*this)); 
+            m_storage = 0;
+            m_line = m_start = m_end = 0;
             m_thruEof = true;
             m_skipFirstNull = true;
+            m_eofPassed = false;
         }
     };
 
@@ -365,8 +353,8 @@ typedef Common::QuickArray<String> StringArray;
         void RemoveRef (Storage*);
 
         bool IsTextEmpty () const;
-        const char* GetText () const;
-        void SetText (const char* str);
+        const wchar_t* GetText () const;
+        void SetText (const wchar_t* str);
         void GetOption (bool& backward, bool& wholeWords, bool& matchCase, bool& regExpr, bool& searchAll) const;
         void SetOption (bool backward, bool wholeWords, bool matchCase, bool regExpr, bool searchAll);
         bool IsBackwardSearch () const;
@@ -374,18 +362,18 @@ typedef Common::QuickArray<String> StringArray;
 
         bool Find (FindCtx&) const;
         bool Replace (FindCtx&) const; // m_end is in/out
-        int  DoBatch (Storage*, const char* text, ESearchBatch mode, Square& last);
+        int  DoBatch (Storage*, const wchar_t* text, ESearchBatch mode, Square& last);
 
     private:
         void compileExpression () const;
         bool isSelectionMatched (const FindCtx&) const;
-        bool isMatched (const char* str, int offset, int len, const DelimitersMap&, int& start, int& end) const;
-        bool isMatchedBackward (const char* str, int offset, int len, const DelimitersMap&, int& start, int& end) const;
+        bool isMatched (const wchar_t* str, int offset, int len, const DelimitersMap&, int& start, int& end) const;
+        bool isMatchedBackward (const wchar_t* str, int offset, int len, const DelimitersMap&, int& start, int& end) const;
 
         Searcher (const Searcher&);   // not supported
         void operator = (const Searcher&); // not supported
 
-        string m_strText;
+        std::wstring m_strText;
 
         bool m_bBackward;
         bool m_bWholeWords;
@@ -490,32 +478,27 @@ typedef Common::QuickArray<String> StringArray;
     }
 
     // String inline methods //
+    template <class T>
     inline
-    String::String ()
-    : FixedString ()
+    StorageString<T>::StorageString ()
     {
         memset(&tag, 0, sizeof(tag));
     }
 
+    template <class T>
     inline
-    String::String (const String& other)
-    : FixedString (other)
+    StorageString<T>::StorageString (const StorageString& other)
+    : OEString<T> (other)
     {
         *this = other;
     }
 
+    template <class T>
     inline
-    void String::operator = (const String& other)
+    void StorageString<T>::operator = (const StorageString& other)
     {
-        FixedString::assign(other);
+        OEString<T>::assign(other);
         tag = other.tag;
-    }
-
-    // LineTokenizer inline methods //
-    inline
-    void LineTokenizer::EnableProcessSpaces (bool enable)
-    {
-        m_processSpaces = enable;
     }
 
     // MultilineQuotesScanner inline methods //
@@ -541,7 +524,7 @@ typedef Common::QuickArray<String> StringArray;
     }
 
     inline
-    const char* Searcher::GetText () const
+    const wchar_t* Searcher::GetText () const
     {
         return m_strText.c_str();
     }

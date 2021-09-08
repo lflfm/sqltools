@@ -72,8 +72,8 @@ void COEditorView::DrawLineNumber (CDC& dc, RECT rc, int line)
     dc.SetBkMode(TRANSPARENT);
     dc.SetTextColor(m_paintAccessories->m_COLOR_BTNTEXT);
     
-    CFont* pOrgFont = m_paintAccessories->SelectFont(dc, 0);
-    dc.DrawText(buff, strlen(buff), &rc, DT_RIGHT|DT_TOP);
+    CFont* pOrgFont = m_paintAccessories->SelectFontEx(dc, 0);
+    DrawTextA(dc.m_hDC, buff, strlen(buff), &rc, DT_RIGHT|DT_TOP);
     dc.SelectObject(pOrgFont);
 }
 
@@ -95,16 +95,16 @@ void fill_gradient (HDC hDC, LPCRECT lpRect, COLORREF colorStart, COLORREF color
     int nShift = 6;
     int nSteps = 1 << nShift;
 
-	RECT r2;
-	r2.top = lpRect->top;
-	r2.left = lpRect->left;
-	r2.right = lpRect->right;
-	r2.bottom = lpRect->bottom;
+    RECT r2;
+    r2.top = lpRect->top;
+    r2.left = lpRect->left;
+    r2.right = lpRect->right;
+    r2.bottom = lpRect->bottom;
 
-	int nHeight = lpRect->bottom - lpRect->top;
-	int nWidth = lpRect->right - lpRect->left;
+    int nHeight = lpRect->bottom - lpRect->top;
+    int nWidth = lpRect->right - lpRect->left;
 
-	for (int i = 0; i < nSteps; i++)
+    for (int i = 0; i < nSteps; i++)
     {
         // do a little alpha blending
         BYTE bR = (BYTE) ((GetRValue(colorStart) * (nSteps - i) +
@@ -114,8 +114,8 @@ void fill_gradient (HDC hDC, LPCRECT lpRect, COLORREF colorStart, COLORREF color
         BYTE bB = (BYTE) ((GetBValue(colorStart) * (nSteps - i) +
                    GetBValue(colorFinish) * i) >> nShift);
 
-		HBRUSH hBrush = ::CreateSolidBrush(RGB(bR, bG, bB));
-		
+        HBRUSH hBrush = ::CreateSolidBrush(RGB(bR, bG, bB));
+        
         // then paint with the resulting color
 
         if (!bHorz)
@@ -132,12 +132,12 @@ void fill_gradient (HDC hDC, LPCRECT lpRect, COLORREF colorStart, COLORREF color
             if ((r2.right - r2.left) > 0)
                 ::FillRect(hDC, &r2, hBrush);
         } //if
-		
-		if (NULL != hBrush)
-		{
-			::DeleteObject(hBrush);
-			hBrush = NULL;
-		} //if
+        
+        if (NULL != hBrush)
+        {
+            ::DeleteObject(hBrush);
+            hBrush = NULL;
+        } //if
     } //for
 } //End FillGradient
 
@@ -175,15 +175,15 @@ void COEditorView::DrawRandomBookmark (CDC& dc, RECT rc, int index, bool halfcli
     dc.SetTextColor(m_paintAccessories->m_RndBmkForeground);
 
     //CFont* pOrgFont = m_paintAccessories->SelectFont(dc, GetSettings().GetLineNumbers() ? HighlighterBase::efmBold : HighlighterBase::efmNormal);
-    CFont* pOrgFont = m_paintAccessories->SelectFont(dc, HighlighterBase::efmNormal);
+    CFont* pOrgFont = m_paintAccessories->SelectFontEx(dc, HighlighterBase::efmNormal);
 
-    dc.DrawText(buff, strlen(buff), &rc, DT_CENTER|DT_TOP);
+    DrawTextA(dc.m_hDC, buff, strlen(buff), &rc, DT_CENTER|DT_TOP);
     dc.SelectObject(pOrgFont);
 }
 
 void COEditorView::DrawHorzRuler (CDC& realDc, const CRect& rc, int start, int end)
 {
-    CMemDC dc(&realDc, &rc);
+    MyMemDC::CMemDC dc(&realDc, &rc);
     dc.FillRect(&rc, &m_paintAccessories->m_BtnFaceBrush);
 
     COLORREF bkColor = dc.SetBkColor(m_paintAccessories->m_COLOR_BTNFACE);
@@ -211,7 +211,7 @@ void COEditorView::DrawHorzRuler (CDC& realDc, const CRect& rc, int start, int e
             itoa(column/*+1*/, buffer, 10);
             int buflen = strlen(buffer);
             int width = buflen * m_paintAccessories->m_RulerCharSize.cx;
-            dc.DrawText(buffer, buflen, 
+            DrawTextA(dc.m_hDC, buffer, buflen, 
                 CRect(x - width, 0, x + width, m_paintAccessories->m_RulerCharSize.cy), 
                 DT_CENTER|DT_TOP
             );
@@ -228,7 +228,7 @@ void COEditorView::DrawHorzRuler (CDC& realDc, const CRect& rc, int start, int e
 #pragma warning ( disable : 4701 ) 
 void COEditorView::DrawVertRuler (CDC& realDc, const CRect& rc, int start, int end, bool lineNumbers)
 {
-    CMemDC dc(&realDc, &rc);
+    MyMemDC::CMemDC dc(&realDc, &rc);
     COLORREF bkColor = dc.SetBkColor(m_paintAccessories->m_COLOR_BTNHIGHLIGHT);
     COLORREF txtColor = dc.SetTextColor(m_paintAccessories->m_COLOR_BTNFACE);
 
@@ -284,10 +284,10 @@ void COEditorView::DrawVertRuler (CDC& realDc, const CRect& rc, int start, int e
 
         if (status != elsNothing)
         {
-            CRect rc = stdGutterRc;
-            rc.right -= 1;
-            rc.left  = rc.right - LINE_STATUS_WIDTH;
-            dc.FillSolidRect(rc, 
+            CRect gtRc = stdGutterRc;
+            gtRc.right -= 1;
+            gtRc.left  = gtRc.right - LINE_STATUS_WIDTH;
+            dc.FillSolidRect(gtRc, 
                     status == elsUpdated ? RGB(255, 255, 0) 
                         : status == elsRevertedBevoreSaved ? RGB(255, 215, 0) 
                             : RGB(124, 252, 0));
@@ -308,7 +308,7 @@ void COEditorView::DrawVertRuler (CDC& realDc, const CRect& rc, int start, int e
         {
             //TODO#2: maybe to add the color attributes?
             CBrush* pOrgBrush = dc.SelectObject(&m_paintAccessories->m_RndBmkBrush);
-            CPen* pOrgPen = dc.SelectObject(&m_paintAccessories->m_RndBmkPen);
+            CPen* pOrgPen2 = dc.SelectObject(&m_paintAccessories->m_RndBmkPen);
 
             POINT pt[3] = { 
                 { stdGutterRc.left + 2, stdGutterRc.top + 2 },
@@ -318,12 +318,12 @@ void COEditorView::DrawVertRuler (CDC& realDc, const CRect& rc, int start, int e
             dc.Polygon(pt, sizeof(pt)/sizeof(pt[0]));
 
             dc.SelectObject(pOrgBrush);
-            dc.SelectObject(pOrgPen);
+            dc.SelectObject(pOrgPen2);
         }
 
         if (syntaxExtendedSupport) 
         {
-            CPen* pOrgPen = dc.SelectObject(&m_paintAccessories->m_BtnShadowPen);
+            CPen* pOrgPen2 = dc.SelectObject(&m_paintAccessories->m_BtnShadowPen);
 
             extGutterRc.top    = stdGutterRc.top;
             extGutterRc.bottom = stdGutterRc.bottom;
@@ -333,30 +333,88 @@ void COEditorView::DrawVertRuler (CDC& realDc, const CRect& rc, int start, int e
 
             if (int level = m_statusMap[line].level)
             {
-                int lim = min(EXT_SYN_NESTED_LIMIT, level);
-                for (int i = 1; i <= lim; i++) {
-                    dc.MoveTo(extGutterRc.left + i * EXT_SYN_LINE_INDENT, extGutterRc.top);
-                    dc.LineTo(extGutterRc.left + i * EXT_SYN_LINE_INDENT, extGutterRc.bottom);
+                int lim2 = min(EXT_SYN_NESTED_LIMIT, level);
+                for (int i2 = 1; i2 <= lim2; i2++) {
+                    dc.MoveTo(extGutterRc.left + i2 * EXT_SYN_LINE_INDENT, extGutterRc.top);
+                    dc.LineTo(extGutterRc.left + i2 * EXT_SYN_LINE_INDENT, extGutterRc.bottom);
 
-                    if (level - m_statusMap[line].beginCounter < i) {
-                        dc.MoveTo(extGutterRc.left + i * EXT_SYN_LINE_INDENT, extGutterRc.top);
-                        dc.LineTo(extGutterRc.left + (i+1) * EXT_SYN_LINE_INDENT, extGutterRc.top);
+                    if (level - m_statusMap[line].beginCounter < i2) {
+                        dc.MoveTo(extGutterRc.left + i2 * EXT_SYN_LINE_INDENT, extGutterRc.top);
+                        dc.LineTo(extGutterRc.left + (i2+1) * EXT_SYN_LINE_INDENT, extGutterRc.top);
                     }
-                    if (level - m_statusMap[line].endCounter < i) {
-                        dc.MoveTo(extGutterRc.left + i * EXT_SYN_LINE_INDENT, extGutterRc.bottom-1);
-                        dc.LineTo(extGutterRc.left + (i+1) * EXT_SYN_LINE_INDENT, extGutterRc.bottom-1);
+                    if (level - m_statusMap[line].endCounter < i2) {
+                        dc.MoveTo(extGutterRc.left + i2 * EXT_SYN_LINE_INDENT, extGutterRc.bottom-1);
+                        dc.LineTo(extGutterRc.left + (i2+1) * EXT_SYN_LINE_INDENT, extGutterRc.bottom-1);
                     }
                 }
             }
-            dc.SelectObject(pOrgPen);
+            dc.SelectObject(pOrgPen2);
         }
     }
 }
 #pragma warning ( pop ) 
 
+    inline
+    int get_text_width (CDC& dc, const wchar_t* str, int len)
+    {
+        CSize sz;
+        GetTextExtentPoint32(dc.m_hDC, str, len, &sz);
+        return sz.cx;
+    }
+
+inline
+void COEditorView::TextOutToScreen (CDC& dc, Ruler rulers[2], int pos, const wchar_t* str, int len, const CRect& rcBar, bool selection)
+{
+    int expectedWidth =  rulers[0].m_CharSize * len;
+    int actualWidth = get_text_width(dc, str, len);
+    if (actualWidth - expectedWidth > rulers[0].m_CharSize/3 
+    || Common::is_right_to_left_lang(str[0]))
+    {
+        CRect rc; 
+        rc.top = rcBar.top;
+        rc.bottom = rcBar.bottom -1;
+        for (int charInx = 0; charInx < len; charInx++)
+        {
+            rc.left = rulers[0].PosToPix(pos + charInx);
+            rc.right = rulers[0].PosToPix(pos + charInx + 1) - 1;
+            int charWidth = get_text_width(dc, str + charInx, 1);
+
+            if (charWidth - rulers[0].m_CharSize > rulers[0].m_CharSize/3 
+            || Common::is_right_to_left_lang(str[charInx]))
+            {
+                CBrush* pOrgBrush = (CBrush*)dc.SelectStockObject(NULL_BRUSH);
+                CPen* pOrgdPen = dc.SelectObject(selection
+                    ? &m_paintAccessories->m_SelTextForegroundPen
+                    : &m_paintAccessories->m_TextForegroundPen);
+                //dc.Rectangle(CRect(rc.left + rc.Width()/5, rc.top + rc.Height()/4, rc.right - rc.Width()/5, rc.bottom - rc.Height()/4));
+                dc.Rectangle(CRect(rc.left + 1, rc.top + 2, rc.right - 1, rc.bottom - 2));
+                dc.SelectObject(pOrgdPen);
+                dc.SelectObject(pOrgBrush);
+            }
+            else
+                dc.TextOut(rulers[0].PosToPix(pos + charInx), rcBar.top, str + charInx, 1);
+        }
+    }
+    else if (actualWidth != expectedWidth)
+    {
+        for (int charInx = 0; charInx < len; charInx++)
+            TextOut(dc.m_hDC, rulers[0].PosToPix(pos + charInx), rcBar.top, str + charInx, 1);
+
+        //std::vector<int> dsp(len * 2);
+        //for (int charInx = 0; charInx < len; charInx++)
+        //{
+        //    dsp[2 * charInx] = rulers[0].m_CharSize;
+        //    dsp[2 * charInx + 1] = 0;
+        //}
+        //dc.ExtTextOut(rulers[0].PosToPix(pos), rcBar.top, ETO_PDY, 0, str, len, dsp.data());
+    }
+    else
+        TextOut(dc.m_hDC, rulers[0].PosToPix(pos), rcBar.top, str, len);
+}
+
 void COEditorView::OnPaint ()
 {
-	CPaintDC dc(this);
+    CPaintDC dc(this);
 
     if (dc.m_ps.rcPaint.left == dc.m_ps.rcPaint.right
     || dc.m_ps.rcPaint.top == dc.m_ps.rcPaint.bottom)
@@ -432,7 +490,7 @@ void COEditorView::OnPaint ()
             phighlighter->SetMultilineQuotesState(status, quoteId, parsing);
         }
 
-        RECT rcLine, rcBar;
+        CRect rcLine, rcBar;
         rcLine.top    = rcBar.top    = 0;
         rcLine.bottom = rcBar.bottom = m_Rulers[1].m_CharSize;
         rcLine.left   = max(dc.m_ps.rcPaint.left,  (long)m_Rulers[0].m_Indent);
@@ -551,9 +609,11 @@ void COEditorView::OnPaint ()
 
             if (i < endFileLine)
             {
-                const char* currentLine; 
-                int currentLineLength;
-                GetLine(i + m_Rulers[1].m_Topmost, currentLine, currentLineLength);
+                OEStringW lineBuff;
+                GetLineW(i + m_Rulers[1].m_Topmost, lineBuff);
+                const wchar_t* currentLine = lineBuff.data(); 
+                int currentLineLength = lineBuff.length();
+
                 // recalculation for maximum of visible line lengthes
                 if (currentLineLength)
                 {
@@ -577,7 +637,7 @@ void COEditorView::OnPaint ()
                 while (!tokenizer.Eol())
                 {
                     int pos, len;
-                    const char* str;
+                    const wchar_t* str;
 
                     tokenizer.GetCurentWord(str, pos, len);
 
@@ -615,13 +675,14 @@ void COEditorView::OnPaint ()
                             {
                                 if (phighlighter)
                                 {
-                                    m_paintAccessories->SelectFont(memDc, phighlighter->GetFontIndex());
+                                    m_paintAccessories->SelectFontEx(memDc, phighlighter->GetFontIndex());
                                     memDc.SetTextColor(phighlighter->GetTextColor());
                                 }
+
                                 // Highligting MatchingText {
                                 if (m_highlightedText.length() > 0
                                 && (int)m_highlightedText.length() == len
-                                && !strnicmp(m_highlightedText.c_str(), str, len))
+                                && !wcsnicmp(m_highlightedText.c_str(), str, len))
                                 {
                                     CRect rc = rcBar;
                                     rc.left = m_Rulers[0].PosToPix(pos);
@@ -629,7 +690,8 @@ void COEditorView::OnPaint ()
                                     memDc.FillSolidRect(&rc, m_paintAccessories->m_HighlightingBackground);
                                 }
                                 // Highligting MatchingText }
-                                memDc.TextOut(m_Rulers[0].PosToPix(pos), rcLine.top, str, len);
+                                
+                                TextOutToScreen(memDc, m_Rulers, pos, str, len, rcBar, false);
                             }
 
                             if (blockExist && (rcBar.left != rcBar.right)
@@ -643,9 +705,10 @@ void COEditorView::OnPaint ()
                             {
                                 if (phighlighter)
                                 {
-                                    m_paintAccessories->SelectFont(memSelDc, phighlighter->GetFontIndex());
+                                    m_paintAccessories->SelectFontEx(memSelDc, phighlighter->GetFontIndex());
                                 }
-                                memSelDc.TextOut(m_Rulers[0].PosToPix(pos), rcLine.top, str, len);
+                                //TextOut(memSelDc.m_hDC, m_Rulers[0].PosToPix(pos), rcLine.top, str, len);
+                                TextOutToScreen(memSelDc, m_Rulers, pos, str, len, rcBar, true);
                             }
                         }
                     }
@@ -660,12 +723,12 @@ void COEditorView::OnPaint ()
                 {
                     m_paintAccessories->SelectTextFont(memDc);
                     memDc.SetTextColor(m_paintAccessories->m_EOFForeground);
-                    memDc.TextOut(m_Rulers[0].PosToPix(0), rcLine.top, str, sizeof(str)-1);
+                    TextOutA(memSelDc.m_hDC, m_Rulers[0].PosToPix(0), rcLine.top, str, sizeof(str)-1);
 
                     if (blockExist)
                     {
                         m_paintAccessories->SelectTextFont(memSelDc);
-                        memSelDc.TextOut(m_Rulers[0].PosToPix(0), rcLine.top, str, sizeof(str)-1);
+                        TextOutA(memSelDc.m_hDC, m_Rulers[0].PosToPix(0), rcLine.top, str, sizeof(str)-1);
                     }
                 }
             }

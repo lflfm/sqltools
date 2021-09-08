@@ -37,7 +37,8 @@ namespace OpenEditor
     using namespace std;
 
 MultilineQuotesScanner::MultilineQuotesScanner (Storage& storage)
-: m_Storage(storage)
+: m_Storage(storage),
+m_OpeningFastMap(0)
 {
     m_nQuotesValidLimit = 0;
 //    m_pDelimiters = 0;
@@ -74,17 +75,23 @@ void MultilineQuotesScanner::ClearSettings ()
 //    m_pDelimiters = 0;
 }
 
+    inline
+    pair<std::wstring, std::wstring> wpair (pair<std::string, std::string> p)
+    {
+        return std::pair<std::wstring, std::wstring>(Common::wstr(p.first), Common::wstr(p.second));
+    }
+
 void MultilineQuotesScanner::SetParsingQuotes (const pair<string, string>& _pair)
 {
     m_bParsingAlways = false;
-    m_ParsingQuotes = _pair;
+    m_ParsingQuotes = wpair(_pair);
     m_OpeningFastMapDirty = true;
 }
 
 int MultilineQuotesScanner::AddStartLineQuotes (const string& str)
 {
     _ASSERTE(str.size());
-    m_StartLineQuotes.push_back(str);
+    m_StartLineQuotes.push_back(Common::wstr(str));
     m_OpeningFastMapDirty = true;
     return m_StartLineQuotes.size() - 1;
 }
@@ -92,7 +99,7 @@ int MultilineQuotesScanner::AddStartLineQuotes (const string& str)
 int MultilineQuotesScanner::AddSingleLineQuotes (const string& str)
 {
     _ASSERTE(str.size());
-    m_SingleLineQuotes.push_back(str);
+    m_SingleLineQuotes.push_back(Common::wstr(str));
     m_OpeningFastMapDirty = true;
     return m_SingleLineQuotes.size() - 1;
 }
@@ -100,14 +107,14 @@ int MultilineQuotesScanner::AddSingleLineQuotes (const string& str)
 int MultilineQuotesScanner::AddMultilineQuotes (const pair<string, string>& _pair)
 {
     _ASSERTE(_pair.first.size() && _pair.second.size());
-    m_MultilineQuotes.push_back(_pair);
+    m_MultilineQuotes.push_back(wpair(_pair));
     m_OpeningFastMapDirty = true;
     return m_MultilineQuotes.size() - 1;
 }
 
 void MultilineQuotesScanner::AddEscapeChar (const string& esc)
 {
-    m_escapeChar = esc;
+    m_escapeChar = Common::wstr(esc);
 }
 
 void MultilineQuotesScanner::SetDelimitersMap (const DelimitersMap& delimiters)
@@ -132,21 +139,21 @@ void MultilineQuotesScanner::Scan (int to_line, int& state, int& quoteId, bool& 
     }
 }
 
-bool MultilineQuotesScanner::ScanLine (const char* str, int len, int& state, int& quoteId, bool& parsing, int* parsingLength) const
+bool MultilineQuotesScanner::ScanLine (const wchar_t* str, int len, int& state, int& quoteId, bool& parsing, int* parsingLength) const
 {
     int  quotesBalance = 0;
     int  parsingBalance = 0;
     bool isStartSpace = true;
     bool ignoreRemainder = false;
 
-    char closingFastChr = (state) ? m_MultilineQuotes.at(quoteId).second.at(0) : '\0';
+    wchar_t closingFastChr = (state) ? m_MultilineQuotes.at(quoteId).second.at(0) : '\0';
 
     if (m_OpeningFastMapDirty) buildOpeningFastMap();
 
     for (int i(0); i < len; i++)
     {
-        char ch = str[i];
-        char probe = m_OpeningFastMap[ch];
+        wchar_t ch = str[i];
+        wchar_t probe = m_OpeningFastMap[ch];
 
         if (!m_bParsingAlways && !parsing)
         {
@@ -163,8 +170,7 @@ bool MultilineQuotesScanner::ScanLine (const char* str, int len, int& state, int
         {
             if (isStartSpace && probe & eqtStartLine)
             {
-                vector<string>::const_iterator
-                    it(m_StartLineQuotes.begin()), end(m_StartLineQuotes.end());
+                auto it(m_StartLineQuotes.begin()), end(m_StartLineQuotes.end());
 
                 for (; it != end; ++it)
                     if (is_equal(str, len, i, *it))
@@ -178,8 +184,7 @@ bool MultilineQuotesScanner::ScanLine (const char* str, int len, int& state, int
 
             if (probe & eqtSingleLine)
             {
-                vector<string>::const_iterator
-                    it(m_SingleLineQuotes.begin()), end(m_SingleLineQuotes.end());
+                auto it(m_SingleLineQuotes.begin()), end(m_SingleLineQuotes.end());
 
                 for (; it != end; ++it)
                     if (is_equal(str, len, i, *it))
@@ -193,8 +198,7 @@ bool MultilineQuotesScanner::ScanLine (const char* str, int len, int& state, int
 
             if (probe & eqtOpeningMultiline)
             {
-                vector<std::pair<string, string> >::const_iterator
-                    it(m_MultilineQuotes.begin()), end(m_MultilineQuotes.end());
+                auto it(m_MultilineQuotes.begin()), end(m_MultilineQuotes.end());
 
                 for (int j(0); it != end; ++it, j++)
                     if (is_equal(str, len, i, it->first))
@@ -217,13 +221,13 @@ bool MultilineQuotesScanner::ScanLine (const char* str, int len, int& state, int
                     // the current position < escape size
                     || i < static_cast<int>(m_escapeChar.size())
                     // the previous fragment is not escape
-                    || strncmp(m_escapeChar.c_str(), str + i - m_escapeChar.size(), m_escapeChar.size())
+                    || wcsncmp(m_escapeChar.c_str(), str + i - m_escapeChar.size(), m_escapeChar.size())
                     // it is double escape
                     || (
                         // the current position >= 2 * escape size
                         i >= 2 * static_cast<int>(m_escapeChar.size())
                         // the previous previous fragment is escape
-                        && !strncmp(m_escapeChar.c_str(), str + i - 2 * m_escapeChar.size(), m_escapeChar.size())
+                        && !wcsncmp(m_escapeChar.c_str(), str + i - 2 * m_escapeChar.size(), m_escapeChar.size())
                     )
                 )
             )
@@ -249,7 +253,7 @@ bool MultilineQuotesScanner::ScanLine (const char* str, int len, int& state, int
             }
         }
 
-        if (isStartSpace && !isspace(ch))
+        if (isStartSpace && !iswspace(ch))
             isStartSpace = false;
 
         if (!m_bParsingAlways && !state 
@@ -280,11 +284,10 @@ void MultilineQuotesScanner::buildMap (int to_line)
     to_line = min(to_line, m_Storage.GetLineCount());
     for (int line = m_nQuotesValidLimit; line < to_line; line++)
     {
-        int length;
-        const char* str;
-        m_Storage.GetLine(line, str, length);
+        OEStringW str;
+        m_Storage.GetLineW(line, str);
 
-        if (ScanLine(str, length, state, quoteId, parsing))
+        if (ScanLine(str.data(), str.length(), state, quoteId, parsing))
             m_mapQuotes.insert(map<int,Entry>::value_type(line, Entry(state, quoteId, parsing)));
     }
 
@@ -296,73 +299,61 @@ void MultilineQuotesScanner::buildOpeningFastMap () const
     m_OpeningFastMap.erase();
 
     if (m_ParsingQuotes.first.size())
-        m_OpeningFastMap[m_ParsingQuotes.first.at(0)] |= eqtOpeningParse;
+        m_OpeningFastMap.bitwiseOR(m_ParsingQuotes.first.at(0), eqtOpeningParse);
     if (m_ParsingQuotes.second.size())
-        m_OpeningFastMap[m_ParsingQuotes.second.at(0)] |= eqtClosingParse;
+        m_OpeningFastMap.bitwiseOR(m_ParsingQuotes.second.at(0), eqtClosingParse);
 
     {
-        vector<string>::const_iterator
-            it(m_StartLineQuotes.begin()), end(m_StartLineQuotes.end());
+        auto it(m_StartLineQuotes.begin()), end(m_StartLineQuotes.end());
         for (; it != end; ++it)
         {
             if (m_bCaseSensitive)
-                m_OpeningFastMap[it->at(0)] |= eqtStartLine;
+                m_OpeningFastMap.bitwiseOR(it->at(0), eqtStartLine);
             else
             {
-                char str[2];
-                str[0] = it->at(0);
-                str[1] = 0;
-                m_OpeningFastMap[*strupr(str)] |= eqtStartLine;
-                m_OpeningFastMap[*strlwr(str)] |= eqtStartLine;
+                m_OpeningFastMap.bitwiseOR(towupper(it->at(0)), eqtStartLine);
+                m_OpeningFastMap.bitwiseOR(towlower(it->at(0)), eqtStartLine);
             }
         }
     }
 
     {
-        vector<string>::const_iterator
-            it(m_SingleLineQuotes.begin()), end(m_SingleLineQuotes.end());
+        auto it(m_SingleLineQuotes.begin()), end(m_SingleLineQuotes.end());
         for (; it != end; ++it)
             if (m_bCaseSensitive)
-                m_OpeningFastMap[it->at(0)] |= eqtSingleLine;
+                m_OpeningFastMap.bitwiseOR(it->at(0), eqtSingleLine);
             else
             {
-                char str[2];
-                str[0] = it->at(0);
-                str[1] = 0;
-                m_OpeningFastMap[*strupr(str)] |= eqtSingleLine;
-                m_OpeningFastMap[*strlwr(str)] |= eqtSingleLine;
+                m_OpeningFastMap.bitwiseOR(towupper(it->at(0)), eqtSingleLine);
+                m_OpeningFastMap.bitwiseOR(towlower(it->at(0)), eqtSingleLine);
             }
     }
 
     {
-        vector<std::pair<string, string> >::const_iterator
-            it(m_MultilineQuotes.begin()), end(m_MultilineQuotes.end());
+        auto it(m_MultilineQuotes.begin()), end(m_MultilineQuotes.end());
         for (; it != end; ++it)
             if (m_bCaseSensitive)
-                m_OpeningFastMap[it->first.at(0)] |= eqtOpeningMultiline;
+                m_OpeningFastMap.bitwiseOR(it->first.at(0), eqtOpeningMultiline);
             else
             {
-                char str[2];
-                str[0] = it->first.at(0);
-                str[1] = 0;
-                m_OpeningFastMap[*strupr(str)] |= eqtOpeningMultiline;
-                m_OpeningFastMap[*strlwr(str)] |= eqtOpeningMultiline;
+                m_OpeningFastMap.bitwiseOR(towupper(it->first.at(0)), eqtOpeningMultiline);
+                m_OpeningFastMap.bitwiseOR(towlower(it->first.at(0)), eqtOpeningMultiline);
             }
     }
 
     m_OpeningFastMapDirty = false;
 }
 
-bool MultilineQuotesScanner::is_equal (const char* str, int len, int offset, const string& shape) const
+bool MultilineQuotesScanner::is_equal (const wchar_t* str, int len, int offset, const std::wstring& shape) const
 {
     bool retVal = false;
 
     if ((len - offset) >= static_cast<int>(shape.length()))
     {
         if (m_bCaseSensitive)
-            retVal = !strncmp(str + offset, shape.c_str(), shape.size()) ? true : false;
+            retVal = !wcsncmp(str + offset, shape.c_str(), shape.size()) ? true : false;
         else
-            retVal = !strnicmp(str + offset, shape.c_str(), shape.size()) ? true : false;
+            retVal = !wcsnicmp(str + offset, shape.c_str(), shape.size()) ? true : false;
 
         // check begin of fragment
         if (retVal && !m_delimiters[*shape.begin()]

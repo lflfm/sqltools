@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2004 Aleksey Kochetov
+    Copyright (C) 2004,2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,76 +38,63 @@ void StackTracer::Trace (string& result, EXCEPTION_POINTERS* exInfo)
     out.unsetf(ios_base::dec);
     out.setf(ios_base::hex);
 
-    OSVERSIONINFO osvi;
-    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
-    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-    if (!GetVersionEx((OSVERSIONINFO*)&osvi))
-    {
-        result = failure;
-        return;
-    }
-
-    HANDLE hProcess =
-        (osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) \
-            ? (HANDLE) ::GetCurrentProcessId() : ::GetCurrentProcess();
-
+    HANDLE hProcess =::GetCurrentProcess();
     HANDLE hThread = ::GetCurrentThread();
 
-    CONTEXT context;
-    CONTEXT* pcontext;
-
     STACKFRAME stackFrame;
-	ZeroMemory(&stackFrame, sizeof(stackFrame));
-	stackFrame.AddrPC.Mode      = AddrModeFlat;
-	stackFrame.AddrStack.Mode   = AddrModeFlat;
-	stackFrame.AddrFrame.Mode   = AddrModeFlat;
+    ZeroMemory(&stackFrame, sizeof(stackFrame));
+    stackFrame.AddrPC.Mode      = AddrModeFlat;
+    stackFrame.AddrStack.Mode   = AddrModeFlat;
+    stackFrame.AddrFrame.Mode   = AddrModeFlat;
 
     if (exInfo)
     {
-        pcontext = exInfo->ContextRecord;
-	    stackFrame.AddrPC.Offset    = exInfo->ContextRecord->Eip;
-	    stackFrame.AddrStack.Offset = exInfo->ContextRecord->Esp;
-	    stackFrame.AddrFrame.Offset = exInfo->ContextRecord->Ebp;
+        stackFrame.AddrPC.Offset    = exInfo->ContextRecord->Eip;
+        stackFrame.AddrStack.Offset = exInfo->ContextRecord->Esp;
+        stackFrame.AddrFrame.Offset = exInfo->ContextRecord->Ebp;
     }
     else
     {
-        pcontext = &context;
-	    ZeroMemory(&context, sizeof(context));
-        context.ContextFlags = CONTEXT_CONTROL;
+        CONTEXT context;
+        ZeroMemory(&context, sizeof(context));
+        context.ContextFlags = CONTEXT_FULL;
 
-        if (::GetThreadContext(hThread, &context))
+        __asm
         {
-	        stackFrame.AddrPC.Offset    = context.Eip;
-	        stackFrame.AddrStack.Offset = context.Esp;
-	        stackFrame.AddrFrame.Offset = context.Ebp;
+        Label:
+          mov [context.Ebp], ebp;
+          mov [context.Esp], esp;
+          mov eax, [Label];
+          mov [context.Eip], eax;
         }
-        else
-        {
-            result = failure;
-            return;
-        }
+
+        stackFrame.AddrPC.Offset    = context.Eip;
+        stackFrame.AddrStack.Offset = context.Esp;
+        stackFrame.AddrFrame.Offset = context.Ebp;
     }
 
     if (::SymInitialize(hProcess, NULL, TRUE))
     {
         while (::StackWalk(IMAGE_FILE_MACHINE_I386, hProcess, hThread,
-			                &stackFrame, &context, NULL,
+                            &stackFrame, NULL, NULL,
                             SymFunctionTableAccess, SymGetModuleBase, NULL)
             && stackFrame.AddrFrame.Offset)
         {
             out << stackFrame.AddrPC.Offset << '\t';
 
-	        IMAGEHLP_MODULE Mod;
+            IMAGEHLP_MODULE moduleInfo;
+            memset(&moduleInfo, 0, sizeof(moduleInfo) );
+            moduleInfo.SizeOfStruct = sizeof(moduleInfo);
+
             DWORD dwModBase = SymGetModuleBase(hProcess, stackFrame.AddrPC.Offset);
-		    if (dwModBase && SymGetModuleInfo(hProcess, stackFrame.AddrPC.Offset, &Mod))
-                out << '\t' << Mod.ModuleName;
+            if (dwModBase && SymGetModuleInfo(hProcess, stackFrame.AddrPC.Offset, &moduleInfo))
+                out << '\t' << moduleInfo.ModuleName;
 
             char buff[sizeof(IMAGEHLP_SYMBOL) + MAX_NAME_LENGTH];
-	        ZeroMemory(&buff, sizeof(buff));
-	        PIMAGEHLP_SYMBOL pSym = (PIMAGEHLP_SYMBOL)&buff;
-		    pSym->SizeOfStruct  = sizeof(IMAGEHLP_SYMBOL) + MAX_NAME_LENGTH;
-		    pSym->MaxNameLength = MAX_NAME_LENGTH;
+            ZeroMemory(&buff, sizeof(buff));
+            PIMAGEHLP_SYMBOL pSym = (PIMAGEHLP_SYMBOL)&buff;
+            pSym->SizeOfStruct  = sizeof(IMAGEHLP_SYMBOL) + MAX_NAME_LENGTH;
+            pSym->MaxNameLength = MAX_NAME_LENGTH;
 
             DWORD displacement;
             if (::SymGetSymFromAddr(hProcess, stackFrame.AddrPC.Offset, &displacement, pSym))
@@ -116,7 +103,7 @@ void StackTracer::Trace (string& result, EXCEPTION_POINTERS* exInfo)
                 out << '\t' << stackFrame.AddrPC.Offset - dwModBase;
 
             out << endl;
-	    }
+        }
         result = out.str();
 
         ::SymCleanup(hProcess);

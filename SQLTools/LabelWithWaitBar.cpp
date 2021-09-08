@@ -49,7 +49,7 @@ END_MESSAGE_MAP()
 
 // LabelWithWaitBar message handlers
 
-void LabelWithWaitBar::SetText (LPCSTR pText, COLORREF color) 
+void LabelWithWaitBar::SetText (LPCTSTR pText, COLORREF color) 
 {
     m_text = pText;
     m_textColor = color;

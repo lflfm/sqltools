@@ -115,11 +115,11 @@ namespace OpenEditor
         int state[3], quoteId[3];
         bool parsing[3];
     public:
-        void ScanBeforeUpdate (const Storage* pStorage, int line);
-        void NotifyAboutChanged (Storage* pStorage, int line);
+        void ScanBeforeUpdate (const Storage* pStorage, int line, const OEStringW& lineBuff);
+        void NotifyAboutChanged (Storage* pStorage, int line, const OEStringW& lineBuff);
     };
 
-    void QuoteBalanceChecker::ScanBeforeUpdate (const Storage* pStorage, int line)
+    void QuoteBalanceChecker::ScanBeforeUpdate (const Storage* pStorage, int line, const OEStringW& lineBuff)
     {
         if (!pStorage->m_bDisableNotifications)
         {
@@ -131,22 +131,20 @@ namespace OpenEditor
             state[1]   = state[0];
             quoteId[1] = quoteId[0];
             parsing[1] = parsing[0];
-            pStorage->m_Scanner.ScanLine(pStorage->m_Lines.at(line).data(),
-                                        pStorage->m_Lines[line].length(),
-                                        state[1], quoteId[1], parsing[1]);
+
+            pStorage->m_Scanner.ScanLine(lineBuff.data(), lineBuff.length(), state[1], quoteId[1], parsing[1]);
         }
     }
 
-    void QuoteBalanceChecker::NotifyAboutChanged (Storage* pStorage, int line)
+    void QuoteBalanceChecker::NotifyAboutChanged (Storage* pStorage, int line, const OEStringW& lineBuff)
     {
         if (!pStorage->m_bDisableNotifications)
         {
             state[2]   = state[0];
             quoteId[2] = quoteId[0];
             parsing[2] = parsing[0];
-            pStorage->m_Scanner.ScanLine(pStorage->m_Lines.at(line).data(),
-                                        pStorage->m_Lines[line].length(),
-                                        state[2], quoteId[2], parsing[2]);
+
+            pStorage->m_Scanner.ScanLine(lineBuff.data(), lineBuff.length(), state[2], quoteId[2], parsing[2]);
 
             if (state[1] != state[2]
             || quoteId[1] != quoteId[2] // ?????
@@ -167,7 +165,8 @@ Storage::Storage ()
     : m_Scanner(*this),
     m_Lines(2 * 1024,  16 * 1024),
     m_locked(false),
-    m_fileFotmat(effDefault)
+    m_fileFotmat(effDefault),
+    m_codepage(CP_UTF8)
 {
     //int sz1 = sizeof(String);
     //int sz2 = sizeof(Common::FixedString);
@@ -385,7 +384,7 @@ void Storage::SetText (
         }
     }
 
-    String buff;
+    StorageStringA buff;
     int pos = 0;
     const char* ptr = text;
     bool trunc = GetSettings().GetTruncateSpaces();
@@ -511,15 +510,25 @@ const char* Storage::getLineDelim () const
     return m_cszDosLineDelim;
 }
 
-const char* Storage::GetFileFormatName () const
+const wchar_t* Storage::GetFileFormatName () const
 {
     const char* delim = getLineDelim();
-    if (delim[0] == '\r')       return " Dos ";
-    else if (delim[1] == '\r')  return " Mac ";
-    else                        return " Unix ";
+    if (delim[0] == '\r')       return L" Dos ";
+    else if (delim[1] == '\r')  return L" Mac ";
+    else                        return L" Unix ";
 }
 
-unsigned long Storage::GetTextLength () const
+const wchar_t* Storage::GetCodepageName () const
+{
+    switch (m_codepage)
+    {
+    case CP_ACP:  return L" ANSI ";
+    case CP_UTF8: return L" UTF8 ";
+    }
+    return L"Unknown";
+}
+
+unsigned long Storage::GetTextLengthA () const
 {
     // initialize a line delimiter
     int delim_length = getLineDelim()[1] ? 2 : 1;
@@ -537,7 +546,25 @@ unsigned long Storage::GetTextLength () const
     return usage;
 }
 
-unsigned long Storage::GetText (char* buffer, unsigned long size) const
+unsigned long Storage::GetTextLengthW () const
+{
+    // initialize a line delimiter
+    int delim_length = getLineDelim()[1] ? 2 : 1;
+
+    // calculate text size
+    unsigned long usage = 0;
+    bool the_first = true;
+
+    for (int line(0), nlines = m_Lines.size(); line < nlines; line++)
+    {
+        usage += GetLineLengthW(line) + (!the_first ? delim_length : 0);
+        the_first = false;
+    }
+
+    return usage;
+}
+
+unsigned long Storage::GetTextA (char* buffer, unsigned long size) const
 {
     // initialize a line delimiter
     const char* ln_delim = getLineDelim();
@@ -558,9 +585,41 @@ unsigned long Storage::GetText (char* buffer, unsigned long size) const
             ptr += ln_delim_len;
         }
 
-        const FixedString& str = m_Lines[line];
+        const OEStringA& str = m_Lines[line];
         _CHECK_AND_THROW_((ptr + str.length()) <= (buffer + size), "Text buffer size is not enough.");
         memcpy(ptr, str.data(), str.length());
+        ptr += str.length();
+    }
+
+    return (ptr - buffer);
+}
+
+unsigned long Storage::GetTextW (wchar_t* buffer, unsigned long size) const
+{
+    // initialize a line delimiter
+    std::wstring _ln_delim = Common::wstr(getLineDelim());
+    const void* ln_delim = _ln_delim.c_str();
+    int ln_delim_len = _ln_delim.size();
+
+    // copy text
+    wchar_t* ptr = buffer;
+    bool the_first = true;
+
+    for (int line(0), nlines = m_Lines.size(); line < nlines; line++)
+    {
+        if (the_first)
+            the_first = false;
+        else
+        {
+            _CHECK_AND_THROW_((ptr + ln_delim_len) <= (buffer + size), "Text buffer size is not enough.");
+            memcpy(ptr, ln_delim, ln_delim_len * sizeof(wchar_t));
+            ptr += ln_delim_len;
+        }
+
+        OEStringW str;
+        GetLineW(line, str);
+        _CHECK_AND_THROW_((ptr + str.length()) <= (buffer + size), "Text buffer size is not enough.");
+        memcpy(ptr, str.data(), str.length() * sizeof(wchar_t));
         ptr += str.length();
     }
 
@@ -580,31 +639,67 @@ void Storage::TruncateSpaces (bool force)
 
         for (int line(0), nlines = m_Lines.size(); line < nlines; line++)
         {
-            // 05.07.2004 bug fix, exception "FixedString is too long (>=64K)" on undo after save
-
-            String& orgStr = m_Lines[line];
-            FixedString  newStr = orgStr;
-            
+            OEStringW  orgStr;
+            GetLineW(line, orgStr);
+            OEStringW  newStr = orgStr;
             newStr.truncate();
 
             if (newStr.size() != orgStr.size())
             {
+                ELineStatus orgStatus = m_Lines[line].get_status();
+
                 PUSH_IN_UNDO_STACK(new UndoDelete(line, newStr.size(), 
-                    orgStr.data() + newStr.size(), orgStr.size() - newStr.size(), orgStr.get_status()));
-                (FixedString&)orgStr = newStr;
-                orgStr.set_status(elsUpdated);
+                    orgStr.data() + newStr.size(), orgStr.size() - newStr.size(), orgStatus));
+                toMultibyte(newStr, m_Lines[line]);
+                m_Lines[line].set_status(elsUpdated);
             }
         }
     }
 }
 
-void Storage::GetLine (int line, const char*& ptr, int& len) const
+int Storage::GetLineLengthW (int line) const
+{
+    if (int length = m_Lines.at(line).length())
+        return ::MultiByteToWideChar(m_codepage, 0, m_Lines[line].data(), m_Lines[line].length(), 0, 0);
+    return 0;
+}
+
+std::string Storage::GetChar (int line, int pos) const
+{
+    wchar_t ch = GetCharW(line, pos);
+    return Common::str(&ch, 1);
+}
+
+wchar_t Storage::GetCharW (int line, int pos) const
+{
+    OEStringW str;
+    GetLineW(line, str);
+    return str.at(pos);
+}
+
+void Storage::GetLineA (int line, const char*& ptr, int& len) const
 {
     ptr = m_Lines.at(line).data();
     len = m_Lines[line].length();
 }
 
-void Storage::Insert (char ch, int line, int pos)
+void Storage::GetLineW (int line, OEStringW& str) const
+{
+    int length = m_Lines.at(line).length();
+    LPWSTR buff = str.reserve(length + 1);
+    length = ::MultiByteToWideChar(m_codepage, 0, m_Lines[line].data(), length, buff, length);
+    str.set_length((length > 0) ? length : 0);
+}
+
+void Storage::GetLineW (int line, OEStringW& str, int codepage) const
+{
+    int length = m_Lines.at(line).length();
+    LPWSTR buff = str.reserve(length + 1);
+    length = ::MultiByteToWideChar(codepage, 0, m_Lines[line].data(), length, buff, length);
+    str.set_length((length > 0) ? length : 0);
+}
+
+void Storage::Insert (wchar_t ch, int line, int pos)
 {
     if (IsLocked())
         THROW_X_IS_LOCKED;
@@ -613,8 +708,7 @@ void Storage::Insert (char ch, int line, int pos)
 
     if (ch != '\r')
     {
-        char buff[2] = { ch, 0 };
-        InsertLinePart(line, pos, buff, 1);
+        InsertLinePart(line, pos, &ch, 1);
     }
     else
     {
@@ -623,7 +717,7 @@ void Storage::Insert (char ch, int line, int pos)
     }
 }
 
-void Storage::Overwrite (char ch, int line, int pos)
+void Storage::Overwrite (wchar_t ch, int line, int pos)
 {
     if (IsLocked())
         THROW_X_IS_LOCKED;
@@ -635,17 +729,24 @@ void Storage::Overwrite (char ch, int line, int pos)
         m_actionSeq++;
 
         QuoteBalanceChecker chk;
-        chk.ScanBeforeUpdate(this, line);
 
-        char orgStr[2] = { m_Lines.at(line).at(pos), 0 };
-        m_Lines[line].replace(pos, ch);
-        char newStr[2] = { ch, 0 };
+        OEStringW lineBuff;
+        GetLineW(line, lineBuff);
+        chk.ScanBeforeUpdate(this, line, lineBuff);
+
+        wchar_t orgStr = lineBuff.at(pos);
+
+        lineBuff.replace(pos, ch);
+        toMultibyte(lineBuff, m_Lines[line]);
+
+        wchar_t newStr =  ch;
+
         ELineStatus orgStatus = m_Lines[line].get_status();
         m_Lines[line].set_status(elsUpdated);
 
-        PUSH_IN_UNDO_STACK(new UndoOverwrite(line, pos, orgStr, 1, newStr, 1, orgStatus));
+        PUSH_IN_UNDO_STACK(new UndoOverwrite(line, pos, &orgStr, 1, &newStr, 1, orgStatus));
 
-        chk.NotifyAboutChanged(this, line);
+        chk.NotifyAboutChanged(this, line, lineBuff);
     }
 }
 
@@ -656,31 +757,35 @@ void Storage::Delete (int line, int pos)
 
     _ASSERTE(line < static_cast<int>(m_Lines.size()));
 
-	if (line < static_cast<int>(m_Lines.size()))
-	{
+    if (line < static_cast<int>(m_Lines.size()))
+    {
         m_actionSeq++;
 
-		if (pos == static_cast<int>(m_Lines.at(line).length()))
+        if (pos == static_cast<int>(m_Lines.at(line).length()))
             MergeLines(line);
-		else
+        else
             DeleteLinePart(line, pos, pos + 1);
-	}
+    }
 }
 
 // string mustn't have '\r' or '\n'
-void Storage::InsertLine (int line, const char* str, int len, ELineStatus status[2])
+void Storage::InsertLine (int line, const wchar_t* str, int len, ELineStatus status[2])
 {
     if (IsLocked())
         THROW_X_IS_LOCKED;
 
     m_actionSeq++;
 
-    String buff;
+    StorageStringA buff;
     buff.tag.id = m_lineSeq.GetNextVal();
     buff.set_status(status[0]);
-    m_Lines.at(line).set_status(status[1]);
 
-    if (str) buff.assign(str, len);
+    if (line < (int)m_Lines.size()) // 2018-12-15 bug fix
+        m_Lines.at(line).set_status(status[1]);
+
+    if (str) 
+        toMultibyte(str, len, buff);
+
     m_Lines.insert(buff, line);
     PUSH_IN_UNDO_STACK(new UndoInsertLine(line, str, len, elsNothing));
 
@@ -688,7 +793,7 @@ void Storage::InsertLine (int line, const char* str, int len, ELineStatus status
     Notify_ChangedLines(line, m_Lines.size());
 }
 
-void Storage::InsertLines (int line, const StringArray& lines, ELineStatus lineStatus, const vector<ELineStatus>* statuses)
+void Storage::InsertLines (int line, const StringArrayW& lines, ELineStatus lineStatus, const vector<ELineStatus>* statuses)
 {
     _ASSERTE(!statuses || statuses->size() == lines.size());
 
@@ -704,7 +809,9 @@ void Storage::InsertLines (int line, const StringArray& lines, ELineStatus lineS
         m_Lines[line].set_status(lineStatus);
     }
 
-    m_Lines.insert(lines, line);
+    StringArrayA linesA(lines.size());
+    toMultibyte(lines, linesA);
+    m_Lines.insert(linesA, line);
 
     for (unsigned i = line; i < line + lines.size(); i++)
     {
@@ -724,7 +831,7 @@ void Storage::InsertLines (int line, const StringArray& lines, ELineStatus lineS
 
 
 // string mustn't have '\r' or '\n'
-void Storage::InsertLinePart (int line, int pos, const char* str, int len, ELineStatus status)
+void Storage::InsertLinePart (int line, int pos, const wchar_t* str, int len, ELineStatus status)
 {
     if (IsLocked())
         THROW_X_IS_LOCKED;
@@ -732,9 +839,15 @@ void Storage::InsertLinePart (int line, int pos, const char* str, int len, ELine
     m_actionSeq++;
 
     QuoteBalanceChecker chk;
-    chk.ScanBeforeUpdate(this, line);
 
-    m_Lines.at(line).insert(pos, str, len);
+    OEStringW lineBuff;
+    GetLineW(line, lineBuff);
+    chk.ScanBeforeUpdate(this, line, lineBuff);
+
+    //m_Lines.at(line).insert(pos, str, len);
+    lineBuff.insert(pos, str, len);
+    toMultibyte(lineBuff, m_Lines.at(line));
+
     ELineStatus orgStatus = m_Lines[line].get_status();
     m_Lines[line].set_status(status);
 
@@ -744,41 +857,46 @@ void Storage::InsertLinePart (int line, int pos, const char* str, int len, ELine
             PUSH_IN_UNDO_STACK(new UndoInsert(line, pos, str, len, orgStatus));
     }
 
-    chk.NotifyAboutChanged(this, line);
+    chk.NotifyAboutChanged(this, line, lineBuff);
 }
 
-void Storage::ReplaceLinePart (int line, int from_pos, int to_pos, const char* str, int len, ELineStatus status)
+void Storage::ReplaceLinePart (int line, int from_pos, int to_pos, const wchar_t* str, int len, ELineStatus status)
 {
     if (IsLocked())
         THROW_X_IS_LOCKED;
 
     _ASSERTE((to_pos - from_pos) >= 0);
 
-	if (line < static_cast<int>(m_Lines.size())
+    if (line < static_cast<int>(m_Lines.size())
     && (from_pos < static_cast<int>(m_Lines[line].length()) || (!from_pos && !m_Lines[line].length())))
     // 01.06.2004 bug fix, ReplaceLinePart can replace 0-length line part now
     //&& (to_pos - from_pos) >= 0)
-	{
+    {
         _ASSERTE(to_pos >= from_pos || !to_pos && !from_pos);
 
         m_actionSeq++;
 
         QuoteBalanceChecker chk;
-        chk.ScanBeforeUpdate(this, line);
 
-        String orgStr = m_Lines[line];
+        OEStringW orgStr;
+        GetLineW(line, orgStr);
+        chk.ScanBeforeUpdate(this, line, orgStr);
+
+        OEStringW newStr = orgStr;
 
         if (to_pos > static_cast<int>(orgStr.length()))
             to_pos = orgStr.length();
 
-        m_Lines[line].erase(from_pos, to_pos - from_pos);
-        m_Lines[line].insert(from_pos, str, len);
+        newStr.erase(from_pos, to_pos - from_pos);
+        newStr.insert(from_pos, str, len);
+
         ELineStatus orgStatus = m_Lines[line].get_status();
         m_Lines[line].set_status(status);
+        toMultibyte(newStr, m_Lines[line]);
 
         PUSH_IN_UNDO_STACK(new UndoOverwrite(line, from_pos, orgStr.data() + from_pos, to_pos - from_pos, str, len, orgStatus));
 
-        chk.NotifyAboutChanged(this, line);
+        chk.NotifyAboutChanged(this, line, newStr);
     }
 }
 
@@ -787,11 +905,11 @@ void Storage::DeleteLine (int line, ELineStatus nextLineStatus)
     if (IsLocked())
         THROW_X_IS_LOCKED;
 
-	if (line < static_cast<int>(m_Lines.size()))
-	{
+    if (line < static_cast<int>(m_Lines.size()))
+    {
         m_actionSeq++;
 
-        String str = m_Lines.at(line);
+        const StorageStringA& str = m_Lines.at(line);
         if (str.tag.bmkmask)
             for (int i(0); i < BOOKMARK_GROUPS_SIZE; i++)
                 if (str.tag.bmkmask & (1 << i))
@@ -808,13 +926,15 @@ void Storage::DeleteLine (int line, ELineStatus nextLineStatus)
         else
             orgStatus[1] = elsNothing;
         
+        OEStringW orgStr;
+        GetLineW(line, orgStr);
         m_Lines.erase(line);
         
-        PUSH_IN_UNDO_STACK(new UndoDeleteLine(line, str.data(), str.length(), orgStatus));
+        PUSH_IN_UNDO_STACK(new UndoDeleteLine(line, orgStr.data(), orgStr.length(), orgStatus));
 
-		Notify_ChangedLinesQuantity(max(0, line - 1), -1);
+        Notify_ChangedLinesQuantity(max(0, line - 1), -1);
         Notify_ChangedLines(line, m_Lines.size());
-	}
+    }
 }
 
 // 2011.09.22 bug fix, deleting selection extended beyond EOF causes EXCEPTION_ACCESS_VIOLATION
@@ -823,19 +943,20 @@ void Storage::DeleteLines (int line, int count, ELineStatus status)
     if (IsLocked())
         THROW_X_IS_LOCKED;
 
-	if (line < static_cast<int>(m_Lines.size()))
-	{
+    if (line < static_cast<int>(m_Lines.size()))
+    {
         m_actionSeq++;
 
         count = min<int>(count, m_Lines.size() - line);
 
-        StringArray lines(count, 1024);
+        StringArrayW lines(count);
         for (int i = 0; i < count; i++)
         {
-            const String& str = m_Lines.at(line + i);
-            String& newStr = lines.append();
-            newStr.assign(str.data(), str.length(), true);
-            newStr.set_status(str.get_status());
+            const StorageStringA& str = m_Lines.at(line + i);
+            
+            StorageStringW& undoStr = lines.append();
+            GetLineW(line + i, undoStr);
+            undoStr.set_status(str.get_status());
 
             if (str.tag.bmkmask)
                 for (int j(0); j < BOOKMARK_GROUPS_SIZE; j++)
@@ -854,9 +975,9 @@ void Storage::DeleteLines (int line, int count, ELineStatus status)
 
         PUSH_IN_UNDO_STACK(new UndoDeleteLines(line, lines, orgStatus));
         
-		Notify_ChangedLinesQuantity(max(0, line - 1), -count);
+        Notify_ChangedLinesQuantity(max(0, line - 1), -count);
         Notify_ChangedLines(line, m_Lines.size());
-	}
+    }
 }
 
 void Storage::Reorder (int top, const vector<int>& order, const vector<ELineStatus>* statuses)
@@ -868,11 +989,11 @@ void Storage::Reorder (int top, const vector<int>& order, const vector<ELineStat
 
     ASSERT(top < nlines && top + static_cast<int>(order.size()) <= nlines);
 
-	if (top < nlines && top + static_cast<int>(order.size()) <= nlines)
-	{
+    if (top < nlines && top + static_cast<int>(order.size()) <= nlines)
+    {
         m_actionSeq++;
 
-        StringArray lines(order.size()/*capacity*/);
+        StringArrayA lines(order.size()/*capacity*/);
         vector<ELineStatus> orgStatuses;
 
         vector<int>::const_iterator it = order.begin();
@@ -907,27 +1028,31 @@ void Storage::DeleteLinePart (int line, int from_pos, int to_pos, ELineStatus st
 
     _ASSERTE((to_pos - from_pos) >= 0);
 
-	if (line < static_cast<int>(m_Lines.size())
+    if (line < static_cast<int>(m_Lines.size())
     && from_pos < static_cast<int>(m_Lines[line].length())
     && (to_pos - from_pos) >= 0)
-	{
+    {
         m_actionSeq++;
 
         QuoteBalanceChecker chk;
-        chk.ScanBeforeUpdate(this, line);
 
-        String str = m_Lines[line];
+        OEStringW orgStr;
+        GetLineW(line, orgStr);
+        chk.ScanBeforeUpdate(this, line, orgStr);
 
-        if (to_pos > static_cast<int>(str.length()))
-            to_pos = str.length();
+        OEStringW newStr = orgStr;
+
+        if (to_pos > static_cast<int>(orgStr.length()))
+            to_pos = orgStr.length();
 
         ELineStatus orgStatus = m_Lines[line].get_status();
-        m_Lines[line].erase(from_pos, to_pos - from_pos);
+        newStr.erase(from_pos, to_pos - from_pos);
+        toMultibyte(newStr, m_Lines[line]);
         m_Lines[line].set_status(status);
 
-        PUSH_IN_UNDO_STACK(new UndoDelete(line, from_pos, str.data() + from_pos, to_pos - from_pos, orgStatus));
+        PUSH_IN_UNDO_STACK(new UndoDelete(line, from_pos, orgStr.data() + from_pos, to_pos - from_pos, orgStatus));
 
-        chk.NotifyAboutChanged(this, line);
+        chk.NotifyAboutChanged(this, line, newStr);
     }
 }
 
@@ -942,30 +1067,36 @@ void Storage::SplitLine (int line, int pos, ELineStatus status1, ELineStatus sta
     {
         m_actionSeq++;
 
-        FixedString str = m_Lines.at(line);
+        OEStringW orgStr;
+        GetLineW(line, orgStr);
         ELineStatus orgStatus = m_Lines[line].get_status();
 
-        if (static_cast<int>(str.length()) < pos)
-            pos = str.length();
+        if (static_cast<int>(orgStr.length()) < pos)
+            pos = orgStr.length();
 
-        String buff;
-        buff.tag.id = m_lineSeq.GetNextVal();
+        StorageStringA newStr;
+        newStr.tag.id = m_lineSeq.GetNextVal();
 
         // 13.10.2003 small improvement, if pos == 0 then the second line inherits bookmarks
         if (!pos)
         {
             m_Lines[line].set_status(status2);
-            buff.set_status(status1);
-            m_Lines.insert(buff, line);
+            newStr.set_status(status1);
+            m_Lines.insert(newStr, line);
         }
         else
         {
-            if (pos < static_cast<int>(str.length()))
-                buff.assign(str.data() + pos, str.length() - pos);
+            if (pos < static_cast<int>(orgStr.length()))
+                toMultibyte(orgStr.data() + pos, orgStr.length() - pos, newStr);
 
-            buff.set_status(status2);
-            m_Lines.insert(buff, line + 1);
-            m_Lines.at(line).erase(pos);
+            newStr.set_status(status2);
+            m_Lines.insert(newStr, line + 1);
+
+            if (pos < static_cast<int>(orgStr.length()))  
+            {
+                orgStr.erase(pos);
+                toMultibyte(orgStr, m_Lines.at(line));
+            }
             m_Lines[line].set_status(status1);
         }
 
@@ -986,25 +1117,25 @@ void Storage::MergeLines (int line, ELineStatus status)
     if (IsLocked())
         THROW_X_IS_LOCKED;
 
-	if (line + 1 < static_cast<int>(m_Lines.size()))
-	{
+    if (line + 1 < static_cast<int>(m_Lines.size()))
+    {
         m_actionSeq++;
 
         ELineStatus orgStatus[2] = { m_Lines[line].get_status(), m_Lines[line+1].get_status() };
         int size = m_Lines[line].length();
-        m_Lines[line].append(m_Lines[line + 1]);
+        m_Lines[line].append(m_Lines[line + 1]); // can be done in utf8
         m_Lines[line].set_status(status);
-        String::Tag tag = m_Lines[line + 1].tag;
+        Tag tag2 = m_Lines[line + 1].tag;
         m_Lines.erase(line + 1);
         PUSH_IN_UNDO_STACK(new UndoMergeLine(line, size, orgStatus));
 
-        if (tag.bmkmask)
+        if (tag2.bmkmask)
         {
             if (!size && !m_Lines[line].tag.bmkmask)
-                m_Lines[line].tag = tag;
+                m_Lines[line].tag = tag2;
             else
                 for (int i(0); i < BOOKMARK_GROUPS_SIZE; i++)
-                    if (tag.bmkmask & (1 << i))
+                    if (tag2.bmkmask & (1 << i))
                         m_BookmarkCountersByGroup[i]--;
         }
 
@@ -1026,12 +1157,12 @@ void Storage::ExpandLinesTo (int line)
         Notify_ChangedLines(nlines, nlines);
         m_Lines.expand(line + 1);
 
-        StringArray lines(line + 1 - nlines);
+        StringArrayW lines(line + 1 - nlines);
         lines.expand(line + 1 - nlines);
 
         for (int i = 0; i + nlines < line + 1; ++i)
         {
-            lines.at(i).tag.id = m_Lines.at(i + nlines).tag.id = m_lineSeq.GetNextVal();;
+            lines.at(i).tag.id = m_Lines.at(i + nlines).tag.id = m_lineSeq.GetNextVal();
             m_Lines.at(i + nlines).set_status(elsUpdated);
             lines.at(i).set_status(elsUpdated);
         }
@@ -1055,6 +1186,82 @@ void Storage::SetSettings (const Settings* settings)
     m_pSettings = settings;
 
     OnSettingsChanged();
+}
+
+int Storage::GetCodepage () const
+{
+    return m_codepage;
+}
+
+void Storage::SetCodepage (int codepage, bool undo)
+{
+    if (IsLocked())
+        THROW_X_IS_LOCKED;
+
+    if (m_codepage != codepage)
+    {
+        if (undo)
+        {
+            m_actionSeq++;
+
+            PUSH_IN_UNDO_STACK(new UndoSetCodepage(m_codepage, codepage));
+        }
+
+        m_codepage = codepage;
+
+        Notify_ChangedLines(0, m_Lines.size() - 1);
+    }
+}
+
+    int get_actual_codepage (int codepage)
+    {
+        switch (codepage)
+        {
+        case CP_ACP:
+            return GetACP();
+        case CP_OEMCP:
+            return GetOEMCP();
+        }
+        return codepage;
+    }
+
+void Storage::ConvertToCodepage (int codepage)
+{
+    if (IsLocked())
+        THROW_X_IS_LOCKED;
+
+    UndoGroup(*this);
+
+    int orgCodepage = m_codepage;
+    PUSH_IN_UNDO_STACK(new UndoSetCodepage(m_codepage, codepage));
+
+    if (get_actual_codepage(orgCodepage) != get_actual_codepage(codepage))
+    {
+        m_actionSeq++;
+
+        for (int line(0), nlines = m_Lines.size(); line < nlines; line++)
+        {
+            const OEStringA&  orgStr = m_Lines[line];
+
+            OEStringW buffStr;
+            GetLineW(line, buffStr, orgCodepage);  // using old codepage
+
+            OEStringA newStr;
+            toMultibyte(buffStr, newStr, codepage);          
+
+            if (newStr.size() != orgStr.size() || memcmp(newStr.data(), orgStr.data(), orgStr.size()))
+            {
+                ELineStatus orgStatus = m_Lines[line].get_status();
+
+                PUSH_IN_UNDO_STACK(new UndoConvertLine(line, buffStr, orgStatus));
+
+                m_Lines[line].assign(newStr);
+                m_Lines[line].set_status(elsUpdated);
+            }
+        }
+    }
+
+    SetCodepage(codepage, true);
 }
 
 void Storage::SetFileFormat (EFileFormat format, bool undo /*= true*/)
@@ -1257,11 +1464,11 @@ bool Storage::FindById (LineId id, int& _line) const
 
 void Storage::ResetLineStatusOnSave ()
 {
-	for (int line = 0, nlines = m_Lines.size(); line < nlines; line++)
-		if (m_Lines[line].get_status() == elsUpdated)
-			m_Lines[line].set_status(elsUpdatedSaved);
+    for (int line = 0, nlines = m_Lines.size(); line < nlines; line++)
+        if (m_Lines[line].get_status() == elsUpdated)
+            m_Lines[line].set_status(elsUpdatedSaved);
         else if (m_Lines[line].get_status() == elsRevertedBevoreSaved)
-			m_Lines[line].set_status(elsNothing);
+            m_Lines[line].set_status(elsNothing);
 
     Notify_ChangedLinesStatus(0, nlines);
 }
@@ -1278,7 +1485,7 @@ void Storage::GetMemoryUsage (unsigned& usage, unsigned& allocated, unsigned& un
         for (int line = 0, nlines = m_Lines.size(); line < nlines; line++)
         {
             usage     += m_Lines[line].length();
-            allocated += (m_Lines[line].capacity() ? m_Lines[line].capacity() : m_Lines[line].length()) + sizeof(String);
+            allocated += (m_Lines[line].capacity() ? m_Lines[line].capacity() : m_Lines[line].length()) + sizeof(StorageStringA);
         }
     }
     // calculate undo memory usage
@@ -1289,6 +1496,56 @@ void Storage::GetMemoryUsage (unsigned& usage, unsigned& allocated, unsigned& un
 bool Storage::OnIdle ()
 {
     return m_languageSupport.get() ? m_languageSupport->OnIdle() : false;
+}
+
+void Storage::toMultibyte (const OEStringW& src, OEStringA& dst, int codepage)
+{
+    if (src.length() > 0)
+    {
+        int size = src.length() * 4;
+        char* buffer = new char[size];
+
+        int len = ::WideCharToMultiByte(codepage, 0, src.data(), src.length(), buffer, size, 0, 0);
+        if (len > 0)
+            dst.assign(buffer, len);
+    
+        delete[] buffer;
+    }
+    else
+        dst.cleanup();
+}
+
+void Storage::toMultibyte (const OEStringW& src, OEStringA& dst)
+{
+    toMultibyte(src, dst, m_codepage);
+}
+
+void Storage::toMultibyte (const wchar_t* src, int length, OEStringA& dst)
+{
+    if (length > 0)
+    {
+        int size = length * 4;
+        char* buffer = new char[size];
+
+        int len = ::WideCharToMultiByte(m_codepage, 0, src, length, buffer, size, 0, 0);
+        if (len > 0)
+            dst.assign(buffer, len);
+    
+        delete[] buffer;
+    }
+    else
+        dst.cleanup();
+}
+
+void Storage::toMultibyte (const StringArrayW& src, StringArrayA& dst)
+{
+    dst.clear();
+    for (size_t i = 0; i < src.size(); ++i)
+    {
+        dst.append();
+        dst.last().tag = src[i].tag;
+        toMultibyte(src[i], dst.last());
+    }
 }
 
 };

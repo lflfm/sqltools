@@ -24,6 +24,7 @@
 #include "resource.h"
 #include "COMMON/StrHelpers.h"
 #include <COMMON/ExceptionHelper.h>
+#include "COMMON/MyUtf.h"
 #include "OpenEditor/OEClassPage.h"
 
 #ifdef _DEBUG
@@ -40,9 +41,9 @@ COEClassPage::COEClassPage(SettingsManager& manager, LPCSTR name)
 m_manager(manager),
 m_className(name)
 {
+    m_psp.dwFlags &= ~PSP_HASHELP;
+
     m_dataInitialized = false;
-	//{{AFX_DATA_INIT(COEClassPage)
-	//}}AFX_DATA_INIT
 }
 
 COEClassPage::~COEClassPage()
@@ -58,22 +59,22 @@ void COEClassPage::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(COEClassPage, CPropertyPage)
-	//{{AFX_MSG_MAP(COEClassPage)
-	ON_CBN_SELCHANGE(IDC_OEC_CLASS, OnSelChangeLanguage)
-	ON_EN_CHANGE(IDC_OEC_TAB_SIZE, OnChangeData)
-	ON_EN_CHANGE(IDC_OEC_DELIMITERS, OnChangeData)
-	ON_EN_CHANGE(IDC_OEC_FILE_EXTENSIONS, OnChangeData)
-	ON_CBN_SELCHANGE(IDC_OEC_FILE_TYPE, OnChangeData)
-	ON_EN_CHANGE(IDC_OEC_INDENT_SIZE, OnChangeData)
-	ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_DEFAULT, OnChangeData)
-	ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_NONE, OnChangeData)
-	ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_SMART, OnChangeData)
+    //{{AFX_MSG_MAP(COEClassPage)
+    ON_CBN_SELCHANGE(IDC_OEC_CLASS, OnSelChangeLanguage)
+    ON_EN_CHANGE(IDC_OEC_TAB_SIZE, OnChangeData)
+    ON_EN_CHANGE(IDC_OEC_DELIMITERS, OnChangeData)
+    ON_EN_CHANGE(IDC_OEC_FILE_EXTENSIONS, OnChangeData)
+    ON_CBN_SELCHANGE(IDC_OEC_FILE_TYPE, OnChangeData)
+    ON_EN_CHANGE(IDC_OEC_INDENT_SIZE, OnChangeData)
+    ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_DEFAULT, OnChangeData)
+    ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_NONE, OnChangeData)
+    ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_SMART, OnChangeData)
     ON_BN_CLICKED(IDC_OEC_INSERT_SPACES, OnChangeData)
     ON_BN_CLICKED(IDC_OEC_KEEP_TABS, OnChangeData)
     ON_BN_CLICKED(IDC_OEC_NORMALIZE_KEYWORDS, OnChangeData)
     ON_BN_CLICKED(IDC_OEC_COLUMN_MARKERS, OnChangeData)
     ON_EN_CHANGE(IDC_OEC_COLUMN_MARKERS_SET, OnChangeData)
-	//}}AFX_MSG_MAP
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -95,7 +96,7 @@ BOOL COEClassPage::OnInitDialog()
 {
     m_dataInitialized = false;
 
-	CPropertyPage::OnInitDialog();
+    CPropertyPage::OnInitDialog();
 
     SendDlgItemMessage(IDC_OEC_CLASS, CB_RESETCONTENT);
     
@@ -104,23 +105,23 @@ BOOL COEClassPage::OnInitDialog()
     for (int i(0); i < count; i++)
     {
         string name = m_manager.GetClassByPos(i)->GetName();
-        SendDlgItemMessage(IDC_OEC_CLASS, CB_ADDSTRING, 0, (LPARAM)name.c_str());
-        if (name == (LPCSTR)m_className)
+        SendDlgItemMessage(IDC_OEC_CLASS, CB_ADDSTRING, 0, (LPARAM)Common::wstr(name).c_str());
+        if (name == m_className)
             startIndex = i;
     }
     
     SendDlgItemMessage(IDC_OEC_FILE_TYPE, CB_RESETCONTENT);
-    SendDlgItemMessage(IDC_OEC_FILE_TYPE, CB_ADDSTRING, 0, (LPARAM)"Dos (LF/CR)");
-    SendDlgItemMessage(IDC_OEC_FILE_TYPE, CB_ADDSTRING, 0, (LPARAM)"Unix (LF)");
-    SendDlgItemMessage(IDC_OEC_FILE_TYPE, CB_ADDSTRING, 0, (LPARAM)"Mac (CR/LF)");
-	
+    SendDlgItemMessage(IDC_OEC_FILE_TYPE, CB_ADDSTRING, 0, (LPARAM)L"Dos (LF/CR)");
+    SendDlgItemMessage(IDC_OEC_FILE_TYPE, CB_ADDSTRING, 0, (LPARAM)L"Unix (LF)");
+    SendDlgItemMessage(IDC_OEC_FILE_TYPE, CB_ADDSTRING, 0, (LPARAM)L"Mac (CR/LF)");
+    
     SendDlgItemMessage(IDC_OEC_CLASS, CB_SETCURSEL, startIndex);
     OnSelChangeLanguage();
     
     SendDlgItemMessage(IDC_OEC_INDENT_SIZE_SPIN, UDM_SETRANGE32, 1, 32);
     SendDlgItemMessage(IDC_OEC_TAB_SIZE_SPIN,    UDM_SETRANGE32, 1, 32);
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -131,14 +132,14 @@ void COEClassPage::OnSelChangeLanguage()
 
     m_dataInitialized = false;
 
-    char buff[80];
+    TCHAR buff[80];
 
     std::string delim;
     Common::to_printable_str(settings->GetDelimiters().c_str(), delim);
-    SetDlgItemText(IDC_OEC_DELIMITERS,     delim.c_str());           
-    SetDlgItemText(IDC_OEC_FILE_EXTENSIONS,settings->GetExtensions().c_str());           
-    SetDlgItemText(IDC_OEC_INDENT_SIZE,    itoa(settings->GetIndentSpacing(), buff, 10));
-    SetDlgItemText(IDC_OEC_TAB_SIZE,       itoa(settings->GetTabSpacing(), buff, 10));   
+    SetDlgItemText(IDC_OEC_DELIMITERS,     Common::wstr(delim).c_str());           
+    SetDlgItemText(IDC_OEC_FILE_EXTENSIONS,Common::wstr(settings->GetExtensions()).c_str());           
+    SetDlgItemText(IDC_OEC_INDENT_SIZE,    _itow(settings->GetIndentSpacing(), buff, 10));
+    SetDlgItemText(IDC_OEC_TAB_SIZE,       _itow(settings->GetTabSpacing(), buff, 10));   
 
 #if (!(IDC_OEC_INDENT_TYPE_NONE < IDC_OEC_INDENT_TYPE_DEFAULT && IDC_OEC_INDENT_TYPE_DEFAULT < IDC_OEC_INDENT_TYPE_SMART))
 #error("check resource indentifiers defenition: IDC_OEC_INDENT_TYPE_NONE, IDC_OEC_INDENT_TYPE_DEFAULT, IDC_OEC_INDENT_TYPE_SMART")
@@ -165,7 +166,7 @@ void COEClassPage::OnSelChangeLanguage()
         if (it != markers.begin()) out << ',';
         out << (*it + 1);
     }
-    SetDlgItemText(IDC_OEC_COLUMN_MARKERS_SET, out.str().c_str());           
+    SetDlgItemText(IDC_OEC_COLUMN_MARKERS_SET, Common::wstr(out.str()).c_str());           
 
     m_dataInitialized = true;
 }
@@ -179,42 +180,44 @@ void COEClassPage::OnChangeData()
         OpenEditor::ClassSettingsPtr settings 
             = m_manager.GetClassByPos(SendDlgItemMessage(IDC_OEC_CLASS, CB_GETCURSEL));
 
-        char buff[256];
-        GetDlgItemText(IDC_OEC_DELIMITERS, buff, sizeof(buff));
+        TCHAR buff[256];
+        GetDlgItemText(IDC_OEC_DELIMITERS, buff, sizeof(buff)/sizeof(buff[0]));
         
         std::string delim;
-        Common::to_unprintable_str (buff, delim);
-	    settings->SetDelimiters(delim, false);
+        Common::to_unprintable_str(Common::str(buff).c_str(), delim);
+        settings->SetDelimiters(delim, false);
 
-        GetDlgItemText(IDC_OEC_FILE_EXTENSIONS, buff, sizeof(buff));
-	    settings->SetExtensions(buff, false);
+        GetDlgItemText(IDC_OEC_FILE_EXTENSIONS, buff, sizeof(buff)/sizeof(buff[0]));
+        settings->SetExtensions(Common::str(buff), false);
 
-        GetDlgItemText(IDC_OEC_INDENT_SIZE, buff, sizeof(buff));
-	    settings->SetIndentSpacing(atoi(buff), false);
-        GetDlgItemText(IDC_OEC_TAB_SIZE, buff, sizeof(buff));
-	    settings->SetTabSpacing(atoi(buff), false);
+        GetDlgItemText(IDC_OEC_INDENT_SIZE, buff, sizeof(buff)/sizeof(buff[0]));
+        settings->SetIndentSpacing(_wtoi(buff), false);
+        GetDlgItemText(IDC_OEC_TAB_SIZE, buff, sizeof(buff)/sizeof(buff[0]));
+        settings->SetTabSpacing(_wtoi(buff), false);
 
         if (IsDlgButtonChecked(IDC_OEC_INDENT_TYPE_SMART))
-	        settings->SetIndentType(2, false);
+            settings->SetIndentType(2, false);
         else if (IsDlgButtonChecked(IDC_OEC_INDENT_TYPE_DEFAULT))
-	        settings->SetIndentType(1, false);
+            settings->SetIndentType(1, false);
         else
-	        settings->SetIndentType(0, false);
+            settings->SetIndentType(0, false);
 
         if (IsDlgButtonChecked(IDC_OEC_INSERT_SPACES))
-	        settings->SetTabExpand(true, false);
+            settings->SetTabExpand(true, false);
         else
-	        settings->SetTabExpand(false, false);
+            settings->SetTabExpand(false, false);
 
         settings->SetFileCreateAs(SendDlgItemMessage(IDC_OEC_FILE_TYPE, CB_GETCURSEL), false);
         settings->SetNormalizeKeywords(IsDlgButtonChecked(IDC_OEC_NORMALIZE_KEYWORDS) ? true : false, false);
 
-        GetDlgItemText(IDC_OEC_COLUMN_MARKERS_SET, buff, sizeof(buff));
-        while (char* comma = strchr(buff, ','))
-            *comma = ' ';
+        GetDlgItemText(IDC_OEC_COLUMN_MARKERS_SET, buff, sizeof(buff)/sizeof(buff[0]));
+        std::string markersStr = Common::str(buff);
+        for (auto it = markersStr.begin(); it != markersStr.end(); ++it)
+            if (*it == ',')
+                *it = ' ';
 
         std::vector<int> markers;
-        std::istringstream in(buff);
+        std::istringstream in(markersStr);
 
         while (true)
         {
@@ -227,7 +230,8 @@ void COEClassPage::OnChangeData()
                 if (in.eof()) break;
 
                 if (in.bad() || in.fail()) 
-                    AfxMessageBox("Cannot parse column markers input. Please use ',' or ' ' as delimiters.", MB_OK|MB_ICONSTOP);
+                    AfxMessageBox(L"Cannot parse column markers input. Please use ',' or ' ' as delimiters.", MB_OK|MB_ICONSTOP);
+
                 AfxThrowUserException();
             }
 

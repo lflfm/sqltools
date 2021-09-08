@@ -181,6 +181,7 @@ namespace OpenEditor
     class IterationNode : public SyntaxNodeImpl<FixedArray<Token, 5> >
     {
         enum State { eUndef = 0, eFor, eWhile, eLoop, eEnd, eEndLoop, eComplete };
+        wstring m_varName;
 
     public:
         virtual bool IsScriptNode () const { return false; };

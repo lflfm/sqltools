@@ -26,8 +26,9 @@
 //#include <locale>
 #include <iomanip>
 #include <sstream>
-#include "COMMON\StrHelpers.h"
-#include "COMMON\Fastmap.h"
+#include "StrHelpers.h"
+#include "Fastmap.h"
+#include "MyUtf.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -130,6 +131,20 @@ namespace Common
             if (beg != string::npos || end != string::npos) {
                 if (string::npos == beg) beg = 0;
                 if (string::npos == end) end = str.size();
+                str = str.substr(beg, end - beg + 1);
+            }
+        }
+    }
+
+    void trim_symmetric (wstring& str, const wchar_t* skip )
+    {
+        if (!str.empty()) {
+            auto beg = str.find_first_not_of(skip);
+            auto end = str.find_last_not_of(skip);
+
+            if (beg != wstring::npos || end != wstring::npos) {
+                if (wstring::npos == beg) beg = 0;
+                if (wstring::npos == end) end = str.size();
                 str = str.substr(beg, end - beg + 1);
             }
         }
@@ -244,7 +259,7 @@ namespace Common
 
     void date_c_to_oracle (const char* from, string& to)
     {
-        Common::Substitutor subst;
+        Substitutor subst;
         subst.AddPair("%d", "dd"  );
         subst.AddPair("%m", "mm"  );
         subst.AddPair("%B", "month" );
@@ -262,7 +277,7 @@ namespace Common
 
     void date_oracle_to_c (const char* from, string& to)
     {
-        Common::Substitutor subst(false);
+        Substitutor subst(false);
         subst.AddPair("dd"  , "%d");
         subst.AddPair("mm"  , "%m");
          // 31.03.2003 bug fix, "Month" is not recognized as a valid token for date conversion
@@ -289,6 +304,14 @@ namespace Common
         _to = to;
     }
 
+    void to_upper_str (const wchar_t* from, wstring& _to)
+    {
+        wstring to;
+        for (const wchar_t* ptr = from; ptr && *ptr; ptr++)
+            to += (wchar_t)towupper(*ptr);
+        _to = to;
+    }
+
     void to_lower_str (const char* from, string& _to)
     {
         string to;
@@ -299,7 +322,7 @@ namespace Common
 
     void make_safe_filename (const char* from, string& to)
     {
-        Common::Substitutor subst;
+        Substitutor subst;
         subst.AddPair("\\","%5c");
         subst.AddPair("/","%2f");
         subst.AddPair(":","%3a");
@@ -313,18 +336,32 @@ namespace Common
         to = subst.GetResult();
     }
 
+    void make_safe_filename (const wchar_t* from, wstring& to)
+    {
+        string _to;
+        make_safe_filename(str(from).c_str(), _to);
+        to = wstr(_to);
+    }
+
     void make_safe_filename (const char* from, CString& to)
     {
         string _to;
         make_safe_filename(from, _to);
-        to = _to.c_str();
+        to = wstr(_to).c_str();
+    }
+
+    void make_safe_filename (const wchar_t* from, CString& to)
+    {
+        string _to;
+        make_safe_filename(str(from).c_str(), _to);
+        to = wstr(_to).c_str();
     }
 
     void filetime_to_string (FILETIME& filetime, CString& str)
     {
         SYSTEMTIME systemTime;
         const int buffLen = 40;
-        char* buff = str.GetBuffer(buffLen);
+        TCHAR* buff = str.GetBuffer(buffLen);
 
         FileTimeToLocalFileTime(&filetime, &filetime);
         FileTimeToSystemTime(&filetime, &systemTime);
@@ -337,20 +374,20 @@ namespace Common
     }
 
 
-    void format_number (CString& str, unsigned int number, const char* units, bool noZero)
+    void format_number (CString& str, unsigned int number, const wchar_t* units, bool noZero)
     {
         if (number)
         {
-            ostringstream o;
+            wostringstream o;
 
             char separator = ',';//use_facet<numpunct<char> >(o.getloc()).thousands_sep();
 
             if (unsigned int gb = number/1000000000)
-                o << gb << separator << setfill('0') << setw(3);
+                o << gb << separator << setfill(L'0') << setw(3);
             if (unsigned int mb = (number - number/1000000000*1000000000)/1000000)
-                o << mb << separator  << setfill('0') << setw(3);
+                o << mb << separator  << setfill(L'0') << setw(3);
             if (unsigned int kb = (number - number/1000000*1000000)/1000)
-                o << kb << separator  << setfill('0') << setw(3);
+                o << kb << separator  << setfill(L'0') << setw(3);
             if (unsigned int b = (number - number/1000*1000)/1)
                 o << b;
 
@@ -369,11 +406,22 @@ namespace Common
     {
         if (!str) return true;
 
-	    for (int i = 0; i < len; i++)
-		    if (!isspace(*(str + i)))
-			    return false;
+        for (int i = 0; i < len; i++)
+            if (!isspace(*(str + i)))
+                return false;
 
-	    return true;
+        return true;
+    }
+
+    bool is_blank_line (const wchar_t *str, const int len)
+    {
+        if (!str) return true;
+
+        for (int i = 0; i < len; i++)
+            if (!iswspace(*(str + i)))
+                return false;
+
+        return true;
     }
 
     string print_time (double seconds)
@@ -405,4 +453,33 @@ namespace Common
         return out.str();
     }
 
+    bool get_line (const wchar_t* str, int len, int& position, std::wstring& line, bool& cr)
+    {
+        bool retVal = false;
+    
+        line.erase();
+        cr = false;
+
+        while (position < len && str[position])
+        {
+            retVal = true;
+
+            switch (str[position])
+            {
+            case '\r':
+                if (position + 1 < len &&  str[position + 1] == '\n') 
+                    position++;
+            case '\n':
+                position++;
+                cr = true;
+                break;
+            }
+
+            if (cr) break;
+
+            line += str[position++];
+        }
+
+        return retVal;
+    }
 }// END namespace Common

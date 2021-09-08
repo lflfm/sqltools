@@ -24,15 +24,15 @@
 class TempFilesManager
 {
 public:
-    static std::string CreateFile (const char* ext);
+    static std::wstring CreateFile (const wchar_t* ext);
 
 private:
     ~TempFilesManager ();
 
-    void push (const std::string& file);
+    void push (const std::wstring& file);
     void pop ();
 
-    std::list<std::string> m_files;
+    std::list<std::wstring> m_files;
 
     static TempFilesManager gManager;
 };

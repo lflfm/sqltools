@@ -59,6 +59,7 @@ m_startEntry(startEntry),
 m_templateList(m_adapter),
 m_templateListInitialized(false)
 {
+    m_psp.dwFlags &= ~PSP_HASHELP;
 }
 
 COETemplatesPage::~COETemplatesPage()
@@ -148,9 +149,10 @@ BOOL COETemplatesPage::OnInitDialog()
         int startIndex = 0;
         for (int index = 0; it != end; ++it, ++index)
         {
+            std::wstring buff = Common::wstr(it->first);
             SendDlgItemMessage(IDC_OET_CATEGORY, CB_ADDSTRING, 0, 
-                (LPARAM)it->first.c_str());
-            if (it->first == (LPCSTR)m_templateName)
+                (LPARAM)buff.c_str());
+            if (buff.c_str() == m_templateName)
                 startIndex = index;
         }
         
@@ -245,7 +247,7 @@ void COETemplatesPage::OnCbnSelchange_Category()
 
         m_templateList.DeleteAllItems();
         m_currTemplate = m_manager.GetTemplateCollection()
-            .Find(string(m_templateName));
+            .Find(Common::str(m_templateName));
 
         m_adapter.SetData(m_currTemplate);
         if (!m_templateListInitialized)
@@ -255,7 +257,7 @@ void COETemplatesPage::OnCbnSelchange_Category()
         }
         m_templateList.Refresh();
         
-        m_textAttr = m_manager.FindByName((LPCSTR)m_templateName)
+        m_textAttr = m_manager.FindByName(Common::str(m_templateName))
             ->GetVisualAttributesSet().FindByName("Text");
 
         CheckDlgButton(IDC_OET_LIST_IF_ALTERNATIVE, 

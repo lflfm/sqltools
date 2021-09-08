@@ -64,7 +64,7 @@ namespace OG2 /* OG = OpenGrid V2 */
 {
 
     UINT GridWnd::m_uWheelScrollLines; // cached value for MS Weel support
-    static const char g_szClassName[] = "Kochware.OpenGrid.V2";
+    static LPCWSTR g_szClassName = L"Kochware.OpenGrid.V2";
 
     IMPLEMENT_DYNCREATE(GridWnd, CWnd)
     IMPLEMENT_DYNCREATE(StrGridWnd, GridWnd)
@@ -177,7 +177,7 @@ void GridWnd::getSelectionForExport (int& row, int& nrows, int& col, int& ncols)
 
 bool GridWnd::showExportSettings (SQLToolsSettings& settings, LPCTSTR operation, bool bLocal, bool bFileOperation)
 {
-    BOOL showOnShiftOnly = AfxGetApp()->GetProfileInt("showOnShiftOnly", "GridExportSettings",  FALSE);
+    BOOL showOnShiftOnly = AfxGetApp()->GetProfileInt(L"showOnShiftOnly", L"GridExportSettings",  FALSE);
 
     CPropertySheet sheet(!bLocal ? "Settings" : CString("Settings for the current \"") + operation + "\" operation ONLY!");
     sheet.m_psh.dwFlags |= PSH_NOAPPLYNOW;
@@ -186,7 +186,7 @@ bool GridWnd::showExportSettings (SQLToolsSettings& settings, LPCTSTR operation,
     if (!bLocal || !showOnShiftOnly || HIBYTE(GetKeyState(VK_SHIFT))) 
     {
         CPropGridOutputPage1  gridOutputPage1(settings);
-        gridOutputPage1.m_psp.pszTitle = "Format";
+        gridOutputPage1.m_psp.pszTitle = L"Format";
         gridOutputPage1.m_psp.dwFlags |= PSP_USETITLE;
 
         gridOutputPage1.m_bShowShowOnShiftOnly = bLocal ? TRUE : FALSE;
@@ -196,7 +196,7 @@ bool GridWnd::showExportSettings (SQLToolsSettings& settings, LPCTSTR operation,
         sheet.AddPage(&gridOutputPage1);
 
         CPropGridOutputPage2  gridOutputPage2(settings);
-        gridOutputPage2.m_psp.pszTitle = "CSV/XML preferences";
+        gridOutputPage2.m_psp.pszTitle = L"CSV/XML preferences";
         gridOutputPage2.m_psp.dwFlags |= PSP_USETITLE;
 
         sheet.AddPage(&gridOutputPage2);
@@ -204,7 +204,7 @@ bool GridWnd::showExportSettings (SQLToolsSettings& settings, LPCTSTR operation,
         if (sheet.DoModal() == IDOK) 
         {
             if (bLocal)
-                AfxGetApp()->WriteProfileInt("showOnShiftOnly", "GridExportSettings",  gridOutputPage1.m_bShowOnShiftOnly);
+                AfxGetApp()->WriteProfileInt(L"showOnShiftOnly", L"GridExportSettings",  gridOutputPage1.m_bShowOnShiftOnly);
             return true;
         } 
         else
@@ -749,7 +749,7 @@ void GridWnd::OnEditCopy ()
     // local copy
     SQLToolsSettings settings = GetSQLToolsSettings();
 
-    if (showExportSettings(settings, "Copy", true, false))
+    if (showExportSettings(settings, L"Copy", true, false))
     {
         DoEditCopy(settings, etfDefault);
     }
@@ -826,7 +826,7 @@ void GridWnd::OnFileExport ()
     // local copy
     SQLToolsSettings settings = GetSQLToolsSettings();
 
-    if (showExportSettings(settings, "File Save", true, true))
+    if (showExportSettings(settings, L"File Save", true, true))
         DoFileSave(settings, etfDefault, false);
 }
 
@@ -835,7 +835,7 @@ void GridWnd::OnGridOutputExportAndOpen()
     // local copy
     SQLToolsSettings settings = GetSQLToolsSettings();
 
-    if (showExportSettings(settings, "File Save and Shell Open", true, true))
+    if (showExportSettings(settings, L"File Save and Shell Open", true, true))
         DoFileSave(settings, etfDefault, true);
 }
 
@@ -845,11 +845,15 @@ void GridWnd::DoFileSave (const SQLToolsSettings& settings, int _format, bool sh
     {
         setExportSettings(settings);
 
-        const char* filter = 0;
-        const char* extension = 0;
+        const wchar_t* filter = 0;
+        const wchar_t* extension = 0;
 
-        string filename;
-        Common::FilenameTemplate::Format(settings.GetGridExpFilenameTemplate().c_str(), filename, m_uExpFileCounter);
+        std::wstring filename;
+        {
+            string fn;
+            Common::FilenameTemplate::Format(settings.GetGridExpFilenameTemplate().c_str(), fn, m_uExpFileCounter);
+            filename = Common::wstr(fn);
+        }
 
         //if (CDocument* doc = GetDocument())
         // GridWnd specific code
@@ -859,40 +863,40 @@ void GridWnd::DoFileSave (const SQLToolsSettings& settings, int _format, bool sh
                     if (CDocument* doc = pView->GetDocument())
         {
             CString title = doc->GetTitle();
-            title.TrimRight("* ");
-            filename = std::regex_replace(filename, std::regex("&script"), string(title));
+            title.TrimRight(L"* ");
+            filename = std::regex_replace(filename, std::wregex(L"&script"), std::wstring(title));
         }
 
         int format = (_format != etfDefault) ? _format : settings.GetGridExpFormat();
         switch (format)
         {
         case 0:
-            filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*||";
-            extension = "txt";
+            filter    = L"Text Files (*.txt)|*.txt|All Files (*.*)|*.*||";
+            extension = L"txt";
             break;
         case 6:
         case 7:
         case 8:
         case 9:
-            filter = "SQL Files (*.sql)|*.sql|All Files (*.*)|*.*||";
-            extension = "sql";
+            filter    = L"SQL Files (*.sql)|*.sql|All Files (*.*)|*.*||";
+            extension = L"sql";
             break;
         case 1:
-            filter = "CSV Files (Comma delimited) (*.csv)|*.csv|All Files (*.*)|*.*||";
-            extension = "csv";
+            filter    = L"CSV Files (Comma delimited) (*.csv)|*.csv|All Files (*.*)|*.*||";
+            extension = L"csv";
             break;
         case 2:
-            filter = "Text Files (Tab delimited) (*.txt)|*.txt|All Files (*.*)|*.*||";
-            extension = "txt";
+            filter    = L"Text Files (Tab delimited) (*.txt)|*.txt|All Files (*.*)|*.*||";
+            extension = L"txt";
             break;
         case 3:
         case 4:
-            filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*||";
-            extension = "xml";
+            filter    = L"XML Files (*.xml)|*.xml|All Files (*.*)|*.*||";
+            extension = L"xml";
             break;
         case 5:
-            filter = "HTML Files (*.html; *.htm)|*.html;*.htm|All Files (*.*)|*.*||";
-            extension = "html";
+            filter    = L"HTML Files (*.html; *.htm)|*.html;*.htm|All Files (*.*)|*.*||";
+            extension = L"html";
             break;
         }
 
@@ -953,7 +957,7 @@ void GridWnd::OnGridOutputOptions ()
 {
     SQLToolsSettings settings = GetSQLToolsSettings();
 
-    if (showExportSettings(settings, "Grid copy/export", false, true))
+    if (showExportSettings(settings, L"Grid copy/export", false, true))
     {
         GetSQLToolsSettingsForUpdate() = settings;
         GetSQLToolsSettingsForUpdate().NotifySettingsChanged();
@@ -965,7 +969,7 @@ void GridWnd::OnGridCopyAll ()
     // local copy
     SQLToolsSettings settings = GetSQLToolsSettings();
 
-    if (showExportSettings(settings, "Copy All", true, false))
+    if (showExportSettings(settings, L"Copy All", true, false))
     {
         CWaitCursor wait;
         ClipboardGuard cg(this);
@@ -1015,7 +1019,7 @@ void GridWnd::OnGridCopyRow()
     // local copy
     SQLToolsSettings settings = GetSQLToolsSettings();
 
-    if (showExportSettings(settings, "Copy Row", true, false))
+    if (showExportSettings(settings, L"Copy Row", true, false))
     {
         CWaitCursor wait;
         ClipboardGuard cg(this);
@@ -1035,7 +1039,7 @@ void GridWnd::OnGridCopyCol ()
     // local copy
     SQLToolsSettings settings = GetSQLToolsSettings();
 
-    if (showExportSettings(settings, "Copy Column", true, false))
+    if (showExportSettings(settings, L"Copy Column", true, false))
     {
         CWaitCursor wait;
         ClipboardGuard cg(this);
@@ -1056,7 +1060,7 @@ void GridWnd::OnGridOutputOpen()
     // local copy
     SQLToolsSettings settings = GetSQLToolsSettings();
 
-    if (showExportSettings(settings, "Open in Editor", true, false))
+    if (showExportSettings(settings, L"Open in Editor", true, false))
         DoOpenInEditor(settings, etfDefault);
 }
 
@@ -1259,11 +1263,11 @@ void GridWnd::OnGridSettings()
     CPropHistoryPage histPage(settings);
 
     CVisualAttributesPage vaPage(settings.GetVASets(), "");
-    vaPage.m_psp.pszTitle = "SQLTools::Font and Color";
+    vaPage.m_psp.pszTitle = L"SQLTools::Font and Color";
     vaPage.m_psp.dwFlags |= PSP_USETITLE;
 
     static UINT gStarPage = 0;
-    Common::CPropertySheetMem sheet("Grid settings", gStarPage);
+    Common::CPropertySheetMem sheet(L"Grid settings", gStarPage);
     sheet.SetTreeViewMode(/*bTreeViewMode =*/TRUE, /*bPageCaption =*/FALSE, /*bTreeImages =*/FALSE);
     sheet.SetTreeWidth(240);
 
@@ -1291,14 +1295,14 @@ void GridWnd::OnUpdate_GridSettings (CCmdUI* pCmdUI)
     pCmdUI->Enable();
 }
 
-void GridWnd::DoOpen (ETextFormat frm, const char* ext)
+void GridWnd::DoOpen (ETextFormat frm, const wchar_t* ext)
 {
     if (GridStringSource* source = dynamic_cast<GridStringSource*>(GetGridSource()))
     {
         // 27.10.2003 bug fix, export settings do not affect on quick html/csv viewer launch
         setExportSettings(GetSQLToolsSettings());
 
-        string file = TempFilesManager::CreateFile(ext);
+        std::wstring file = TempFilesManager::CreateFile(ext);
 
         if (!file.empty())
         {
@@ -1318,19 +1322,19 @@ void GridWnd::DoOpen (ETextFormat frm, const char* ext)
         else
         {
             MessageBeep((UINT)-1);
-            AfxMessageBox("Cannot generate temporary file name for export.", MB_OK|MB_ICONSTOP);
+            AfxMessageBox(L"Cannot generate temporary file name for export.", MB_OK|MB_ICONSTOP);
         }
     }
 }
 
 void GridWnd::OnGridOpenWithIE ()
 {
-    DoOpen(etfHtml, "HTM");
+    DoOpen(etfHtml, L"HTM");
 }
 
 void GridWnd::OnGridOpenWithExcel ()
 {
-    DoOpen(etfQuotaDelimited, "CSV");
+    DoOpen(etfQuotaDelimited, L"CSV");
 }
 
 /*

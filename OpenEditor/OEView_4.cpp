@@ -116,31 +116,31 @@ void COEditorView::DrawCursor (CPoint point, bool erase)
         {
             if (m_pView->IsAltColumnarMode())
                 DelayRenderData((CLIPFORMAT)COEditorView::GetAltColumnarTextFormat());
-            DelayRenderData(CF_TEXT);
+            DelayRenderData(CF_UNICODETEXT);
         }
 
         virtual BOOL OnRenderGlobalData (LPFORMATETC lpFormatEtc, HGLOBAL* phGlobal)
         {
-            if (lpFormatEtc->cfFormat == CF_TEXT
+            if (lpFormatEtc->cfFormat == CF_UNICODETEXT
             || lpFormatEtc->cfFormat == (CLIPFORMAT)COEditorView::GetAltColumnarTextFormat())
             {
                 CWaitCursor wait;
 
-                string text;
+                std::wstring text;
                 
-                if (lpFormatEtc->cfFormat == CF_TEXT)
+                if (lpFormatEtc->cfFormat == CF_UNICODETEXT)
                     m_pView->GetBlock(text);
                 else
-                    text = "dummy";
+                    text = L"dummy";
 
-                HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, text.size() + 1);
+                HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE, (text.size() + 1) * sizeof(WCHAR));
 
                 if (hGlobal)
                 {
-                    char* buff = (char*)GlobalLock(hGlobal);
+                    wchar_t* buff = (wchar_t*)GlobalLock(hGlobal);
                     if (buff)
                     {
-                        memcpy(buff, text.c_str(), text.size() + 1);
+                        memcpy(buff, text.c_str(), (text.size() + 1) * sizeof(WCHAR));
                         GlobalUnlock(hGlobal);
                         *phGlobal = hGlobal;
                         return TRUE;
@@ -224,7 +224,8 @@ DROPEFFECT COEditorView::OnDragOver (COleDataObject* pDataObject, DWORD dwKeySta
         
         RETURN_IF_LOCKED1(de);
 
-        if (pDataObject && pDataObject->IsDataAvailable(CF_TEXT))
+        if (pDataObject 
+        && (pDataObject->IsDataAvailable(CF_UNICODETEXT) || pDataObject->IsDataAvailable(CF_TEXT)))
         {
             if ((dwKeyState & MK_CONTROL) == MK_CONTROL)
                 de = DROPEFFECT_COPY;
@@ -332,12 +333,23 @@ BOOL COEditorView::OnDrop (COleDataObject* pDataObject, DROPEFFECT dropEffect, C
     RETURN_IF_LOCKED1(FALSE);
 
     if (pDataObject 
-    && pDataObject->IsDataAvailable(CF_TEXT)
+    && (pDataObject->IsDataAvailable(CF_UNICODETEXT) || pDataObject->IsDataAvailable(CF_TEXT))
     && !((m_DragAndDropData.pSrcWnd == this) && CursorOnSelection(point))) 
     {
-        string text, info;
+        std::wstring text;
+        std::string info;
 
-        if (Common::AppGetDragAndDroData(text, pDataObject, CF_TEXT)) 
+        bool thereIsData = Common::AppGetDragAndDroData(text, pDataObject, CF_UNICODETEXT);
+
+        if (!thereIsData)
+        {
+            string utfText;
+            thereIsData = Common::AppGetDragAndDroData(utfText, pDataObject, CF_TEXT);
+            if (thereIsData)
+                text = Common::wstr(utfText);
+        }
+
+        if (thereIsData) 
         {
             Common::AppGetDragAndDroData(info, pDataObject, CF_PRIVATEFIRST);
            
@@ -406,7 +418,8 @@ BOOL COEditorView::OnDrop (COleDataObject* pDataObject, DROPEFFECT dropEffect, C
 
                 if (info == "{code}")
                     AlignCodeFragment(text.c_str(), text);
-				InsertBlock(text.c_str(), !GetBlockKeepMarkingAfterDragAndDrop()/*hideSelection*/);
+
+                InsertBlock(text.c_str(), !GetBlockKeepMarkingAfterDragAndDrop()/*hideSelection*/);
             }
             else
                 return FALSE;

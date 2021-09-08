@@ -18,7 +18,8 @@
 
 #include "stdafx.h"
 #include <string>
-#include "COMMON\VisualAttributes.h"
+#include "VisualAttributes.h"
+#include "MyUtf.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -138,7 +139,7 @@ CFont* VisualAttribute::NewFont () const
           m_FontUnderline ? 1 : 0,
           0, ANSI_CHARSET,//DEFAULT_CHARSET,
           OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH,
-          m_FontName.c_str()
+          wstr(m_FontName).c_str()
         );
 
     return font;

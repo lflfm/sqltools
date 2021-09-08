@@ -18,16 +18,17 @@
 
 #pragma once
 
+#include <string>
 #include <arg_shared.h>
-#include "COMMON\ManagedListCtrl.h"
+#include "ManagedListCtrl.h"
 
     using arg::counted_ptr;
     class RecentFileList;
 
     struct RecentFilesEntry
     {
-        string path                ;
-        string name                ;
+        std::wstring path          ;
+        std::wstring name          ;
         time_t last_used           ;
 
         RecentFilesEntry () : deleted(false), image(-1) {}
@@ -68,22 +69,22 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case e_name      : return "Name";   
-            case e_path      : return "Path";      
-            case e_last_used : return "Last used";     
+            case e_name      : return L"Name";   
+            case e_path      : return L"Path";      
+            case e_last_used : return L"Last used";     
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case e_name      : return getStr(data(row).name          );
             case e_path      : return getStr(data(row).path          );
             case e_last_used : return getStrTimeT(data(row).last_used);
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {
@@ -111,22 +112,22 @@ class RecentFilesListCtrl : public Common::CManagedListCtrl
     bool m_initialized;
 
 public:
-	RecentFilesListCtrl ();
-	virtual ~RecentFilesListCtrl ();
+    RecentFilesListCtrl ();
+    virtual ~RecentFilesListCtrl ();
 
     void Link (counted_ptr<RecentFileList> pRecentFileList);
 
     bool IsInitialized() const { return m_initialized; }
     void Initialize();
 
-    void LoadEntry (const string& path, time_t last_used);
-    void UpdateEntry (const string& path, time_t last_used);
+    void LoadEntry (const std::wstring& path, time_t last_used);
+    void UpdateEntry (const std::wstring& path, time_t last_used);
     
     void RemoveEntry (unsigned int);
-    void RemoveEntry (const string& path);
+    void RemoveEntry (const std::wstring& path);
 
-    string GetPath (unsigned int) const;
-    unsigned int FindEntry (const string& path) const;
+    std::wstring GetPath (unsigned int) const;
+    unsigned int FindEntry (const std::wstring& path) const;
 
 protected:
 	DECLARE_MESSAGE_MAP()

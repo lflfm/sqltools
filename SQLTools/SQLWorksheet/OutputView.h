@@ -53,6 +53,7 @@ protected:
 	afx_msg void OnEditClearAll();
     afx_msg void OnGridOutputOpen();
     afx_msg void OnOutputTextOpen();
+    afx_msg void OnOutputTextCopy();
     afx_msg void OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu);
 	DECLARE_MESSAGE_MAP()
 

@@ -52,32 +52,31 @@ void ListCtrlManager::OnCreate ()
     OnRefresh(true);
 }
 
-void ListCtrlManager::setItemFilter (int col, const char* str)
+void ListCtrlManager::setItemFilter (int col, const std::wstring& str)
 {
     assert(col < m_dataAdapter.getColCount());
 
     HDITEM hdItem;
     memset(&hdItem, 0, sizeof(hdItem));
-	hdItem.mask = HDI_FILTER;
+    hdItem.mask = HDI_FILTER;
 
     if (m_dataAdapter.getColType(col) == ListCtrlDataProvider::Number)
     {
-		hdItem.type = HDFT_ISNUMBER;
-        if (!str || !strlen(str)) 
+        hdItem.type = HDFT_ISNUMBER;
+        if (str.empty()) 
             hdItem.type |= HDFT_HASNOVALUE;
-        __int64 val = str ? _atoi64(str) : 0;
+        __int64 val = !str.empty() ? _wtoi64(str.c_str()) : 0;
         hdItem.pvFilter = &val;
         m_list.GetHeaderCtrl()->SetItem(col, &hdItem);
     }
     else
     {
-		hdItem.type = HDFT_ISSTRING;
-        if (!str || !strlen(str)) 
+        hdItem.type = HDFT_ISSTRING;
+        if (str.empty()) 
             hdItem.type |= HDFT_HASNOVALUE;
-	    HDTEXTFILTER hdTextFilter;
+        HDTEXTFILTER hdTextFilter;
         memset(&hdTextFilter, 0, sizeof(hdTextFilter));
-	    hdTextFilter.pszText = (LPSTR)str;
-	    //hdTextFilter.cchTextMax = m_filter.at(i).size()+1;
+        hdTextFilter.pszText = (LPTSTR)str.c_str();
         hdItem.pvFilter = &hdTextFilter;
         m_list.GetHeaderCtrl()->SetItem(col, &hdItem);
     }
@@ -92,27 +91,27 @@ void ListCtrlManager::SetFilter (const FilterCollection& filter)
         m_filter = filter;
 
         for (int i = 0, count = m_dataAdapter.getColCount(); i < count; ++i)
-            setItemFilter(i, !filter.empty() ?  filter.at(i).value.c_str() : 0);
+            setItemFilter(i, !filter.empty() ?  filter.at(i).value.c_str() : L"");
     }
 }
 
-void ListCtrlManager::GetColumnHeaders (std::vector<std::string>& _headers) const
+void ListCtrlManager::GetColumnHeaders (std::vector<std::wstring>& _headers) const
 {
-    std::vector<std::string> headers;
+    std::vector<std::wstring> headers;
 
     for (int col = 0, colCount = m_dataAdapter.getColCount(); col < colCount; ++col)
-	    headers.push_back(m_dataAdapter.getColHeader(col));
+        headers.push_back(m_dataAdapter.getColHeader(col));
 
     std::swap(_headers, headers);
 }
 
-void ListCtrlManager::GetColumnValues (int col, std::set<std::string>& _data) const
+void ListCtrlManager::GetColumnValues (int col, std::set<std::wstring>& _data) const
 {
-    std::set<std::string> data;
+    std::set<std::wstring> data;
 
     for (int row = 0, rowCount = m_dataAdapter.getRowCount(); row < rowCount; ++row)
         if (m_dataAdapter.IsVisibleRow(row))
-	        data.insert(m_dataAdapter.getString(row, col));
+            data.insert(m_dataAdapter.getString(row, col));
 
     std::swap(_data, data);
 }
@@ -219,42 +218,42 @@ void ListCtrlManager::OnSort (int col)
 
 void ListCtrlManager::refreshFilter ()
 {
-    char buff[1024];
+    WCHAR buff[1024];
     bool filterEmpty = true;
     FilterCollection filter;
 
-	HDITEM hdItem;
+    HDITEM hdItem;
     memset(&hdItem, 0, sizeof(hdItem));
-	hdItem.mask = HDI_FILTER;
-	HDTEXTFILTER hdTextFilter;
+    hdItem.mask = HDI_FILTER;
+    HDTEXTFILTER hdTextFilter;
     memset(&hdTextFilter, 0, sizeof(hdTextFilter));
-    
-	hdTextFilter.pszText = buff;
-	hdTextFilter.cchTextMax = sizeof(buff)-1;
     
     CHeaderCtrl* header = m_list.GetHeaderCtrl();
     for (unsigned int i = 0, count = header->GetItemCount(); i < count; ++i)
     {
+        hdTextFilter.pszText = buff;
+        hdTextFilter.cchTextMax = sizeof(buff)/sizeof(WCHAR)-1;
+
         if (m_dataAdapter.getColType(i) == ListCtrlDataProvider::Number)
         {
             __int64 val = 0;
-		    hdItem.type = HDFT_ISNUMBER;
+            hdItem.type = HDFT_ISNUMBER;
             hdItem.pvFilter = &val;
 
             if (header->GetItem(i, &hdItem) && !(HDFT_HASNOVALUE & hdItem.type))
-			    _i64toa(val, buff, 10);
+                _i64tow(val, buff, 10);
             else
-			    buff[0] = 0;
+                buff[0] = 0;
         }
         else
         {
-		    hdItem.type = HDFT_ISSTRING;
-		    hdItem.pvFilter = &hdTextFilter;
+            hdItem.type = HDFT_ISSTRING;
+            hdItem.pvFilter = &hdTextFilter;
 
-		    if (header->GetItem(i, &hdItem) && !(HDFT_HASNOVALUE & hdItem.type))
-			    buff[sizeof(buff)-1] = 0;
+            if (header->GetItem(i, &hdItem) && !(HDFT_HASNOVALUE & hdItem.type))
+                buff[sizeof(buff)/sizeof(buff[0])-1] = 0;
             else
-			    buff[0] = 0;
+                buff[0] = 0;
         }
 
         if (i < m_filter.size())
@@ -281,11 +280,11 @@ bool ListCtrlManager::isMatchedToFilter (int row)
         
         for (int col = 0; col < colCount; ++col)
         {
-            const std::string& filter = m_filter.at(col).value;
+            const std::wstring& filter = m_filter.at(col).value;
 
             if (!filter.empty())
             {
-                const char* val = m_dataAdapter.getString(row, col);
+                const wchar_t* val = m_dataAdapter.getString(row, col);
 
                 switch (m_filter.at(col).operation)
                 {
@@ -295,6 +294,10 @@ bool ListCtrlManager::isMatchedToFilter (int row)
                     break;
                 case CONTAIN:
                     if (!::StrStrI(val, filter.c_str()))
+                        return false;
+                    break;
+                case NOT_CONTAIN:
+                    if (::StrStrI(val, filter.c_str()))
                         return false;
                     break;
                 case EXACT_MATCH:

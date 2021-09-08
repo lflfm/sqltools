@@ -1,6 +1,6 @@
 /* 
-	SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    SQLTools is a tool for Oracle database developers and DBAs.
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,49 +21,65 @@
 #define __GREPDLG_H__
 #pragma once
 
-    class CGrepView;
+#include <COMMON/EditWithSelPos.h>
 
+    class CGrepView;
+    class COEditorView;
 
 class CGrepDlg : public CDialog
 {
-	HICON m_hIcon;
-    CGrepView* m_pView;
+    HICON m_hIcon;
+    CGrepView* m_pResultView;
+    COEditorView* m_pEditorView;
 
 public:
-	CGrepDlg (CWnd* pParent, CGrepView* pView);
+    CGrepDlg (CWnd* pParent, CGrepView* pResultView, COEditorView* pEditorView);
 
-	//{{AFX_DATA(CGrepDlg)
-	enum { IDD = IDD_FILE_FIND };
-	BOOL	m_bMathWholeWord;
-	BOOL	m_bMathCase;
-	BOOL	m_bUseRegExpr;
-	BOOL	m_bLookInSubfolders;
-	BOOL	m_bSaveFiles;
-	BOOL	m_bCollapsedList;
-	CString	m_strFileOrType;
-	CString	m_strFolder;
-	CString	m_strWhatFind;
-	//}}AFX_DATA
-	CButton	  m_wndInsertExpr;
-	CComboBox m_wndFolder;
-	CComboBox m_wndFileOrType;
-	CComboBox m_wndWhatFind;
+    enum { IDD = IDD_FILE_FIND };
+    BOOL    m_ShareSearchContext;
+    BOOL	m_MatchWholeWord;
+    BOOL	m_MatchCase;
+    BOOL	m_RegExp;
+    BOOL	m_BackslashExpressions;
+    BOOL	m_LookInSubfolders;
+    BOOL	m_SearchInMemory;
+    BOOL	m_CollapsedList;
+    CString	m_MaskList;
+    CString	m_FolderList;
+    CString	m_SearchText;
 
-	//{{AFX_VIRTUAL(CGrepDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	//}}AFX_VIRTUAL
-	virtual void OnOK ();
+    std::wstring m_currentFolder;
+    std::wstring m_workspaceFolder;
+    std::wstring m_backupFolder;
+    std::wstring m_finalFolderList;
+
+    CEditWithSelPos m_edtSearchText;
+
+    CButton	  m_wndInsertExp;
+    CComboBox m_wndFolderList;
+    CComboBox m_wndMaskList;
+    CComboBox m_wndSearchText;
+
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);
+    virtual void OnOK ();
+    virtual void OnCancel ();
 
 protected:
-	//{{AFX_MSG(CGrepDlg)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnSelectFolder();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
-    virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-};
+    virtual BOOL OnInitDialog();
+    void SavePlacement ();
+    afx_msg void OnSelectFolder();
+    void ShowPopupMenu (UINT btnId, CMenu* pPopup);
 
-//{{AFX_INSERT_LOCATION}}
+    DECLARE_MESSAGE_MAP()
+    virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+
+    afx_msg void OnClose();
+    afx_msg void OnBnClicked_RegExp ();
+    afx_msg void OnBnClicked_InsertExpr();
+    afx_msg void OnInsertRegexpFind (UINT nID);
+    afx_msg void OnChangeFolder (UINT nID);
+    afx_msg void OnHelp ();
+};
 
 #endif//__GREPDLG_H__

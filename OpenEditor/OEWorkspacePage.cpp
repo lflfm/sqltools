@@ -26,6 +26,8 @@ OEWorkspacePage::OEWorkspacePage (SettingsManager& manager)
 	: CPropertyPage(OEWorkspacePage::IDD)
     , m_manager(manager)
 {
+    m_psp.dwFlags &= ~PSP_HASHELP;
+
     const OpenEditor::GlobalSettingsPtr settings = m_manager.GetGlobalSettings();
     m_WorkspaceDetectChangesOnOpen    = settings->GetWorkspaceDetectChangesOnOpen   ();
     m_WorkspaceFileSaveInActiveOnExit = settings->GetWorkspaceFileSaveInActiveOnExit();

@@ -281,7 +281,6 @@ public:
 
 protected:
     SyntaxAnalyser* m_analyzer;
-    Fastmap<bool> m_fastmap;
     TokenMapPtr m_tokenMap;
 
     enum ESequenceOf { eNone, eQuotedString, eDblQuotedString, eEndLineComment, eComment };

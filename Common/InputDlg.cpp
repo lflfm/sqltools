@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "InputDlg.h"
-#include <COMMON/DlgDataExt.h>
+#include "DlgDataExt.h"
 
 namespace Common
 {

@@ -1,7 +1,7 @@
  Platform Requirements
 ~~~~~~~~~~~~~~~~~~~~~~~
 Operating Systems:
-        - Windows 2000, XP, 7 (should work under Vista or 10 but not tested)
+        - Windows 2003, XP, 7, 8, 10
         - 5M of disk space
 Oracle Software:
         - Client 8i/9i/10g/11g/12c

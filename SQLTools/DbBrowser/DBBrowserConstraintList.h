@@ -75,19 +75,19 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case 0: return "Constraint" ;
-            case 1: return "Table"      ;
-            case 2:  return "Columns"    ;
-            case 3: return "Deferrable" ;
-            case 4: return "Deferred"   ;
-            case 5: return "Status"     ;
+            case 0: return L"Constraint" ;
+            case 1: return L"Table"      ;
+            case 2: return L"Columns"    ;
+            case 3: return L"Deferrable" ;
+            case 4: return L"Deferred"   ;
+            case 5: return L"Status"     ;
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case 0: return getStr(data(row).constraint_name);
             case 1: return getStr(data(row).table_name     );
@@ -96,7 +96,7 @@
             case 4: return getStr(data(row).deferred       );   
             case 5: return getStr(data(row).status         );   
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {
@@ -142,19 +142,19 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case 0: return "Constraint" ;
-            case 1: return "Table"      ;
-            case 2: return "Condition"  ;
-            case 3: return "Deferrable" ;
-            case 4: return "Deferred"   ;
-            case 5: return "Status"     ;
+            case 0: return L"Constraint" ;
+            case 1: return L"Table"      ;
+            case 2: return L"Condition"  ;
+            case 3: return L"Deferrable" ;
+            case 4: return L"Deferred"   ;
+            case 5: return L"Status"     ;
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case 0: return getStr(data(row).constraint_name );
             case 1: return getStr(data(row).table_name      );
@@ -163,7 +163,7 @@
             case 4: return getStr(data(row).deferred        );   
             case 5: return getStr(data(row).status          );   
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         virtual int compare (int row1, int row2, int col) const {
@@ -201,22 +201,22 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case 0: return "Constraint"    ;
-            case 1: return "Table"         ;
-            case 2: return "Columns"       ;
-            case 3: return "Ref Owner"     ; 
-            case 4: return "Ref Constraint";
-            case 5: return "Delete Rule"   ;
-            case 6: return "Deferrable"    ;
-            case 7: return "Deferred"      ;
-            case 8: return "Status"        ;
+            case 0: return L"Constraint"    ;
+            case 1: return L"Table"         ;
+            case 2: return L"Columns"       ;
+            case 3: return L"Ref Owner"     ; 
+            case 4: return L"Ref Constraint";
+            case 5: return L"Delete Rule"   ;
+            case 6: return L"Deferrable"    ;
+            case 7: return L"Deferred"      ;
+            case 8: return L"Status"        ;
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case 0: return getStr(data(row).constraint_name  );
             case 1: return getStr(data(row).table_name       );
@@ -228,7 +228,7 @@
             case 7: return getStr(data(row).deferred         );   
             case 8: return getStr(data(row).status           );   
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         virtual int compare (int row1, int row2, int col) const {

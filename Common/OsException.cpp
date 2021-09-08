@@ -18,15 +18,21 @@
 
 #include "stdafx.h"
 #include "OsException.h"
+#include "MyUtf.h"
 
 namespace Common
 {
+
+OsException::OsException (int err, const wchar_t* msg) 
+    : m_err(err), std::exception(str(msg).c_str()) 
+{
+}
 
 void OsException::CheckLastError () /* throw OsException */
 {
     ASSERT_EXCEPTION_FRAME;
 
-    std::string desc;
+    std::wstring desc;
 
     if (int err = GetLastError(desc))
     {
@@ -35,7 +41,7 @@ void OsException::CheckLastError () /* throw OsException */
     }
 }
 
-int OsException::GetLastError (std::string& desc)
+int OsException::GetLastError (std::wstring& desc)
 {
     if (int err = ::GetLastError())
         return GetError(err, desc);
@@ -43,7 +49,7 @@ int OsException::GetLastError (std::string& desc)
     return 0;
 }
 
-int OsException::GetError (int err, std::string& desc)
+int OsException::GetError (int err, std::wstring& desc)
 {
     if (err)
     {

@@ -35,14 +35,13 @@ namespace Common
 {
 namespace PlsSql
 {
-    using std::string;
+    using std::wstring;
     using std::vector;
-    using Common::Fastmap;
 
-    typedef std::map<std::string, int> TokenMap;
+    typedef std::map<std::wstring, int> TokenMap;
     typedef arg::counted_ptr<TokenMap> TokenMapPtr;
     
-    typedef std::map<std::string, int> Reserved;
+    typedef std::map<std::wstring, int> Reserved;
     typedef arg::counted_ptr<Reserved> ReservedPtr;
 
     enum ParserMode
@@ -53,6 +52,7 @@ namespace PlsSql
 
     enum EToken
     {
+        etWHITESPACE = -3, // added for formatter
         etFAILURE = -2,
         etNONE = -1,
         etUNKNOWN = 0,
@@ -82,6 +82,7 @@ namespace PlsSql
         etDOT,
         etCOLON,
         etSEMICOLON,
+        etCOMMA, // added for formatter
         etQUOTE,
         etDOUBLE_QUOTE,
         etLEFT_ROUND_BRACKET,
@@ -102,6 +103,16 @@ namespace PlsSql
         etDROP,
         etFROM,
         etWHERE,
+        etJOIN,  // added for formatter
+        etINNER, // added for formatter
+        etLEFT,  // added for formatter
+        etRIGHT, // added for formatter
+        etFULL,  // added for formatter
+        etNATURAL, // added for formatter
+        etUSING, // added for formatter
+        etORDER, // added for formatter
+        etGROUP, // added for formatter
+        etBY,    // added for formatter
         etSET,
         etOPEN,
         etLANGUAGE,
@@ -249,11 +260,7 @@ namespace PlsSql
     };
 
 
-//#include <boost/static_assert.hpp> 
-//#include <Common/FixedString.h>
-//BOOST_STATIC_ASSERT(sizeof(token.offset) == sizeof(FixedString::size_type));
-
-    // TODO: This is a single line tolen but strings or comments might be multiline
+    // TODO: This is a single line token but strings or comments might be multiline
     struct Token
     {
         typedef unsigned short size_pos;
@@ -262,6 +269,7 @@ namespace PlsSql
         int line;
         size_pos offset, length;
         int reserved;
+        wstring value;
 
         size_pos begCol () const { return offset; }
         size_pos endCol () const { return offset + length; }
@@ -300,7 +308,7 @@ public:
     void SetTokenMap (TokenMapPtr);
     TokenMapPtr GetTokenMapPtr () const { return m_tokenMap; }
 
-    virtual bool PutLine (int line, const char*, int length);
+    virtual bool PutLine (int line, const wchar_t*, int length);
     void PutEOF  (int line);
 
     void SetAnalyzer (SyntaxAnalyser* analyzer) { m_analyzer = analyzer; m_analyzer->Clear(); }

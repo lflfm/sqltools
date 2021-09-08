@@ -32,9 +32,6 @@
     <Filter Include="3dparty\FileWatch">
       <UniqueIdentifier>{890c98b1-189f-46cb-96bf-1974975de1c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="3dparty\SizeCBar">
-      <UniqueIdentifier>{8f09bb4d-41bd-4cc6-baca-dea3a1ea5e5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="3dparty\WinException">
       <UniqueIdentifier>{8188c3d5-b9a5-4d75-8be9-82d7cfa31418}</UniqueIdentifier>
     </Filter>
@@ -124,6 +121,9 @@
     </Filter>
     <Filter Include="ThreadCommunication">
       <UniqueIdentifier>{988021aa-be2a-4a0e-a6d4-6250dfb20598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3dparty\TextEncodingDetect">
+      <UniqueIdentifier>{fc1fdfc1-c9cb-479e-93a1-a405be2fa7f4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +333,21 @@
     <None Include="hlp\working_with_svn.htm">
       <Filter>HTML Help Topics</Filter>
     </None>
+    <None Include="..\Common\DirSelectDlg.dlg">
+      <Filter>Common</Filter>
+    </None>
+    <None Include="..\Common\ManagedListCtrlFilterDlg.aps">
+      <Filter>Common</Filter>
+    </None>
+    <None Include="..\Common\ManagedListCtrlFilterDlg.rh">
+      <Filter>Common</Filter>
+    </None>
+    <None Include="hlp\file_find.htm">
+      <Filter>HTML Help Topics</Filter>
+    </None>
+    <None Include="hlp\whatsnew19.htm">
+      <Filter>HTML Help Topics</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hlp\HTMLDefines.h">
@@ -356,9 +371,6 @@
     <ClInclude Include="..\3dparty\ARG\include\arg_shared.h">
       <Filter>3dparty\ARG</Filter>
     </ClInclude>
-    <ClInclude Include="..\3dParty\boost_1_32_0\libs\regex\src\primary_transform.hpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClInclude>
     <ClInclude Include="..\3dparty\CGFileType\cgfiltyp.h">
       <Filter>3dparty\CGFileType</Filter>
     </ClInclude>
@@ -370,15 +382,6 @@
     </ClInclude>
     <ClInclude Include="..\3dparty\FileWatch\FileWatch.h">
       <Filter>3dparty\FileWatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3dparty\SizeCBar\scbarcf.h">
-      <Filter>3dparty\SizeCBar</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3dparty\SizeCBar\scbarg.h">
-      <Filter>3dparty\SizeCBar</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3dparty\SizeCBar\sizecbar.h">
-      <Filter>3dparty\SizeCBar</Filter>
     </ClInclude>
     <ClInclude Include="..\3dparty\WinException\WinException.h">
       <Filter>3dparty\WinException</Filter>
@@ -436,126 +439,6 @@
     </ClInclude>
     <ClInclude Include="..\3dParty\CppToolTip\PPTooltip.h">
       <Filter>3dparty\CPPToolTip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AppGlobal.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AppUtilities.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\ConfigFilesLocator.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\CustomShellContextMenu.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\DirSelectDlg.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\DlgDataExt.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\EditWithSelPos.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\ErrorDlg.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\ExceptionHelper.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\FakeRClick.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Fastmap.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\FilePanelWnd.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\FixedArray.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\FixedString.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\GlobalMutex.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\GUICommandDictionary.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Handler.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\InputDlg.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\ListCtrlDataProvider.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\ManagedListCtrl.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\ManagedListCtrlFilterDlg.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\MemoryMappedFile.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\NVector.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\OETabCtrl.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\OsException.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\OsInfo.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\PlSqlParser.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Properties.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\PropertySheetMem.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\QuickArray.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\RecArray.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\SEException.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\SimpleDragDataSource.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\StackTracer.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\StrHelpers.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\TempFilesManager.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\VisualAttributes.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\VisualAttributesPage.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\WorkbookBar.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\WorkbookMDIFrame.h">
-      <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\OpenEditor\OEAutocompleteCtrl.h">
       <Filter>OpenEditor</Filter>
@@ -666,9 +549,6 @@
       <Filter>OpenEditor</Filter>
     </ClInclude>
     <ClInclude Include="..\OpenEditor\OEStorage.h">
-      <Filter>OpenEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\OpenEditor\OEStreams.h">
       <Filter>OpenEditor</Filter>
     </ClInclude>
     <ClInclude Include="..\OpenEditor\OETemplates.h">
@@ -1073,12 +953,6 @@
     <ClInclude Include="..\ThreadCommunication\Singleton.h">
       <Filter>ThreadCommunication</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\clock64.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\RecentFilesListCtrl.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\OpenEditor\RecentFileList.h">
       <Filter>OpenEditor</Filter>
     </ClInclude>
@@ -1091,8 +965,167 @@
     <ClInclude Include="OpenGrid\PopupViewer.h">
       <Filter>OpenGrid</Filter>
     </ClInclude>
+    <ClInclude Include="..\3dParty\boost_1_65_1\libs\regex\src\internals.hpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AppGlobal.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AppUtilities.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\clock64.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ConfigFilesLocator.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\CustomShellContextMenu.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\DirSelectDlg.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\DlgDataExt.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\EditWithSelPos.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ErrorDlg.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ExceptionHelper.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\FakeRClick.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Fastmap.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\FileExplorerWnd.h">
+      <Filter>Common</Filter>
+    </ClInclude>
     <ClInclude Include="..\Common\FilenameTemplate.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\FixedArray.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\GlobalMutex.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\GUICommandDictionary.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Handler.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\InputDlg.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ListCtrlDataProvider.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ManagedListCtrl.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ManagedListCtrlFilterDlg.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\MemoryMappedFile.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\MyUtf.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\NVector.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\OEString.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\OETabCtrl.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\OsException.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\OsInfo.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\PlSqlParser.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Properties.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\PropertySheetMem.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\QuickArray.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\RecArray.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\RecentFilesListCtrl.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\RecentFileWnd.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\SEException.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\SimpleDragDataSource.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\StackTracer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\StrHelpers.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\TempFilesManager.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\VisualAttributes.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\VisualAttributesPage.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\WorkbookMDIFrame.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3dParty\TextEncodingDetect\text_encoding_detect.h">
+      <Filter>3dparty\TextEncodingDetect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEditor\TiXmlUtils.h">
+      <Filter>OpenEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\OpenEditor\WindowsCodepage.h">
+      <Filter>OpenEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectionButton.h">
+      <Filter>SQLToolsApp</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\Grep\GrepImplementation.h">
+      <Filter>Tools\Grep</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\Grep\GrepImplementationInMemory.h">
+      <Filter>Tools\Grep</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\DockableContainer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ActivePrimeExecutionNote.h">
+      <Filter>SQLToolsApp</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenFilesWnd.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1111,45 +1144,6 @@
     <ClCompile Include="..\3dparty\ARG\arglib\arg_shared.cpp">
       <Filter>3dparty\ARG</Filter>
     </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\c_regex_traits.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\c_regex_traits_common.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\cpp_regex_traits.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\cregex.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\fileiter.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\instances.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\posix_api.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\regex.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\regex_debug.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\regex_synch.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\w32_regex_traits.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\wide_posix_api.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dParty\boost_1_32_0\libs\regex\src\winstances.cpp">
-      <Filter>3dparty\boost.regexp</Filter>
-    </ClCompile>
     <ClCompile Include="..\3dparty\CGFileType\cgfiltyp.cpp">
       <Filter>3dparty\CGFileType</Filter>
     </ClCompile>
@@ -1161,15 +1155,6 @@
     </ClCompile>
     <ClCompile Include="..\3dparty\FileWatch\FileWatch.cpp">
       <Filter>3dparty\FileWatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dparty\SizeCBar\scbarcf.cpp">
-      <Filter>3dparty\SizeCBar</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dparty\SizeCBar\scbarg.cpp">
-      <Filter>3dparty\SizeCBar</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3dparty\SizeCBar\sizecbar.cpp">
-      <Filter>3dparty\SizeCBar</Filter>
     </ClCompile>
     <ClCompile Include="..\3dparty\WinException\WinException.cpp">
       <Filter>3dparty\WinException</Filter>
@@ -1239,114 +1224,6 @@
     </ClCompile>
     <ClCompile Include="..\3dParty\CppToolTip\PPTooltip.cpp">
       <Filter>3dparty\CPPToolTip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\AppGlobal.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\AppUtilities.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ConfigFilesLocator.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\CustomShellContextMenu.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\DirSelectDlg.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\DlgDataExt.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\EditWithSelPos.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ErrorDlg.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ExceptionHelper.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\FakeRClick.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\FilePanelWnd.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\FilePanelWnd2.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\FixedString.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\GlobalMutex.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\GUICommandDictionary.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\InputDlg.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ListCtrlDataProvider.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ManagedListCtrl.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ManagedListCtrlFilterDlg.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\MemoryMappedFile.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\OETabCtrl.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\OsException.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\OsInfo.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\PlSqlParser.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\PropertySheetMem.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\QuickArray.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\RecArray.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\SEException.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\SimpleDragDataSource.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\StackTracer.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\StrHelpers.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\TempFilesManager.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\VisualAttributes.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\VisualAttributesPage.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\WorkbookBar.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\WorkbookMDIFrame.cpp">
-      <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="..\OpenEditor\OEAutocompleteCtrl.cpp">
       <Filter>OpenEditor</Filter>
@@ -1478,9 +1355,6 @@
       <Filter>OpenEditor</Filter>
     </ClCompile>
     <ClCompile Include="..\OpenEditor\OEStorage.cpp">
-      <Filter>OpenEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\OpenEditor\OEStreams.cpp">
       <Filter>OpenEditor</Filter>
     </ClCompile>
     <ClCompile Include="..\OpenEditor\OETemplates.cpp">
@@ -1972,12 +1846,6 @@
     <ClCompile Include="..\ThreadCommunication\MessageOnlyWindow.cpp">
       <Filter>ThreadCommunication</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\clock64.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\RecentFilesListCtrl.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\OpenEditor\RecentFileList.cpp">
       <Filter>OpenEditor</Filter>
     </ClCompile>
@@ -1990,8 +1858,197 @@
     <ClCompile Include="OpenGrid\PopupViewer.cpp">
       <Filter>OpenGrid</Filter>
     </ClCompile>
+    <ClCompile Include="..\OpenEditor\OEView_7.cpp">
+      <Filter>OpenEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\c_regex_traits.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\cpp_regex_traits.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\cregex.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\fileiter.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\icu.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\instances.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\posix_api.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\regex.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\regex_debug.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\regex_raw_buffer.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\regex_traits_defaults.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\static_mutex.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\usinstances.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\w32_regex_traits.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\wc_regex_traits.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\wide_posix_api.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AppGlobal.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AppUtilities.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\clock64.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ConfigFilesLocator.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\CustomShellContextMenu.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\DirSelectDlg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\DlgDataExt.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\EditWithSelPos.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ErrorDlg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ExceptionHelper.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\FakeRClick.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\FileExplorerWnd.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\FileExplorerWnd2.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
     <ClCompile Include="..\Common\FilenameTemplate.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\GlobalMutex.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\GUICommandDictionary.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\InputDlg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ListCtrlDataProvider.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ManagedListCtrl.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ManagedListCtrlFilterDlg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\MemoryMappedFile.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\MyUtf.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\OEString.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\OETabCtrl.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\OsException.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\OsInfo.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\PlSqlParser.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\PropertySheetMem.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\QuickArray.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\RecArray.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\RecentFilesListCtrl.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\RecentFileWnd.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\SEException.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\SimpleDragDataSource.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\StackTracer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\StrHelpers.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\TempFilesManager.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\VisualAttributes.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\VisualAttributesPage.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\WorkbookMDIFrame.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\boost_1_65_1\libs\regex\src\winstances.cpp">
+      <Filter>3dparty\boost.regexp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3dParty\TextEncodingDetect\text_encoding_detect.cpp">
+      <Filter>3dparty\TextEncodingDetect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\OpenEditor\TiXmlUtils.cpp">
+      <Filter>OpenEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\OpenEditor\WindowsCodepage.cpp">
+      <Filter>OpenEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionButton.cpp">
+      <Filter>SQLToolsApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\DockableContainer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenFilesWnd.cpp">
+      <Filter>DbBrowser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2000,6 +2057,9 @@
     </ResourceCompile>
     <ResourceCompile Include="..\OpenEditor\OpenEditorInc.rc">
       <Filter>OpenEditor</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\Common\ManagedListCtrlFilterDlg.rc">
+      <Filter>Common</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2015,5 +2075,31 @@
     <CustomBuild Include="resource1.h">
       <Filter>SQLToolsApp</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Common\ManagedListCtrlFilterDlg-1.bmp">
+      <Filter>Common</Filter>
+    </Image>
+    <Image Include="res\ConnectToolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\SqlDescribe.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ObjectViewer.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ObjectList.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\FindInFiles.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properti.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\OpenFiles.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

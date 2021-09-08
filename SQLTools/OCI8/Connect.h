@@ -1,6 +1,6 @@
 /*
 	SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -112,7 +112,6 @@ private:
 
     enum EServerVersion
     {
-        esvServerUnknown,
         esvServer7X,
         esvServer73X,
         esvServer80X,
@@ -122,17 +121,18 @@ private:
         esvServer11X,
         esvServer112,
         esvServer12X,
+        esvServerUnknown,
     };
 
     enum EClentVersion
     {
-        ecvClientUnknown,
         ecvClient80X,
         ecvClient81X,
         ecvClient9X,
         ecvClient10X,
         ecvClient11X,
         ecvClient12X,
+        ecvClientUnknown,
     };
 
     class BreakHandler;
@@ -141,7 +141,7 @@ class ConnectBase
 {
     friend class Exception;
 protected:
-    ConnectBase  (unsigned mode = OCI_THREADED|OCI_DEFAULT|OCI_OBJECT);
+    ConnectBase  (unsigned mode = OCI_THREADED|OCI_DEFAULT|OCI_OBJECT|OCI_UTF16);
     virtual ~ConnectBase ();
 
     virtual void Open  (const char* uid, const char* pswd, const char* alias, EConnectionMode mode, bool readOnly, bool slow);
@@ -197,10 +197,10 @@ public:
 #endif//XMLTYPE_SUPPORT
 
     // the following methods are available for OCI 8.1.X and later
-    void DateTimeToText (const OCIDateTime* date, const char* ftm, size_t fmt_length, int fsprec,
-                         const char* lang_name, size_t lang_length, char* buf, size_t* buf_size);
-    void IntervalToText (const OCIInterval* inter, int lfprec, int fsprec,
-                         char* buf,  size_t buf_size, size_t* result_len);
+    void DateTimeToText (const OCIDateTime* date, const wchar_t* fmt, size_t fmt_byte_size, int fsprec,
+                         const wchar_t* lang_name, size_t lang_byte_size, wchar_t* buf, size_t* buf_byte_size);
+    void IntervalToText (const OCIInterval* inter, int lfprec, int fsprec, 
+                         wchar_t* buf, size_t buf_byte_size, size_t* result_byte_size);
 
 #ifdef XMLTYPE_SUPPORT
     // the following method are available for OCI 10.X

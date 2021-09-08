@@ -72,9 +72,9 @@ const UINT CSQLToolsApp::m_msgCommandLineProcess = WM_USER + 1;
 
 SQLToolsSettings* CSQLToolsApp::m_pSettings = NULL;
 
-IMPLEMENT_DYNCREATE(CSQLToolsApp, CWinApp)
+IMPLEMENT_DYNCREATE(CSQLToolsApp, CWinAppEx)
 
-BEGIN_MESSAGE_MAP(CSQLToolsApp, CWinApp)
+BEGIN_MESSAGE_MAP(CSQLToolsApp, CWinAppEx)
     ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
     ON_COMMAND(ID_EDIT_PERMANENT_SETTINGS, OnEditPermanetSettings)
     ON_COMMAND(ID_APP_SETTINGS, OnAppSettings)
@@ -98,14 +98,14 @@ BEGIN_MESSAGE_MAP(CSQLToolsApp, CWinApp)
     ON_UPDATE_COMMAND_UI_RANGE(ID_SQL_CONNECT, ID_SQL_TABLE_TRANSFORMER, OnUpdate_SqlGroup)
     ON_UPDATE_COMMAND_UI(ID_INDICATOR_OCIGRID, OnUpdate_EditIndicators)
     // Standard file based document commands
-    ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
-    ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
+    ON_COMMAND(ID_FILE_NEW, CWinAppEx::OnFileNew)
+    ON_COMMAND(ID_FILE_OPEN, CWinAppEx::OnFileOpen)
     // File based document commands
     ON_COMMAND(ID_FILE_CLOSE_ALL, OnFileCloseAll)
     ON_COMMAND(ID_FILE_SAVE_ALL, OnFileSaveAll)
     ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_ALL, OnUpdate_FileSaveAll)
     // Standard print setup command
-    ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
+    ON_COMMAND(ID_FILE_PRINT_SETUP, CWinAppEx::OnFilePrintSetup)
     ON_COMMAND_RANGE(ID_APP_DBLKEYACCEL_FIRST, ID_APP_DBLKEYACCEL_LAST, OnDblKeyAccel)
 
     ON_UPDATE_COMMAND_UI(ID_INDICATOR_POS,        OnUpdate_EditIndicators)
@@ -200,17 +200,22 @@ CSQLToolsApp::CSQLToolsApp()
 
 CSQLToolsApp::~CSQLToolsApp()
 {
-    HistoryFileManager::GetInstance().Flush();
+    try { EXCEPTION_FRAME;
 
-    COEDocument::DestroySettingsManager();
+        HistoryFileManager::GetInstance().Flush();
 
-    if (m_pSettings) 
-    {
-        delete m_pSettings;
-        m_pSettings = NULL;
+        COEDocument::DestroySettingsManager();
+
+        if (m_pSettings) 
+        {
+            delete m_pSettings;
+            m_pSettings = NULL;
+        }
+
+        GdiplusShutdown(g_gdiplusToken);
+
     }
-
-   GdiplusShutdown(g_gdiplusToken);
+    _DESTRUCTOR_HANDLER_;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -262,6 +267,8 @@ BOOL CSQLToolsApp::InitInstance()
 
     try { EXCEPTION_FRAME;
 
+        SetRegistryBase(L"Workspace_2.0.1");
+
         ThreadCommunication::MessageOnlyWindow::GetWindow(); // let's make sure this window is created in the main thread
         m_pRecentFileList = counted_ptr<RecentFileList>(new RecentFileList);
         m_pFavoritesList = counted_ptr<FavoritesList>(new FavoritesList);
@@ -271,14 +278,20 @@ BOOL CSQLToolsApp::InitInstance()
         SEException::InstallSETranslator();
         set_terminate(Common::terminate);
 
-        if (!AfxOleInit()) { AfxMessageBox("OLE Initialization failed!"); return FALSE; }
+        if (!AfxOleInit()) { AfxMessageBox(L"OLE Initialization failed!"); return FALSE; }
+
+        AfxOleGetMessageFilter()->EnableNotRespondingDialog(FALSE);
 
         if (!g_pTaskbarList)
             CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_ALL, IID_ITaskbarList3, (void**)&g_pTaskbarList);
 
         getSettings().AddSubscriber(this);
         
-        Common::ConfigFilesLocator::Initialize("GNU\\SQLTools", "SharedData", "settings.xml");
+        if (Common::ConfigFilesLocator::Initialize(L"GNU\\SQLToolsU", L"SharedDataU", L"settings.xml"))
+        {
+            Common::ConfigFilesLocator::ImportFromOldConfiguration (L"GNU\\SQLTools", L"SharedData", L"settings.xml", 
+                L"connections.xml,custom.keymap,favorites.xml,history.xml,languages.xml,schemaddl.xml,settings.xml,sqltools.xml,SQLToolsApp.ini,templates.xml");
+        }
         LoadSettings();
         COEDocument::LoadSettingsManager(); // Load editor settings
 
@@ -290,18 +303,12 @@ BOOL CSQLToolsApp::InitInstance()
         if (!AllowThisInstance())
             return FALSE;
 
-        if (COEDocument::GetSettingsManager().GetGlobalSettings()->GetUseIniFile())
-        {
-            free((void*)m_pszProfileName);
-            m_pszProfileName = ::_tcsdup((Common::ConfigFilesLocator::GetBaseFolder() + "\\SQLToolsApp.ini").c_str());
-        }
-        else
-            SetRegistryKey("KochWare");
+        SetRegistryKey(L"KochWare");
         
-        //LoadStdProfileSettings(10);
-        m_pRecentFileList->Open(Common::ConfigFilesLocator::GetBaseFolder() + "\\history.xml");
-        m_pFavoritesList->Open(Common::ConfigFilesLocator::GetBaseFolder() + "\\favorites.xml");
+        m_pRecentFileList->Open(Common::ConfigFilesLocator::GetBaseFolder() + L"\\history.xml");
+        m_pFavoritesList->Open(Common::ConfigFilesLocator::GetBaseFolder() + L"\\favorites.xml");
 
+        InitContextMenuManager(); // FRM
         m_commandLineParser.SetStartingDefaults();
 
         m_pPLSDocTemplate = new COEMultiDocTemplate(
@@ -316,8 +323,8 @@ BOOL CSQLToolsApp::InitInstance()
         OEWorkspaceManager::Get().Init(
             (COEDocManager*)m_pDocManager, m_pPLSDocTemplate, 
             m_pRecentFileList, m_pFavoritesList);
-        OEWorkspaceManager::Get().SetWorkspaceExtetion(".sqlt-workspace");
-        OEWorkspaceManager::Get().SetSnapshotExtetion(".sqlt-snapshot");
+        OEWorkspaceManager::Get().SetWorkspaceExtetion(L".sqlt-workspace");
+        OEWorkspaceManager::Get().SetSnapshotExtetion(L".sqlt-snapshot");
         OEWorkspaceManager::Get().SetUpdateApplicationTitle(update_application_title);
 
         m_orgMainWndTitle = SQLTOOLS_RELEASE_STR;
@@ -327,11 +334,10 @@ BOOL CSQLToolsApp::InitInstance()
         InitGUICommand();
         // create main MDI Frame window
         CMDIMainFrame* pMainFrame = new CMDIMainFrame;
-        pMainFrame->m_bSaveMainWinPosition
-            = COEDocument::GetSettingsManager().GetGlobalSettings()->GetSaveMainWinPosition();
-        CMDIChildFrame::m_MaximizeFirstDocument
-            = COEDocument::GetSettingsManager().GetGlobalSettings()->GetMaximizeFirstDocument();
         SetupFileManager(pMainFrame);
+
+        // FRM
+        EnableLoadWindowPlacement(COEDocument::GetSettingsManager().GetGlobalSettings()->GetSaveMainWinPosition() ? TRUE : FALSE);
 
         if (!pMainFrame->LoadFrame(IDR_MAINFRAME))
             return FALSE;
@@ -343,36 +349,23 @@ BOOL CSQLToolsApp::InitInstance()
         m_pMainWnd->DragAcceptFiles();     // Enable drag/drop open
         EnableShellOpen();                 // Enable DDE Execute open
         UpdateAccelAndMenu();
-        ((CMDIMainFrame*)m_pMainWnd)->SetCloseFileOnTabDblClick(
-            COEDocument::GetSettingsManager().GetGlobalSettings()->GetDoubleClickCloseTab() ? TRUE : FALSE);
 
         // it has to be called after creating of main window but befor command line processing 
         SetupRecentFileList(pMainFrame);
-
-        //RegisterShellFileTypes(TRUE);    // NOT implemented yet in CDocManagerExt
 
         PostThreadMessage(m_msgCommandLineProcess, 0, 0);
 
         m_pMainWnd->ShowWindow(m_nCmdShow); // The main window has been
         m_pMainWnd->UpdateWindow();         // initialized, so show and update it.
 
-        //// 02.06.2003 bug fix, unknown exception if Oracle client is not installed or included in PATH
-        //char ociDllPath[MAX_PATH+1];
-        //_CHECK_AND_THROW_(PathFindOnPath(strcpy(ociDllPath, "oci.dll"), NULL),
-        //    "Cannon find OCI.DLL, an essential part of Oracle NET 8i/9i .\n"
-        //    "Check Oracle client installation and system/user PATH variable.\n"
-        //    );
-
         m_pServerBackgroundThread =
             AfxBeginThread(ServerBackgroundThread::ThreadProc, 0, THREAD_PRIORITY_ABOVE_NORMAL);
 
         if (!m_pServerBackgroundThread)
-            AfxMessageBox("Background Thread #1 initialization failed!");
+            AfxMessageBox(L"Background Thread #1 initialization failed!");
 
-//try { char* ptr = 0; ptr[0] = 1; }
-//catch (const std::exception& x) { DEFAULT_HANDLER(x); }
-//try { nvector<int> v("local_v"); v.at(100); }
-//catch (const std::exception& x) { DEFAULT_HANDLER(x); }
+        // FRM enable File panel here
+        pMainFrame->GetFilePanelWnd().CompleteStartup();
     }
     catch (CException* x)           { DEFAULT_HANDLER(x);   return FALSE; }
     catch (const std::exception& x) { DEFAULT_HANDLER(x);   return FALSE; }
@@ -416,7 +409,7 @@ int CSQLToolsApp::ExitInstance()
 
     getSettings().RemoveSubscriber(this);
 
-    int retVal = CWinApp::ExitInstance();
+    int retVal = CWinAppEx::ExitInstance();
 
     SEException::UninstallSETranslator();
 
@@ -441,7 +434,7 @@ void CSQLToolsApp::UpdateApplicationTitle ()
     && COEDocument::GetSettingsManager().GetGlobalSettings()->GetWorkspaceShowNameInTitleBar())
     {
         CString buffer = ::PathFindFileName(OEWorkspaceManager::Get().GetWorkspacePath().c_str());
-        LPSTR ext = ::PathFindExtension(buffer.GetBuffer());
+        LPWSTR ext = ::PathFindExtension(buffer.GetBuffer());
         if (ext && *ext == '.') *ext = 0;
         m_workspaceName = buffer;
         mainWndTitle += " - ";
@@ -460,7 +453,7 @@ void CSQLToolsApp::UpdateApplicationTitle ()
     }
 
     free((void*)m_pszAppName);
-    m_pszAppName = strdup(mainWndTitle);
+    m_pszAppName = wcsdup(mainWndTitle);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -480,8 +473,8 @@ void CSQLToolsApp::OnEditPermanetSettings()
         COEDocument::ShowSettingsDialog();
         setlocale(LC_ALL, COEDocument::GetSettingsManager().GetGlobalSettings()->GetLocale().c_str());
         UpdateAccelAndMenu();
-        ((CMDIMainFrame*)m_pMainWnd)->SetCloseFileOnTabDblClick(
-            COEDocument::GetSettingsManager().GetGlobalSettings()->GetDoubleClickCloseTab() ? TRUE : FALSE);
+//        ((CMDIMainFrame*)m_pMainWnd)->SetCloseFileOnTabDblClick(
+//            COEDocument::GetSettingsManager().GetGlobalSettings()->GetDoubleClickCloseTab() ? TRUE : FALSE);
         SetupFileManager((CMDIMainFrame*)m_pMainWnd);
     }
     _DEFAULT_HANDLER_;
@@ -489,30 +482,30 @@ void CSQLToolsApp::OnEditPermanetSettings()
 
 void CSQLToolsApp::OnSqlHelp()
 {
-    std::string path;
+    CString path;
     AppGetPath(path);
-    ::HtmlHelp(*AfxGetMainWnd(), (path + "\\sqlqkref.chm").c_str(), HH_DISPLAY_TOPIC, 0);
+    ::HtmlHelp(*AfxGetMainWnd(), path + L"\\sqlqkref.chm", HH_DISPLAY_TOPIC, 0);
 }
 
 void CSQLToolsApp::OnSQLToolsOnTheWeb()
 {
-    HINSTANCE result = ShellExecute( NULL, "open", "http://www.sqltools.net", NULL, NULL, SW_SHOW);
+    HINSTANCE result = ShellExecute( NULL, L"open", L"http://www.sqltools.net", NULL, NULL, SW_SHOW);
 
     if((UINT)result <= HINSTANCE_ERROR)
     {
         MessageBeep((UINT)-1);
-        AfxMessageBox("Cannot open a default browser.", MB_OK|MB_ICONSTOP);
+        AfxMessageBox(L"Cannot open a default browser.", MB_OK|MB_ICONSTOP);
     }
 }
 
 void CSQLToolsApp::OnAppSettingsFoder()
 {
-    HINSTANCE result = ShellExecute( NULL, "open", Common::ConfigFilesLocator::GetBaseFolder().c_str(), NULL, NULL, SW_SHOW);
+    HINSTANCE result = ShellExecute( NULL, L"open", Common::ConfigFilesLocator::GetBaseFolder().c_str(), NULL, NULL, SW_SHOW);
 
     if((UINT)result <= HINSTANCE_ERROR)
     {
         MessageBeep((UINT)-1);
-        AfxMessageBox("Cannot open a folder.", MB_OK|MB_ICONSTOP);
+        AfxMessageBox(L"Cannot open a folder.", MB_OK|MB_ICONSTOP);
     }
 }
 
@@ -565,14 +558,14 @@ void CSQLToolsApp::OnServerBackground_ResultQueueNotEmpty ()
                         message += " in " + Common::print_time(executionTime);
 
                     message += ".";
-                    Global::SetStatusText(message);
+                    Global::SetStatusText(message, true);
                 }
             }
             else
             {
                 task->ReturnErrorInForeground();
 
-                Global::SetStatusText("BkgrThread: Task \"" + task->GetName() + "\" failed." );
+                Global::SetStatusText("BkgrThread: Task \"" + task->GetName() + "\" failed.", true);
 
                 //TODO#3: create an aternative template for CErrorDlg and use it here
                 //CErrorDlg(task->GetLastError().c_str(), "").DoModal();
@@ -586,7 +579,7 @@ void CSQLToolsApp::OnServerBackground_ResultQueueNotEmpty ()
                 if (error)
                     message += "...";
 
-                AfxMessageBox(("The background task \"" + task->GetName() + "\" failed with the error:\n\n" + message).c_str(), MB_ICONERROR | MB_OK); 
+                AfxMessageBox(Common::wstr("The background task \"" + task->GetName() + "\" failed with the error:\n\n" + message).c_str(), MB_ICONERROR | MB_OK); 
             }
         }
     }
@@ -662,7 +655,7 @@ BOOL CSQLToolsApp::OnIdle (LONG lCount)
 
             lastClock = currClock;
 
-            //more = CWinApp::OnIdle(lCount);
+            //more = CWinAppEx::OnIdle(lCount);
             //more |= m_pPLSDocTemplate->OnIdle(lCount, ((CMDIMainFrame*)m_pMainWnd)->MDIGetActive());
             more = CWinThread::OnIdle(lCount);
             if (COEDocument::GetSettingsManager().GetGlobalSettings()->GetSyntaxGutter())
@@ -670,7 +663,7 @@ BOOL CSQLToolsApp::OnIdle (LONG lCount)
         }
         else if (lCount == 1 && !(++counter % 10)) // call it only on 10th try
         {
-            //more = CWinApp::OnIdle(lCount);
+            //more = CWinAppEx::OnIdle(lCount);
             //more |= m_pPLSDocTemplate->OnIdle(lCount, ((CMDIMainFrame*)m_pMainWnd)->MDIGetActive());
             more = CWinThread::OnIdle(lCount);
         }
@@ -710,7 +703,7 @@ void CSQLToolsApp::DoCancel (bool silent)
 
             if (silent 
             || !GetSQLToolsSettings().GetCancelConfirmation()
-            || AfxMessageBox("Do you really want to cancel the server process?",  
+            || AfxMessageBox(L"Do you really want to cancel the server process?",  
                   MB_YESNO|MB_ICONEXCLAMATION|MB_DEFBUTTON2) == IDYES
             )
                 m_BreakHandler->Break();
@@ -792,7 +785,7 @@ void CSQLToolsApp::OnWorkspaceSaveQuick ()
     try
     {
         CWaitCursor wait;
-        string path = OEWorkspaceManager::Get().WorkspaceSaveQuick();
+        OEWorkspaceManager::Get().WorkspaceSaveQuick();
         Global::SetStatusText("Quick Snapshot created.");
     }
     _OE_DEFAULT_HANDLER_;
@@ -814,7 +807,7 @@ void CSQLToolsApp::OnWorkspaceOpenQuick ()
     {
         CMenu menu;
         menu.CreatePopupMenu();
-        menu.AppendMenu(MF_STRING|MF_DISABLED,  ID_WORKSPACE_QUICK_MRU_FIRST, "Recent Quicksaved Snapshot");
+        menu.AppendMenu(MF_STRING|MF_DISABLED,  ID_WORKSPACE_QUICK_MRU_FIRST, L"Recent Quicksaved Snapshot");
 
         CRect rc;
         m_pMainWnd->GetWindowRect(&rc);
@@ -879,7 +872,7 @@ BOOL CSQLToolsApp::OnOpenRecentFile (UINT nID)
         if (m_pRecentFileList->GetFileName(nIndex, fname))
         {
             // DoOpenFile offers to remove a file from history if it does not exist 
-            ((CMDIMainFrame*)m_pMainWnd)->GetFilePanelWnd().DoOpenFile((LPCSTR)fname, (unsigned int)-1); 
+            ((CMDIMainFrame*)m_pMainWnd)->GetRecentFileWnd().DoOpenFile((LPCTSTR)fname, (unsigned int)-1);  // FRM
         }
     }
 
@@ -915,7 +908,7 @@ BOOL CSQLToolsApp::OnOpenRecentWorkspace (UINT nID)
             else if (AfxMessageBox(("The file \"" + fname + "\" does not exist.\n\nWould you like to remove it from the history?")
                 , MB_ICONEXCLAMATION|MB_YESNO) == IDYES)
             {
-                m_pRecentFileList->RemoveWorkspace((LPCSTR)fname);
+                m_pRecentFileList->RemoveWorkspace((LPCWSTR)fname);
             }
         }
     }
@@ -950,7 +943,7 @@ BOOL CSQLToolsApp::OnOpenQuickWorkspace (UINT nID)
         m_pFavoritesList->GetWorkspaceQuickSaves(list);
         string path = list.at(nIndex);
 
-        OEWorkspaceManager::Get().WorkspaceOpen(path.c_str(), true);
+        OEWorkspaceManager::Get().WorkspaceOpen(wstr(path).c_str(), true);
 
         m_pFavoritesList->RemoveWorkspaceQuickSave(path);
     }

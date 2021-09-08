@@ -22,6 +22,7 @@
 #include <vector>
 #include <set>
 #include <shlwapi.h>
+#include "MyUtf.h"
 
     class CImageList;
     
@@ -41,8 +42,8 @@ public:
     virtual int getRowCount () const = 0;
     virtual int getColCount () const = 0;
     virtual Type getColType (int col) const = 0;
-    virtual const char* getColHeader (int col) const = 0;
-    virtual const char* getString (int row, int col) const = 0;
+    virtual const wchar_t* getColHeader (int col) const = 0;
+    virtual const wchar_t* getString (int row, int col) const = 0;
     virtual bool IsVisibleRow (int row) const = 0;
     virtual int compare (int row1, int row2, int col) const = 0;
 
@@ -56,32 +57,38 @@ public:
 
 class ListCtrlDataProviderHelper
 {
-    mutable char m_buffer[128];
+    mutable wchar_t m_buffer[128];
+    mutable std::wstring m_wsbuffer;
 
 protected:
-    const char* getStr (const std::string& str) const { return str.c_str(); }
-    const char* getStr (__int64 i) const { return _i64toa(i, m_buffer, 10); }
-    const char* getStr (unsigned __int64 i) const { return _ui64toa(i, m_buffer, 10); }
-    const char* getStr (int i) const { return itoa(i, m_buffer, 10); }
-    const char* getStr (tm time) const { 
+    const wchar_t* getStr (const std::string& str) const { 
+        m_wsbuffer = Common::wstr(str);
+        return m_wsbuffer.c_str(); 
+    }
+    const wchar_t* getStr (const std::wstring& str) const { return str.c_str(); }
+    const wchar_t* getStr (__int64 i) const { return _i64tow(i, m_buffer, 10); }
+    const wchar_t* getStr (unsigned __int64 i) const { return _ui64tow(i, m_buffer, 10); }
+    const wchar_t* getStr (int i) const { return _itow(i, m_buffer, 10); }
+    const wchar_t* getStr (tm time) const { 
         static tm null = { 0 };
         if (memcmp(&time, &null, sizeof(tm))) {
-            strftime(m_buffer, sizeof m_buffer, "%Y-%m-%d %H:%M:%S", &time);
-            m_buffer[sizeof(m_buffer)-1] = 0;
+            wcsftime(m_buffer, sizeof m_buffer/sizeof(m_buffer[0]), L"%Y-%m-%d %H:%M:%S", &time);
+            m_buffer[sizeof(m_buffer)/sizeof(m_buffer[0])-1] = 0;
         } else
             m_buffer[0] = 0;
         return m_buffer; 
     }
-    const char* getStrTimeT (time_t t) const { 
+    const wchar_t* getStrTimeT (time_t t) const { 
         if (const tm* ptm = localtime(&t)) {
-            strftime(m_buffer, sizeof m_buffer, "%Y-%m-%d %H:%M:%S", ptm);
-            m_buffer[sizeof(m_buffer)-1] = 0;
+            wcsftime(m_buffer, sizeof m_buffer/sizeof(m_buffer[0]), L"%Y-%m-%d %H:%M:%S", ptm);
+            m_buffer[sizeof(m_buffer)/sizeof(m_buffer[0])-1] = 0;
         } else
             m_buffer[0] = 0;
         return m_buffer; 
     }
 
-    static int comp (const std::string& s1, const std::string& s2) { return stricmp(s1.c_str(), s2.c_str()); }
+    static int comp (const std::string& s1, const std::string& s2) { return wcsicmp(Common::wstr(s1).c_str(), Common::wstr(s2).c_str()); }
+    static int comp (const std::wstring& s1, const std::wstring& s2) { return wcsicmp(s1.c_str(), s2.c_str()); }
     static int comp (int val1, int val2) { return val1 == val2 ? 0 : (val1 < val2 ? -1 : 1); }
     static int comp (__int64 val1, __int64 val2) { return val1 == val2 ? 0 : (val1 < val2 ? -1 : 1); }
     static int comp (unsigned __int64 val1, unsigned __int64 val2) { return val1 == val2 ? 0 : (val1 < val2 ? -1 : 1); }
@@ -115,15 +122,15 @@ class ListCtrlManager
 {
 public:
     enum ESortDir { ASC = 1, DESC = -1 };
-    enum EFilterOperation { CONTAIN = 0, START_WITH = 1, EXACT_MATCH = 2 }; 
+    enum EFilterOperation { CONTAIN = 0, START_WITH = 1, EXACT_MATCH = 2, NOT_CONTAIN = 3 }; 
     struct FilterComponent
     {
         EFilterOperation operation;
-        string           value;
+        std::wstring     value;
 
         FilterComponent () : operation(CONTAIN) {}
-        FilterComponent (const char* v, EFilterOperation op = CONTAIN) : operation(op), value(v) {}
-        FilterComponent (const string& v, EFilterOperation op = CONTAIN) : operation(op), value(v) {}
+        FilterComponent (const wchar_t* v, EFilterOperation op = CONTAIN) : operation(op), value(v) {}
+        FilterComponent (const std::wstring& v, EFilterOperation op = CONTAIN) : operation(op), value(v) {}
     };
     typedef std::vector<FilterComponent> FilterCollection;
 
@@ -147,11 +154,11 @@ public:
     void SetFilter (const FilterCollection&);
     void GetFilter (FilterCollection&) const;
 
-    void GetColumnHeaders (std::vector<std::string>&) const;
-    void GetColumnValues (int col, std::set<std::string>&) const;
+    void GetColumnHeaders (std::vector<std::wstring>&) const;
+    void GetColumnValues (int col, std::set<std::wstring>&) const;
 
-    const char* GetString (int row, int col) const { return m_dataAdapter.getString(row, col); }
-    int GetStateImageIndex (int row) const         { return m_dataAdapter.getStateImageIndex(row); }
+    const wchar_t* GetString (int row, int col) const { return m_dataAdapter.getString(row, col); }
+    int GetStateImageIndex (int row) const            { return m_dataAdapter.getStateImageIndex(row); }
 
     void OnCreate ();
     void OnRefresh (bool autosizeColumns = false);
@@ -167,7 +174,7 @@ public:
     void SelectEntry (int entry);
 
 protected:
-    void setItemFilter (int col, const char* str);
+    void setItemFilter (int col, const std::wstring& str);
     void refreshFilter ();
     bool isMatchedToFilter (int row);
     void doSort();

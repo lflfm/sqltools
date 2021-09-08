@@ -40,8 +40,8 @@ class COEAutocompleteCtrl : public CListCtrl
     bool m_canModifyTemplate;
 
 public:
-    COEAutocompleteCtrl();
-    virtual ~COEAutocompleteCtrl();
+	COEAutocompleteCtrl();
+	virtual ~COEAutocompleteCtrl();
 
     BOOL Create ();
     void SetImageList (UINT);

@@ -55,7 +55,7 @@ class HtmlView : public CHtmlView
 {
 public:
     HtmlView () {}
-    void LoadHTMLfromString (const string& html);
+    void LoadHTMLfromString (const std::wstring& wtext, const std::string& text);
     virtual void PostNcDestroy() {} // remove self-destructor
 
     DECLARE_MESSAGE_MAP()

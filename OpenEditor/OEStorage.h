@@ -52,6 +52,8 @@ namespace OpenEditor
     using std::ostream;
     using arg::counted_ptr;
 
+    const int CP_UTF16 = 1200;
+
     class Storage : SettingsSubscriber
     {
     public:
@@ -78,49 +80,54 @@ namespace OpenEditor
             bool external   = false,                // external changes, it requires additional synchronization
             bool on_error   = false                 // called in case of unrecoverable error
             );
-        unsigned long GetTextLength () const;
-        unsigned long GetText (char*, unsigned long) const;
+        unsigned long GetTextLengthA () const;
+        unsigned long GetTextLengthW () const;
+        unsigned long GetTextA (char*, unsigned long) const;
+        unsigned long GetTextW (wchar_t*, unsigned long) const;
         void TruncateSpaces (bool force = false);
         void SetSavedUndoPos ();
         void SetUnconditionallyModified ();
 
-        const char* GetFileFormatName () const;
+        const wchar_t* GetFileFormatName () const;
+        const wchar_t* GetCodepageName () const;
 
         // Line
         int  GetLineCount  () const;
-        int  GetLineLength (int line) const;
+        int  GetLineLengthW (int line) const;
         LineId GetLineId   (int line) const;
 
-        char GetChar (int line, int pos) const /*throw(std::out_of_range)*/;
-        void GetLine (int line, const char*& ptr, int& len) const;
+        std::string GetChar (int line, int pos) const; // returns utf-8 character
+        wchar_t GetCharW (int line, int pos) const;
+        void GetLineA (int line, const char*& ptr, int& len) const; // should be removed?
+        void GetLineW (int line, OEStringW&) const;
+        void GetLineW (int line, OEStringW&, int codepage) const;
         void ScanMultilineQuotes (int to_line, int& state, int& quoteId, bool& parsing) const;
 
         // Edit
         // get id of the last data-updating operation
         SequenceId GetActionId () const;
 
-        void Insert     (char, int, int);
-        void Overwrite  (char, int, int);
+        void Insert     (wchar_t, int, int);
+        void Overwrite  (wchar_t, int, int);
         void Delete     (int, int);
 
         // string mustn't have '\r' or '\n'
-        void InsertLine     (int, const char*, int, ELineStatus[2]);
-        void InsertLinePart (int, int, const char*, int, ELineStatus = elsUpdated);
-        void ReplaceLinePart(int, int, int, const char*, int, ELineStatus = elsUpdated);
+        void InsertLine     (int, const wchar_t*, int, ELineStatus[2]);
+        void InsertLinePart (int, int, const wchar_t*, int, ELineStatus = elsUpdated);
+
+        void ReplaceLinePart(int, int, int, const wchar_t*, int, ELineStatus = elsUpdated);
         void DeleteLine     (int, ELineStatus = elsUpdated);
         void DeleteLinePart (int, int, int, ELineStatus = elsUpdated);
         void SplitLine      (int, int, ELineStatus = elsUpdated, ELineStatus = elsUpdated);
         void MergeLines     (int, ELineStatus = elsUpdated);
         void ExpandLinesTo  (int);
 
-        void InsertLines (int, const StringArray&, ELineStatus = elsUpdated, const vector<ELineStatus>* = 0);
+        void InsertLines (int, const StringArrayW&, ELineStatus = elsUpdated, const vector<ELineStatus>* = 0);
         void DeleteLines (int, int, ELineStatus = elsUpdated);
 
         void Reorder (int, const vector<int>&, const vector<ELineStatus>* = 0);
 
         // Undo
-        void EnableUndo (bool = true);
-        bool IsUndoEnabled () const;
         bool CanUndo () const;
         bool CanRedo () const;
         bool Undo (UndoContext& cxt);
@@ -136,6 +143,10 @@ namespace OpenEditor
         void SetSettings (const Settings*);
         const DelimitersMap& GetDelimiters () const;
 
+        int GetCodepage () const;
+        void SetCodepage (int, bool);
+        void ConvertToCodepage (int);
+
         void SetFileFormat (EFileFormat, bool undo = true);
 
         bool IsMsDosFormat () const;
@@ -148,8 +159,8 @@ namespace OpenEditor
         const Searcher& GetSearcher () const;
 
         bool IsSearchTextEmpty () const;
-        const char* GetSearchText () const;
-        void SetSearchText (const char* str);
+        const wchar_t* GetSearchText () const;
+        void SetSearchText (const wchar_t* str);
         void GetSearchOption (bool& backward, bool& wholeWords, bool& matchCase, bool& regExpr, bool& searchAll) const;
         void SetSearchOption (bool backward, bool wholeWords, bool matchCase, bool regExpr, bool searchAll);
         bool IsBackwardSearch () const;
@@ -157,7 +168,7 @@ namespace OpenEditor
 
         bool Find (FindCtx&) const;
         bool Replace (FindCtx&);
-        int  SearchBatch (const char* text, ESearchBatch mode, Square& last);
+        int  SearchBatch (const wchar_t* text, ESearchBatch mode, Square& last);
 
         MultilineQuotesScanner& GetMultilineQuotesScanner ();
 
@@ -226,7 +237,9 @@ namespace OpenEditor
         friend class UndoNotification;
 
         bool m_locked;
-        StringArray m_Lines;
+        StringArrayA m_Lines;
+
+        int m_codepage;
 
         EFileFormat m_fileFotmat;
         char m_szLineDelim[3]; // not 0 for loaded files
@@ -259,13 +272,19 @@ namespace OpenEditor
         // private methods
         void partialClear ();
         void setQuotesValidLimit (int) const;
+public:
         void pushInUndoStack (UndoBase*);
-
+private:
         // language support
         LanguageSupportPtr m_languageSupport;
 
         // bookmark cache
         mutable RandomBookmarkArray m_RandomBookmarks;
+
+        void toMultibyte (const OEStringW& src, OEStringA& dst, int codepage);
+        void toMultibyte (const OEStringW& src, OEStringA& dst);
+        void toMultibyte (const wchar_t* src, int length, OEStringA& dst);
+        void toMultibyte (const StringArrayW& src, StringArrayA& dst);
     };
 
     inline
@@ -300,25 +319,9 @@ namespace OpenEditor
     }
 
     inline
-    int Storage::GetLineLength (int line) const
-    {
-        return m_Lines.at(line).length();
-    }
-
-    inline
     LineId Storage::GetLineId (int line) const
     {
         return LineId(m_Lines.at(line).tag.id);
-    }
-
-    inline
-    char Storage::GetChar (int line, int pos) const /*throw(std::out_of_range)*/
-    {
-        // remove cast after FixedString update
-        //if (pos > FixedString::maxlen)
-        //    FixedString::_Xran("Storage::GetChar");
-
-        return m_Lines.at(line).at(pos);
     }
 
     inline
@@ -440,7 +443,7 @@ namespace OpenEditor
     }
 
     inline
-    const char* Storage::GetSearchText () const
+    const wchar_t* Storage::GetSearchText () const
     {
         _ASSERTE(m_pSearcher);
         return m_pSearcher->GetText();
@@ -454,7 +457,7 @@ namespace OpenEditor
     }
 
     inline
-    void Storage::SetSearchText (const char* str)
+    void Storage::SetSearchText (const wchar_t* str)
     {
         _ASSERTE(m_pSearcher);
         m_pSearcher->SetText(str);
@@ -509,7 +512,7 @@ namespace OpenEditor
     }
 
     inline
-    int Storage::SearchBatch (const char* text, ESearchBatch mode, Square& last)
+    int Storage::SearchBatch (const wchar_t* text, ESearchBatch mode, Square& last)
     {
         _ASSERTE(m_pSearcher);
         return m_pSearcher->DoBatch(this, text, mode, last);

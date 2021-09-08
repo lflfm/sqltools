@@ -230,7 +230,7 @@ void TextOutput::SafeWriteDBName (const char* szName)
     if (regular) 
     {
         OpenEditor::LanguageKeywordMapConstIterator
-            it = m_LanguageKeywordMap->find(szName);
+            it = m_LanguageKeywordMap->find(Common::wstr(szName));
 
         if (it != m_LanguageKeywordMap->end() && it->second.groupIndex == 0) // only for SQL Keywords
         {
@@ -455,7 +455,7 @@ void TextOutputInMEM::operator += (TextOutputInMEM& other)
 void TextOutputInMEM::TrimRight (const char* charset)
 {
     OpenEditor::DelimitersMap map(charset);
-    map[0] = true;
+    map.assign(0, true);
 
     int orgOffset = m_nOffset;
     while (m_nOffset > 0 && map[m_Base[m_nOffset]])

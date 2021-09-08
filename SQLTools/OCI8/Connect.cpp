@@ -1,6 +1,6 @@
 /*
     SQLTools is a tool for Oracle database developers and DBAs.
-    Copyright (C) 1997-2004 Aleksey Kochetov
+    Copyright (C) 1997-2020 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -72,10 +72,11 @@ void Exception::CHECK (ConnectBase* conn, sword status, const char* text)
         Common::TraceStackOnThrow();
 #endif
         int errcode;
-        oratext message[512];
-        memset(message, 0, sizeof message);
-        OCIErrorGet(conn->GetOCIError(), 1, 0, &errcode, message, sizeof message, OCI_HTYPE_ERROR);
-        bool bIsRemote = strstr((const char*)message, "ORA-02063") > 0;
+        wchar_t buff[512];
+        memset(buff, 0, sizeof buff);
+        OCIErrorGet(conn->GetOCIError(), 1, 0, &errcode, (oratext*)buff, sizeof buff/sizeof buff[0], OCI_HTYPE_ERROR);
+        string message = Common::str((wchar_t*)buff, sizeof buff/sizeof buff[0]);
+        bool bIsRemote = strstr(message.c_str(), "ORA-02063") > 0;
 
         switch (errcode)
         {
@@ -101,10 +102,10 @@ void Exception::CHECK (ConnectBase* conn, sword status, const char* text)
         {
         default:
             if (!text)
-                throw Exception(errcode, (const char*)message);
+                throw Exception(errcode, message.c_str());
             else
             {
-                string buffer = (const char*)message;
+                string buffer = message;
                 buffer += "\n";
                 buffer += text;
                 throw Exception(errcode, buffer.c_str());
@@ -112,7 +113,7 @@ void Exception::CHECK (ConnectBase* conn, sword status, const char* text)
         case 1013:
             // 26.10.2003 bug fix, any sql statement which is executed after cancelation will be also canceled
             conn->m_interrupted = false;
-            throw UserCancel(errcode, (const char*)message);
+            throw UserCancel(errcode, message.c_str());
         case 1406: // ORA-01406: fetched column value was truncated
             break;
         }
@@ -222,7 +223,7 @@ ConnectBase::ConnectBase (unsigned mode)
 
     if (!g_ociDll)
     {
-        g_ociDll = LoadLibrary("oci.dll");
+        g_ociDll = LoadLibrary(_T("oci.dll"));
 
         if (g_ociDll)
         {
@@ -289,16 +290,24 @@ void ConnectBase::doOpen()
 {
     CHECK_ALLOC(OCIHandleAlloc(m_envhp, (dvoid**)&m_errhp, OCI_HTYPE_ERROR, 0, 0));
     CHECK_ALLOC(OCIHandleAlloc(m_envhp, (dvoid**)&m_srvhp, OCI_HTYPE_SERVER, 0, 0));
-    CHECK(OCIServerAttach(m_srvhp, m_errhp, (OraText*)m_alias.c_str(), m_alias.length(), 0));
+
+    wstring alias = Common::wstr(m_alias);
+    CHECK(OCIServerAttach(m_srvhp, m_errhp, (OraText*)alias.c_str(), alias.length()*sizeof(wchar_t), 0));
 
     CHECK_ALLOC(OCIHandleAlloc(m_envhp, (dvoid**)&m_authp, (ub4)OCI_HTYPE_SESSION, 0, 0));
 
     if (!m_uid.empty())
+    {
+        wstring uid = Common::wstr(m_uid);
         CHECK(OCIAttrSet(m_authp, OCI_HTYPE_SESSION,
-            (OraText*)m_uid.c_str(), m_uid.length(), OCI_ATTR_USERNAME, m_errhp));
+            (OraText*)uid.c_str(), uid.length()*sizeof(wchar_t), OCI_ATTR_USERNAME, m_errhp));
+    }
     if (!m_password.empty())
+    {
+        wstring password = Common::wstr(m_password);
         CHECK(OCIAttrSet(m_authp, OCI_HTYPE_SESSION,
-            (OraText*)m_password.c_str(), m_password.length(), OCI_ATTR_PASSWORD, m_errhp));
+            (OraText*)password.c_str(), password.length()*sizeof(wchar_t), OCI_ATTR_PASSWORD, m_errhp));
+    }
 
     CHECK_ALLOC(OCIHandleAlloc(m_envhp, (dvoid **)&m_svchp, OCI_HTYPE_SVCCTX, 0, 0));
     CHECK(OCIAttrSet(m_svchp, OCI_HTYPE_SVCCTX, m_srvhp, 0, OCI_ATTR_SERVER, m_errhp));
@@ -314,7 +323,7 @@ void ConnectBase::doOpen()
         case 28002: //ORA-28002: The password will expire within %s days 
         case 28011: //ORA-28011: the account will expire soon; change your password now
 #ifdef _AFX
-            AfxMessageBox((const char*)e, MB_OK|MB_ICONEXCLAMATION);
+            AfxMessageBox(Common::wstr(e.what()).c_str(), MB_OK|MB_ICONEXCLAMATION);
 #else
             cerr << (const char*)e;
 #endif//_AFX
@@ -507,26 +516,29 @@ void ConnectBase::Detach (Object* obj)
 }
 
 // the following methods are available for OCI 8.1.X and later
-void ConnectBase::DateTimeToText (const OCIDateTime* date, const char* fmt, size_t fmt_length, int fsprec,
-                              const char* lang_name, size_t lang_length, char* buf, size_t* buf_size)
+void ConnectBase::DateTimeToText (const OCIDateTime* date, 
+    const wchar_t* fmt, size_t fmt_byte_size, int fsprec,
+    const wchar_t* lang_name, size_t lang_byte_size, 
+    wchar_t* buf, size_t* buf_byte_size
+)
 {
     ASSERT_EXCEPTION_FRAME;
 
     if (!g_OCIDateTimeToText)
         OCI_RAISE(Exception(0, "ConnectBase::DateTimeToText: OCIDateTimeToText is not available!"));
 
-    CHECK(g_OCIDateTimeToText(m_envhp, m_errhp, date, (const OraText*)fmt, (ub1)fmt_length,
-        (ub1)fsprec, (const OraText*)lang_name, lang_length, buf_size, (OraText*)buf));
+    CHECK(g_OCIDateTimeToText(m_envhp, m_errhp, date, (const OraText*)fmt, (ub1)fmt_byte_size,
+        (ub1)fsprec, (const OraText*)lang_name, lang_byte_size, buf_byte_size, (OraText*)buf));
 }
 
-void ConnectBase::IntervalToText (const OCIInterval* inter, int lfprec, int fsprec, char* buf, size_t buf_size, size_t* result_len)
+void ConnectBase::IntervalToText (const OCIInterval* inter, int lfprec, int fsprec, wchar_t* buf, size_t buf_byte_size, size_t* result_byte_size)
 {
     ASSERT_EXCEPTION_FRAME;
 
     if (!g_OCIIntervalToText)
         OCI_RAISE(Exception(0, "ConnectBase::IntervalToText: OCIIntervalToText is not available!"));
 
-    CHECK(g_OCIIntervalToText(m_envhp, m_errhp, inter, (ub1)lfprec, (ub1)fsprec, (OraText*)buf, buf_size, result_len));
+    CHECK(g_OCIIntervalToText(m_envhp, m_errhp, inter, (ub1)lfprec, (ub1)fsprec, (OraText*)buf, buf_byte_size, result_byte_size));
 }
 
 #ifdef XMLTYPE_SUPPORT
@@ -633,7 +645,7 @@ void Connect::Open (const char* uid, const char* pswd, const char* alias, EConne
         {
             m_databaseOpen = false;
 #ifdef _AFX
-            AfxMessageBox(x.what(), MB_OK|MB_ICONEXCLAMATION);
+            AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONEXCLAMATION);
 #else
             cerr << (const char*)x;
 #endif//_AFX
@@ -678,7 +690,7 @@ void Connect::Open (const char* uid, const char* pswd, const char* host, const c
         {
             m_databaseOpen = false;
 #ifdef _AFX
-            AfxMessageBox(x.what(), MB_OK|MB_ICONEXCLAMATION);
+            AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONEXCLAMATION);
 #else
             cerr << (const char*)x;
 #endif//_AFX
@@ -715,7 +727,7 @@ void Connect::Reconnect()
         {
             m_databaseOpen = false;
 #ifdef _AFX
-            AfxMessageBox(x.what(), MB_OK|MB_ICONEXCLAMATION);
+            AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONEXCLAMATION);
 #else
             cerr << (const char*)x;
 #endif//_AFX

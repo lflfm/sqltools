@@ -23,24 +23,44 @@
 namespace Common
 {
     using std::string;
+    using std::wstring;
     using std::vector;
 
     void trim_symmetric (string& str, const char* skip = " \t\n\r");
+    void trim_symmetric (wstring& str, const wchar_t* skip = L" \t\n\r");
+
     void to_printable_str (const char* from, string& to);
+    void to_printable_str (const char* from, wstring& to);
+
     void to_unprintable_str (const char* from, string& to, bool skipEscDgt = false);
+    void to_unprintable_str (const char* from, wstring& to, bool skipEscDgt = false);
+
     void date_c_to_oracle (const char* from, string& to);
     void date_oracle_to_c (const char* from, string& to);
+
     void to_upper_str (const char* from, string& to);
+    void to_upper_str (const wchar_t* from, wstring& to);
+
     void to_lower_str (const char* from, string& to);
+    void to_lower_str (const wchar_t* from, wstring& to);
+
     void make_safe_filename (const char* from, string& to);
+    void make_safe_filename (const wchar_t* from, wstring& to);
     void make_safe_filename (const char* from, CString& to);
+    void make_safe_filename (const wchar_t* from, CString& to);
+
     string sub_str (const string& text, int startLine, int startCol, int length = -1);
     string sub_str (const string& text, int startLine, int startCol, int endLine, int endCol);
+
     void filetime_to_string (FILETIME& filetime, CString& str);
-    void format_number (CString& str, unsigned int number, const char* units, bool noZero);
-    bool is_blank_line (const char *str, const int len);
+    void format_number (CString& str, unsigned int number, const wchar_t* units, bool noZero);
+    
+    bool is_blank_line (const char *str, int len);
+    bool is_blank_line (const wchar_t *str, int len);
+
     string print_time (double seconds);
 
+    bool get_line (const wchar_t* str, int len, int& position, std::wstring& line, bool& cr);
 
     //  This object-procedure is quicker (two times) than vprintf.
     class Substitutor

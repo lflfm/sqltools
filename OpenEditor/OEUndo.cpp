@@ -198,6 +198,8 @@ void UndoStack::Push (UndoBase* pUndo)
         pUndo->m_below = m_top;
         m_top->m_above = pUndo;
         m_current = m_top = pUndo;
+        // catch when 2 sequential UndoCursorPosition happen
+        ASSERT(typeid(*m_top) != typeid(UndoCursorPosition) || typeid(m_top) != typeid(*m_top->m_below));
     }
 
     m_memUsage += pUndo->GetMemUsage();
@@ -321,7 +323,7 @@ bool UndoStack::Redo (UndoContext& cxt)
     return false;
 }
 
-bool UndoStack::AppendOnInsert (int line, int col, const char* str, int len, const DelimitersMap& delim)
+bool UndoStack::AppendOnInsert (int line, int col, const wchar_t* str, int len, const DelimitersMap& delim)
 {
     if (len == 1
     && !IsEmpty()
@@ -392,7 +394,7 @@ bool UndoBase::AboveSaved (void* saved) const
     return false;
 }
 
-bool UndoInsert::Append (int line, int col, const char* str, int len, const DelimitersMap& delim)
+bool UndoInsert::Append (int line, int col, const wchar_t* str, int len, const DelimitersMap& delim)
 {
      if (str && len
      && m_position.line == line
@@ -435,6 +437,20 @@ void UndoOverwrite::Redo (UndoContext& cxt) const
     cxt.m_storage.ReplaceLinePart(cxt.m_position.line, cxt.m_position.column, cxt.m_position.column + m_orgStr.length(),
                             m_newStr.data(), m_newStr.length(), status);
     cxt.m_position.column += m_newStr.length();
+}
+
+void UndoConvertLine::Undo (UndoContext& cxt) const
+{
+    cxt.m_onlyStorageAffected = true;
+    ELineStatus status = AboveSaved(cxt.m_lastSaved) ? m_status : elsRevertedBevoreSaved;
+    cxt.m_storage.ReplaceLinePart(m_line, 0, INT_MAX, m_str.data(), m_str.length(), status);
+}
+
+void UndoConvertLine::Redo (UndoContext& cxt) const
+{
+    cxt.m_onlyStorageAffected = true;
+    ELineStatus status = AboveSaved(cxt.m_lastSaved) ? elsUpdated : elsUpdatedSaved;
+    cxt.m_storage.ReplaceLinePart(m_line, 0, INT_MAX, m_str.data(), m_str.length(), status);
 }
 
 void UndoDelete::Undo (UndoContext& cxt) const
@@ -646,6 +662,28 @@ void UndoSetFileFormat::Redo (UndoContext& cxt) const
 }
 
 unsigned UndoSetFileFormat::GetMemUsage() const
+{
+    return sizeof(*this);
+}
+
+UndoSetCodepage::UndoSetCodepage (int oldCodepage, int newCodepage)
+    :m_oldCodepage(oldCodepage), m_newCodepage(newCodepage)
+{
+}
+
+void UndoSetCodepage::Undo (UndoContext& cxt) const
+{
+    cxt.m_onlyStorageAffected = true;
+    cxt.m_storage.SetCodepage(m_oldCodepage, true);
+}
+
+void UndoSetCodepage::Redo (UndoContext& cxt) const
+{
+    cxt.m_onlyStorageAffected = true;
+    cxt.m_storage.SetCodepage(m_newCodepage, true);
+}
+
+unsigned UndoSetCodepage::GetMemUsage() const
 {
     return sizeof(*this);
 }

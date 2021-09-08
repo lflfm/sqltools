@@ -14,6 +14,7 @@ Language=0x409 English (United States)
 _sqltools.css
 about.htm
 whatsnew.htm
+whatsnew19.htm
 whatsnew18.htm
 menu_edit.htm
 menu_file.htm
@@ -26,6 +27,7 @@ sqleditor.htm
 connect_dialog.htm
 connect_dialog_settings.htm
 command_line.htm
+file_find.htm
 not_implemented.htm
 ..\History.txt
 autosave.htm
@@ -51,19 +53,22 @@ Images\object_viewer.jpg
 Images\object_viewer_quick_count.jpg
 
 [ALIAS]
-hidr_mainframe						= sqleditor.htm
+hidr_mainframe                      = sqleditor.htm
 whatsnew                            = whatsnew.htm
+whatsnew19                          = whatsnew19.htm
 whatsnew18                          = whatsnew18.htm
-about   							= about.htm
-menu_edit							= menu_edit.htm
-menu_file							= menu_file.htm
-menu_help							= menu_help.htm
-menu_view							= menu_view.htm
-menu_text							= menu_text.htm
-menu_window							= menu_window.htm
-hidr_sqltype    					= sqleditor.htm
+about                               = about.htm
+menu_edit                           = menu_edit.htm
+menu_file                           = menu_file.htm
+menu_help                           = menu_help.htm
+menu_view                           = menu_view.htm
+menu_text                           = menu_text.htm
+menu_window                         = menu_window.htm
+hidr_sqltype                        = sqleditor.htm
 hidd_connect_dialog                 = connect_dialog.htm
 hidd_connect_settings               = connect_dialog_settings.htm
+hidd_file_find                      = file_find.htm
+
 hidd_obj_info_tree                  = object_viewer.htm
 hidd_db_source                      = objects_list.htm
 hidr_datagrid                       = datagrid.htm
@@ -175,7 +180,7 @@ hid_edit_view_line_numbers          = menu_text.htm
 hid_edit_view_ruler                 = menu_text.htm
 hid_edit_view_column_markers        = menu_text.htm
 hid_edit_view_indent_guide          = menu_text.htm
-                                    
+
 [MAP]
 #include ..\Resource1.h
 #include HTMLDefines.h

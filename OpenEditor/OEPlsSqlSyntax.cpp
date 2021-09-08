@@ -164,7 +164,7 @@ void PlSqlAnalyzer::Clear ()
 
     m_top = m_root.get(); 
 
-	std::vector<SyntaxNode*>::const_iterator it = m_pool.begin();
+    std::vector<SyntaxNode*>::const_iterator it = m_pool.begin();
     for (; it != m_pool.end(); ++it)
         delete *it;
 
@@ -243,24 +243,25 @@ void PlSqlAnalyzer::CloseAll (const Token& token)
 
 void PlSqlAnalyzer::PutToken (const Token& token)
 {
-	if (token == etEOF 
+    if (token == etEOF 
+    || token == etEOS
     || (token == etSLASH && token.offset == 0))
-	{
+    {
         Token eos;
         eos.token = etEOS;
         //eos.line = max(0, token.line-1);
         eos.line = token.line;
         //eos.length = 1; // TODO: decide what's better - either 0 or 1
         std::auto_ptr<SyntaxNode> dummy;
-		m_top->PutToken(eos, dummy);
+        m_top->PutToken(eos, dummy);
 //        ASSERT(!dummy.get());
         CloseAll(eos);
-		m_error = false;
-		return;
-	}
+        m_error = false;
+        return;
+    }
 
-	if (!m_error)
-	{
+    if (!m_error)
+    {
         if (token == etCOMMENT
         || (token == etEOL && !m_top->WantsEOL()))
             return;
@@ -277,34 +278,34 @@ void PlSqlAnalyzer::PutToken (const Token& token)
             // then convert it to etUNKNOWN
             Token _token = token;
             _token.token = etUNKNOWN;
-		    m_top->PutToken(_token, child);
+            m_top->PutToken(_token, child);
         }
         else
-		    m_top->PutToken(token, child);
+            m_top->PutToken(token, child);
 
         if (child.get())
         {
             Attach(child.release());
         }
         else if (m_top->IsFailed())  // DOTO: throw an exception on Failed!
-		{
+        {
             //TODO: make it more tolerant
 
             TRACE("FALURE: token = %s, line = %d, col = %d\n", PlSqlParser::GetStringToken(token), token.line+1, token.offset+1);
 
-			m_error = true;
+            m_error = true;
             Token failure  = token;
             failure.token  = etFAILURE;
             failure.length = 0;
             CloseAll(failure);
-			return;
-		}
+            return;
+        }
         else
         {
-		    while (m_top->IsCompleted())
-			    CloseTop(token);
+            while (m_top->IsCompleted())
+                CloseTop(token);
         }
-	}
+    }
 }
 
 bool PlSqlAnalyzer::FindToken (int line, int offset, const SyntaxNode*& node, int& index) const

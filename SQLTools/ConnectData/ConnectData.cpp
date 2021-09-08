@@ -21,18 +21,19 @@
 #include "ConnectData.h"
 #include "TinyXml\TinyXml.h"
 #include "COMMON\AppUtilities.h"
+#include "COMMON\MyUtf.h"
 
     using namespace std;
     using namespace Common;
 
     CMN_IMPL_PROPERTY_BINDER(ConnectEntry);
-    CMN_IMPL_PROPERTY(ConnectEntry, Tag,            "");
-    CMN_IMPL_PROPERTY(ConnectEntry, User,           "");
+    CMN_IMPL_PROPERTY(ConnectEntry, Tag,            L"");
+    CMN_IMPL_PROPERTY(ConnectEntry, User,           L"");
     CMN_IMPL_PROPERTY(ConnectEntry, Password,       "");
-    CMN_IMPL_PROPERTY(ConnectEntry, Alias,          "");
-    CMN_IMPL_PROPERTY(ConnectEntry, Host,           "");
-    CMN_IMPL_PROPERTY(ConnectEntry, Port,           "1521");
-    CMN_IMPL_PROPERTY(ConnectEntry, Sid,            "");
+    CMN_IMPL_PROPERTY(ConnectEntry, Alias,          L"");
+    CMN_IMPL_PROPERTY(ConnectEntry, Host,           L"");
+    CMN_IMPL_PROPERTY(ConnectEntry, Port,           L"1521");
+    CMN_IMPL_PROPERTY(ConnectEntry, Sid,            L"");
     CMN_IMPL_PROPERTY(ConnectEntry, Direct,         false);
     CMN_IMPL_PROPERTY(ConnectEntry, UseService,     false);
     CMN_IMPL_PROPERTY(ConnectEntry, Mode,           0);
@@ -42,25 +43,25 @@
     CMN_IMPL_PROPERTY(ConnectEntry, Slow,           false);
 
     CMN_IMPL_PROPERTY_BINDER(ConnectData);
-    CMN_IMPL_PROPERTY(ConnectData, SavePasswords,   true);
-    CMN_IMPL_PROPERTY(ConnectData, ScriptOnLogin,   "");
-    CMN_IMPL_PROPERTY(ConnectData, Probe,           "probe");
-    CMN_IMPL_PROPERTY(ConnectData, SortColumn,      0);
-    CMN_IMPL_PROPERTY(ConnectData, SortDirection,   1); // 1 and -1
-    CMN_IMPL_PROPERTY(ConnectData, TagFilter,          "");
+    CMN_IMPL_PROPERTY(ConnectData, SavePasswords,               true);
+    CMN_IMPL_PROPERTY(ConnectData, ScriptOnLogin,               "");
+    CMN_IMPL_PROPERTY(ConnectData, Probe,                       "probe");
+    CMN_IMPL_PROPERTY(ConnectData, SortColumn,                  0);
+    CMN_IMPL_PROPERTY(ConnectData, SortDirection,               1); // 1 and -1
+    CMN_IMPL_PROPERTY(ConnectData, TagFilter,                   L"");
     CMN_IMPL_PROPERTY(ConnectData, TagFilterOperation,          0); // contains
-    CMN_IMPL_PROPERTY(ConnectData, UserFilter,         "");
+    CMN_IMPL_PROPERTY(ConnectData, UserFilter,                  L"");
     CMN_IMPL_PROPERTY(ConnectData, UserFilterOperation,         0); // contains
-    CMN_IMPL_PROPERTY(ConnectData, AliasFilter,        "");
+    CMN_IMPL_PROPERTY(ConnectData, AliasFilter,                 L"");
     CMN_IMPL_PROPERTY(ConnectData, AliasFilterOperation,        0); // contains
-    CMN_IMPL_PROPERTY(ConnectData, UsageCounterFilter, "");
+    CMN_IMPL_PROPERTY(ConnectData, UsageCounterFilter,          L"");
     CMN_IMPL_PROPERTY(ConnectData, UsageCounterFilterOperation, 1); // starts with
-    CMN_IMPL_PROPERTY(ConnectData, LastUsageFilter,    "");
+    CMN_IMPL_PROPERTY(ConnectData, LastUsageFilter,             L"");
     CMN_IMPL_PROPERTY(ConnectData, LastUsageFilterOperation,    1); // starts with
 
-    bool is_ieql (const string& s1, const string& s2)
+    bool is_ieql (const wstring& s1, const wstring& s2)
     {
-        return !stricmp(s1.c_str(), s2.c_str());
+        return !wcsicmp(s1.c_str(), s2.c_str());
     }
 
 bool ConnectEntry::IsSignatureEql (const ConnectEntry& left, const ConnectEntry& right)
@@ -105,13 +106,15 @@ int ConnectData::Find (const ConnectEntry& entry)
     return -1;
 }
 
-void ConnectData::GetConnectEntry (int row, ConnectEntry& entry, const string& password)
+void ConnectData::GetConnectEntry (int row, ConnectEntry& entry, const wstring& password)
 {
     entry = m_entries.at(row);
-    Decrypt(password, entry.m_Password, entry.m_DecryptedPassword);
+    string buff;
+    Decrypt(Common::str(password), entry.m_Password, buff);
+    entry.m_DecryptedPassword = Common::wstr(buff);
 }
 
-void ConnectData::AppendConnectEntry (const ConnectEntry& _entry, const string& password)
+void ConnectData::AppendConnectEntry (const ConnectEntry& _entry, const wstring& password)
 {
     m_entries.push_back(_entry);
     ConnectEntry& entry = m_entries.back();
@@ -119,14 +122,14 @@ void ConnectData::AppendConnectEntry (const ConnectEntry& _entry, const string& 
     entry.SetUsageCounter(1);
     
     if (m_SavePasswords)
-        Encrypt(password, entry.m_DecryptedPassword, entry.m_Password);
+        Encrypt(Common::str(password), Common::str(entry.m_DecryptedPassword), entry.m_Password);
     else
         entry.m_Password.clear();
 
     entry.m_status = ConnectEntry::MODIFIED;
 }
 
-void ConnectData::SetConnectEntry (int row, const ConnectEntry& _entry, const string& password)
+void ConnectData::SetConnectEntry (int row, const ConnectEntry& _entry, const wstring& password)
 {
     ConnectEntry& entry = m_entries.at(row);
     int usageCounter = entry.GetUsageCounter() + 1;
@@ -135,7 +138,7 @@ void ConnectData::SetConnectEntry (int row, const ConnectEntry& _entry, const st
     entry.SetUsageCounter(usageCounter);
     
     if (m_SavePasswords)
-        Encrypt(password, entry.m_DecryptedPassword, entry.m_Password);
+        Encrypt(Common::str(password), Common::str(entry.m_DecryptedPassword), entry.m_Password);
     else
         entry.m_Password.clear();
 
@@ -160,10 +163,11 @@ void ConnectData::ClearPasswords ()
     }
 }
 
-void ConnectData::ResetPasswordsAndScriptOnLogin (const string& password)
+void ConnectData::ResetPasswordsAndScriptOnLogin (const std::wstring& password)
 {
     m_Probe = PROBE;
     m_ScriptOnLogin.clear();
+    m_DecScriptOnLogin.clear();
 
     std::vector<ConnectEntry>::iterator it = m_entries.begin();
     for (; it != m_entries.end(); ++it)
@@ -172,21 +176,21 @@ void ConnectData::ResetPasswordsAndScriptOnLogin (const string& password)
         it->m_DecryptedPassword.clear();
     }
 
-    EncryptAll(password);
+    EncryptAll(Common::str(password));
 }
 
-void ConnectData::ChangePassword (const string& oldPassword, const string& newPassword)
+void ConnectData::ChangePassword (const std::wstring& oldPassword, const std::wstring& newPassword)
 {
-    DecryptAll(oldPassword);
-    EncryptAll(newPassword);
+    DecryptAll(Common::str(oldPassword));
+    EncryptAll(Common::str(newPassword));
 }
 
-bool ConnectData::TestPassword (const string& password) const
+bool ConnectData::TestPassword (const std::wstring& password) const
 {
     try
     {
         string dummy;
-        Decrypt(password, m_Probe, dummy);
+        Decrypt(Common::str(password), m_Probe, dummy);
         return true;
     }
     catch (const InvalidMasterPasswordException&) {}
@@ -199,7 +203,7 @@ void ConnectData::EncryptAll (const string& password)
     ASSERT(m_Probe == PROBE);
 
     Encrypt(password, m_Probe.c_str(), m_Probe);
-    Encrypt(password, m_ScriptOnLogin.c_str(), m_ScriptOnLogin);
+    Encrypt(password, Common::str(m_DecScriptOnLogin), m_ScriptOnLogin);
 
     std::vector<ConnectEntry>::iterator it = m_entries.begin();
 
@@ -208,7 +212,7 @@ void ConnectData::EncryptAll (const string& password)
         it->m_status = ConnectEntry::MODIFIED;
         
         if (m_SavePasswords) 
-            Encrypt(password, it->m_DecryptedPassword, it->m_Password);
+            Encrypt(password, Common::str(it->m_DecryptedPassword), it->m_Password);
         else
             it->m_Password.clear();
     }
@@ -218,8 +222,10 @@ void ConnectData::DecryptAll (const string& password)
 {
     ASSERT(m_Probe != PROBE);
 
+    string buff;
     Decrypt(password, m_Probe.c_str(), m_Probe);
-    Decrypt(password, m_ScriptOnLogin.c_str(), m_ScriptOnLogin);
+    Decrypt(password, m_ScriptOnLogin, buff);
+    m_DecScriptOnLogin = Common::wstr(buff);
 
     ASSERT(m_Probe == PROBE);
 
@@ -228,6 +234,7 @@ void ConnectData::DecryptAll (const string& password)
     for (; it != m_entries.end(); ++it)
     {
         it->m_status = ConnectEntry::MODIFIED;
-        Decrypt(password, it->m_Password, it->m_DecryptedPassword);
+        Decrypt(password, it->m_Password, buff);
+        it->m_DecryptedPassword = Common::wstr(buff);
     }
 }

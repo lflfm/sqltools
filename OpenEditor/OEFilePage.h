@@ -31,16 +31,16 @@
 class COEFilePage : public CPropertyPage
 {
 public:
-	COEFilePage (SettingsManager& manager);
-	virtual ~COEFilePage();
+    COEFilePage (SettingsManager& manager);
+    virtual ~COEFilePage();
 
 // Dialog Data
-	enum { IDD = IDD_OE_FILES };
+    enum { IDD = IDD_OE_FILES };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 public:
     virtual BOOL OnApply();
 
@@ -54,8 +54,7 @@ public:
     BOOL m_OverwriteReadonly;
     UINT m_MemMapThreshold;
     BOOL m_DetectFileChanges;
-	BOOL m_SaveAddTimestamp;
-    std::string m_SaveAddTimestampFormat;
+    BOOL m_SaveAddTimestamp;
 
     afx_msg void OnUpdateData();
 };

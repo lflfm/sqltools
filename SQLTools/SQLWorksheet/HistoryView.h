@@ -38,8 +38,8 @@ public:
 	CHistoryView();
 	virtual ~CHistoryView();
 
-    void Load  (const char* fileNmame);
-    void Save  (const char* fileNmame);
+    void Load  (const wchar_t* fileNmame);
+    void Save  (const wchar_t* fileNmame);
     void AddStatement (time_t startTime, const std::string& duration, const std::string& connectDesc, const std::string& sqlSttm);
 
     virtual bool IsEmpty () const;

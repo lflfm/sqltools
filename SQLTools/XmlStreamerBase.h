@@ -39,7 +39,7 @@ TODO: move this class in OpenEditor package and re-use for settings sreamers inc
 class XmlStreamerBase
 {
 protected:
-    XmlStreamerBase (const std::string& filename, bool backup);
+    XmlStreamerBase (const std::wstring& filename, bool backup);
 
     bool fileExists () const;
     void enableBackup (bool backup) { m_backup = backup; }
@@ -63,11 +63,11 @@ protected:
     static void buildNodeMap (const TiXmlElement* parentElem, const char*, const char*, std::map<std::string, const TiXmlElement*>&);
     static TiXmlElement* getNodebyMap (std::map<std::string, TiXmlElement*>&, const char* key, TiXmlElement*, const char*);
 
-    const std::string& getFilename () const { return m_filename;}
+    const std::wstring& getFilename () const { return m_filename;}
 
 private:
     bool m_backup;
-    const std::string m_filename;
+    const std::wstring m_filename;
     CMutex m_fileAccessMutex;   // tinyxml uses fstream access
                                 // so we have to use the mutex to lock the file 
                                 // for concurrent access

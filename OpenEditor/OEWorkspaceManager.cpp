@@ -16,24 +16,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 */
 
-#include "stdafx.h"
-#include <utility>
-#include <stdlib.h>
-#include <tinyxml\tinyxml.h>
-#include "OpenEditor/OEWorkspaceManager.h"
-#include "OpenEditor/OEDocManager.h"
-#include "OpenEditor/OEDocument.h"
-#include "OpenEditor/OEView.h"
-#include "OpenEditor/RecentFileList.h"
-#include "OpenEditor/FavoritesList.h"
-#include "Common/ConfigFilesLocator.h"
-#include "Common/OsException.h"
-#include "Common/AppUtilities.h"
-#include <COMMON/clock64.h>
-#include "ThreadCommunication/MessageOnlyWindow.h"
-#include "ThreadCommunication/Singleton.h"
-#include <algorithm>
-
+// 2018-12-09 bug fix, cannot open a workspace with a bookmark beyond eof
 
 /*
 TODO#1: 
@@ -54,6 +37,25 @@ TODO#1:
     - + open files after crash
     - + wakeup on shutown
 */
+
+#include "stdafx.h"
+#include <algorithm>
+#include <utility>
+#include <stdlib.h>
+#include <tinyxml\tinyxml.h>
+#include "OpenEditor/OEWorkspaceManager.h"
+#include "OpenEditor/OEDocManager.h"
+#include "OpenEditor/OEDocument.h"
+#include "OpenEditor/OEView.h"
+#include "OpenEditor/RecentFileList.h"
+#include "OpenEditor/FavoritesList.h"
+#include "Common/ConfigFilesLocator.h"
+#include "Common/OsException.h"
+#include "Common/AppUtilities.h"
+#include "Common/clock64.h"
+#include "Common/MyUtf.h"
+#include "ThreadCommunication/MessageOnlyWindow.h"
+#include "ThreadCommunication/Singleton.h"
 
 //#pragma comment(lib, "rpcrt4.lib")
 
@@ -117,7 +119,7 @@ CWinThread* OEWorkspaceManager::Shutdown ()
             {
                 buff.ReleaseBufferSetLength(nreadbytes);
                 if (!buff.IsEmpty())
-                    DeleteFile((LPCSTR)buff);
+                    DeleteFile((LPCTSTR)buff);
             }
         }
 
@@ -157,11 +159,11 @@ void OEWorkspaceManager::InstantAutosave ()
         const int buff_size = 80;
         time_t t = time((time_t*) 0);
         struct tm* tp = localtime(&t);
-        strftime(buff.GetBuffer(buff_size), buff_size, "%Y-%m-%d_%H-%M-%S_pid_", tp);
+        wcsftime(buff.GetBuffer(buff_size), buff_size, L"%Y-%m-%d_%H-%M-%S_pid_", tp);
         buff.ReleaseBuffer();
-        char* ptr = buff.GetBuffer(buff_size);
-        size_t length = strlen(ptr);
-        itoa(GetCurrentProcessId(), ptr + length, 10);
+        LPTSTR ptr = buff.GetBuffer(buff_size);
+        size_t length = buff.GetLength();
+        _itow(GetCurrentProcessId(), ptr + length, 10);
         buff.ReleaseBuffer();
     }
     
@@ -170,7 +172,7 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
     arg::counted_ptr<RecentFileList>& recentFileList, arg::counted_ptr<FavoritesList>&  favoritesList
 )
 {
-    string error;
+    CString error;
 
     try { EXCEPTION_FRAME;
         
@@ -195,22 +197,22 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
         if (!::PathFileExists(m_sLockFile.c_str()))
             AppCreateFolderHierarchy(m_sLockFile.c_str());
 
-        m_sLockFile += "\\" + m_sUuid;
+        m_sLockFile += L"\\" + m_sUuid;
         m_hLockFile = CreateFile(m_sLockFile.c_str(), FILE_GENERIC_WRITE|FILE_GENERIC_READ, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
         if (m_hLockFile == INVALID_HANDLE_VALUE)
         {
-            string lastError;
+            CString lastError;
             AppGetLastError(lastError);
-            THROW_APP_EXCEPTION(("Can't create the instance lock file \"" + m_sLockFile + "\"\n\n" + lastError));
+            THROW_APP_EXCEPTION(("Can't create the instance lock file \"" + Common::str(m_sLockFile) + "\"\n\n" + Common::str(lastError)));
         }
 
-	    if (m_pThread == NULL)
-	    {
+        if (m_pThread == NULL)
+        {
             m_eventShutdown.ResetEvent();
             m_pThread = AfxBeginThread(ThreadProc, NULL, THREAD_PRIORITY_BELOW_NORMAL);
             TRACE("OEWorkspaceManager: thread started\n");
-	    }
+        }
     }
     catch (std::exception& x)
     {
@@ -228,11 +230,11 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
         error = "Unknown error";
     }
 
-    if (!error.empty())
+    if (!error.IsEmpty())
     {
         MessageBeep((UINT)-1);
-        AfxMessageBox(("Workspace Backup thread initilization failed with error: \n\n"
-            + error + "\n\nAutosave will be disabled!").c_str(), MB_ICONERROR | MB_OK); 
+        AfxMessageBox((L"Workspace Backup thread initilization failed with error: \n\n"
+            + error + L"\n\nAutosave will be disabled!"), MB_ICONERROR | MB_OK); 
     }
 }
 
@@ -243,7 +245,7 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
         bool fileBackupSpaceManagment;
         int fileBackupKeepDays;
         int fileBackupFolderMaxSize;
-        string backupFolder;
+        std::wstring backupFolder;
         bool backupFolderDefaultLocation;
 
         GetBackupParam_Note () 
@@ -264,18 +266,18 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
             fileBackupKeepDays         = settings->GetFileBackupKeepDays        ();
             fileBackupFolderMaxSize    = settings->GetFileBackupFolderMaxSize   ();
 
-            bool backupFolderDefaultLocation;
+            //bool backupFolderDefaultLocation;
             backupFolder = OEWorkspaceManager::Get().GetBackupFolder(&backupFolderDefaultLocation);
         }
     };
 
     struct CheckAndAutosave_Note : Note 
     {
-        int      autosaveInterval;
-        string   backupFolder;
-        string   fileName;
+        int autosaveInterval;
+        std::wstring backupFolder;
+        std::wstring fileName;
         CMemFile file;
-        HANDLE   hLockFile;
+        HANDLE hLockFile;
         
         CheckAndAutosave_Note () : autosaveInterval(0), hLockFile(INVALID_HANDLE_VALUE) {}
 
@@ -293,9 +295,9 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
                 if (!byDefault && !folderExists)
                 {
                     MessageBeep((UINT)-1);
-                    AfxMessageBox(("The backup folder \"" + backupFolder + "\" does not exist!"
-                        "\n\nAutosave will be disabled."
-                        "\n\nPlease choose the backup folder at Settings->Editor->Backup & Autosave.").c_str(), MB_ICONEXCLAMATION|MB_OK) ;
+                    AfxMessageBox((L"The backup folder \"" + backupFolder + L"\" does not exist!"
+                        L"\n\nAutosave will be disabled."
+                        L"\n\nPlease choose the backup folder at Settings->Editor->Backup & Autosave.").c_str(), MB_ICONEXCLAMATION|MB_OK) ;
                     autosaveInterval = 0;
                     COEDocument::GetSettingsManager().GetGlobalSettings()->SetWorkspaceAutosaveInterval(autosaveInterval);    
                 }
@@ -310,8 +312,8 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
                     catch (std::exception& x)
                     {
                         MessageBeep((UINT)-1);
-                        AfxMessageBox(("Create Backup folder failed with error: \n\n"
-                            + string(x.what()) + "\n\nAutosave will be disabled!").c_str(), MB_ICONERROR | MB_OK);
+                        AfxMessageBox((L"Create Backup folder failed with error: \n\n"
+                            + Common::wstr(x.what()) + L"\n\nAutosave will be disabled!").c_str(), MB_ICONERROR | MB_OK);
 
                         autosaveInterval = 0;
                         COEDocument::GetSettingsManager().GetGlobalSettings()->SetWorkspaceAutosaveInterval(autosaveInterval);    
@@ -335,7 +337,7 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
 
     struct WorkspaceGetFolders_Note : Note 
     {
-        string instanceFolder, backupFolder;
+        std::wstring instanceFolder, backupFolder;
 
         virtual void Deliver ()
         {
@@ -346,18 +348,20 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
 
     struct WorkspaceOpenAutosaved_Note : Note 
     {
-        string path;
+        std::wstring path;
         bool processed;
+
+        WorkspaceOpenAutosaved_Note () : processed(false) {}
 
         virtual void Deliver ()
         {
             processed = false;
 
-            string name = ::PathFindFileName(path.c_str());
-            const char* ext = ::PathFindExtension(name.c_str());
+            std::wstring name = ::PathFindFileName(path.c_str());
+            const wchar_t* ext = ::PathFindExtension(name.c_str());
             name.resize(ext - name.c_str());
 
-            if (AfxMessageBox(("Terminated program snapshot \"" + name + "\" found in Backup folder!\n\nWould you like to restore it?").c_str(), MB_ICONQUESTION|MB_YESNO) == IDYES)
+            if (AfxMessageBox((L"Terminated program snapshot \"" + name + L"\" found in Backup folder!\n\nWould you like to restore it?").c_str(), MB_ICONQUESTION|MB_YESNO) == IDYES)
             {
                 OEWorkspaceManager::Get().AskToCloseAllDocuments();
 
@@ -368,7 +372,7 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
 
                 processed = true;
             }
-            else if (AfxMessageBox("Would you like to clear the crash status?", MB_ICONQUESTION|MB_YESNO) == IDYES)
+            else if (AfxMessageBox(L"Would you like to clear the crash status?", MB_ICONQUESTION|MB_YESNO) == IDYES)
             {
                 processed = true;
             }
@@ -383,7 +387,7 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
 
         WIN32_FIND_DATA ffdata;
         
-        HANDLE hFind = ::FindFirstFile((nt.instanceFolder + "\\*").c_str(), &ffdata);
+        HANDLE hFind = ::FindFirstFile((nt.instanceFolder + L"\\*").c_str(), &ffdata);
         
         if (hFind != INVALID_HANDLE_VALUE)
         {
@@ -391,7 +395,7 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
             {
                 if (!PathIsDirectory(ffdata.cFileName))
                 {
-                    string instanceLockFile = nt.instanceFolder + "\\" + ffdata.cFileName;
+                    std::wstring instanceLockFile = nt.instanceFolder + L"\\" + ffdata.cFileName;
                     HANDLE hFile = CreateFile(instanceLockFile.c_str(), FILE_GENERIC_WRITE|FILE_GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
                     if (hFile != INVALID_HANDLE_VALUE)
@@ -399,22 +403,22 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
                         // ok we obtained exclusive access to the file that means the owner is dead
                         // let's try to find and open its autosaved workspace
 
-                        string workspaceFile;
+                        std::wstring workspaceFile;
                         // new way
                         {
-                            CString buff;
-                            DWORD nreadbytes = MAX_PATH;
-                            if (ReadFile(hFile, buff.GetBuffer(nreadbytes), nreadbytes, &nreadbytes, NULL))
+                            vector<char> buff;
+                            DWORD nreadbytes = MAX_PATH * 3; // for utf8
+                            buff.reserve(nreadbytes);
+                            if (ReadFile(hFile, buff.data(), nreadbytes, &nreadbytes, NULL))
                             {
-                                buff.ReleaseBufferSetLength(nreadbytes);
-                                if (!buff.IsEmpty())
-                                    workspaceFile = (LPCSTR)buff;
+                                if (nreadbytes > 0)
+                                    workspaceFile = Common::wstr(buff.data(), nreadbytes);
                             }
                         }
                         // old way
                         if (workspaceFile.empty())
-                            workspaceFile = nt.backupFolder + "\\" + ffdata.cFileName 
-                                + (const char*)OEWorkspaceManager::Get().GetWorkspaceExtension();
+                            workspaceFile = nt.backupFolder + L"\\" + ffdata.cFileName 
+                                + (LPCTSTR)OEWorkspaceManager::Get().GetWorkspaceExtension();
                         
                         if (::PathFileExists(workspaceFile.c_str()))
                         {
@@ -443,11 +447,11 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
 
         struct cleanup_file_info
         {
-            string filename;
+            std::wstring filename;
             __int64 time;
             __int64 size;
 
-            cleanup_file_info (const string& fn, const __int64& tm, const __int64& sz)
+            cleanup_file_info (const std::wstring& fn, const __int64& tm, const __int64& sz)
                 : filename(fn), time(tm), size(sz) {}
 
             bool operator < (const cleanup_file_info& other) const { return time < other.time; }
@@ -456,11 +460,11 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
 #include <Common/StrHelpers.h>
 
     static
-    void cleanup_backup_folder (const string& backupFolder, int fileBackupKeepDays, int fileBackupFolderMaxSize)
+    void cleanup_backup_folder (const std::wstring& backupFolder, int fileBackupKeepDays, int fileBackupFolderMaxSize)
     {
-        CTime tm = CTime::GetCurrentTime() - CTimeSpan(fileBackupKeepDays, 0, 0, 0);
+        CTime cutTime = CTime::GetCurrentTime() - CTimeSpan(fileBackupKeepDays, 0, 0, 0);
         SYSTEMTIME sysCutTime;
-        if (tm.GetAsSystemTime(sysCutTime))
+        if (cutTime.GetAsSystemTime(sysCutTime))
         {
             __int64 totalSize = 0, keepSize = 0;
             vector<cleanup_file_info> files;
@@ -469,7 +473,7 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
             SystemTimeToFileTime(&sysCutTime, &fileCutTime);
 
             WIN32_FIND_DATA ffdata;
-            HANDLE hFind = ::FindFirstFile((backupFolder + "\\*").c_str(), &ffdata);
+            HANDLE hFind = ::FindFirstFile((backupFolder + L"\\*").c_str(), &ffdata);
             if (hFind != INVALID_HANDLE_VALUE)
             {
                 do 
@@ -491,7 +495,7 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
                         {
                             CString buff;
                             Common::filetime_to_string(filetime, buff);
-                            TRACE("%s %s to keep\n", (LPCSTR)buff, ffdata.cFileName);
+                            TRACE("%s %s to keep\n", (LPCTSTR)buff, ffdata.cFileName);
                             keepSize += sz.QuadPart;
                         }
                         else
@@ -521,9 +525,9 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
                     CString buff;
                     LARGE_INTEGER tm;
                     tm.QuadPart = it->time;
-                    FILETIME filetime = { tm.LowPart, tm.HighPart };
+                    FILETIME filetime = { (DWORD)tm.LowPart, (DWORD)tm.HighPart };
                     Common::filetime_to_string(filetime, buff);
-                    TRACE("%s %s to skip\n", (LPCSTR)buff, it->filename.c_str());
+                    TRACE("%s %s to skip\n", (LPCTSTR)buff, it->filename.c_str());
 
                     if (keepSize + it->size > maxSize)
                         break;
@@ -537,11 +541,11 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
                     CString buff;
                     LARGE_INTEGER tm;
                     tm.QuadPart = it->time;
-                    FILETIME filetime = { tm.LowPart, tm.HighPart };
+                    FILETIME filetime = { (DWORD)tm.LowPart, (DWORD)tm.HighPart };
                     Common::filetime_to_string(filetime, buff);
-                    TRACE("%s %s to delete\n", (LPCSTR)buff, it->filename.c_str());
+                    TRACE("%s %s to delete\n", (LPCTSTR)buff, it->filename.c_str());
 
-                    DeleteFile((backupFolder + "\\" + it->filename).c_str());
+                    DeleteFile((backupFolder + L"\\" + it->filename).c_str());
                 }
 
             }
@@ -551,18 +555,21 @@ void OEWorkspaceManager::Init (COEDocManager* pDocManager, COEMultiDocTemplate* 
 
 UINT OEWorkspaceManager::ThreadProc (LPVOID)
 {
-    string error;
+    CString error;
 
     try { EXCEPTION_FRAME;
+
+        while (!AfxGetApp()->m_pMainWnd) // FRM2
+            Sleep(100);
 
         check_dead_instances();
 
         clock64_t lastCleanupClock, lastSaveClock;
         lastCleanupClock = lastSaveClock = clock64();
 
-	    CArray<HANDLE, const HANDLE&> events;
-	    events.Add(m_eventShutdown);
-	    events.Add(m_eventInstantAutosave);
+        CArray<HANDLE, const HANDLE&> events;
+        events.Add(m_eventShutdown);
+        events.Add(m_eventInstantAutosave);
 
         bool instantAutosave = false;
 
@@ -595,11 +602,14 @@ UINT OEWorkspaceManager::ThreadProc (LPVOID)
                         CloseHandle(m_file);
                         // saving the last backup file name in the lock file
                         SetFilePointer(backupNote.hLockFile, 0, NULL, FILE_BEGIN);
-                        WriteFile(backupNote.hLockFile, backupNote.fileName.c_str(), backupNote.fileName.size(), &written, 0);
+                        
+                        std::string utf8buff = Common::str(backupNote.fileName); // save in UTF-8 for compatibility with older versions
+                        WriteFile(backupNote.hLockFile, utf8buff.c_str(), utf8buff.size(), &written, 0);
+
                         SetEndOfFile(backupNote.hLockFile);
                         FlushFileBuffers(backupNote.hLockFile);
                         // removing prevoius bakup file
-                        static string previous;
+                        static std::wstring previous;
                         if (!previous.empty() && previous != backupNote.fileName)
                             DeleteFile(previous.c_str());
                         previous = backupNote.fileName;
@@ -655,11 +665,11 @@ UINT OEWorkspaceManager::ThreadProc (LPVOID)
         error = "Unknown error";
     }
 
-    if (!error.empty())
+    if (!error.IsEmpty())
     {
         MessageBeep((UINT)-1);
-        AfxMessageBox(("Workspace Backup thread failed with error: \n\n"
-            + error + "\n\nAutosave will be disabled!").c_str(), MB_ICONERROR | MB_OK); 
+        AfxMessageBox((L"Workspace Backup thread failed with error: \n\n"
+            + error + L"\n\nAutosave will be disabled!"), MB_ICONERROR | MB_OK); 
     }
 
     return 0;
@@ -670,7 +680,7 @@ UINT OEWorkspaceManager::ThreadProc (LPVOID)
 UINT OEWorkspaceManager::GetWorkspaceClipboardFormat ()
 {
     if (!m_workspaceClipboardFormat)
-        m_workspaceClipboardFormat = RegisterClipboardFormat("OpenEditor.Workspace");
+        m_workspaceClipboardFormat = RegisterClipboardFormat(L"OpenEditor.Workspace");
 
     return m_workspaceClipboardFormat;
 }
@@ -699,7 +709,7 @@ UINT OEWorkspaceManager::GetWorkspaceClipboardFormat ()
             spacer_1 = '{';
 
             char buffer[sizeof(file_length)+1];
-		    sprintf_s(buffer, sizeof(buffer), "%08X", length);
+            sprintf_s(buffer, sizeof(buffer), "%08X", length);
             memcpy(file_length, buffer, sizeof(file_length)); 
 
             spacer_2 = '}';
@@ -734,12 +744,12 @@ UINT OEWorkspaceManager::GetWorkspaceClipboardFormat ()
 
 int OEWorkspaceManager::AskToCloseAllDocuments ()
 {
-	if (int dcount = m_pDocManager->GetDocumentCount())
+    if (int dcount = m_pDocManager->GetDocumentCount())
     {
         if (dcount == 1)
         {
-	        POSITION pos = m_pDocTemplate->GetFirstDocPosition();
-	        if (pos != NULL)
+            POSITION pos = m_pDocTemplate->GetFirstDocPosition();
+            if (pos != NULL)
             {
                 CDocument* pDoc = m_pDocTemplate->GetNextDoc(pos);
                 if (COEDocument* pOEDoc = DYNAMIC_DOWNCAST(COEDocument, pDoc))
@@ -754,7 +764,7 @@ int OEWorkspaceManager::AskToCloseAllDocuments ()
             }
         }
 
-        if (AfxMessageBox("Would you like to close all open files?", MB_YESNO|MB_ICONQUESTION) == IDYES)
+        if (AfxMessageBox(L"Would you like to close all open files?", MB_YESNO|MB_ICONQUESTION) == IDYES)
             m_pDocManager->SaveAndCloseAllDocuments();
     }
 
@@ -769,11 +779,11 @@ int OEWorkspaceManager::AskToCloseAllDocuments ()
         elem->SetAttribute(attr, buff);
     }
 
-    string make_relative_path (const string& base, const string& path)
+    CString make_relative_path (const CString& base, const CString& path)
     {
-        char result[MAX_PATH];
-        if (::PathIsSameRoot(base.c_str(), path.c_str())
-        && ::PathRelativePathTo(result, base.c_str(), FILE_ATTRIBUTE_DIRECTORY, path.c_str(), FILE_ATTRIBUTE_NORMAL))
+        TCHAR result[MAX_PATH];
+        if (::PathIsSameRoot(base, path)
+        && ::PathRelativePathTo(result, base, FILE_ATTRIBUTE_DIRECTORY, path, FILE_ATTRIBUTE_NORMAL))
             return result;
 
         return path;
@@ -785,8 +795,8 @@ void OEWorkspaceManager::BuildDocumentList (std::vector<COEDocument*>& docs)
 {
     docs.clear();
     // getting the list of documents in the order of creation
-	POSITION pos = m_pDocTemplate->GetFirstDocPosition();
-	while (pos != NULL)
+    POSITION pos = m_pDocTemplate->GetFirstDocPosition();
+    while (pos != NULL)
     {
         CDocument* pDoc = m_pDocTemplate->GetNextDoc(pos);
         if (COEDocument* pOEDoc = DYNAMIC_DOWNCAST(COEDocument, pDoc))
@@ -820,14 +830,14 @@ void OEWorkspaceManager::BuildDocumentList (std::vector<COEDocument*>& docs)
     catch (...) {} // ingnore, if we have non-ordered documents, it's still good for backup
 }
 
-void OEWorkspaceManager::DoSave (CFile& file, bool use_relative, const string& filepath)
+void OEWorkspaceManager::DoSave (CFile& file, bool use_relative, const std::wstring& filepath)
 {
     CWaitCursor wait;
 
-    string base;
+    CString base;
     if (!filepath.empty())
-        if (const char* fname = ::PathFindFileName(filepath.c_str()))
-            base = string(filepath.c_str(), fname - filepath.c_str());
+        if (LPCTSTR fname = ::PathFindFileName(filepath.c_str()))
+            base = CString(filepath.c_str(), fname - filepath.c_str());
 
     int workspaceAutosaveFileLimit = COEDocument::GetSettingsManager().GetGlobalSettings()->GetWorkspaceAutosaveFileLimit();
 
@@ -839,8 +849,8 @@ void OEWorkspaceManager::DoSave (CFile& file, bool use_relative, const string& f
                 pActiveDoc = pMDIChild->GetActiveDocument();
 
     std::vector<COEDocument*> docs;
-	BuildDocumentList(docs);
-	for (std::vector<COEDocument*>::iterator it = docs.begin(); it != docs.end(); ++it)
+    BuildDocumentList(docs);
+    for (std::vector<COEDocument*>::iterator it = docs.begin(); it != docs.end(); ++it)
     {
         if (COEDocument* pOEDoc = *it)
         {
@@ -848,17 +858,17 @@ void OEWorkspaceManager::DoSave (CFile& file, bool use_relative, const string& f
             doc.LinkEndChild(new TiXmlDeclaration("1,0","0","0"));
 
             TiXmlElement* fileEl = new TiXmlElement("File");
-            fileEl->SetAttribute("title", pOEDoc->GetOrgTitle());
+            fileEl->SetAttribute("title", Common::str(pOEDoc->GetOrgTitle()));
             
-            string path = pOEDoc->GetPathName();
-            if (use_relative && !base.empty() && !path.empty())
-                path = make_relative_path (base, path);
-            fileEl->SetAttribute("path", path);
+            CString path = pOEDoc->GetPathName();
+            if (use_relative && !base.IsEmpty() && !path.IsEmpty())
+                path = make_relative_path(base, path);
+            fileEl->SetAttribute("path", Common::str(path));
 
             bool modified = pOEDoc->IsModified();
             fileEl->SetAttribute("modified", modified ? 1 : 0);
             
-            if (modified && !path.empty())
+            if (modified && !path.IsEmpty())
             {
                 __int64 fileTime, fileSize;
                 pOEDoc->GetOrgFileTimeAndSize(fileTime, fileSize);
@@ -873,17 +883,23 @@ void OEWorkspaceManager::DoSave (CFile& file, bool use_relative, const string& f
                 fileEl->SetAttribute("untitled_count", m_pDocTemplate->GetUntitledCount());
 
             {
+                TiXmlElement* encodingEl = new TiXmlElement("Encoding");
+                pOEDoc->SaveEncoding(*encodingEl);
+                fileEl->LinkEndChild(encodingEl);
+            }
+
+            {
                 std::vector<int> bookmarks;
                 pOEDoc->GetStorage().GetBookmarkedLines(bookmarks, eBmkGroup1);
                 if (!bookmarks.empty())
                 {
                     TiXmlElement* bmksEl = new TiXmlElement("Bookmarks");
 
-                    std::vector<int>::const_iterator it = bookmarks.begin();
-                    for (; it != bookmarks.end(); ++it)
+                    std::vector<int>::const_iterator it2 = bookmarks.begin();
+                    for (; it2 != bookmarks.end(); ++it2)
                     {
                         TiXmlElement* bmkEl = new TiXmlElement("Bookmark");
-                        bmkEl->SetAttribute("line", *it);
+                        bmkEl->SetAttribute("line", *it2);
                         bmksEl->LinkEndChild(bmkEl);
                     }
 
@@ -963,14 +979,14 @@ void OEWorkspaceManager::DoSave (CFile& file, bool use_relative, const string& f
                 file.Write(buff.c_str(), buff.length());
             }
 
-            if (path.empty() || modified)
+            if (path.IsEmpty() || modified)
             {
                 // let's skip files bigger than workspaceAutosaveFileLimit Mb
-                unsigned long length = pOEDoc->GetStorage().GetTextLength();
+                unsigned long length = pOEDoc->GetStorage().GetTextLengthA();
                 if (length <= (unsigned)workspaceAutosaveFileLimit * 1024 * 1024)
                 {
                     std::unique_ptr<char[]> buffer(new char[length]);
-                    length = pOEDoc->GetStorage().GetText(buffer.get(), length);
+                    length = pOEDoc->GetStorage().GetTextA(buffer.get(), length);
 
                     file.Write(&record(length, rt_data), sizeof(record));
                     file.Write(buffer.get(), length);
@@ -982,14 +998,14 @@ void OEWorkspaceManager::DoSave (CFile& file, bool use_relative, const string& f
     file.Write(&record(0, rt_eof), sizeof(record));
 }
 
-void OEWorkspaceManager::DoOpen (CFile& file, const string& filepath)
+void OEWorkspaceManager::DoOpen (CFile& file, const std::wstring& filepath)
 {
     CWaitCursor wait;
 
-    string base;
+    CString base;
     if (!filepath.empty())
-        if (const char* fname = ::PathFindFileName(filepath.c_str()))
-            base = string(filepath.c_str(), fname - filepath.c_str());
+        if (LPCTSTR fname = ::PathFindFileName(filepath.c_str()))
+            base = CString(filepath.c_str(), fname - filepath.c_str());
 
     record rec;
     int bytes = file.Read(&rec, sizeof(rec));
@@ -1006,13 +1022,13 @@ void OEWorkspaceManager::DoOpen (CFile& file, const string& filepath)
 
     while (bytes && rec && !rec.is_eof())
     {
-        unsigned int file_length = rec.get_file_length();
-        std::unique_ptr<char[]> desc_buffer(new char[file_length + 1]);
+        unsigned int desc_length = rec.get_file_length();
+        std::unique_ptr<char[]> desc_buffer(new char[desc_length + 1]);
 
-        if (file_length != file.Read(desc_buffer.get(), file_length))
+        if (desc_length != file.Read(desc_buffer.get(), desc_length))
             THROW_APP_EXCEPTION("OpenWorkspace: Unexpected end of file!");
 
-        desc_buffer.get()[file_length] = 0;
+        desc_buffer.get()[desc_length] = 0;
 
         TiXmlDocument doc;
         doc.Parse(desc_buffer.get());
@@ -1033,19 +1049,39 @@ void OEWorkspaceManager::DoOpen (CFile& file, const string& filepath)
             if (!rec)
                 THROW_APP_EXCEPTION("OpenWorkspace: read error!");
 
-            string path = fileEl->Attribute("path");
-
-            if (!path.empty() && ::PathIsRelativeA(path.c_str()))
+            std::wstring path;
+            
+            try
             {
-                char buff[_MAX_PATH];
-                if (::PathCombine(buff, base.c_str(), path.c_str()))
+                path = Common::wstr(fileEl->Attribute("path"));
+            }
+            catch (std::range_error&)
+            {
+                path = Common::wstr_from_ansi(fileEl->Attribute("path"));
+            }
+
+            if (!path.empty() && ::PathIsRelative(path.c_str()))
+            {
+                TCHAR buff[_MAX_PATH];
+                if (::PathCombine(buff, base, path.c_str()))
                     path = buff;
             }
             
             if (CDocument* pDoc = m_pDocTemplate->OpenWorkspaceFile(!path.empty() ? path.c_str() : NULL))
             {
                 if (path.empty())
-                    pDoc->SetTitle(fileEl->Attribute("title"));
+                {
+                    wstring title;
+                    try
+                    {
+                        title = Common::wstr(fileEl->Attribute("title"));
+                    }
+                    catch (std::range_error&)
+                    {
+                        title = Common::wstr_from_ansi(fileEl->Attribute("title"));
+                    }
+                    pDoc->SetTitle(title.c_str());
+                }
             
                 int modified = 0;
                 fileEl->Attribute("modified", &modified);
@@ -1131,8 +1167,8 @@ void OEWorkspaceManager::DoOpen (CFile& file, const string& filepath)
                             if (detectChanges
                             && (fileTime != currFileTime || fileSize != currFileSize))
                             {
-                                string prompt = "The file " + path + " has been changed since the last workspace saving."
-                                        "\n\nDo you want to reload it and lose the changes made in the editor?";
+                                std::wstring prompt = L"The file " + path + L" has been changed since the last workspace saving."
+                                        L"\n\nDo you want to reload it and lose the changes made in the editor?";
 
                                 if (AfxMessageBox(prompt.c_str(), MB_YESNO|MB_ICONEXCLAMATION) == IDYES)
                                     skipModified = true;
@@ -1144,6 +1180,9 @@ void OEWorkspaceManager::DoOpen (CFile& file, const string& filepath)
 
                         if (!skipModified)
                         {
+                            if (const TiXmlElement* encodingEl = fileEl->FirstChildElement("Encoding"))
+                                pOEDoc->RestoreEncoding(*encodingEl);
+
                             pOEDoc->SetText(data_buffer.get(), file_length);
 
                             if (modified)
@@ -1154,15 +1193,18 @@ void OEWorkspaceManager::DoOpen (CFile& file, const string& filepath)
 
                 if (COEDocument* pOEDoc = DYNAMIC_DOWNCAST(COEDocument, pDoc))
                 {
+                    int nlines = pOEDoc->GetStorage().GetLineCount();
                     {
                         vector<int>::const_iterator it = bookmarks.begin();
                         for (; it != bookmarks.end(); ++it)
-                            pOEDoc->GetStorage().SetBookmark(*it, eBmkGroup1, true);
+                            if (*it < nlines) // 2018-12-09 bug fix, cannot open a workspace with a bookmark beyond eof
+                                pOEDoc->GetStorage().SetBookmark(*it, eBmkGroup1, true);
                     }
                     {
                         vector<pair<int,int>>::const_iterator it = randomBookmarks.begin();
                         for (; it != randomBookmarks.end(); ++it)
-                            pOEDoc->GetStorage().SetRandomBookmark(RandomBookmark((unsigned char)it->first), it->second, true);
+                            if (it->second < nlines) // 2018-12-09 bug fix, cannot open a workspace with a bookmark beyond eof
+                                pOEDoc->GetStorage().SetRandomBookmark(RandomBookmark((unsigned char)it->first), it->second, true);
                     }
                 }
 
@@ -1214,17 +1256,17 @@ void OEWorkspaceManager::WorkspaceCopy ()
         
     DoSave(mf, false);
 
-	if (::OpenClipboard(NULL))
-	{
-		::EmptyClipboard();
+    if (::OpenClipboard(NULL))
+    {
+        ::EmptyClipboard();
 
         HGLOBAL hMem = mf.Detach();
 
         if (hMem)
-	        ::SetClipboardData(m_workspaceClipboardFormat, hMem);
+            ::SetClipboardData(m_workspaceClipboardFormat, hMem);
 
         ::CloseClipboard();
-	}
+    }
 }
 
 void OEWorkspaceManager::WorkspacePaste ()
@@ -1234,14 +1276,14 @@ void OEWorkspaceManager::WorkspacePaste ()
         if (OEWorkspaceManager::Get().HasActiveWorkspace())
             OEWorkspaceManager::Get().WorkspaceCloseActive();
 
-	    if (m_pDocManager->GetDocumentCount() > 0)
+        if (m_pDocManager->GetDocumentCount() > 0)
             AskToCloseAllDocuments();
 
-	    if (::OpenClipboard(NULL))
+        if (::OpenClipboard(NULL))
         {
             if (HGLOBAL hMem = ::GetClipboardData(m_workspaceClipboardFormat))
             {
-		        CMemFile mf((BYTE*)::GlobalLock(hMem), ::GlobalSize(hMem));
+                CMemFile mf((BYTE*)::GlobalLock(hMem), ::GlobalSize(hMem));
                 try 
                 {
                     if ((HANDLE)m_workspaceFile != INVALID_HANDLE_VALUE)
@@ -1254,75 +1296,75 @@ void OEWorkspaceManager::WorkspacePaste ()
                             m_onUpdateApplicationTitle();
                     }
 
-                    DoOpen(mf, string());
+                    DoOpen(mf, std::wstring());
                 }
                 catch (...)
                 {
-		            ::GlobalUnlock(hMem);
+                    ::GlobalUnlock(hMem);
                     throw;
                 }
 
-		        ::GlobalUnlock(hMem);
+                ::GlobalUnlock(hMem);
             }
         }
-	}
+    }
 }
 
 CString OEWorkspaceManager::GetWorkspaceFilter () const
 {
-	CString filter;
-	// append the "*.TXT" TXT files filter
-	filter += "Workspace Files (*"+ GetWorkspaceExtension() + ")";
-	filter += (TCHAR)'\0';   // next string please
-	filter += "*" + GetWorkspaceExtension();
-	filter += (TCHAR)'\0';   // last string
-	// append the "*.*" all files filter
-	filter += "All Files (*.*)";
-	filter += (TCHAR)'\0';   // next string please
-	filter += _T("*.*");
-	filter += (TCHAR)'\0';   // last string
+    CString filter;
+    // append the "*.TXT" TXT files filter
+    filter += L"Workspace Files (*"+ GetWorkspaceExtension() + L")";
+    filter += (TCHAR)'\0';   // next string please
+    filter += L"*" + GetWorkspaceExtension();
+    filter += (TCHAR)'\0';   // last string
+    // append the "*.*" all files filter
+    filter += L"All Files (*.*)";
+    filter += (TCHAR)'\0';   // next string please
+    filter += _T("*.*");
+    filter += (TCHAR)'\0';   // last string
     filter += '\0'; // close
     return filter;
 }
 
 CString OEWorkspaceManager::GetSnapshotFilter () const
 {
-	CString filter;
-	// append the "*.TXT" TXT files filter
-	filter += "AS/QS Snapshot Files (*"+ GetSnapshotExtension() + ")";
-	filter += (TCHAR)'\0';   // next string please
-	filter += "*" + GetSnapshotExtension();
-	filter += (TCHAR)'\0';   // last string
-	// append the "*.TXT" TXT files filter
-	filter += "Workspace Files (*"+ GetWorkspaceExtension() + ")";
-	filter += (TCHAR)'\0';   // next string please
-	filter += "*" + GetWorkspaceExtension();
-	filter += (TCHAR)'\0';   // last string
-	// append the "*.*" all files filter
-	filter += "All Files (*.*)";
-	filter += (TCHAR)'\0';   // next string please
-	filter += _T("*.*");
-	filter += (TCHAR)'\0';   // last string
+    CString filter;
+    // append the "*.TXT" TXT files filter
+    filter += L"AS/QS Snapshot Files (*"+ GetSnapshotExtension() + L")";
+    filter += (TCHAR)'\0';   // next string please
+    filter += L"*" + GetSnapshotExtension();
+    filter += (TCHAR)'\0';   // last string
+    // append the "*.TXT" TXT files filter
+    filter += L"Workspace Files (*"+ GetWorkspaceExtension() + L")";
+    filter += (TCHAR)'\0';   // next string please
+    filter += L"*" + GetWorkspaceExtension();
+    filter += (TCHAR)'\0';   // last string
+    // append the "*.*" all files filter
+    filter += L"All Files (*.*)";
+    filter += (TCHAR)'\0';   // next string please
+    filter += _T("*.*");
+    filter += (TCHAR)'\0';   // last string
     filter += '\0'; // close
     return filter;
 }
 
 CString OEWorkspaceManager::GetWorkspaceExtension () const
 {
-    return m_workspaceExtension.c_str();
+    return m_workspaceExtension;
 }
 
 CString OEWorkspaceManager::GetSnapshotExtension () const
 {
-    return m_snapshotExtension.c_str();
+    return m_snapshotExtension;
 }
 
-CString OEWorkspaceManager::GetWorkspaceFilename (const char* format) const
+CString OEWorkspaceManager::GetWorkspaceFilename (LPCTSTR format) const
 {
     CString fname;
     time_t t = time((time_t*) 0);
     struct tm* tp = localtime(&t);
-    strftime(fname.GetBuffer(80), 80, format, tp);
+    wcsftime(fname.GetBuffer(80), 80, format, tp);
     fname.ReleaseBuffer();
     fname += GetWorkspaceExtension();
     return fname;
@@ -1340,14 +1382,14 @@ CString OEWorkspaceManager::GetBackupFilename () const
     {
         CString name;
         if (name = ::PathFindFileName(m_workspacePath.c_str()))
-            if (LPSTR ext = ::PathFindExtension(name.GetBuffer()))
+            if (LPWSTR ext = ::PathFindExtension(name.GetBuffer()))
             {
                 if (*ext == '.') *ext = 0;
                 name.ReleaseBuffer();
 
                 CString buffer;
                 create_unique_fname(buffer);
-                fname = name + "_" + buffer + GetSnapshotExtension();
+                fname = name + L"_" + buffer + GetSnapshotExtension();
             }
     }
     
@@ -1355,24 +1397,24 @@ CString OEWorkspaceManager::GetBackupFilename () const
     {
         CString buffer;
         create_unique_fname(buffer);
-        fname = "AS_" + buffer + GetSnapshotExtension();
+        fname = L"AS_" + buffer + GetSnapshotExtension();
     }
 
     return fname;
 }
 
-string OEWorkspaceManager::GetInstanceFolder () const
+std::wstring OEWorkspaceManager::GetInstanceFolder () const
 {
-    return ConfigFilesLocator::GetBaseFolder() + "\\Instances";
+    return ConfigFilesLocator::GetBaseFolder() + L"\\Instances";
 }
 
-string OEWorkspaceManager::GetBackupFolder (bool* byDefault) const
+std::wstring OEWorkspaceManager::GetBackupFolder (bool* byDefault) const
 {
-    string backupFolder = COEDocument::GetSettingsManager().GetGlobalSettings()->GetFileBackupDirectoryV2();
+    std::wstring backupFolder = Common::wstr(COEDocument::GetSettingsManager().GetGlobalSettings()->GetFileBackupDirectoryV2());
 
     if (backupFolder.empty())
     {
-        backupFolder = ConfigFilesLocator::GetBaseFolder() + "\\Backup";
+        backupFolder = ConfigFilesLocator::GetBaseFolder() + L"\\Backup";
         if (byDefault) *byDefault = true;
     }
     else
@@ -1384,36 +1426,36 @@ string OEWorkspaceManager::GetBackupFolder (bool* byDefault) const
 }
 
     static
-    string get_backup_fname (const string& fname)
+    std::wstring get_backup_fname (const std::wstring& fname)
     {
-        string backupFname;
+        std::wstring backupFname;
 
         GlobalSettingsPtr settings = COEDocument::GetSettingsManager().GetGlobalSettings();
         EBackupMode backupMode = (EBackupMode)settings->GetFileBackupV2();
 
         if (backupMode != ebmNone && !fname.empty())
         {
-            string buffer;
+            std::wstring buffer;
 
             switch (backupMode)
             {
             case ebmCurrentDirectory:
                 {
-                    const char* ext = PathFindExtension(fname.c_str());
+                    LPTSTR ext = PathFindExtension(fname.c_str());
                     if ((unsigned)(ext - fname.c_str()) < fname.size())
                     {
                         buffer = fname;
-                        buffer.insert(ext - fname.c_str(), ".prev");
+                        buffer.insert(ext - fname.c_str(), L".prev");
                         backupFname = buffer;
                     }
                 }
                 break;
             case ebmBackupDirectory:
                 {
-                    buffer = settings->GetFileBackupDirectoryV2();
+                    buffer = Common::wstr(settings->GetFileBackupDirectoryV2());
 
                     if (buffer.empty())
-                        buffer = ConfigFilesLocator::GetBaseFolder() + "\\Backup";
+                        buffer = ConfigFilesLocator::GetBaseFolder() + L"\\Backup";
 
                     if (!::PathFileExists(buffer.c_str()))
                         AppCreateFolderHierarchy(buffer.c_str());
@@ -1432,18 +1474,18 @@ string OEWorkspaceManager::GetBackupFolder (bool* byDefault) const
     }
 
     static
-    void backup_file (const string& fname)
+    void backup_file (const std::wstring& fname)
     {
-        string backupFname = get_backup_fname(fname);
-        if (!fname.empty() && backupFname != fname)
+        std::wstring backupFname = get_backup_fname(fname);
+        if (!fname.empty() && !backupFname.empty() && backupFname != fname) // FRM2
         {
             if (::CopyFile(fname.c_str(), backupFname.c_str(), FALSE) == 0) 
             {
                 //TODO#2: offer ignore backup error while saving a file
                 // get from the system information about error
-                std::string err_desc;
+                std::wstring err_desc;
                 OsException::GetLastError(err_desc);
-                string error = "Cannot create backup file: \"" + backupFname +"\",\n\n"+ err_desc;
+                std::wstring error = L"Cannot create backup file: \"" + backupFname + L"\",\n\n"+ err_desc;
                 THROW_APP_EXCEPTION(error);
             }
         }
@@ -1458,43 +1500,43 @@ void OEWorkspaceManager::WorkspaceSave (bool saveAs)
     {
         overwrite = FALSE;
 
-	    CFileDialog dlgFile(FALSE, NULL, NULL,
-		    OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_ENABLESIZING,
-		    NULL, NULL, 0);
+        CFileDialog dlgFile(FALSE, NULL, NULL,
+            OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_ENABLESIZING,
+            NULL, NULL, 0);
 
         CString path;
         
         if (!m_workspacePath.empty())
             path = m_workspacePath.c_str(); 
         else 
-            path = (m_lastFolder.empty()) ? GetWorkspaceFilename("%Y-%m-%d_%H-%M") : (m_lastFolder + (LPCSTR)GetWorkspaceFilename("%Y-%m-%d_%H-%M")).c_str(); 
+            path = (m_lastFolder.empty()) ? GetWorkspaceFilename(L"%Y-%m-%d_%H-%M") : (m_lastFolder + (LPCTSTR)GetWorkspaceFilename(L"%Y-%m-%d_%H-%M")).c_str(); 
 
-	    CString filter = GetWorkspaceFilter();
-	    dlgFile.m_ofn.lpstrFilter = filter;
-	    dlgFile.m_ofn.lpstrTitle = "Save Workspace";
+        CString filter = GetWorkspaceFilter();
+        dlgFile.m_ofn.lpstrFilter = filter;
+        dlgFile.m_ofn.lpstrTitle = L"Save Workspace";
         dlgFile.m_ofn.nMaxFile   = _MAX_PATH;
-	    dlgFile.m_ofn.lpstrFile  = path.GetBuffer(dlgFile.m_ofn.nMaxFile);
+        dlgFile.m_ofn.lpstrFile  = path.GetBuffer(dlgFile.m_ofn.nMaxFile);
 
         if (dlgFile.DoModal() == IDOK)
         {
             path.ReleaseBuffer();
-            LPCSTR fname = PathFindFileName((LPCSTR)path);
-            if (fname != (LPCSTR)path)
-                m_lastFolder = string((LPCSTR)path, fname - (LPCSTR)path); 
+            LPCTSTR fname = PathFindFileName((LPTSTR)(LPCTSTR)path);
+            if (fname != (LPCTSTR)path)
+                m_lastFolder = std::wstring((LPCTSTR)path, fname - (LPCTSTR)path); 
 
-            LPCSTR fileExt = PathFindExtension(path);
-            if (!fileExt || !strlen(fileExt))
+            LPCTSTR fileExt = PathFindExtension(path);
+            if (!fileExt || !_tcslen(fileExt))
                 path += GetWorkspaceExtension();
 
             // On SaveAs make sure it is not the same path
             if (saveAs && (HANDLE)m_workspaceFile != INVALID_HANDLE_VALUE && !m_workspacePath.empty())
             {
-                char buffer1[MAX_PATH], buffer2[MAX_PATH];
+                TCHAR buffer1[MAX_PATH], buffer2[MAX_PATH];
                 memset(buffer1, 0, sizeof(buffer1));
                 memset(buffer2, 0, sizeof(buffer2));
                 PathCanonicalize(buffer1, m_workspacePath.c_str());
                 PathCanonicalize(buffer2, path);
-                overwrite = !strncmp(buffer1, buffer2, sizeof(buffer1));
+                overwrite = !wcsncmp(buffer1, buffer2, sizeof(buffer1)/sizeof(buffer1[0]));
             }
 
             if (!overwrite)
@@ -1506,7 +1548,7 @@ void OEWorkspaceManager::WorkspaceSave (bool saveAs)
                 if (!m_workspaceFile.Open(path, CFile::modeCreate|CFile::modeReadWrite|CFile::shareDenyWrite, &exception))
                     CFileException::ThrowOsError(exception.m_lOsError, path);
                 
-                DoSave(m_workspaceFile, COEDocument::GetSettingsManager().GetGlobalSettings()->GetWorkspaceUseRelativePath(), (LPCSTR)path);
+                DoSave(m_workspaceFile, COEDocument::GetSettingsManager().GetGlobalSettings()->GetWorkspaceUseRelativePath(), (LPCTSTR)path);
                 m_workspacePath = path;
 
                 if (m_onUpdateApplicationTitle)
@@ -1539,24 +1581,11 @@ void OEWorkspaceManager::WorkspaceSave (bool saveAs)
     }
 }
 
-string OEWorkspaceManager::WorkspaceSaveQuick ()
+void OEWorkspaceManager::WorkspaceSaveQuick ()
 {
-    //string path, folder = GetBackupFolder();
-    //
-    //for (int attempt = 0; attempt < 100; ++attempt)
-    //{
-    //    CString format;
-    //    format.Format("-#%d", attempt + 1);
-    //    format = "\\QS-%Y-%m-%d_%H-%M-%S" + format;
-    //    path = folder + (LPCSTR)GetWorkspaceFilename(format);
-    //    
-    //    if (!::PathFileExists(path.c_str()))
-    //        break;
-    //}
-
     CString fname, path;
     create_unique_fname(fname);
-    fname = "QS-" + fname;
+    fname = L"QS-" + fname;
     fname += GetSnapshotExtension();
     ::PathCombine(path.GetBuffer(MAX_PATH+1), GetBackupFolder().c_str(), fname);
 
@@ -1567,37 +1596,35 @@ string OEWorkspaceManager::WorkspaceSaveQuick ()
 
     m_pDocTemplate->GetWorkspaceState(m_activeWorkspaceSavedState);
 
-    m_pFavoritesList->AddWorkspaceQuickSave((LPCSTR)path);
-
-    return (LPCSTR)path;
+    m_pFavoritesList->AddWorkspaceQuickSave(Common::str(path));
 }
 
 void OEWorkspaceManager::WorkspaceOpen ()
 {
-	CFileDialog dlgFile(TRUE, NULL, NULL,
-		OFN_FILEMUSTEXIST | OFN_ENABLESIZING,
-		NULL, NULL, 0);
+    CFileDialog dlgFile(TRUE, NULL, NULL,
+        OFN_FILEMUSTEXIST | OFN_ENABLESIZING,
+        NULL, NULL, 0);
 
-	CString path = m_lastFolder.c_str(), filter = GetWorkspaceFilter();
+    CString path = m_lastFolder.c_str(), filter = GetWorkspaceFilter();
 
-	dlgFile.m_ofn.lpstrFilter = filter;
-	dlgFile.m_ofn.lpstrTitle  = "Open Workspace";
+    dlgFile.m_ofn.lpstrFilter = filter;
+    dlgFile.m_ofn.lpstrTitle  = L"Open Workspace";
     dlgFile.m_ofn.nMaxFile    = _MAX_PATH;
-	dlgFile.m_ofn.lpstrFile   = path.GetBuffer(dlgFile.m_ofn.nMaxFile);
+    dlgFile.m_ofn.lpstrFile   = path.GetBuffer(dlgFile.m_ofn.nMaxFile);
 
     if (dlgFile.DoModal() == IDOK)
     {
         path.ReleaseBuffer();
-        WorkspaceOpen((LPCSTR)path, false);
+        WorkspaceOpen((LPCTSTR)path, false);
     }
 }
     
 void OEWorkspaceManager::WorkspaceOpenAutosaved ()
 {
-    string backupFolder = COEDocument::GetSettingsManager().GetGlobalSettings()->GetFileBackupDirectoryV2();
+    std::wstring backupFolder = Common::wstr(COEDocument::GetSettingsManager().GetGlobalSettings()->GetFileBackupDirectoryV2());
 
     if (backupFolder.empty())
-        backupFolder = ConfigFilesLocator::GetBaseFolder() + "\\Backup\\";
+        backupFolder = ConfigFilesLocator::GetBaseFolder() + L"\\Backup\\";
     else
     {
         if (*backupFolder.rbegin() != '\\')
@@ -1605,15 +1632,15 @@ void OEWorkspaceManager::WorkspaceOpenAutosaved ()
     }
 
     CFileDialog dlgFile(TRUE, NULL, NULL,
-		OFN_FILEMUSTEXIST | OFN_ENABLESIZING | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT,
-		NULL, NULL, 0);
+        OFN_FILEMUSTEXIST | OFN_ENABLESIZING | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT,
+        NULL, NULL, 0);
 
     CString path = backupFolder.c_str(), filter = GetSnapshotFilter();
 
-	dlgFile.m_ofn.lpstrFilter = filter;
-	dlgFile.m_ofn.lpstrTitle  = "Open AS/QS Snapshot";
+    dlgFile.m_ofn.lpstrFilter = filter;
+    dlgFile.m_ofn.lpstrTitle  = L"Open AS/QS Snapshot";
     dlgFile.m_ofn.nMaxFile    = _MAX_PATH;
-	dlgFile.m_ofn.lpstrFile   = path.GetBuffer(dlgFile.m_ofn.nMaxFile);
+    dlgFile.m_ofn.lpstrFile   = path.GetBuffer(dlgFile.m_ofn.nMaxFile);
 
     if (dlgFile.DoModal() == IDOK)
     {
@@ -1630,7 +1657,7 @@ void OEWorkspaceManager::WorkspaceOpen (LPCTSTR lpszPath, bool _snapshot)
     if (HasActiveWorkspace())
         WorkspaceCloseActive();
 
-    string workspacePath = lpszPath;
+    std::wstring workspacePath = lpszPath;
 
     if (!workspacePath.empty())
     {
@@ -1669,20 +1696,20 @@ void OEWorkspaceManager::WorkspaceOpen (LPCTSTR lpszPath, bool _snapshot)
                 if (exception.m_lOsError != ERROR_SHARING_VIOLATION)
                     CFileException::ThrowOsError(exception.m_lOsError, workspacePath.c_str());
 
-                if (AfxMessageBox("The workspace is locked by another program!"
-                    "\n\nWould you like to open the workspace without making it active?", MB_ICONEXCLAMATION|MB_YESNO) == IDYES
+                if (AfxMessageBox(L"The workspace is locked by another program!"
+                    L"\n\nWould you like to open the workspace without making it active?", MB_ICONEXCLAMATION|MB_YESNO) == IDYES
                     )
                 {
                     CFile file;
-                    CFileException exception;
-                    if (file.Open(workspacePath.c_str(), CFile::modeRead|CFile::shareDenyNone, &exception))
+                    CFileException exception2;
+                    if (file.Open(workspacePath.c_str(), CFile::modeRead|CFile::shareDenyNone, &exception2))
                     {
                         DoOpen(file, workspacePath);
                         file.Close();
                     }
                     else
                     {
-                        CFileException::ThrowOsError(exception.m_lOsError, workspacePath.c_str());
+                        CFileException::ThrowOsError(exception2.m_lOsError, workspacePath.c_str());
                     }
                 }
                 else
@@ -1697,7 +1724,7 @@ void OEWorkspaceManager::WorkspaceOpen (LPCTSTR lpszPath, bool _snapshot)
             else
                 m_activeWorkspaceSavedState.clear(); // the loaded workspace has already been modified
 
-            LPCSTR fname = PathFindFileName(workspacePath.c_str());
+            LPCTSTR fname = PathFindFileName(workspacePath.c_str());
             if (int len = fname - workspacePath.c_str())
                 m_lastFolder = workspacePath.substr(0, len); 
         }
@@ -1713,12 +1740,12 @@ void OEWorkspaceManager::WorkspaceCloseActive ()
 
         if (!COEMultiDocTemplate::WorkspaceStateEqual(m_activeWorkspaceSavedState, lastState))
         {
-            string name = ::PathFindFileName(m_workspacePath.c_str());
-            const char* ext = ::PathFindExtension(name.c_str());
+            std::wstring name = ::PathFindFileName(m_workspacePath.c_str());
+            LPTSTR ext = ::PathFindExtension(name.c_str());
             name.resize(ext - name.c_str());
 
-            switch (AfxMessageBox(("Would you like to save the workspace \"" + name + "\" before closing it?"
-                "\n\nAll open files will be closed.").c_str(), MB_ICONQUESTION|MB_YESNOCANCEL)
+            switch (AfxMessageBox((L"Would you like to save the workspace \"" + name + L"\" before closing it?"
+                L"\n\nAll open files will be closed.").c_str(), MB_ICONQUESTION|MB_YESNOCANCEL)
             )
             {
             case IDCANCEL:

@@ -26,7 +26,7 @@ BOOL COESaveModifiedDlg::OnInitDialog()
     SetWindowText(title);
 
     ::SetWindowText(::GetDlgItem(m_hWnd, IDC_OESA_USE_WORKSPACE), 
-        m_thereIsActiveWorkspace ? "Save in &Active Workspace" : "Create Quick Sn&apshot");
+        m_thereIsActiveWorkspace ? L"Save in &Active Workspace" : L"Create Quick Sn&apshot");
 
     HWND hList = ::GetDlgItem(m_hWnd, IDC_OESA_LIST);
     
@@ -42,7 +42,7 @@ BOOL COESaveModifiedDlg::OnInitDialog()
         {
             title = it->first->GetPathName();
             if (title.IsEmpty()) title = it->first->GetTitle();
-            int index = ::SendMessage(hList, LB_ADDSTRING, NULL, (LPARAM)(LPCSTR)title);
+            int index = ::SendMessage(hList, LB_ADDSTRING, NULL, (LPARAM)(LPCWSTR)title);
             ::SendMessage(hList, LB_SETSEL, it->second ? TRUE : FALSE, index);
 
             CSize size = dc.GetTextExtent(title);

@@ -1,5 +1,5 @@
 /*
-	SQLTools is a tool for Oracle database developers and DBAs.
+    SQLTools is a tool for Oracle database developers and DBAs.
     Copyright (C) 1997-2015 Aleksey Kochetov
 
     This program is free software; you can redistribute it and/or modify
@@ -84,9 +84,11 @@
 #include "MetaDict\Loader.h"
 #include "DbBrowser\ObjectTree_Builder.h"
 #include "ServerBackgroundThread\TaskQueue.h"
+#include <ActivePrimeExecutionNote.h>
 #include "DbBrowser\FindObjectsTask.h"
 
 #include "ErrorLoader.h"
+#include "Tools/Grep/GrepDlg.h"
 
 
 //using namespace ObjectTree;
@@ -102,7 +104,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace std;
 using namespace OraMetaDict;
 
-	typedef CPLSWorksheetDoc::ExecutionStyle ExecutionStyle;
+    typedef CPLSWorksheetDoc::ExecutionStyle ExecutionStyle;
     static int backward_scan_for_delimiter_line (COEditorView* pEditor, ExecutionStyle style, int line);
     static int forward_scan_for_delimiter_line (COEditorView* pEditor, ExecutionStyle style, int line);
 
@@ -160,7 +162,7 @@ void CPLSWorksheetDoc::Init ()
     m_pStatGrid = new CStatView;
     m_pExplainPlan = new ExplainPlanView2;
     m_pXPlan    = new CExplainPlanTextView;
-	m_pBindGrid = new BindGridView;
+    m_pBindGrid = new BindGridView;
 
     if (!m_pHistory)
         m_pHistory  = new CHistoryView;
@@ -216,13 +218,13 @@ void CPLSWorksheetDoc::ActivateTab (CView* view)
 void CPLSWorksheetDoc::ActivatePlanTab ()
 {
     if (!m_pBooklet->IsTabPinned())
-		m_pBooklet->ActivatePlanTab();
+        m_pBooklet->ActivatePlanTab();
 }
 
 
 BEGIN_MESSAGE_MAP(CPLSWorksheetDoc, COEDocument)
     //{{AFX_MSG_MAP(CPLSWorksheetDoc)
-	//}}AFX_MSG_MAP
+    //}}AFX_MSG_MAP
     ON_COMMAND(ID_SQL_EXECUTE, OnSqlExecute)
     ON_COMMAND(ID_SQL_EXECUTE_FROM_CURSOR, OnSqlExecuteFromCursor)
     ON_COMMAND(ID_SQL_EXECUTE_CURRENT, OnSqlExecuteCurrent)
@@ -236,8 +238,8 @@ BEGIN_MESSAGE_MAP(CPLSWorksheetDoc, COEDocument)
     ON_UPDATE_COMMAND_UI(ID_SQL_EXECUTE_CURRENT_AND_STEP,   OnUpdate_SqlExecuteGroup)
 
     ON_COMMAND(ID_SQL_EXECUTE_IN_SQLPLUS, OnSqlExecuteInSQLPlus)
-	ON_COMMAND(ID_SQL_LOAD, OnSqlLoad)
-	ON_COMMAND(ID_SQL_LOAD_WITH_DBMS_METADATA, OnSqlLoadWithDbmsMetadata)
+    ON_COMMAND(ID_SQL_LOAD, OnSqlLoad)
+    ON_COMMAND(ID_SQL_LOAD_WITH_DBMS_METADATA, OnSqlLoadWithDbmsMetadata)
     ON_COMMAND(ID_SQL_DESCRIBE, OnSqlDescribe)
     ON_COMMAND(ID_SQL_EXPLAIN_PLAN, OnSqlExplainPlan)
 
@@ -283,6 +285,8 @@ BEGIN_MESSAGE_MAP(CPLSWorksheetDoc, COEDocument)
     ON_COMMAND(ID_SQL_QUICK_COUNT, OnSqlQuickCount)
     ON_UPDATE_COMMAND_UI(ID_SQL_QUICK_QUERY, OnUpdate_SqlGroup)
     ON_UPDATE_COMMAND_UI(ID_SQL_QUICK_COUNT, OnUpdate_SqlGroup)
+
+    ON_COMMAND(ID_FILE_FIND_IN_FILE, OnFindInFiles)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -376,25 +380,27 @@ void CPLSWorksheetDoc::AdjustCurrentStatementPos (ExecutionMode mode, ExecutionS
         int nlines = m_pEditor->GetLineCount();
         for (; line < nlines && line <= sel.end.line; line++)
         {
-            int len;
-            const char* str;
-            m_pEditor->GetLine(line, str, len);
+            Common::OEStringW wbuff;
+            m_pEditor->GetLineW(line, wbuff);
 
+            int len = wbuff.length();
             if (line == sel.end.line) len = min(len, sel.end.column);
 
-            commandParser.PutLine(str + offset, len - offset);
+            string utf8buff = Common::str(wbuff.data() + offset, len - offset);
+
+            commandParser.PutLine(utf8buff.c_str(), utf8buff.length());
             offset = 0;
 
             if (commandParser.GetLastExecutedLines(first, last)
             && currentLine >= first && currentLine <= last)
                 break;
         }
-		commandParser.PutEOF();
+        commandParser.PutEOF();
         if (commandParser.GetLastExecutedLines(first, last))
-		if (currentLine >= first && currentLine <= last)
+        if (currentLine >= first && currentLine <= last)
             sel.start.line = first;
-		else
-			sel.start.line = currentLine;
+        else
+            sel.start.line = currentLine;
     }
 }
 
@@ -433,13 +439,15 @@ void CPLSWorksheetDoc::OnSqlExplainPlan()
             int nlines = m_pEditor->GetLineCount();
             for (; line < nlines && line <= sel.end.line; line++)
             {
-                int len;
-                const char* str;
-                m_pEditor->GetLine(line, str, len);
+                Common::OEStringW wbuff;
+                m_pEditor->GetLineW(line, wbuff);
 
+                int len = wbuff.length();
                 if (line == sel.end.line) len = min(len, sel.end.column);
 
-                commandParser.PutLine(str + offset, len - offset);
+                string utf8buff = Common::str(wbuff.data() + offset, len - offset);
+
+                commandParser.PutLine(utf8buff.c_str(), utf8buff.length());
                 offset = 0;
 
                 if (performer.IsCompleted())
@@ -467,7 +475,7 @@ void CPLSWorksheetDoc::OnSqlExplainPlan()
         catch (const CommandParserException& x)
         {
             MessageBeep(MB_ICONHAND);
-            AfxMessageBox(x.what(), MB_OK|MB_ICONHAND);
+            AfxMessageBox(Common::wstr(x.what()).c_str(), MB_OK|MB_ICONHAND);
         }
     }
     // any other exceptions are fatal, a bug report is calling here
@@ -481,11 +489,11 @@ void CPLSWorksheetDoc::OnSqlExplainPlan()
     {
         if (!str) return true;
 
-	    for (int i = 0; i < len; i++)
-		    if (!s_delim[*(str + i)])
-			    return false;
+        for (int i = 0; i < len; i++)
+            if (!s_delim[*(str + i)])
+                return false;
 
-	    return true;
+        return true;
     }
 
     static
@@ -497,19 +505,19 @@ void CPLSWorksheetDoc::OnSqlExplainPlan()
 
         int i = 0;
         // skip spaces before
-	    for (; i < len; i++)
-		    if (!s_delim[*(str + i)])
-			    break;
+        for (; i < len; i++)
+            if (!s_delim[*(str + i)])
+                break;
 
         if (i >= len || str[i++] != '/')
             return false;
 
         // check the restof the string
-	    for (; i < len; i++)
-		    if (!s_delim[*(str + i)])
-			    return false;
+        for (; i < len; i++)
+            if (!s_delim[*(str + i)])
+                return false;
 
-	    return true;
+        return true;
     }
 
     static
@@ -536,10 +544,11 @@ void CPLSWorksheetDoc::OnSqlExplainPlan()
             {
                 while (--line > 0)
                 {
-                    int len;
-                    const char* str;
-                    pEditor->GetLine(line, str, len);
-                    if (is_slash_line(str, len))
+                    Common::OEStringW wbuff;
+                    pEditor->GetLineW(line, wbuff);
+                    string utf8buff = Common::str(wbuff.data(), wbuff.length());
+
+                    if (is_slash_line(utf8buff.c_str(), utf8buff.length()))
                     {
                         line++;
                         break;
@@ -551,10 +560,11 @@ void CPLSWorksheetDoc::OnSqlExplainPlan()
             {   
                 while (--line > 0)
                 {
-                    int len;
-                    const char* str;
-                    pEditor->GetLine(line, str, len);
-                    if (is_blank_line(str, len))
+                    Common::OEStringW wbuff;
+                    pEditor->GetLineW(line, wbuff);
+                    string utf8buff = Common::str(wbuff.data(), wbuff.length());
+
+                    if (is_blank_line(utf8buff.data(), utf8buff.length()))
                     {
                         line++;
                         break;
@@ -580,10 +590,11 @@ void CPLSWorksheetDoc::OnSqlExplainPlan()
             {   
                 do 
                 {
-                    int len;
-                    const char* str;
-                    pEditor->GetLine(line, str, len);
-                    if (is_blank_line(str, len))
+                    Common::OEStringW wbuff;
+                    pEditor->GetLineW(line, wbuff);
+                    string utf8buff = Common::str(wbuff.data(), wbuff.length());
+
+                    if (is_blank_line(utf8buff.data(), utf8buff.length()))
                         break;
                 }
                 while (++line < nlines);
@@ -603,7 +614,7 @@ void CPLSWorksheetDoc::DoSqlExecute (ExecutionMode mode, bool stepToNext /*= fal
 
         if (theApp.GetActivePrimeExecution())
         {
-            AfxMessageBox("The connection is currently busy. Please try again later.", MB_OK|MB_ICONSTOP);
+            AfxMessageBox(L"The connection is currently busy. Please try again later.", MB_OK|MB_ICONSTOP);
             AfxThrowUserException();
         }
 
@@ -676,9 +687,9 @@ void CPLSWorksheetDoc::AfterSqlExecute (ExecuteCtx& ctx)
         m_pOutput->OnMoveHome(); // move the the top of the output log
 
         if (!ctx.isLastStatementFailed && ctx.isLastStatementSelect)
-		    ShowSelectResult(ctx.cursor, ctx.lastExecTime);
+            ShowSelectResult(ctx.cursor, ctx.lastExecTime);
 
-	    if (!ctx.hasErrors && ctx.isLastStatementBind)
+        if (!ctx.hasErrors && ctx.isLastStatementBind)
             ActivateTab(m_pBindGrid);
 
         if (ctx.hasErrors || !(ctx.isLastStatementSelect || ctx.isLastStatementBind))
@@ -715,7 +726,7 @@ void CPLSWorksheetDoc::AfterSqlExecute (ExecuteCtx& ctx)
         if (!ctx.userCancel)
         {
             MessageBeep(MB_ICONHAND);
-            AfxMessageBox(ctx.seriousErrorText.c_str(), MB_OK|MB_ICONHAND);
+            AfxMessageBox(Common::wstr(ctx.seriousErrorText).c_str(), MB_OK|MB_ICONHAND);
         }
     }
 }
@@ -734,14 +745,13 @@ void CPLSWorksheetDoc::SkipToTheNextStatement (int curLine)
 
     for (; line < nlines; line++)
     {
-        int len;
-        const char* str;
-        m_pEditor->GetLine(line, str, len);
+        Common::OEStringW wbuff;
+        m_pEditor->GetLineW(line, wbuff);
 
         bool empty = true;
 
-        for (int i = 0; empty && i < len; i++)
-            if (!isspace(str[i]))
+        for (int i = 0, len = wbuff.length(); empty && i < len; i++)
+            if (!iswspace(wbuff.at(i)))
                 empty = false;
 
         if (!empty) break;
@@ -757,11 +767,11 @@ void CPLSWorksheetDoc::ShowSelectResult (std::auto_ptr<OciAutoCursor>& cursor, d
     m_pDbGrid->SetCursor(cursor);
 
     ostringstream out;
-	out << "Statement executed in ";
-	out << Common::print_time(lastExecTime);
+    out << "Statement executed in ";
+    out << Common::print_time(lastExecTime);
     out << Common::print_time(double(clock64() - startTime)/ CLOCKS_PER_SEC);
 
-    Global::SetStatusText(out.str());
+    Global::SetStatusText(out.str(), true);
 }
 
 
@@ -836,21 +846,23 @@ void CPLSWorksheetDoc::OnSqlDescribe()
 {
     try { EXCEPTION_FRAME;
 
-		std::string buff;
-		OpenEditor::Square sel;
+        OpenEditor::Square sel;
 
-		// 25.03.2003 bug refix, find object fails on object with schema
-		string delims = GetSettings().GetDelimiters();
-		string::size_type pos = delims.find('.');
-		if (pos != string::npos) delims.erase(pos, 1);
+        // 25.03.2003 bug refix, find object fails on object with schema
+        string delims = GetSettings().GetDelimiters();
+        string::size_type pos = delims.find('.');
+        if (pos != string::npos) delims.erase(pos, 1);
 
         pos = delims.find('&');
-		if (pos != string::npos) delims.erase(pos, 1);
+        if (pos != string::npos) delims.erase(pos, 1);
 
-		CObjectViewerWnd& viewer = GetMainFrame()->ShowTreeViewer();
+        CObjectViewerWnd& viewer = GetMainFrame()->ShowTreeViewer();
 
-		if (m_pEditor->GetBlockOrWordUnderCursor(buff,  sel, true/*only one line*/, delims.c_str()))
+        std::wstring wbuff;
+        if (m_pEditor->GetBlockOrWordUnderCursor(wbuff,  sel, true/*only one line*/, delims.c_str()))
         {
+            std::string buff = Common::str(wbuff);
+
             // added performer/parser to expand substitution
             DummyPerformerImpl performer(DocumentProxy(*this));
             CommandParser commandParser(performer, GetSQLToolsSettings().GetScanForSubstitution(), GetSQLToolsSettings().GetIgnoreCommmentsAfterSemicolon());
@@ -862,13 +874,13 @@ void CPLSWorksheetDoc::OnSqlDescribe()
         }
 
         if (!GetSQLToolsSettings().GetObjectViewerRetainFocusInEditor())
-		    viewer.SetFocus();
-	}
-	_DEFAULT_HANDLER_
+            viewer.SetFocus();
+    }
+    _DEFAULT_HANDLER_
 }
 
 
-	struct BackgroundTask_LoadDDL : Task
+    struct BackgroundTask_LoadDDL : Task
     {
         SQLToolsSettings m_settings;
         string m_owner, m_name, m_type, m_ddl;
@@ -887,6 +899,8 @@ void CPLSWorksheetDoc::OnSqlDescribe()
 
         void DoInBackground (OciConnect& connect)
         {
+            ActivePrimeExecutionOnOff onOff;
+
             Loader loader(connect, m_dictionary);
             loader.Init();
             loader.LoadObjects(
@@ -901,35 +915,35 @@ void CPLSWorksheetDoc::OnSqlDescribe()
 
             if (const Synonym* pSynonym = dynamic_cast<const Synonym*>(m_objects[0]))
             {
-			    // there is no support for remote objects
-			    if (pSynonym->m_strRefDBLink.empty())
-			    {
-				    std::string buff = "\"" + pSynonym->m_strRefOwner
-					    + "\".\"" + pSynonym->m_strRefName + "\"";
+                // there is no support for remote objects
+                if (pSynonym->m_strRefDBLink.empty())
+                {
+                    std::string buff = "\"" + pSynonym->m_strRefOwner
+                        + "\".\"" + pSynonym->m_strRefName + "\"";
 
                     // call FindObjects to retrieve object's type
                     std::vector<ObjectTree::ObjectDescriptor> result;
-			        ObjectTree::FindObjects(connect, buff.c_str(), result);
+                    ObjectTree::FindObjects(connect, buff.c_str(), result);
 
                     if (!result.empty())
-				    {
-					    loader.LoadObjects(
-						    result.begin()->owner.c_str(), 
+                    {
+                        loader.LoadObjects(
+                            result.begin()->owner.c_str(), 
                             result.begin()->name.c_str(), 
                             result.begin()->type.c_str(),
-						    m_settings,
-						    m_settings.GetSpecWithBody(),
-						    m_settings.GetBodyWithSpec(),
-						    false/*bUseLike*/
-						    );
+                            m_settings,
+                            m_settings.GetSpecWithBody(),
+                            m_settings.GetBodyWithSpec(),
+                            false/*bUseLike*/
+                            );
 
-					    m_objects[1] = &m_dictionary.LookupObject(
+                        m_objects[1] = &m_dictionary.LookupObject(
                             result.begin()->owner.c_str(), 
                             result.begin()->name.c_str(), 
                             result.begin()->type.c_str()
                             );
                     }
-			    }
+                }
             }
         }
 
@@ -954,7 +968,7 @@ void CPLSWorksheetDoc::LoadDDL (const string& owner, const string& name, const s
         BkgdRequestQueue::Get().Push(TaskPtr(new BackgroundTask_LoadDDL(settings, owner, name, type)));
 }
 
-	struct BackgroundTask_LoadDDLWithDbmsMetadata : Task
+    struct BackgroundTask_LoadDDLWithDbmsMetadata : Task
     {
         string m_owner, m_name, m_type, m_ddl;
 
@@ -970,6 +984,8 @@ void CPLSWorksheetDoc::LoadDDL (const string& owner, const string& name, const s
         {
             try
             {
+                ActivePrimeExecutionOnOff onOff;
+
                 OCI8::CLobVar ddl(connect, 1024*1024);
                 OciStatement cursor(connect);
                 cursor.Prepare(
@@ -1057,11 +1073,11 @@ void CPLSWorksheetDoc::LoadDDLWithDbmsMetadata (const string& owner, const strin
             if (!m_error.empty())  // too many objects
             {
                 ::MessageBeep(MB_ICONSTOP);
-                AfxMessageBox(m_error.c_str(), MB_OK|MB_ICONSTOP);
+                AfxMessageBox(Common::wstr(m_error).c_str(), MB_OK|MB_ICONSTOP);
             }
             else
             {
-			    if (m_result.size() > 0)
+                if (m_result.size() > 0)
                 {
                     if (m_withDbmsMetadata)
                         CPLSWorksheetDoc::LoadDDLWithDbmsMetadata(m_result.begin()->owner, m_result.begin()->name, m_result.begin()->type);
@@ -1071,7 +1087,7 @@ void CPLSWorksheetDoc::LoadDDLWithDbmsMetadata (const string& owner, const strin
                 else
                 {
                     ::MessageBeep(MB_ICONSTOP);
-                    Global::SetStatusText('<' + m_input + "> not found!");
+                    Global::SetStatusText('<' + m_input + "> not found!", true);
                 }
             }
         }
@@ -1082,7 +1098,6 @@ void CPLSWorksheetDoc::DoSqlLoad (bool withDbmsMetadata)
 {
     try { EXCEPTION_FRAME;
 
-        std::string buff;
         OpenEditor::Square sel;
 
         // 10.03.2003 bug fix, find object fails on object with schema
@@ -1091,10 +1106,13 @@ void CPLSWorksheetDoc::DoSqlLoad (bool withDbmsMetadata)
         if (pos != string::npos) delims.erase(pos, 1);
 
         pos = delims.find('&');
-		if (pos != string::npos) delims.erase(pos, 1);
+        if (pos != string::npos) delims.erase(pos, 1);
 
-        if (m_pEditor->GetBlockOrWordUnderCursor(buff,  sel, true/*only one line*/, delims.c_str()))
+        std::wstring wbuff;
+        if (m_pEditor->GetBlockOrWordUnderCursor(wbuff,  sel, true/*only one line*/, delims.c_str()))
         {
+            std::string buff = Common::str(wbuff);
+
             // added performer/parser to expand substitution
             DummyPerformerImpl performer(DocumentProxy(*this));
             CommandParser commandParser(performer, GetSQLToolsSettings().GetScanForSubstitution(), GetSQLToolsSettings().GetIgnoreCommmentsAfterSemicolon());
@@ -1137,11 +1155,11 @@ void CPLSWorksheetDoc::GoTo (int line)
 
 void CPLSWorksheetDoc::OnSqlHelp()
 {
-    string helpPath;
+    CString helpPath;
     Global::GetHelpPath(helpPath);
-    helpPath += "\\sqlqkref.chm";
+    helpPath += L"\\sqlqkref.chm";
 
-    std::string key;
+    std::wstring key;
     OpenEditor::Square sel;
     if (m_pEditor->GetBlockOrWordUnderCursor(key,  sel, true/*only one line*/))
     {
@@ -1152,10 +1170,10 @@ void CPLSWorksheetDoc::OnSqlHelp()
         link.fIndexOnFail = TRUE ;
 
         // 24.05.2002  SQLTools hangs on a context-sensitive help call there is more than one topic, which is found by keyword
-        ::HtmlHelp(GetDesktopWindow(), (const char*)helpPath.c_str(), HH_KEYWORD_LOOKUP, (DWORD)&link);
+        ::HtmlHelp(GetDesktopWindow(), helpPath, HH_KEYWORD_LOOKUP, (DWORD)&link);
     }
     else
-        ::HtmlHelp(*AfxGetMainWnd(), (const char*)helpPath.c_str(), HH_DISPLAY_TOPIC, 0);
+        ::HtmlHelp(*AfxGetMainWnd(), helpPath, HH_DISPLAY_TOPIC, 0);
 }
 
 
@@ -1206,7 +1224,7 @@ void CPLSWorksheetDoc::LoadStatistics (const vector<int>& data)
 
 void CPLSWorksheetDoc::RefreshBindView (const vector<string>& data)
 {
-	m_pBindGrid->Refresh(data);
+    m_pBindGrid->Refresh(data);
 }
 
 void CPLSWorksheetDoc::OnSqlHistoryGet()
@@ -1215,14 +1233,16 @@ void CPLSWorksheetDoc::OnSqlHistoryGet()
 
     if ((settings.GetHistoryEnabled()))
     {
-        std::string text;
+        std::string buff;
 
-        if (m_pHistory->GetHistoryEntry(text))
+        if (m_pHistory->GetHistoryEntry(buff))
         {
+            std::wstring text = Common::wstr(buff);
+
             switch (settings.GetHistoryAction())
             {
             case SQLToolsSettings::Copy:
-                Common::AppSetClipboardText(text.c_str(), text.length(), CF_TEXT);
+                Common::AppSetClipboardText(text.c_str(), text.length(), CF_UNICODETEXT);
                 break;
             case SQLToolsSettings::Paste:
                 if (!m_pEditor->IsSelectionEmpty())
@@ -1318,10 +1338,10 @@ void CPLSWorksheetDoc::OnCloseDocument()
 
 BOOL CPLSWorksheetDoc::CanCloseFrame (CFrameWnd* pFrame)
 {
-    // TODO#2: replace IsLocked with hasRunningTask
-    if (IsLocked()) // = it has a running task!
+    // TODO#2: replace IsContentLocked with hasRunningTask
+    if (IsContentLocked()) // = it has a running task!
     {
-        if (AfxMessageBox("There is an active query/statement. \n\nDo you really want to ignore that and close the script?", 
+        if (AfxMessageBox(L"There is an active query/statement. \n\nDo you really want to ignore that and close the script?", 
             MB_YESNO|MB_ICONEXCLAMATION|MB_DEFBUTTON2) != IDYES
         )
         return FALSE;
@@ -1364,6 +1384,7 @@ void CPLSWorksheetDoc::OnUpdate_WindowNew (CCmdUI *pCmdUI)
         virtual void DoInBackground (OciConnect& connect) 
         { 
             if (connect.IsOpen()) {
+                ActivePrimeExecutionOnOff onOff;
                 connect.Commit(); 
                 m_done = true;
             }
@@ -1428,16 +1449,16 @@ void CPLSWorksheetDoc::OnEditAutocomplete ()
 
         if (theApp.GetConnectOpen())
         {
-    	    string delims = GetSettings().GetDelimiters();
-		    string::size_type pos = delims.find('.');
-		    if (pos != string::npos) delims.erase(pos, 1);
+            string delims = GetSettings().GetDelimiters();
+            string::size_type pos = delims.find('.');
+            if (pos != string::npos) delims.erase(pos, 1);
 
-            string buff;
+            std::wstring wbuff;
             OpenEditor::Square sqr;
-            if (m_pEditor->GetBlockOrWordUnderCursor(buff, sqr, true, delims.c_str()) 
-            && !buff.empty() && *buff.rbegin() == '.')
+            if (m_pEditor->GetBlockOrWordUnderCursor(wbuff, sqr, true, delims.c_str()) 
+            && !wbuff.empty() && *wbuff.rbegin() == '.')
             {
-                OpenEditor::TemplatePtr tmpl = SessionCache::GetAutocompleteSubobjectTemplate(buff);
+                OpenEditor::TemplatePtr tmpl = SessionCache::GetAutocompleteSubobjectTemplate(Common::str(wbuff));
             
                 if (tmpl.get() && tmpl->GetCount() > 0)
                     m_pEditor->DoEditExpandTemplate(tmpl, false/*canModifyTemplate*/);
@@ -1531,7 +1552,7 @@ struct BackgroundTask_DoSqlQuickQuery : ServerBackgroundThread::Task
         {
             m_doc.ActivateTab(m_doc.m_pDbGrid);
             m_doc.m_pDbGrid->SetCursor(m_cursor);
-            Global::SetStatusText(m_message);
+            Global::SetStatusText(m_message, true);
         }
     }
 };
@@ -1542,7 +1563,7 @@ void CPLSWorksheetDoc::DoSqlQuickQuery (const char* query, const char* message) 
 
     if (theApp.GetActivePrimeExecution())
     {
-        AfxMessageBox("The connection is currently busy. Please try again later.", MB_OK|MB_ICONSTOP);
+        AfxMessageBox(L"The connection is currently busy. Please try again later.", MB_OK|MB_ICONSTOP);
         AfxThrowUserException();
     }
 
@@ -1550,19 +1571,21 @@ void CPLSWorksheetDoc::DoSqlQuickQuery (const char* query, const char* message) 
 
         ActivePrimeExecutionFrame frame;
 
-		std::string buff;
-		OpenEditor::Square sel;
+        OpenEditor::Square sel;
 
-		// 25.03.2003 bug refix, find object fails on object with schema
-		string delims = GetSettings().GetDelimiters();
-		string::size_type pos = delims.find('.');
-		if (pos != string::npos) delims.erase(pos, 1);
+        // 25.03.2003 bug refix, find object fails on object with schema
+        string delims = GetSettings().GetDelimiters();
+        string::size_type pos = delims.find('.');
+        if (pos != string::npos) delims.erase(pos, 1);
 
         pos = delims.find('&');
-		if (pos != string::npos) delims.erase(pos, 1);
+        if (pos != string::npos) delims.erase(pos, 1);
 
-		if (m_pEditor->GetBlockOrWordUnderCursor(buff,  sel, false/*only one line*/, delims.c_str()))
+        std::wstring wbuff;
+        if (m_pEditor->GetBlockOrWordUnderCursor(wbuff,  sel, false/*only one line*/, delims.c_str()))
         {
+            std::string buff = Common::str(wbuff);
+
             // added performer/parser to expand substitution
             DummyPerformerImpl performer(DocumentProxy(*this));
             CommandParser commandParser(performer, GetSQLToolsSettings().GetScanForSubstitution(), GetSQLToolsSettings().GetIgnoreCommmentsAfterSemicolon());
@@ -1578,8 +1601,8 @@ void CPLSWorksheetDoc::DoSqlQuickQuery (const char* query, const char* message) 
             TaskPtr task = TaskPtr(new BackgroundTask_DoSqlQuickQuery(*this, _query, message));
             FrgdRequestQueue::Get().Push(task);
         }
-	}
-	_DEFAULT_HANDLER_
+    }
+    _DEFAULT_HANDLER_
 }
 
 void CPLSWorksheetDoc::OnSqlQuickQuery ()
@@ -1634,7 +1657,7 @@ void CPLSWorksheetDoc::DoSqlQueryInNew (const string& query, const string& title
                 of.Write(query.c_str(), query.size());
                 of.SeekToBegin();
                 ((CDocument*)pDoc)->Serialize(CArchive(&of, CArchive::load));
-                pDoc->SetTitle(title.c_str());
+                pDoc->SetTitle(Common::wstr(title).c_str());
                 pDoc->SetClassSetting("PL/SQL");
                 pDoc->DefaultFileFormat();
                 
@@ -1642,7 +1665,7 @@ void CPLSWorksheetDoc::DoSqlQueryInNew (const string& query, const string& title
                 //pDoc->GetEditorView()->OnEditNormalizeText();
                 //pDoc->GetEditorView()->ClearSelection();
 
-	            pDoc->GetSplitter()->SetDefaultHight(0, 50);
+                pDoc->GetSplitter()->SetDefaultHight(0, 50);
                 pDoc->SetModifiedFlag(FALSE);
                 pDoc->DoSqlExecute(CPLSWorksheetDoc::ExecutionModeALL);
             }
@@ -1662,7 +1685,7 @@ void CPLSWorksheetDoc::DoSqlQuickQuery (const string& query, const string& messa
 
     if (theApp.GetActivePrimeExecution())
     {
-        AfxMessageBox("The connection is currently busy. Please try again later.", MB_OK|MB_ICONSTOP);
+        AfxMessageBox(L"The connection is currently busy. Please try again later.", MB_OK|MB_ICONSTOP);
         AfxThrowUserException();
     }
 
@@ -1673,8 +1696,8 @@ void CPLSWorksheetDoc::DoSqlQuickQuery (const string& query, const string& messa
             TaskPtr task = TaskPtr(new BackgroundTask_DoSqlQuickQuery(*doc, query, message));
             FrgdRequestQueue::Get().Push(task);
         }
-	}
-	_DEFAULT_HANDLER_
+    }
+    _DEFAULT_HANDLER_
 }
 
 void CPLSWorksheetDoc::DoSqlQuery (const string& query, const string& title, const string& message, bool quick)
@@ -1689,9 +1712,9 @@ void CPLSWorksheetDoc::DoSqlQuery (const string& query, const string& title, con
 
 void CPLSWorksheetDoc::Lock (bool lock)
 {
-    if (lock != IsLocked())
+    if (lock != IsContentLocked())
     {
-        COEDocument::Lock(lock);
+        COEDocument::LockContent(lock);
 
         if (lock)
         {
@@ -1729,9 +1752,9 @@ void CPLSWorksheetDoc::OnTimer (UINT nIDEvent)
     {
     case COEditorView::DOC_TIMER_1: 
         m_pEditor->KillTimer(nIDEvent);
-        m_pEditor->SetPaleIfLocked(IsLocked());
-        m_pDbGrid->SetPaleColors(IsLocked());
-        if (IsLocked())
+        m_pEditor->SetPaleIfLocked(IsContentLocked());
+        m_pDbGrid->SetPaleColors(IsContentLocked());
+        if (IsContentLocked())
         {
             const CString& title = GetTitle();
             if (title.GetLength() > 0 && title.GetAt(0) != '!')
@@ -1746,7 +1769,7 @@ void CPLSWorksheetDoc::OnTimer (UINT nIDEvent)
         else
         {
             double secs = double(clock64() - m_executionStartedAt)/ CLOCKS_PER_SEC;
-            Global::SetStatusText("The current step execution time: " + Common::print_time(secs));
+            Global::SetStatusText("The current step execution time: " + Common::print_time(secs), true);
         }
     }
 }
@@ -1756,9 +1779,9 @@ void CPLSWorksheetDoc::OnContextMenuInit (CMenu* pMenu)
     if (pMenu)
     {
         pMenu->InsertMenu(0, MF_SEPARATOR|MF_BYPOSITION);
-        pMenu->InsertMenu(0, MF_STRING|MF_BYPOSITION, ID_SQL_QUICK_COUNT, "&Count query");
-        pMenu->InsertMenu(0, MF_STRING|MF_BYPOSITION, ID_SQL_QUICK_QUERY, "&Query table under cursor");                      
-        pMenu->InsertMenu(0, MF_STRING|MF_BYPOSITION, ID_SQL_DESCRIBE,    "&Find object under cursor");                      
+        pMenu->InsertMenu(0, MF_STRING|MF_BYPOSITION, ID_SQL_QUICK_COUNT, L"&Count query");
+        pMenu->InsertMenu(0, MF_STRING|MF_BYPOSITION, ID_SQL_QUICK_QUERY, L"&Query table under cursor");                      
+        pMenu->InsertMenu(0, MF_STRING|MF_BYPOSITION, ID_SQL_DESCRIBE,    L"&Find object under cursor");                      
     }
 }
 
@@ -1766,10 +1789,17 @@ void CPLSWorksheetDoc::SetTitle (LPCTSTR lpszTitle)
 {
     __super::SetTitle(lpszTitle);
 
-    if (IsLocked())
+    if (IsContentLocked())
     {
         const CString& title = GetTitle();
         if (title.GetLength() > 0 && title.GetAt(0) != '!')
             CDocument::SetTitle("! " + title);
     }
+}
+
+void CPLSWorksheetDoc::OnFindInFiles ()
+{
+    CGrepView& grepViewer = ((CMDIMainFrame*)AfxGetMainWnd())->GetGrepView();
+    if (CGrepDlg(AfxGetMainWnd(), &grepViewer, m_pEditor).DoModal() == IDOK)
+       ((CMDIMainFrame*)AfxGetMainWnd())->ShowGrepViewer();
 }

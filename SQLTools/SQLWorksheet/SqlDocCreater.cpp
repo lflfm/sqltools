@@ -51,11 +51,13 @@ SqlDocCreater::SqlDocCreater (bool singleDocument, bool useBanner, bool supressG
 }
 
 SqlDocCreater::~SqlDocCreater ()
-try { EXCEPTION_FRAME;
+{
+    try { EXCEPTION_FRAME;
 
-    Flush(true);
+        Flush(true);
+    }
+    _DESTRUCTOR_HANDLER_
 }
-_DESTRUCTOR_HANDLER_
 
 void SqlDocCreater::Clear ()
 {
@@ -331,6 +333,25 @@ void SqlDocCreater::Flush (bool bForce)
             pDoc->SetText(m_Output, m_Output.GetLength());
             pDoc->SetModifiedFlag(FALSE);
             pDoc->m_LoadedFromDB = true;
+            pDoc->SetEncodingCodepage(CP_UTF8);
+
+            switch (pDoc->GetSettings().GetEncoding())
+            {
+            case OpenEditor::feANSI     :
+                pDoc->SetFileEncodingCodepage(CP_ACP, 0);
+                break;
+            case OpenEditor::feUTF8     :
+                pDoc->SetFileEncodingCodepage(CP_UTF8, 0);
+                break;
+            case OpenEditor::feUTF8BOM  :
+                pDoc->SetFileEncodingCodepage(CP_UTF8, 3);
+                break;
+            case OpenEditor::feUTF16BOM :
+                pDoc->SetFileEncodingCodepage(OpenEditor::CP_UTF16, 2);
+                break;
+            }
+            pDoc->SetModifiedFlag(FALSE);
+            pDoc->ClearUndo();
 
             pDoc->m_pOutput->Clear();
             if (m_objectNameAsTitle)

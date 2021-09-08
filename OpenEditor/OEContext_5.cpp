@@ -21,6 +21,8 @@
     05.03.2003 bug fix, lower/upper/... operaration causes an exception on blank space
     2011.11.28 bug fix, insert and delete of selection do not handle tabified lines properly in the column mode
     2016.06.14 improvement, Alternative Columnar selection mode 
+    2018.12.06 bug fix, when a line is having only spaces, 'Trim Trailing Space / Ctrl + K, R" is not trimming any space.
+               same issue for "Trim Leading Spaces / Ctrl+K, O"
 */
 
 #include "stdafx.h"
@@ -119,19 +121,22 @@ void EditContext::calculateScanLine ()
     }
 }
 
-void EditContext::GetScanLine (int& line, int& start, int& end) const
+void EditContext::GetScanPosition (int& line, int& start, int& end) const
 {
     line  = m_nScanCurrentLine;
     start = m_nScanStartInx;
     end   = m_nScanEndInx;
 }
 
-void EditContext::GetScanLine (const char*& ptr, int& len) const
+void EditContext::GetScanLine (std::wstring& str) const
 {
     int line, start, end;
-    GetScanLine(line, start, end);
+    GetScanPosition(line, start, end);
 
-    GetLine(line, ptr, len);
+    OEStringW lineBuff;
+    GetLineW(line, lineBuff);
+    const wchar_t* ptr = lineBuff.data();
+    int len = lineBuff.length();
 
     if (start < len)
     {
@@ -143,16 +148,21 @@ void EditContext::GetScanLine (const char*& ptr, int& len) const
         ptr = 0;
         len = 0;
     }
+
+    if (len > 0)
+        str.assign(ptr, len);
+    else
+        str.clear();
 }
 
-void EditContext::PutLine (const char* ptr, int len)
+void EditContext::PutLine (const std::wstring& str)
 {
     _CHECK_ALL_PTR_
 
     int line, start, end;
-    GetScanLine(line, start, end);
+    GetScanPosition(line, start, end);
 
-    m_pStorage->ReplaceLinePart(line, start, end, ptr, len);
+    m_pStorage->ReplaceLinePart(line, start, end, str.c_str(), str.length());
 }
 
 void EditContext::StopScan ()
@@ -162,7 +172,7 @@ void EditContext::StopScan ()
 }
 
 
-void EditContext::ScanAndReplaceText (bool (*pmfnDo)(const EditContext&, string&), bool curentWord)
+void EditContext::ScanAndReplaceText (bool (*pmfnDo)(const EditContext&, std::wstring&), bool curentWord)
 {
     Square blkPos;
 
@@ -187,21 +197,18 @@ void EditContext::ScanAndReplaceText (bool (*pmfnDo)(const EditContext&, string&
 
         while (!Eof())
         {
-            string str;
-            int len = 0;
-            const char* ptr = 0;
+            wstring orgStr;
+            GetScanLine(orgStr);
 
-            GetScanLine(ptr, len);
-
-            if (len > 0)
+            if (orgStr.length() > 0)
             {
-                str.assign(ptr, len);
+                wstring newStr = orgStr;
 
-                if (!(*pmfnDo)(*this, str))
+                if (!(*pmfnDo)(*this, newStr))
                     break;
 
-                if (static_cast<int>(str.length()) != len || strncmp(str.c_str(), ptr, len))
-                    PutLine(str.c_str(), str.length());
+                if (newStr != orgStr)
+                    PutLine(newStr);
             }
 
             Next();
@@ -217,57 +224,57 @@ void EditContext::ScanAndReplaceText (bool (*pmfnDo)(const EditContext&, string&
     }
 }
 
-bool EditContext::LowerText (const EditContext&, string& str)
+bool EditContext::LowerText (const EditContext&, wstring& str)
 {
-    for (string::iterator it = str.begin(); it != str.end(); ++it)
-        *it = tolower(*it);
+    for (auto it = str.begin(); it != str.end(); ++it)
+        *it = towlower(*it);
 
     return true;
 }
 
-bool EditContext::UpperText (const EditContext&, string& str)
+bool EditContext::UpperText (const EditContext&, wstring& str)
 {
-    for (string::iterator it = str.begin(); it != str.end(); ++it)
-        *it = toupper(*it);
+    for (auto it = str.begin(); it != str.end(); ++it)
+        *it = towupper(*it);
 
     return true;
 }
 
-bool EditContext::CapitalizeText  (const EditContext&, string& str)
+bool EditContext::CapitalizeText  (const EditContext&, wstring& str)
 {
-    for (string::iterator it = str.begin(); it != str.end(); ++it)
-        if (it == str.begin() || !isalpha(*(it-1)))
-            *it = toupper(*it);
+    for (auto it = str.begin(); it != str.end(); ++it)
+        if (it == str.begin() || !iswalpha(*(it-1)))
+            *it = towupper(*it);
         else
-            *it = tolower(*it);
+            *it = towlower(*it);
 
     return true;
 }
 
-bool EditContext::InvertCaseText  (const EditContext&, string& str)
+bool EditContext::InvertCaseText  (const EditContext&, wstring& str)
 {
-    for (string::iterator it = str.begin(); it != str.end(); ++it)
-        if (islower(*it))
-            *it = toupper(*it);
-        else if (isupper(*it))
-            *it = tolower(*it);
+    for (auto it = str.begin(); it != str.end(); ++it)
+        if (iswlower(*it))
+            *it = towupper(*it);
+        else if (iswupper(*it))
+            *it = towlower(*it);
 
     return true;
 }
 
-bool EditContext::tabify (string& str, int startPos, int tabSpacing, bool leading)
+bool EditContext::tabify (const wchar_t* str, int len, std::wstring& result, int startPos, int tabSpacing, bool leading)
 {
-    string buff;
+    std::wstring buff;
 
-    for (unsigned i(0); i < str.size() && str[i]; )
+    for (int i = 0; i < len && str[i]; )
     {
         if (str[i] == ' ')
         {
             // If all characters are space untill next tab position
             // then we replace them with a tab character
-            unsigned pos = ((i + startPos)/ tabSpacing + 1) * tabSpacing;
+            int pos = ((i + startPos)/ tabSpacing + 1) * tabSpacing;
 
-            for (unsigned k(0); i + k + startPos < pos && str[i + k] == ' '; k++)
+            for (int k = 0; i + k + startPos < pos && str[i + k] == ' '; k++)
                 ;
 
             if (i + k + startPos == pos)
@@ -279,27 +286,27 @@ bool EditContext::tabify (string& str, int startPos, int tabSpacing, bool leadin
         }
         else if (leading) // exit when it's not space
         {
-            buff += str.c_str() + i;
+            buff.append(str + i, len - i);
             break;
         }
 
         buff += str[i++];
     }
 
-    str = buff;
+    result = buff;
 
     return true;
 }
 
-bool EditContext::untabify (string& str, int startPos, int tabSpacing, bool leading)
+bool EditContext::untabify (const wchar_t* str, int len, std::wstring& result, int startPos, int tabSpacing, bool leading)
 {
-    string buff;
+    std::wstring buff;
 
-    for (unsigned i(0), j(0); i < str.size() && str[i]; i++)
+    for (int i = 0, j = 0; i < len && str[i]; i++)
     {
         if (str[i] == '\t')
         {
-            unsigned pos = ((j + startPos) / tabSpacing + 1) * tabSpacing;
+            int pos = ((j + startPos) / tabSpacing + 1) * tabSpacing;
 
             while ((j + startPos) < pos)
             {
@@ -311,7 +318,7 @@ bool EditContext::untabify (string& str, int startPos, int tabSpacing, bool lead
         {
             if (leading)  // exit when it's not space
             {
-                buff += str.c_str() + i;
+                buff.append(str + i, len - i);
                 break;
             }
             else
@@ -322,51 +329,51 @@ bool EditContext::untabify (string& str, int startPos, int tabSpacing, bool lead
         }
     }
 
-    str = buff;
+    result = buff;
 
     return true;
 }
 
-bool EditContext::TabifyText (const EditContext& edt, string& str)
+bool EditContext::TabifyText (const EditContext& edt, std::wstring& str)
 {
     UntabifyText(edt, str);
 
     int tabSpacing = edt.GetTabSpacing();
     int startPos = edt.inx2pos(edt.m_nScanCurrentLine, edt.m_nScanStartInx);
-    return tabify(str, startPos, tabSpacing, false);
+    return tabify(str.c_str(), str.length(), str, startPos, tabSpacing, false);
 }
 
-bool EditContext::TabifyLeadingSpaces (const EditContext& edt, string& str)
+bool EditContext::TabifyLeadingSpaces (const EditContext& edt, std::wstring& str)
 {
     UntabifyLeadingSpaces(edt, str); 
 
     int tabSpacing = edt.GetTabSpacing();
     int startPos = edt.inx2pos(edt.m_nScanCurrentLine, edt.m_nScanStartInx);
-    return tabify(str, startPos, tabSpacing, true);
+    return tabify(str.c_str(), str.length(), str, startPos, tabSpacing, true);
 }
 
-bool EditContext::UntabifyText (const EditContext& edt, string& str)
+bool EditContext::UntabifyText (const EditContext& edt, std::wstring& str)
 {
     int tabSpacing = edt.GetTabSpacing();
     int startPos = edt.inx2pos(edt.m_nScanCurrentLine, edt.m_nScanStartInx);
-    return untabify(str, startPos, tabSpacing, false);
+    return untabify(str.c_str(), str.length(), str, startPos, tabSpacing, false);
 }
 
-bool EditContext::UntabifyLeadingSpaces (const EditContext& edt, string& str)
+bool EditContext::UntabifyLeadingSpaces (const EditContext& edt, std::wstring& str)
 {
     int tabSpacing = edt.GetTabSpacing();
     int startPos = edt.inx2pos(edt.m_nScanCurrentLine, edt.m_nScanStartInx);
-    return untabify(str, startPos, tabSpacing, true);
+    return untabify(str.c_str(), str.length(), str, startPos, tabSpacing, true);
 }
 
-bool EditContext::ColumnLeftJustify (const EditContext& edt, string& str)
+bool EditContext::ColumnLeftJustify (const EditContext& edt, std::wstring& str)
 {
     UntabifyText(edt, str);
 
-    string buff;
+    wstring buff;
 
-    string::size_type beg = str.find_first_not_of(" \t");
-    if (beg != string::npos)
+    wstring::size_type beg = str.find_first_not_of(L" \t");
+    if (beg != wstring::npos)
     {
         buff = str.substr(beg);
         buff.resize(str.size(), ' ');
@@ -376,16 +383,16 @@ bool EditContext::ColumnLeftJustify (const EditContext& edt, string& str)
     return true;
 }
 
-bool EditContext::ColumnCenterJustify (const EditContext& edt, string& str)
+bool EditContext::ColumnCenterJustify (const EditContext& edt, std::wstring& str)
 {
     // Untabify done beforoe this call
     // UntabifyText(edt, str);
 
-    string buff = str;
+    wstring buff = str;
     Common::trim_symmetric(buff);
     // calculate block width because a line can be shorter than block
-    string::size_type width = abs(edt.m_ScanSquare.end.column - edt.m_ScanSquare.start.column);
-    string::size_type leftPadding = (width - buff.size())/2;
+    wstring::size_type width = abs(edt.m_ScanSquare.end.column - edt.m_ScanSquare.start.column);
+    wstring::size_type leftPadding = (width - buff.size())/2;
     buff.insert(0, leftPadding, ' ');
     buff.resize(width, ' ');
     str = buff;
@@ -393,15 +400,15 @@ bool EditContext::ColumnCenterJustify (const EditContext& edt, string& str)
     return true;
 }
 
-bool EditContext::ColumnRightJustify (const EditContext& edt, string& str)
+bool EditContext::ColumnRightJustify (const EditContext& edt, std::wstring& str)
 {
     // Untabify done beforoe this call
     // UntabifyText(edt, str);
 
-    string buff = str;
+    wstring buff = str;
 
-    string::size_type end = buff.find_last_not_of(" \t");
-    if (end != string::npos) 
+    wstring::size_type end = buff.find_last_not_of(L" \t");
+    if (end != wstring::npos) 
     {
         buff.erase(end + 1);
         buff.insert(0, str.size() - buff.size(), ' ');
@@ -409,7 +416,7 @@ bool EditContext::ColumnRightJustify (const EditContext& edt, string& str)
     }
 
     // for shorter lines
-    string::size_type width = abs(edt.m_ScanSquare.end.column - edt.m_ScanSquare.start.column);
+    wstring::size_type width = abs(edt.m_ScanSquare.end.column - edt.m_ScanSquare.start.column);
     if (buff.size() < width)
     {
         buff.insert(0, width - buff.size(), ' ');
@@ -419,60 +426,41 @@ bool EditContext::ColumnRightJustify (const EditContext& edt, string& str)
     return true;
 }
 
-bool EditContext::TrimLeadingSpaces (const EditContext&, string& str)
+bool EditContext::TrimLeadingSpaces (const EditContext&, wstring& str)
 {
-    string buff;
+    wstring buff;
 
-    string::size_type beg = str.find_first_not_of(" \t");
-    if (beg != string::npos)
+    wstring::size_type beg = str.find_first_not_of(L" \t");
+    if (beg != wstring::npos)
     {
         buff = str.substr(beg);
         str = buff;
     }
+    else
+        str.clear();
 
     return true;
 }
 
-bool EditContext::TrimExcessiveSpaces (const EditContext& edt, string& str)
+bool EditContext::TrimExcessiveSpaces (const EditContext& edt, std::wstring& str)
 {
-    //UntabifyText(edt, str);
-    //TrimLeadingSpaces(edt, str);
-    //TrimTrailingSpaces(edt, str);
-
-    //string buff;
-    //bool is_prev_space = false;
-
-    //for (string::const_iterator it = str.begin(); it != str.end(); ++it)
-    //{
-    //    bool is_space = isspace(*it);
-
-    //    if (!is_space || !is_prev_space)
-    //        buff.push_back(*it);
-
-    //    is_prev_space = is_space;
-    //}
-
-    //str = buff;
-
-    //return true;
-    
     TrimTrailingSpaces(edt, str);
 
-    string buff;
-    string::size_type beg = str.find_first_not_of(" \t");
+    wstring buff;
+    wstring::size_type beg = str.find_first_not_of(L" \t");
 
     if (beg != string::npos)
     {
         bool is_space, is_prev_space = false;
 
         // skip leading spaces
-        string::iterator it = str.begin();
-        for (; isspace(*it); ++it)
+        auto it = str.begin();
+        for (; iswspace(*it); ++it)
             buff += *it;
 
         for (; it != str.end(); ++it)
         {
-            is_space = isspace(*it);
+            is_space = iswspace(*it);
         
             if (!is_space || !is_prev_space)
                 buff += *it;
@@ -487,16 +475,18 @@ bool EditContext::TrimExcessiveSpaces (const EditContext& edt, string& str)
     return true;
 }
 
-bool EditContext::TrimTrailingSpaces (const EditContext&, string& str)
+bool EditContext::TrimTrailingSpaces (const EditContext&, std::wstring& str)
 {
-    string buff = str;
+    wstring buff = str;
 
-    string::size_type end = buff.find_last_not_of(" \t");
-    if (end != string::npos) 
+    wstring::size_type end = buff.find_last_not_of(L" \t");
+    if (end != wstring::npos) 
     {
         buff.erase(end + 1);
         str = buff;
     }
+    else
+        str.clear();
 
     return true;
 }

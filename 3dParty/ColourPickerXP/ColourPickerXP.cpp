@@ -439,13 +439,13 @@ void CColourPickerXP::SetColoursName(UINT nFirstID)
 		{
 			if(!szTemp.LoadString(nFirstID + i))
 				szTemp = CColourPopupXP::m_strInitNames[i];
-			strcpy(CColourPopupXP::m_crColours[i].szName, szTemp);
+			_tcscpy(CColourPopupXP::m_crColours[i].szName, szTemp);
 		}
 	}
 	else
 	{
 		for(int i=0; i<(sizeof(CColourPopupXP::m_crColours)/sizeof(ColourTableEntry)); i++)
-			strcpy(CColourPopupXP::m_crColours[i].szName, CColourPopupXP::m_strInitNames[i]);
+			_tcscpy(CColourPopupXP::m_crColours[i].szName, CColourPopupXP::m_strInitNames[i]);
 	}
 }
 
@@ -776,7 +776,7 @@ void CColourPickerXP::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	ASSERT(lpDrawItemStruct);
 
 	CDC*    pDC      = CDC::FromHandle(lpDrawItemStruct->hDC);
-	CMemDC  dcMem(pDC);
+	MyMemDC::CMemDC  dcMem(pDC);
 	UINT    state    = lpDrawItemStruct->itemState;
     CRect   rDraw    = lpDrawItemStruct->rcItem;
 	CRect	rArrow;
@@ -1000,7 +1000,7 @@ void CColourPickerXP::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				szTemp = m_strDefaultText;
 			else
 			{
-				szTemp.Format(_T("%s:%d %s:%d %s:%d"), m_strRGBText.Left(1), GetRValue(m_Color), m_strRGBText.Mid(1, 1), GetGValue(m_Color), m_strRGBText.Mid(2, 1), GetBValue(m_Color));
+				szTemp.Format(_T("%s:%d %s:%d %s:%d"), (LPCTSTR)m_strRGBText.Left(1), GetRValue(m_Color), (LPCTSTR)m_strRGBText.Mid(1, 1), GetGValue(m_Color), (LPCTSTR)m_strRGBText.Mid(2, 1), GetBValue(m_Color));
 				for (int i = 0; i < CColourPopupXP::m_nNumColours; i++)
 				{
 					if (CColourPopupXP::GetColour(i) == m_Color)
@@ -1008,7 +1008,7 @@ void CColourPickerXP::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						if(m_bAlwaysRGB)
 						{
 							CString szRGB = szTemp;
-							szTemp.Format(_T("%s (%s)"), CColourPopupXP::GetColourName(i), szRGB);
+							szTemp.Format(_T("%s (%s)"), (LPCTSTR)CColourPopupXP::GetColourName(i), (LPCTSTR)szRGB);
 						}
 						else
 							szTemp = CColourPopupXP::GetColourName(i);

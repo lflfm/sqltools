@@ -94,7 +94,7 @@ BOOL CDirSelectDlg::OnInitDialog()
         case BFFM_INITIALIZED: 
             // WParam is TRUE since you are passing a path.
             // It would be FALSE if you were passing a pidl.
-            SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)(LPCSTR)g_initialFolder);
+            SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)(LPCTSTR)g_initialFolder);
             break;   
         case BFFM_SELCHANGED: 
             // Set the status window to the currently selected path.
@@ -144,7 +144,7 @@ BOOL CDirSelectDlg::OnInitDialog()
         else
         {
             MessageBeep((UINT)-1);
-            AfxMessageBox("Cannot open \"Browse For Folder\" dialog.", MB_OK|MB_ICONSTOP);
+            AfxMessageBox(L"Cannot open \"Browse For Folder\" dialog.", MB_OK|MB_ICONSTOP);
         }
 
         return retVal;

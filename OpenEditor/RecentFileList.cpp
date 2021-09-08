@@ -16,6 +16,8 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// 2018-12-09 bug fix, cannot open a workspace with a bookmark beyond eof
+
 #include "stdafx.h"
 #include <fstream>
 #include <algorithm> 
@@ -23,6 +25,7 @@
 #include "Common/OsException.h"
 #include "OpenEditor/OEDocument.h"
 #include <tinyxml\tinyxml.h>
+#include "TiXmlUtils.h"
 
     using namespace OpenEditor;
 
@@ -31,7 +34,7 @@
 RecentFileList::RecentFileList ()
     : m_time(time(0)),
     m_modified(false),
-    m_fileAccessMutex(FALSE, "GNU.OpenEditor.History"),
+    m_fileAccessMutex(FALSE, L"GNU.OpenEditor.History"),
     m_pRecentFilesListCtrl(0)
 {
 }
@@ -59,23 +62,23 @@ void RecentFileList::AttachControl (RecentFilesListCtrl* pRecentFilesListCtrl)
     }
 }
 
-void RecentFileList::DoOpen (const string& path, std::deque<file_info>& list, std::deque<wks_info>& wksList, unsigned __int64& time)
+void RecentFileList::DoOpen (const std::wstring& path, std::deque<file_info>& list, std::deque<wks_info>& wksList, unsigned __int64& time)
 {
     if (!::PathFileExists(path.c_str()))
         return;
 
     TiXmlDocument doc;
 
-    doc.LoadFile(path);
+    TiXmlUtils::LoadFile(doc, path.c_str());
 
     if (doc.Error())
     {
-        if (AfxMessageBox(CString("The file \"") + path.c_str() + "\" is corruted!\r\nWould you like to backup it and cointinue?", MB_ICONEXCLAMATION|MB_OKCANCEL) == IDOK)
+        if (AfxMessageBox(CString("The file \"") + path.c_str() + L"\" is corruted!\r\nWould you like to backup it and cointinue?", MB_ICONEXCLAMATION|MB_OKCANCEL) == IDOK)
         {
-            ::DeleteFile((path + ".bad.3").c_str());
-            ::MoveFile((path + ".bad.2").c_str(), (path + ".bad.3").c_str());
-            ::MoveFile((path + ".bad.1").c_str(), (path + ".bad.2").c_str());
-            ::MoveFile( path            .c_str(), (path + ".bad.1").c_str());
+            ::DeleteFile((path + L".bad.3").c_str());
+            ::MoveFile((path + L".bad.2").c_str(), (path + L".bad.3").c_str());
+            ::MoveFile((path + L".bad.1").c_str(), (path + L".bad.2").c_str());
+            ::MoveFile( path            .c_str(), (path + L".bad.1").c_str());
             doc.Clear();
         }
         else
@@ -94,10 +97,13 @@ void RecentFileList::DoOpen (const string& path, std::deque<file_info>& list, st
                 {
                     file_info fi;
                     fi.time = _atoi64(fileEl->Attribute("time"));
-                    fi.path = fileEl->Attribute("path");
+                    fi.path = Common::wstr(fileEl->Attribute("path"));
 
                     if (!fileEl->Attribute("used", &fi.counter))
                         fi.counter = 1;
+
+                    if (!fileEl->Attribute("codepage", &fi.codepage))
+                        fi.codepage = -1;
 
                     if (!fileEl->Attribute("pos_x", &fi.cursor_position.column))
                         fi.cursor_position.column = 0;
@@ -172,7 +178,7 @@ void RecentFileList::DoOpen (const string& path, std::deque<file_info>& list, st
                 {
                     wks_info wi;
                     wi.time = _atoi64(fileEl->Attribute("time"));
-                    wi.path = fileEl->Attribute("path");
+                    wi.path = Common::wstr(fileEl->Attribute("path"));
                     wksList.push_back(wi);
 
                     fileEl = fileEl->NextSiblingElement("Workspace");
@@ -183,12 +189,12 @@ void RecentFileList::DoOpen (const string& path, std::deque<file_info>& list, st
     }
 }
 
-void RecentFileList::Open (const string& path)
+void RecentFileList::Open (const std::wstring& path)
 {
     CSingleLock lock(&m_fileAccessMutex);
     BOOL locked = lock.Lock(LOCK_TIMEOUT);
     if (!locked) 
-        THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + m_path + "\"!");
+        THROW_APP_EXCEPTION("Cannot get exclusive access to \"" + Common::str(m_path) + "\"!");
 
     DoOpen(path, m_list, m_wksList, m_time);
     m_path = path;
@@ -207,7 +213,7 @@ void RecentFileList::Save ()
         CSingleLock lock(&m_fileAccessMutex);
         BOOL locked = lock.Lock(LOCK_TIMEOUT);
         if (!locked) 
-            THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + m_path + "\"!");
+            THROW_APP_EXCEPTION("Cannot get exclusive access to \"" + Common::str(m_path) + "\"!");
 
         // repare what to save
         std::deque<file_info> deltaList;
@@ -310,7 +316,7 @@ void RecentFileList::Save ()
         elem->SetAttribute(attr, buff);
     }
 
-void RecentFileList::DoSave (const string& path, const std::deque<file_info>& list, const std::deque<wks_info>& wksList, unsigned __int64 time)
+void RecentFileList::DoSave (const std::wstring& path, const std::deque<file_info>& list, const std::deque<wks_info>& wksList, unsigned __int64 time)
 {
     TiXmlDocument doc;
     doc.LinkEndChild(new TiXmlDeclaration("1.0","","yes"));
@@ -326,11 +332,14 @@ void RecentFileList::DoSave (const string& path, const std::deque<file_info>& li
             {
                 if (TiXmlElement* fileEl = new TiXmlElement("File"))
                 {
-                    fileEl->SetAttribute("path", it->path);
+                    fileEl->SetAttribute("path", Common::str(it->path));
                     SetAttribute(fileEl, "time", it->time);
                     
                     if (it->counter > 1)
                         SetAttribute(fileEl, "used", it->counter);
+
+                    if (it->codepage != -1)
+                        fileEl->SetAttribute("codepage", it->codepage);
 
                     if (it->cursor_position.column != 0)
                         fileEl->SetAttribute("pos_x", it->cursor_position.column);
@@ -405,7 +414,7 @@ void RecentFileList::DoSave (const string& path, const std::deque<file_info>& li
             for (; it != wksList.end(); ++it)
                 if (TiXmlElement* fileEl = new TiXmlElement("Workspace"))
                 {
-                    fileEl->SetAttribute("path", it->path);
+                    fileEl->SetAttribute("path", Common::str(it->path));
                     SetAttribute(fileEl, "time", it->time);
                     filesEl->LinkEndChild(fileEl);
                 }
@@ -415,10 +424,10 @@ void RecentFileList::DoSave (const string& path, const std::deque<file_info>& li
         doc.LinkEndChild(rootEl);
     }
 
-    doc.SaveFile(path);
+    TiXmlUtils::SaveFile(doc, path.c_str());
 }
 
-RecentFileList::file_info& RecentFileList::find (const string& path)
+RecentFileList::file_info& RecentFileList::find (const std::wstring& path)
 {
     std::deque<file_info>::iterator it = m_list.begin();
 
@@ -438,7 +447,7 @@ void RecentFileList::OnOpenDocument (COEDocument* doc, bool restoreState /*= tru
 {
     if (doc)
     {
-        string path = doc->GetPathName();
+        std::wstring path = doc->GetPathName();
         if (!path.empty())
         {
             RecentFileList::file_info& fi = find(path);
@@ -452,15 +461,21 @@ void RecentFileList::OnOpenDocument (COEDocument* doc, bool restoreState /*= tru
             if (restoreState 
             && COEDocument::GetSettingsManager().GetGlobalSettings()->GetHistoryRestoreEditorState())
             {
+                if (fi.codepage != -1)
+                    doc->SetEncodingCodepage(fi.codepage);
+
+                int nlines = doc->GetStorage().GetLineCount();
                 {
                     vector<int>::const_iterator it = fi.bookmarks.begin();
                     for (; it != fi.bookmarks.end(); ++it)
-                        doc->GetStorage().SetBookmark(*it, eBmkGroup1, true);
+                        if (*it < nlines) // 2018-12-09 bug fix, cannot open a workspace with a bookmark beyond eof
+                            doc->GetStorage().SetBookmark(*it, eBmkGroup1, true);
                 }
                 {
                     vector<pair<int,int>>::const_iterator it = fi.random_bookmarks.begin();
                     for (; it != fi.random_bookmarks.end(); ++it)
-                        doc->GetStorage().SetRandomBookmark(RandomBookmark((unsigned char)it->first), it->second, true);
+                        if (it->second < nlines) // 2018-12-09 bug fix, cannot open a workspace with a bookmark beyond eof
+                            doc->GetStorage().SetRandomBookmark(RandomBookmark((unsigned char)it->first), it->second, true);
                 }
 
                 POSITION vpos = doc->GetFirstViewPosition();
@@ -486,10 +501,9 @@ void RecentFileList::OnSaveDocument (COEDocument* doc)
 {
     if (doc)
     {
-        string path = doc->GetPathName();
+        std::wstring path = doc->GetPathName();
         if (!path.empty())
         {
-            string path = doc->GetPathName();
             RecentFileList::file_info& fi = find(path);
 
             m_modified = true;
@@ -508,7 +522,7 @@ void RecentFileList::OnCloseDocument (COEDocument* doc)
 {
     if (doc)
     {
-        string path = doc->GetPathName();
+        std::wstring path = doc->GetPathName();
         if (!path.empty())
         {
             RecentFileList::file_info& fi = find(path);
@@ -517,6 +531,7 @@ void RecentFileList::OnCloseDocument (COEDocument* doc)
 
             fi.bookmarks.clear();
             doc->GetStorage().GetBookmarkedLines(fi.bookmarks, eBmkGroup1);
+            fi.codepage = doc->GetEncodingCodepage();
 
             fi.random_bookmarks.clear();
             const RandomBookmarkArray& bookmarks = doc->GetStorage().GetRandomBookmarks();
@@ -542,7 +557,7 @@ void RecentFileList::OnCloseDocument (COEDocument* doc)
     }
 }
 
-void RecentFileList::RemoveDocument (const string& path)
+void RecentFileList::RemoveDocument (const std::wstring& path)
 {
     RecentFileList::file_info& fi = find(path);
     fi.time = time(0);
@@ -550,7 +565,7 @@ void RecentFileList::RemoveDocument (const string& path)
     m_modified = true;
 }
 
-RecentFileList::wks_info& RecentFileList::find_wks (const string& path)
+RecentFileList::wks_info& RecentFileList::find_wks (const std::wstring& path)
 {
     std::deque<wks_info>::iterator it = m_wksList.begin();
 
@@ -565,7 +580,7 @@ RecentFileList::wks_info& RecentFileList::find_wks (const string& path)
     return *m_wksList.begin();
 }
 
-void RecentFileList::OnOpenWorkspace (const string& path)
+void RecentFileList::OnOpenWorkspace (const std::wstring& path)
 {
     if (!path.empty())
     {
@@ -575,7 +590,7 @@ void RecentFileList::OnOpenWorkspace (const string& path)
     }
 }
 
-void RecentFileList::OnSaveWorkspace (const string& path)
+void RecentFileList::OnSaveWorkspace (const std::wstring& path)
 {
     if (!path.empty())
     {
@@ -589,7 +604,7 @@ void RecentFileList::OnSaveWorkspace (const string& path)
     }
 }
 
-void RecentFileList::RemoveWorkspace (const string& path)
+void RecentFileList::RemoveWorkspace (const std::wstring& path)
 {
     RecentFileList::wks_info& wks = find_wks(path);
     wks.time = time(0);
@@ -610,7 +625,7 @@ void RecentFileList::UpdateFileMenu (CCmdUI* pCmdUI)
 
     int size = COEDocument::GetSettingsManager().GetGlobalSettings()->GetHistoryFilesInRecentMenu();
 
-    vector<string> list;
+    vector<std::wstring> list;
     for (int i = 0; i < size && it != m_list.end(); ++i, ++it)
         if (!it->deleted)
             list.push_back(it->path);
@@ -639,7 +654,7 @@ void RecentFileList::UpdateWorkspaceMenu (CCmdUI* pCmdUI)
 
     int size = COEDocument::GetSettingsManager().GetGlobalSettings()->GetHistoryWorkspacesInRecentMenu();
 
-    vector<string> list;
+    vector<std::wstring> list;
     for (; list.size() <= (unsigned)size && it != m_wksList.end(); ++it)
         if (!it->deleted)
             list.push_back(it->path);
@@ -655,13 +670,13 @@ bool RecentFileList::GetWorkspaceName (int index, CString& fname)
     return m_wksMenuHandler.GetName(index, fname);
 }
 
-void RecentFileList::MenuHandler::Init (const vector<string>& list, int size)
+void RecentFileList::MenuHandler::Init (const vector<std::wstring>& list, int size)
 {
     m_arrNames.SetSize(size);
     m_nSize = size;
     m_nMaxSize = max(size, m_nMaxSize);
 
-    vector<string>::const_iterator it = list.begin();
+    auto it = list.begin();
 
     for (int i = 0; i < m_nSize; ++i)
     {

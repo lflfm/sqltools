@@ -26,11 +26,11 @@
 OEInsertNumberDlg::OEInsertNumberDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(OEInsertNumberDlg::IDD, pParent)
 {
-    m_nFirstNumber     = AfxGetApp()->GetProfileInt("Editor", "InsertNumberDlg.FirstNumber",    1);
-    m_nIncrement       = AfxGetApp()->GetProfileInt("Editor", "InsertNumberDlg.Increment",      1);
-    m_bLeadingZeros    = AfxGetApp()->GetProfileInt("Editor", "InsertNumberDlg.LeadingZeros",   0) ? true : false;
-    m_bSkipEmptyLines  = AfxGetApp()->GetProfileInt("Editor", "InsertNumberDlg.SkipEmptyLines", 0) ? true : false;
-    m_nNumberFormat    = AfxGetApp()->GetProfileInt("Editor", "InsertNumberDlg.NumberFormat",   0);
+    m_nFirstNumber     = AfxGetApp()->GetProfileInt(L"Editor", L"InsertNumberDlg.FirstNumber",    1);
+    m_nIncrement       = AfxGetApp()->GetProfileInt(L"Editor", L"InsertNumberDlg.Increment",      1);
+    m_bLeadingZeros    = AfxGetApp()->GetProfileInt(L"Editor", L"InsertNumberDlg.LeadingZeros",   0) ? true : false;
+    m_bSkipEmptyLines  = AfxGetApp()->GetProfileInt(L"Editor", L"InsertNumberDlg.SkipEmptyLines", 0) ? true : false;
+    m_nNumberFormat    = AfxGetApp()->GetProfileInt(L"Editor", L"InsertNumberDlg.NumberFormat",   0);
 }
 
 /*
@@ -54,9 +54,9 @@ void OEInsertNumberDlg::OnOK()
 {
     CDialog::OnOK();
 
-    AfxGetApp()->WriteProfileInt("Editor", "InsertNumberDlg.FirstNumber",    m_nFirstNumber   );
-    AfxGetApp()->WriteProfileInt("Editor", "InsertNumberDlg.Increment",      m_nIncrement     );
-    AfxGetApp()->WriteProfileInt("Editor", "InsertNumberDlg.LeadingZeros",   m_bLeadingZeros   ? 1 : 0);
-    AfxGetApp()->WriteProfileInt("Editor", "InsertNumberDlg.SkipEmptyLines", m_bSkipEmptyLines ? 1 : 0);
-    AfxGetApp()->WriteProfileInt("Editor", "InsertNumberDlg.NumberFormat",   m_nNumberFormat  );
+    AfxGetApp()->WriteProfileInt(L"Editor", L"InsertNumberDlg.FirstNumber",    m_nFirstNumber   );
+    AfxGetApp()->WriteProfileInt(L"Editor", L"InsertNumberDlg.Increment",      m_nIncrement     );
+    AfxGetApp()->WriteProfileInt(L"Editor", L"InsertNumberDlg.LeadingZeros",   m_bLeadingZeros   ? 1 : 0);
+    AfxGetApp()->WriteProfileInt(L"Editor", L"InsertNumberDlg.SkipEmptyLines", m_bSkipEmptyLines ? 1 : 0);
+    AfxGetApp()->WriteProfileInt(L"Editor", L"InsertNumberDlg.NumberFormat",   m_nNumberFormat  );
 }

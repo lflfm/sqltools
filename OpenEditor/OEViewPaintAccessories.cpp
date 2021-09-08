@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "OpenEditor/OEHighlighter.h"
 #include "OpenEditor/OEViewPaintAccessories.h"
+#include "Common/MyUtf.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -26,6 +27,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+//#define ADJUST_FONT_BY_WIDEST
 
     using namespace std;
     using namespace Common;
@@ -78,6 +80,8 @@ void COEViewPaintAccessories::OnSettingsChanged (CWnd* pwnd, const VisualAttribu
 
     m_TextForeground = textAttr.m_Foreground;
     m_TextBackground = textAttr.m_Background;
+    m_TextForegroundPen.DeleteObject();
+    m_TextForegroundPen.CreatePen(PS_SOLID, 1, m_TextForeground);
 
     try
     {
@@ -103,6 +107,8 @@ void COEViewPaintAccessories::OnSettingsChanged (CWnd* pwnd, const VisualAttribu
     const VisualAttribute& selTextAttr = set_.FindByName("Selected Text");
     m_SelTextForeground = selTextAttr.m_Foreground;
     m_SelTextBackground = selTextAttr.m_Background;
+    m_SelTextForegroundPen.DeleteObject();
+    m_SelTextForegroundPen.CreatePen(PS_SOLID, 1, m_COLOR_BTNFACE);
 
     const VisualAttribute& curLinetAttr = set_.FindByName("Current Line");
     m_CurrentLineBackground = curLinetAttr.m_Background;
@@ -146,8 +152,7 @@ void COEViewPaintAccessories::OnSettingsChanged (CWnd* pwnd, const VisualAttribu
     logfont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
     logfont.lfQuality        = DEFAULT_QUALITY;
     logfont.lfPitchAndFamily = FIXED_PITCH;
-    strncpy(logfont.lfFaceName, textAttr.m_FontName.c_str(), LF_FACESIZE-1);
-
+    _tcsncpy(logfont.lfFaceName, Common::wstr(textAttr.m_FontName).c_str(), LF_FACESIZE-1);
 
     for (int i = 0; i < 8; i++)
     {
@@ -209,13 +214,13 @@ void COEViewPaintAccessories::OnSettingsChanged (CWnd* pwnd, const VisualAttribu
 
     memset(&logfont, 0, sizeof(logfont));
 
-    logfont.lfHeight         = -7 * textAttr.m_FontSize;
+    logfont.lfHeight         = -5 * textAttr.m_FontSize;
     logfont.lfCharSet        = DEFAULT_CHARSET;
     logfont.lfOutPrecision   = CLIP_DEFAULT_PRECIS;
     logfont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
     logfont.lfQuality        = DEFAULT_QUALITY;
     logfont.lfPitchAndFamily = DEFAULT_PITCH;
-    strncpy(logfont.lfFaceName, "Small Fonts", LF_FACESIZE-1);
+    wcsncpy(logfont.lfFaceName, textAttr.m_FontSize <= 14 ? L"Small Fonts" : Common::wstr(textAttr.m_FontName).c_str(), LF_FACESIZE-1);
 
     m_RulerFont.DeleteObject();
     m_RulerFont.CreatePointFontIndirect(&logfont, &dc);

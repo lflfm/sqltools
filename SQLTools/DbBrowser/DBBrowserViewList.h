@@ -61,18 +61,18 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case 0: return "Name";
-            case 1: return "Text Length";
-            case 2: return "Created";
-            case 3: return "Modified";
-            case 4: return "Status";
+            case 0: return L"Name";
+            case 1: return L"Text Length";
+            case 2: return L"Created";
+            case 3: return L"Modified";
+            case 4: return L"Status";
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case 0: return getStr(data(row).view_name    );
             case 1: return getStr(data(row).text_length  );   
@@ -80,7 +80,7 @@
             case 3: return getStr(data(row).last_ddl_time);
             case 4: return getStr(data(row).status       );  
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {

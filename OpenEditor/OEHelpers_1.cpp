@@ -38,43 +38,50 @@ namespace OpenEditor
 
     const char* DelimitersMap::m_cszDefDelimiters = " \t\'\\()[]{}+-*/.,!?;:=><%|@&^";
 
-    const unsigned char LineTokenizer::cbSpaceChar     =  32;
-    const unsigned char LineTokenizer::cbVirtSpaceChar = 183;
-    const unsigned char LineTokenizer::cbTabChar       = 187;
-
+    const wchar_t LineTokenizer::cbSpaceChar     =  32;
+    const wchar_t LineTokenizer::cbVirtSpaceChar = 183;
+    const wchar_t LineTokenizer::cbTabChar       = 187;
 
 /////////////////////////////////////////////////////////////////////////////
 
 DelimitersMap::DelimitersMap ()
+    : FastmapW<bool>(false)
 {
 }
 
 DelimitersMap::DelimitersMap (const char* delimiters)
+    : FastmapW<bool>(false)
 {
     Set(delimiters);
 }
 
 void DelimitersMap::Set (const char* str)
 {
+    std::wstring buff = Common::wstr(str);
+
     string delim;
     erase();
 
-    for (; str && *str; str++)
-        operator[](*str) = true;
+    for (auto it = buff.begin(); it != buff.end(); ++it)
+        assign(*it, true);
 
-    // they'r required
-    operator[](' ') = true;
-    operator[]('\t') = true;
-    operator[]('\n') = true;
-    operator[]('\r') = true;
+    // always required
+    assign(' ' , true);
+    assign('\t', true);
+    assign('\n', true);
+    assign('\r', true);
 }
 
 void DelimitersMap::Get (string& buff)
 {
-    buff.erase();
-    for (unsigned int i = 0; i < _size(); i++)
-        if ((*this)[i])
-            buff += static_cast<char>(i);
+    std::vector<unsigned int> buff2;
+    indexes(buff2);
+
+    std::wstring buff3;
+    for (auto it = buff2.begin(); it != buff2.end(); ++it)
+        buff3.push_back((wchar_t)*it);
+
+    buff = Common::str(buff3);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -103,7 +110,7 @@ LineTokenizer::LineTokenizer (bool showWhiteSpace, int tabSpacing, const Delimit
     m_Length = m_Offset = m_Position = m_Position = 0;
 }
 
-void LineTokenizer::StartScan (const char* str, int len)
+void LineTokenizer::StartScan (const wchar_t* str, int len)
 {
     m_Buffer = str;
     m_Length = len;
@@ -112,7 +119,7 @@ void LineTokenizer::StartScan (const char* str, int len)
     if (!(m_showWhiteSpace || m_processSpaces))
     {
         // skip white space & expand tabs
-        for (; m_Offset < m_Length && isspace(m_Buffer[m_Offset]); m_Offset++)
+        for (; m_Offset < m_Length && iswspace(m_Buffer[m_Offset]); m_Offset++)
         {
             if (m_Buffer[m_Offset] == '\t')
                 m_Position = (m_Position / m_TabSpacing + 1) * m_TabSpacing;
@@ -124,7 +131,7 @@ void LineTokenizer::StartScan (const char* str, int len)
 
 bool LineTokenizer::Next ()
 {
-    bool isSpace = isspace(m_Buffer[m_Offset]) ? true : false;
+    bool isSpace = iswspace(m_Buffer[m_Offset]) ? true : false;
 
     if (!isSpace)                       // it's world
     {
@@ -139,7 +146,7 @@ bool LineTokenizer::Next ()
     }
     if (isSpace || !(m_showWhiteSpace || m_processSpaces))  // it's space
     {
-        for (; m_Offset < m_Length && isspace(m_Buffer[m_Offset]); m_Offset++)
+        for (; m_Offset < m_Length && iswspace(m_Buffer[m_Offset]); m_Offset++)
         {
             if (m_Buffer[m_Offset] == '\t')
                 m_Position = (m_Position / m_TabSpacing + 1) * m_TabSpacing;
@@ -150,9 +157,9 @@ bool LineTokenizer::Next ()
     return !Eol();
 }
 
-void LineTokenizer::GetCurentWord (const char*& str, int& pos, int& len) const
+void LineTokenizer::GetCurentWord (const wchar_t*& str, int& pos, int& len) const
 {
-    if (!isspace(m_Buffer[m_Offset]))   // it's world
+    if (!iswspace(m_Buffer[m_Offset]))   // it's world
     {
         if (m_delimiters[m_Buffer[m_Offset]])
             len = 1;
@@ -169,7 +176,7 @@ void LineTokenizer::GetCurentWord (const char*& str, int& pos, int& len) const
     {
         m_Whitespaces.erase();
 
-        for (int offset(m_Offset), position(m_Position); offset < m_Length && isspace(m_Buffer[offset]); offset++)
+        for (int offset(m_Offset), position(m_Position); offset < m_Length && iswspace(m_Buffer[offset]); offset++)
         {
             if (m_Buffer[offset] == '\t')
             {

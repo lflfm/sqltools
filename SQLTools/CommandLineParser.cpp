@@ -52,22 +52,22 @@ void CCommandLineParser::SetStartingDefaults ()
 
     if (m_files.empty()
     && COEDocument::GetSettingsManager().GetGlobalSettings()->GetNewDocOnStartup())
-        m_files.push_back("");
+        m_files.push_back(L"");
 }
 
-bool CCommandLineParser::check_option (const char* str, const char* option)
+bool CCommandLineParser::check_option (const wchar_t* str, const wchar_t* option)
 {
     for (int offset = 0; str[offset]; offset++)
         ;
-    return !strnicmp(str, option, offset) ? true : false;
+    return !wcsnicmp(str, option, offset) ? true : false;
 }
 
-bool CCommandLineParser::check_option (const char* str, const char* option, string& arg)
+bool CCommandLineParser::check_option (const wchar_t* str, const wchar_t* option, std::wstring& arg)
 {
     for (int offset = 0; str[offset] && str[offset] != '='; offset++)
         ;
 
-    if (!strnicmp(str, option, offset))
+    if (!wcsnicmp(str, option, offset))
     {
         if (str[offset] == '=')
             arg = str + offset + 1;
@@ -81,7 +81,7 @@ bool CCommandLineParser::Parse ()
 {
     for (int pos = 1; !m_error && pos < __argc; pos++)
     {
-        const char* str = __argv[pos];
+        const wchar_t* str = __wargv[pos];
 
         switch (str[0])
         {
@@ -91,30 +91,30 @@ bool CCommandLineParser::Parse ()
             {
             case 'C':
             case 'c':
-                m_connect = check_option(str+1, "connect", m_connectStr);
+                m_connect = check_option(str+1, L"connect", m_connectStr);
                 m_error = !m_connect;
                 break;
             case 'N':
             case 'n':
-                m_nolog = check_option(str+1, "nolog");
+                m_nolog = check_option(str+1, L"nolog");
                 m_error = !m_nolog;
                 break;
 
             case 'S':
             case 's':
-                m_start = check_option(str+1, "start");
+                m_start = check_option(str+1, L"start");
                 m_error = !m_start;
                 break;
 
             case 'R':
             case 'r':
-                m_reuse = check_option(str+1, "reuse");
+                m_reuse = check_option(str+1, L"reuse");
                 m_error = !m_reuse;
                 break;
 
             case 'H':
             case 'h':
-                m_help = check_option(str+1, "help");
+                m_help = check_option(str+1, L"help");
                 m_error = !m_help;
                 break;
             case '?':
@@ -157,25 +157,25 @@ bool CCommandLineParser::Parse ()
 
     if (m_error)
     {
-        AfxMessageBox((string("Command line error: \n\t") + m_errorMessage).c_str());
+        AfxMessageBox(Common::wstr("Command line error: \n\t" + m_errorMessage).c_str());
     }
     else if (m_help)
     {
         AfxMessageBox(
-            "SQLTools command line options:\n"
-            "\n"
-            "sqltools [/h[elp]]\n"
-            "\n"
-                "\thelp\t\t- show this help\n"
-            "\n"
-            "sqltools [{/n[olog]}|{/c[onnect]=<connection>}] [{/s[tart]}|{/r[euse]}] <file_list>    \n"
-            "\n"
-                "\tnolog\t\t- don't try connect or show connection dialog\n"
-                "\tconnect\t\t- connect using <connection> string\n"
-                "\t<connection>\t- user/password@{tnsalias}|{host:port:sid}|{host:port/service}[@{sysdba}|{sysoper}]\n"
-                "\tstart\t\t- start a new instance of the program\n"
-                "\treuse\t\t- reuse already running instance of the program\n"
-                "\t<file_list>\t- a space-separated list of files\n",
+            L"SQLTools command line options:\n"
+            L"\n"
+            L"sqltools [/h[elp]]\n"
+            L"\n"
+                L"\thelp\t\t- show this help\n"
+            L"\n"
+            L"sqltools [{/n[olog]}|{/c[onnect]=<connection>}] [{/s[tart]}|{/r[euse]}] <file_list>    \n"
+            L"\n"
+                L"\tnolog\t\t- don't try connect or show connection dialog\n"
+                L"\tconnect\t\t- connect using <connection> string\n"
+                L"\t<connection>\t- user/password@{tnsalias}|{host:port:sid}|{host:port/service}[@{sysdba}|{sysoper}]\n"
+                L"\tstart\t\t- start a new instance of the program\n"
+                L"\treuse\t\t- reuse already running instance of the program\n"
+                L"\t<file_list>\t- a space-separated list of files\n",
             MB_OK|MB_ICONINFORMATION
             );
     }
@@ -187,7 +187,7 @@ void CCommandLineParser::Process ()
 {
     if (!(m_error || m_help))
     {
-        std::vector<string>::const_iterator it = m_files.begin();
+        auto it = m_files.begin();
 
         for (; it != m_files.end(); ++it)
             if (!it->empty())
@@ -197,9 +197,9 @@ void CCommandLineParser::Process ()
     }
 }
 
-void CCommandLineParser::Pack (string& data) const
+void CCommandLineParser::Pack (CString& data) const
 {
-    std::ostringstream out;
+    std::wostringstream out;
 
     if (GetConnectOption())
     {
@@ -212,38 +212,38 @@ void CCommandLineParser::Pack (string& data) const
     else
         out << std::endl; // no connectin ingormation
 
-    std::vector<string>::const_iterator it = m_files.begin();
+    auto it = m_files.begin();
     for (; it != m_files.end(); ++it)
     {
-        string path;
+        CString path;
 
         if (!it->empty())
-            Common::AppGetFullPathName(*it, path);
+            Common::AppGetFullPathName(it->c_str(), path);
 
-        out << path << std::endl;
+        out << (LPCTSTR)path << std::endl;
     }
 
     out << ends;
 
-    data = out.str();
+    data = out.str().c_str();
 }
 
-void CCommandLineParser::Unpack (const char* data, int len)
+void CCommandLineParser::Unpack (const wchar_t* data, int len)
 {
     Clear();
 
-    std::istringstream in(data, len);
+    std::wistringstream in(data, len);
 
     std::getline(in, m_connectStr);
 
     if (!m_connectStr.empty())
     {
         m_connect = true;
-        if (m_connectStr == "/")
+        if (m_connectStr == L"/")
             m_connectStr.clear();
     }
 
-    string file;
+    std::wstring file;
     while (std::getline(in, file))
         m_files.push_back(file);
 }

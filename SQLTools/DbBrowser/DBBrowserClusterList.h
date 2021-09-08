@@ -75,25 +75,25 @@
             return String;
         }
 
-        virtual const char* getColHeader (int col) const {
+        virtual const wchar_t* getColHeader (int col) const {
             switch (col) {
-            case  0: return "Name";
-            case  1: return "Type";
-            case  2: return "Function";
-            case  3: return "Hashkeys";
-            case  4: return "Key size";
-            case  5: return "Tablespace";
-            case  6: return "Initial";
-            case  7: return "Next";
-            case  8: return "Increase";
-            case  9: return "Max Ext";
-            case 10: return "Pct Free";
-            case 11: return "Pct Used";
+            case  0: return L"Name";
+            case  1: return L"Type";
+            case  2: return L"Function";
+            case  3: return L"Hashkeys";
+            case  4: return L"Key size";
+            case  5: return L"Tablespace";
+            case  6: return L"Initial";
+            case  7: return L"Next";
+            case  8: return L"Increase";
+            case  9: return L"Max Ext";
+            case 10: return L"Pct Free";
+            case 11: return L"Pct Used";
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
-        virtual const char* getString (int row, int col) const {
+        virtual const wchar_t* getString (int row, int col) const {
             switch (col) {
             case  0:  return getStr(data(row).cluster_name   );
             case  1:  return getStr(data(row).cluster_type   );   
@@ -108,7 +108,7 @@
             case 10:  return getStr(data(row).pct_free       ); 
             case 11:  return getStr(data(row).pct_used       ); 
             }
-            return "Unknown";
+            return L"Unknown";
         }
 
         bool IsVisibleRow (int row) const {

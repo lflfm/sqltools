@@ -36,7 +36,7 @@ namespace Common {
 CPropertySheetMem::CPropertySheetMem(LPCTSTR pszCaption, UINT& selectPage, CWnd* pParentWnd)
     : TreePropSheet::CTreePropSheet(pszCaption, pParentWnd, selectPage), m_selectPage(selectPage) 
 {
-	SetEmptyPageText("Please select a child item of '%s'.");
+	SetEmptyPageText(L"Please select a child item of '%s'.");
     SetTreeViewMode(/*bTreeViewMode =*/FALSE, /*bPageCaption =*/FALSE, /*bTreeImages =*/FALSE);
     SetAllExpand(TRUE);
 }

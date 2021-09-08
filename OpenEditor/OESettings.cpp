@@ -104,6 +104,9 @@ void BaseSettings::NotifySettingsChanged ()
     CMN_IMPL_PROPERTY(GlobalSettings, ColBlockEditMode,                 true);
     CMN_IMPL_PROPERTY(GlobalSettings, MouseSelectionDelimiters,         "");
 
+    CMN_IMPL_PROPERTY(GlobalSettings, Encoding,                         feANSI);
+    CMN_IMPL_PROPERTY(GlobalSettings, AsciiAsUtf8,                      true);
+
     CMN_IMPL_PROPERTY(GlobalSettings, FileLocking,                      true);
     CMN_IMPL_PROPERTY(GlobalSettings, FileMemMapForBig,                 true);
     CMN_IMPL_PROPERTY(GlobalSettings, FileMemMapThreshold,              2);
@@ -125,22 +128,33 @@ void BaseSettings::NotifySettingsChanged ()
 
     CMN_IMPL_PROPERTY(GlobalSettings, AllowMultipleInstances,           false);
     CMN_IMPL_PROPERTY(GlobalSettings, NewDocOnStartup,                  true);
-    CMN_IMPL_PROPERTY(GlobalSettings, MaximizeFirstDocument,            true);
+    //CMN_IMPL_PROPERTY(GlobalSettings, MaximizeFirstDocument,            true);
     CMN_IMPL_PROPERTY(GlobalSettings, WorkDirFollowsDocument,           true);
-    CMN_IMPL_PROPERTY(GlobalSettings, SaveCurPosAndBookmarks,           true);
+    //CMN_IMPL_PROPERTY(GlobalSettings, SaveCurPosAndBookmarks,           true);
     CMN_IMPL_PROPERTY(GlobalSettings, SaveMainWinPosition,              true);
-    CMN_IMPL_PROPERTY(GlobalSettings, DoubleClickCloseTab,              false);
+    //CMN_IMPL_PROPERTY(GlobalSettings, DoubleClickCloseTab,              false);
     CMN_IMPL_PROPERTY(GlobalSettings, Locale,                           "English");
     CMN_IMPL_PROPERTY(GlobalSettings, KeymapLayout,                     "Default");
 
+    CMN_IMPL_PROPERTY(GlobalSettings, MDITabsOnTop,                     true);
+    CMN_IMPL_PROPERTY(GlobalSettings, MDITabsAutoColor,                 false);
+    CMN_IMPL_PROPERTY(GlobalSettings, MDITabsDocumentMenuButton,        false);
+    CMN_IMPL_PROPERTY(GlobalSettings, MDITabsActiveTabCloseButton,      true);
+    CMN_IMPL_PROPERTY(GlobalSettings, MDITabsRectangularLook,           false);
+    CMN_IMPL_PROPERTY(GlobalSettings, MDITabsCtrlTabSwitchesToPrevActive, true);
+
     CMN_IMPL_PROPERTY(GlobalSettings, DefaultClass,                     "Text");
-    CMN_IMPL_PROPERTY(GlobalSettings, UseIniFile,                       false);
+    //CMN_IMPL_PROPERTY(GlobalSettings, UseIniFile,                       false);
 
     CMN_IMPL_PROPERTY(GlobalSettings, FileManagerTooltips,              true);
     CMN_IMPL_PROPERTY(GlobalSettings, FileManagerPreviewInTooltips,     true);
     CMN_IMPL_PROPERTY(GlobalSettings, FileManagerPreviewLines,          10);
-    CMN_IMPL_PROPERTY(GlobalSettings, FileManagerShellContexMenu,       true);
-    CMN_IMPL_PROPERTY(GlobalSettings, FileManagerShellContexMenuFilter, "(^tsvn.*$)|(^.*cvs.*$)|(^properties$)");
+
+    //CMN_IMPL_PROPERTY(GlobalSettings, FileManagerShellContexMenu,       true);
+    //CMN_IMPL_PROPERTY(GlobalSettings, FileManagerShellContexMenuFilter, "(^tsvn.*$)|(^.*cvs.*$)|(^properties$)");
+    CMN_IMPL_PROPERTY(GlobalSettings, FileManagerShellContexMenuProperties, true);
+    CMN_IMPL_PROPERTY(GlobalSettings, FileManagerShellContexMenuTortoiseGIT, true);
+    CMN_IMPL_PROPERTY(GlobalSettings, FileManagerShellContexMenuTortoiseSVN, true);
 
     CMN_IMPL_PROPERTY(GlobalSettings, WorkspaceFileSaveInActiveOnExit,  false);
     CMN_IMPL_PROPERTY(GlobalSettings, WorkspaceDetectChangesOnOpen,     true);
@@ -176,9 +190,9 @@ GlobalSettings::GlobalSettings ()
 
 int GlobalSettings::GetSysPrintMeasuremnt ()
 {
-    char buff[4];
+    WCHAR buff[4];
 
-    if (::GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE, buff, sizeof(buff)))
+    if (::GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE, buff, sizeof(buff)/sizeof(buff[0])))
     {
         return (buff[0] == '1') ? 1 : 0;
     }

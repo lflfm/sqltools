@@ -49,6 +49,7 @@ BEGIN
     "#pragma code_page(1252)\r\n"
     "#include ""afxres.rc""         // Standard components\r\n"
     "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#include ""afxribbon.rc""     // FRM\r\n"
     "#include ""res\\SQLTools.rc2""\r\n"
     "#endif\r\n"
     "\0"
@@ -93,6 +94,16 @@ IDI_FILTER              ICON                    "res\\filter.ico"
 IDI_SETTINGS            ICON                    "res\\settings.ico"
 
 IDI_REFRESH             ICON                    "res\\refresh.ico"
+
+IDI_OBJECT_VIEWER       ICON                    "res\\ObjectViewer.ico"
+
+IDI_OBJECT_LIST         ICON                    "res\\ObjectList.ico"
+
+IDI_PROPERTIES          ICON                    "res\\properties.ico"
+
+IDI_FIND_IN_FILES       ICON                    "res\\FindInFiles.ico"
+
+IDI_OPEN_FILES          ICON                    "res\\OpenFiles.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -345,27 +356,32 @@ BEGIN
     PUSHBUTTON      "Net&work...",IDC_DFP_NETWORK,130,119,50,14,WS_GROUP
 END
 
-IDD_FILE_FIND DIALOGEX 50, 50, 328, 95
+IDD_FILE_FIND DIALOGEX 50, 50, 341, 122
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Find In Files"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    RTEXT           "Fi&nd what:",IDC_STATIC,37,8,34,8
-    COMBOBOX        IDC_FF_TEXT,76,7,172,90,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&>",IDC_FF_INSERT_EXPR,253,7,11,14,NOT WS_VISIBLE
-    RTEXT           "In files/file &types:",IDC_STATIC,8,22,63,8
-    COMBOBOX        IDC_FF_FILE_OR_TYPE,76,21,172,75,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    RTEXT           "In f&older:",IDC_STATIC,17,36,54,8
-    COMBOBOX        IDC_FF_FOLDER,76,35,172,112,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&...",IDC_FF_SELECT_FOLDER,253,35,11,14
-    CONTROL         "Math &whole word only",IDC_FF_MATH_WHOLE_WORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,24,53,93,11
-    CONTROL         "Math &case",IDC_FF_MATH_CASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,24,65,93,11
-    CONTROL         "Regular &expression",IDC_FF_REG_EXPR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,24,77,93,11
-    CONTROL         "Look in &subfolders",IDC_FF_LOCK_IN_SUBFOLDERS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,119,53,93,11
-    CONTROL         "Sa&ve files before find",IDC_FF_SAVE_FILES,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,119,65,93,11
-    DEFPUSHBUTTON   "Find",IDOK,271,7,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,271,24,50,14
-    CONTROL         "Co&llapse result list",IDC_FF_COLAPSED_LIST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,119,77,93,11
+    LTEXT           "Fi&nd what:",IDC_STATIC,11,8,34,8
+    COMBOBOX        IDC_FF_TEXT,63,7,200,90,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "»",IDC_FF_REGEXP_FIND,265,6,11,14
+    LTEXT           "File &masks (,):",IDC_STATIC,11,22,48,8,SS_CENTERIMAGE
+    COMBOBOX        IDC_FF_FILE_OR_TYPE,63,21,200,75,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "L&ook in (;):",IDC_STATIC,11,36,50,8
+    COMBOBOX        IDC_FF_FOLDER,63,35,200,112,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&...",IDC_FF_SELECT_FOLDER,265,34,11,14
+    CONTROL         "Math &whole word only",IDC_FF_MATH_WHOLE_WORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,53,93,11
+    CONTROL         "Math &case",IDC_FF_MATH_CASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,65,93,11
+    CONTROL         "&Regular expressions",IDC_FF_REG_EXPR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,77,93,11
+    CONTROL         "Transform &backslash expressions",IDC_FF_TRANSFORM_BACKSLASH_EXPR,
+                    "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,11,89,119,10
+    CONTROL         "Share search context with editor search (F&3)",IDC_FF_SHARE_SEARCH_CONTEXT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,100,159,11
+    CONTROL         "Look in &subfolders",IDC_FF_LOCK_IN_SUBFOLDERS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,178,53,93,11
+    CONTROL         "Search in op&en files ",IDC_FF_SEARCH_IN_MEMORY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,178,65,147,11
+    CONTROL         "Co&llapsed search results",IDC_FF_COLAPSED_LIST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,178,77,93,11
+    DEFPUSHBUTTON   "&Find",IDOK,283,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,283,24,50,14
+    PUSHBUTTON      "&Help",IDHELP,283,41,50,14
 END
 
 IDD_OBJ_INFO_TREE DIALOGEX 0, 0, 239, 259
@@ -747,9 +763,9 @@ BEGIN
     IDD_FILE_FIND, DIALOG
     BEGIN
         LEFTMARGIN, 8
-        RIGHTMARGIN, 321
+        RIGHTMARGIN, 334
         TOPMARGIN, 7
-        BOTTOMMARGIN, 88
+        BOTTOMMARGIN, 115
     END
 
     IDD_OBJ_INFO_TREE, DIALOG
@@ -1087,6 +1103,8 @@ IDB_FIND_FILES          BITMAP                  "res\\find_files_list.bmp"
 
 IDT_GRIDPOPUP           BITMAP                  "res\\GridPopupToolbar.bmp"
 
+IDT_CONNECT             BITMAP                  "res\\ConnectToolbar.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1097,7 +1115,7 @@ IDM_GREP_POPUP MENU
 BEGIN
     POPUP ""
     BEGIN
-        MENUITEM "&Open File",                  ID_GREP_OPEN_FILE
+        MENUITEM "&Open File\t<Enter>,<DblClick>", ID_GREP_OPEN_FILE
         MENUITEM SEPARATOR
         MENUITEM "Co&llapse all",               ID_GREP_COLLAPSE_ALL
         MENUITEM "E&xpand all",                 ID_GREP_EXPAND_ALL
@@ -1163,7 +1181,7 @@ BEGIN
         MENUITEM "&Find in Files Output",       ID_FILE_SHOW_GREP_OUTPUT
         MENUITEM SEPARATOR
         MENUITEM "&File Panel",                 ID_VIEW_FILE_PANEL
-        MENUITEM "&Workbook",                   ID_VIEW_WORKBOOK
+        MENUITEM "&Open Files",                 ID_VIEW_OPEN_FILES
         MENUITEM "St&atus Bar",                 ID_VIEW_STATUS_BAR
     END
     POPUP "&Search"
@@ -1311,7 +1329,7 @@ BEGIN
         MENUITEM "&Find in Files Output",       ID_FILE_SHOW_GREP_OUTPUT
         MENUITEM SEPARATOR
         MENUITEM "&File Panel",                 ID_VIEW_FILE_PANEL
-        MENUITEM "&Workbook",                   ID_VIEW_WORKBOOK
+        MENUITEM "&Open Files",                 ID_VIEW_OPEN_FILES
         MENUITEM "St&atus Bar",                 ID_VIEW_STATUS_BAR
     END
     POPUP "&Search"
@@ -1415,9 +1433,38 @@ BEGIN
         MENUITEM "Trim Excessi&ve Spaces",      ID_EDIT_FORMAT_TRIM_EXCESSIVE_SPACES
         MENUITEM "Tri&m Trailing Spaces",       ID_EDIT_FORMAT_TRIM_TRAILING_SPACES
         MENUITEM SEPARATOR
-        MENUITEM "&Windows file format",        ID_EDIT_FILE_FORMAT_WINOWS
-        MENUITEM "&Unix file format",           ID_EDIT_FILE_FORMAT_UNIX
-        MENUITEM "Old &Mac file format",        ID_EDIT_FILE_FORMAT_MAC
+        POPUP "&Encoding"
+        BEGIN
+            MENUITEM "&ANSI",                       ID_EDIT_ENCODING_ANSI
+            MENUITEM "O&EM",                        ID_EDIT_ENCODING_OEM
+            MENUITEM "UTF-&8",                      ID_EDIT_ENCODING_UTF8
+            MENUITEM SEPARATOR
+            POPUP "&Others"
+            BEGIN
+                MENUITEM "Codepage #1",                 ID_EDIT_ENCODING_CODEPAGE_FIRST
+            END
+        END
+        MENUITEM SEPARATOR
+        POPUP "Convert to &encoding"
+        BEGIN
+            MENUITEM "&ANSI",                       ID_FILE_ENCODING_ANSI
+            MENUITEM "O&EM",                        ID_FILE_ENCODING_OEM
+            MENUITEM "UTF-&8",                      ID_FILE_ENCODING_UTF8
+            MENUITEM "UTF-&8 with BOM",             ID_FILE_ENCODING_UTF8_BOM
+            MENUITEM "UTF-&16 with BOM",            ID_FILE_ENCODING_UTF16_BOM
+            MENUITEM SEPARATOR
+            POPUP "&Others"
+            BEGIN
+                MENUITEM "Codepage #1",                 ID_FILE_ENCODING_CODEPAGE_FIRST
+            END
+        END
+        MENUITEM SEPARATOR
+        POPUP "&File line ending style"
+        BEGIN
+            MENUITEM "&Windows",                    ID_EDIT_FILE_FORMAT_WINOWS
+            MENUITEM "&Unix",                       ID_EDIT_FILE_FORMAT_UNIX
+            MENUITEM "Old &Mac",                    ID_EDIT_FILE_FORMAT_MAC
+        END
     END
     POPUP "&Grid"
     BEGIN
@@ -1585,9 +1632,10 @@ BEGIN
     POPUP ""
     BEGIN
         MENUITEM "&Copy",                       ID_EDIT_COPY, GRAYED
+        MENUITEM "Copy ""&Text"" column",       ID_OUTPUT_TEXT_COPY, GRAYED
         MENUITEM "Copy &All",                   ID_GRID_COPY_ALL, GRAYED
         MENUITEM SEPARATOR
-        MENUITEM "&Open ""Text"" column in Editor", ID_OUTPUT_TEXT_OPEN, GRAYED
+        MENUITEM "Open ""Te&xt"" column in Editor", ID_OUTPUT_TEXT_OPEN, GRAYED
         MENUITEM "&Open All in Editor",         ID_GRID_OUTPUT_OPEN, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "&Export",                     ID_GRID_OUTPUT_EXPORT, GRAYED
@@ -1771,6 +1819,17 @@ BEGIN
     BUTTON      ID_GRIDPOPUP_WORDWRAP
 END
 
+IDT_CONNECT TOOLBAR 19, 19
+BEGIN
+    BUTTON      ID_SQL_CONNECT
+    BUTTON      ID_SQL_DISCONNECT
+    BUTTON      ID_SQL_RECONNECT
+    SEPARATOR
+    BUTTON      ID_SQL_CONN_DESCRIPTION
+    SEPARATOR
+    BUTTON      ID_SQL_READ_ONLY
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1832,6 +1891,11 @@ BEGIN
     0
 END
 
+IDD_FILE_FIND AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1846,7 +1910,7 @@ END
 
 STRINGTABLE
 BEGIN
-    AFX_IDS_APP_TITLE       "SQLTools"
+    AFX_IDS_APP_TITLE       "SQLToolsU"
     AFX_IDS_IDLEMESSAGE     "For Help, press F1"
     AFX_IDS_HELPMODEMESSAGE "Select an object on which to get Help"
 END
@@ -1938,13 +2002,9 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_VIEW_WORKBOOK        "Show documents as worksheets in a workbook\nWorkbook"
-END
-
-STRINGTABLE
-BEGIN
     ID_SQL_OBJ_VIEWER       "Show or hide ""Object Viewer""\nObject Viewer"
     ID_VIEW_PROPERTIES      "Show or hide ""Properties""\nProperties"
+    ID_VIEW_OPEN_FILES      "Show or hide ""Open Files""\nOpen Files"
     ID_SQL_PLAN_VIEWER      "Show explain plan viewer"
     ID_CUSTOM_SPLITTER_DOWN "Move the active window splitter  down\nSplittter down"
     ID_CUSTOM_SPLITTER_UP   "Move the active window splitter  up\nSplittter up"
@@ -2004,6 +2064,11 @@ BEGIN
     ID_BOOKLET_BINDS        "Bind Window"
 END
 
+STRINGTABLE
+BEGIN
+    ID_SQL_CONN_DESCRIPTION "Connection description\\Execution indicator\nConnection"
+END
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -2023,6 +2088,7 @@ LANGUAGE 9, 1
 #pragma code_page(1252)
 #include "afxres.rc"         // Standard components
 #include "afxprint.rc"       // printing/print preview resources
+#include "afxribbon.rc"     // FRM
 #include "res\SQLTools.rc2"
 #endif
 

@@ -323,7 +323,7 @@ BOOL CPropTreeItemColor::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 		if (FindSpot(point)!=-1 || m_rcButton.PtInRect(point))
 		{
 			//SetCursor(AfxGetApp()->LoadCursor(MAKEINTRESOURCE(IDC_PROPTREE_FPOINT)));
-			SetCursor(AfxGetApp()->LoadCursor("IDC_PROPTREE_FPOINT")); // (ak)
+			SetCursor(AfxGetApp()->LoadCursor(_T("IDC_PROPTREE_FPOINT"))); // (ak)
 			return TRUE;
 		}
 

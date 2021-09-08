@@ -36,9 +36,9 @@ public:
         : CDialog(resID, pParent) {}
 
 public:
-    std::string m_title;
-    std::string m_prompt;
-    std::string m_value;
+    std::wstring m_title;
+    std::wstring m_prompt;
+    std::wstring m_value;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

@@ -35,17 +35,17 @@ class FileList
 public:
     enum EStage { esFist = 0, esSecond = 1 };
 
-    FileList (const char*);
+    FileList (const wchar_t*);
     ~FileList ();
 
     void Cleanup ();
-    void Push (const std::string&, EStage);
+    void Push (const std::wstring&, EStage);
 
 private:
     void write ();
     
     FILE* m_pFile;
-    std::list<std::string> m_lists[2];
+    std::list<std::wstring> m_lists[2];
 };
 
     
@@ -58,15 +58,15 @@ public:
     ~FastFileOpen ();
 
     bool  IsOpen () const;
-    bool  Idem (const std::string& name);
-    FILE* Open (const std::string& name, const char* mode);
+    bool  Idem (const std::wstring& name);
+    FILE* Open (const std::wstring& name, const wchar_t* mode);
     void  Close ();
     void  Cleanup ();
     FILE* GetStream () const;
 
 private:
     FILE* m_pFile;
-    std::string m_strFileName;
+    std::wstring m_strFileName;
 };
 
     inline
@@ -85,7 +85,7 @@ private:
     bool FastFileOpen::IsOpen () const { return m_pFile ? true : false; }
 
     inline
-    bool FastFileOpen::Idem (const std::string& name) { return (m_strFileName == name); }
+    bool FastFileOpen::Idem (const std::wstring& name) { return (m_strFileName == name); }
 
     inline
     FILE* FastFileOpen::GetStream () const { return m_pFile; }
@@ -95,24 +95,24 @@ private:
 class WriteContext
 {
 public:
-    static const std::string strNull;
+    static const std::wstring strNull;
 
-    WriteContext (const std::string& strPath, 
-                  const std::string& listFile, const ExtractDDLSettings&);
+    WriteContext (const std::wstring& strPath, 
+                  const std::wstring& listFile, const ExtractDDLSettings&);
 
     void Cleanup ();
 
     const ExtractDDLSettings& GetDDLSettings() const { return m_DDLSettings; }
     
-    void  SetSubDir (const std::string& = strNull);
-    void  SetSuffix (const std::string& = strNull);
-    void  SetDefExt (const std::string& = strNull);
+    void  SetSubDir (const std::wstring& = strNull);
+    void  SetSuffix (const std::wstring& = strNull);
+    void  SetDefExt (const std::wstring& = strNull);
 
      // don't close a file after use
-    FILE* OpenFile (const std::string&, FileList::EStage = FileList::esFist, const char* mode = "at");
+    FILE* OpenFile (const std::wstring&, FileList::EStage = FileList::esFist, const wchar_t* mode = L"at");
 
     // Parameters override OpenFile parameters before EndSingleStream call.
-    void BeginSingleStream (const std::string&, FileList::EStage = FileList::esFist, const char* mode = "at");
+    void BeginSingleStream (const std::wstring&, FileList::EStage = FileList::esFist, const wchar_t* mode = L"at");
     void EndSingleStream ();
 
     std::ostream& ErrorLog()            { return m_errorLog; }
@@ -123,22 +123,22 @@ private:
     bool         m_bSingleStream;
     FileList     m_fileList;
     FastFileOpen m_fastFileOpen;
-    std::string  m_strPath, m_strSubDir, 
+    std::wstring  m_strPath, m_strSubDir, 
                  m_strSuffix, m_strDefExt;
 
     std::ostringstream m_errorLog;
 };
 
     inline
-    WriteContext::WriteContext (const std::string& strPath, const std::string& listFile, const ExtractDDLSettings& settings)
+    WriteContext::WriteContext (const std::wstring& strPath, const std::wstring& listFile, const ExtractDDLSettings& settings)
     : m_strPath(strPath),
       m_bSingleStream(false),
       m_DDLSettings(settings),
-      m_fileList((strPath + '\\' + listFile).c_str()) {}
+      m_fileList((strPath + L"\\" + listFile).c_str()) {}
 
-    inline void WriteContext::SetSubDir (const std::string& subDir) { m_strSubDir = subDir; }
-    inline void WriteContext::SetDefExt (const std::string& defExt) { m_strDefExt = defExt; }
-    inline void WriteContext::SetSuffix (const std::string& suffix) { m_strSuffix = suffix; }
+    inline void WriteContext::SetSubDir (const std::wstring& subDir) { m_strSubDir = subDir; }
+    inline void WriteContext::SetDefExt (const std::wstring& defExt) { m_strDefExt = defExt; }
+    inline void WriteContext::SetSuffix (const std::wstring& suffix) { m_strSuffix = suffix; }
 
 
 /// dictionary iteration function ///////////////////////////////////////////
@@ -156,16 +156,16 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////
 
-    string GetFullPath   (ExtractDDLSettings&);
-    string GetRootFolder (ExtractDDLSettings&);
-    string GetSubdirName (ExtractDDLSettings&);
+    std::wstring GetFullPath   (ExtractDDLSettings&);
+    std::wstring GetRootFolder (ExtractDDLSettings&);
+    std::wstring GetSubdirName (ExtractDDLSettings&);
 
-    void MakeFolders (string& path, ExtractDDLSettings& settings);
+    void MakeFolders (std::wstring& path, ExtractDDLSettings& settings);
     void LoadSchema (OciConnect& connect, OraMetaDict::Dictionary& dict, HWND hStatusWnd, ExtractDDLSettings& settings);
     void OverrideTablespace (OraMetaDict::Dictionary& dict, ExtractDDLSettings& settings);
     void WriteSchema (
         OraMetaDict::Dictionary& dict, std::vector<const OraMetaDict::DbObject*>& views, 
-        HWND hStatusWnd, string& path, string& error_log, ExtractDDLSettings& settings
+        HWND hStatusWnd, std::wstring& path, string& error_log, ExtractDDLSettings& settings
     );
     void NextAction (OciConnect* connect, HWND hStatusWnd, char* text);
     void OptimizeViewCreationOrder (

@@ -40,6 +40,7 @@
 #include <COMMON/StrHelpers.h>
 #include "OpenEditor/OEFindReplaceDlg.h"
 #include "OpenEditor/OEView.h"
+#include "Common/MyUtf.h"
 
 #include <MultiMon.h>
 extern "C" {
@@ -65,19 +66,19 @@ BOOL CFindReplaceDlg::m_MessageOnEOF;
 CFindReplaceDlg::CFindReplaceDlg(BOOL replace, COEditorView* pView)
 : CDialog(!replace ? IDD_OE_EDIT_FIND : IDD_OE_EDIT_REPLACE, NULL)
 {
-    m_pView          = pView;
+    m_pEditorView    = pView;
     m_ReplaceMode    = replace;
     m_Modified       = TRUE;
 	//{{AFX_DATA_INIT(CFindReplaceDlg)
 	//}}AFX_DATA_INIT
 
-    if (pView)
+    if (m_pEditorView)
     {
         // 26.05.2003 bug fix, Find/Replace dialog: "Transform backslash expressions" has beed added to handle \t\b\ddd...
-        m_BackslashExpressions = AfxGetApp()->GetProfileInt("Editor", "BackslashExpressions", FALSE);
+        m_BackslashExpressions = AfxGetApp()->GetProfileInt(L"Editor", L"BackslashExpressions", FALSE);
 
-        string buff;
-        toPrintableStr(m_pView->GetSearchText(), buff);
+        std::wstring buff;
+        toPrintableStr(m_pEditorView->GetSearchText(), buff);
         m_SearchText = buff.c_str();
 
         /*
@@ -90,13 +91,13 @@ CFindReplaceDlg::CFindReplaceDlg(BOOL replace, COEditorView* pView)
         m_RegExp         = regExpr;
         m_Direction      = backward ? 0 : 1;
         */
-        m_MatchCase      = AfxGetApp()->GetProfileInt("Editor", "SearchMatchCase",      FALSE);
-        m_MatchWholeWord = AfxGetApp()->GetProfileInt("Editor", "SearchMatchWholeWord", FALSE);
-        m_AllWindows     = AfxGetApp()->GetProfileInt("Editor", "SearchAllWindows",     FALSE);
-        m_RegExp         = AfxGetApp()->GetProfileInt("Editor", "SearchRegExp",         FALSE);
-        m_MessageOnEOF   = AfxGetApp()->GetProfileInt("Editor", "MessageOnEOF",         FALSE);
+        m_MatchCase      = AfxGetApp()->GetProfileInt(L"Editor", L"SearchMatchCase",      FALSE);
+        m_MatchWholeWord = AfxGetApp()->GetProfileInt(L"Editor", L"SearchMatchWholeWord", FALSE);
+        m_AllWindows     = AfxGetApp()->GetProfileInt(L"Editor", L"SearchAllWindows",     FALSE);
+        m_RegExp         = AfxGetApp()->GetProfileInt(L"Editor", L"SearchRegExp",         FALSE);
+        m_MessageOnEOF   = AfxGetApp()->GetProfileInt(L"Editor", L"MessageOnEOF",         FALSE);
         // 26.05.2003 bug fix, Find/Replace dialog: a replace mode depends on a search direction
-        m_Direction      = m_ReplaceMode ? 1 : AfxGetApp()->GetProfileInt("Editor", "SearchDirection", 1);
+        m_Direction      = m_ReplaceMode ? 1 : AfxGetApp()->GetProfileInt(L"Editor", L"SearchDirection", 1);
 
         m_WhereReplace   = 1;
     }
@@ -162,18 +163,26 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CFindReplaceDlg message handlers
 
-void CFindReplaceDlg::toPrintableStr (const char* from, string& _to)
+void CFindReplaceDlg::toPrintableStr (const wchar_t* from, std::wstring& _to)
 {
     if (m_BackslashExpressions)
-        Common::to_printable_str(from, _to);
+    {
+        string buff;
+        Common::to_printable_str(Common::str(from).c_str(), buff);
+        _to = Common::wstr(buff);
+    }
     else
         _to = from;
 }
 
-void CFindReplaceDlg::toUnprintableStr (const char* from, string& _to, bool skipEscDgt)
+void CFindReplaceDlg::toUnprintableStr (const wchar_t* from, std::wstring& _to, bool skipEscDgt)
 {
     if (m_BackslashExpressions)
-        Common::to_unprintable_str(from, _to, skipEscDgt);
+    {
+        string buff;
+        Common::to_unprintable_str(Common::str(from).c_str(), buff, skipEscDgt);
+        _to = Common::wstr(buff);
+    }
     else
         _to = from;
 }
@@ -185,16 +194,16 @@ void CFindReplaceDlg::AdjustPosition ()
     newRc = rc;
     orgRc = rc;
 
-    if (m_pView)
+    if (m_pEditorView)
     {
         CRect caretRc;
-        if (m_pView->GetCaretPosition(caretRc))
+        if (m_pEditorView->GetCaretPosition(caretRc))
         {
-            m_pView->ClientToScreen(&caretRc);
+            m_pEditorView->ClientToScreen(&caretRc);
 
             CRect viewRc;
-            m_pView->GetClientRect(&viewRc);
-            m_pView->ClientToScreen(&viewRc);
+            m_pEditorView->GetClientRect(&viewRc);
+            m_pEditorView->ClientToScreen(&viewRc);
 
             if (rc.top <= caretRc.top && rc.bottom >= caretRc.bottom)
             {
@@ -257,38 +266,39 @@ void CFindReplaceDlg::SaveOption ()
     if (m_Modified)
     {
 
-        Common::AppSaveHistory(m_wndSearchText, "Editor", "SearchText", 10);
+        Common::AppSaveHistory(m_wndSearchText, L"Editor", L"SearchText", 10);
         // 21.03.2003 bug fix, missing entry in fing what/replace with histoty
-        Common::AppRestoreHistory(m_wndSearchText, "Editor", "SearchText", 10);
+        Common::AppRestoreHistory(m_wndSearchText, L"Editor", L"SearchText", 10);
 
         if (m_ReplaceMode)
         {
-            Common::AppSaveHistory(m_wndReplaceText, "Editor", "ReplaceText", 10);
+            Common::AppSaveHistory(m_wndReplaceText, L"Editor", L"ReplaceText", 10);
             // 21.03.2003 bug fix, missing entry in fing what/replace with histoty
-            Common::AppRestoreHistory(m_wndReplaceText, "Editor", "ReplaceText", 10);
+            Common::AppRestoreHistory(m_wndReplaceText, L"Editor", L"ReplaceText", 10);
         }
 
-        if (m_pView)
+        if (m_pEditorView)
         {
-            string buff;
+            std::wstring buff;
             toUnprintableStr(m_SearchText, buff, false);
-            m_pView->SetSearchText(buff.c_str());
-            m_pView->SetSearchOption(m_Direction == 0 ? true : false,
+
+            m_pEditorView->SetSearchText(buff.c_str());
+            m_pEditorView->SetSearchOption(m_Direction == 0 ? true : false,
                                      m_MatchWholeWord ? true : false,
                                      m_MatchCase      ? true : false,
                                      m_RegExp         ? true : false,
                                      m_AllWindows     ? true : false);
 
-            AfxGetApp()->WriteProfileInt("Editor", "SearchMatchCase",      m_MatchCase     );
-            AfxGetApp()->WriteProfileInt("Editor", "SearchMatchWholeWord", m_MatchWholeWord);
-            AfxGetApp()->WriteProfileInt("Editor", "SearchAllWindows",     m_AllWindows    );
-            AfxGetApp()->WriteProfileInt("Editor", "SearchRegExp",         m_RegExp        );
-            AfxGetApp()->WriteProfileInt("Editor", "MessageOnEOF",         m_MessageOnEOF  );
+            AfxGetApp()->WriteProfileInt(L"Editor", L"SearchMatchCase",      m_MatchCase     );
+            AfxGetApp()->WriteProfileInt(L"Editor", L"SearchMatchWholeWord", m_MatchWholeWord);
+            AfxGetApp()->WriteProfileInt(L"Editor", L"SearchAllWindows",     m_AllWindows    );
+            AfxGetApp()->WriteProfileInt(L"Editor", L"SearchRegExp",         m_RegExp        );
+            AfxGetApp()->WriteProfileInt(L"Editor", L"MessageOnEOF",         m_MessageOnEOF  );
             // 26.05.2003 bug fix, Find/Replace dialog: a replace mode depends on a search direction
             if (!m_ReplaceMode)
-                AfxGetApp()->WriteProfileInt("Editor", "SearchDirection", m_Direction);
+                AfxGetApp()->WriteProfileInt(L"Editor", L"SearchDirection", m_Direction);
 
-            AfxGetApp()->WriteProfileInt("Editor", "BackslashExpressions", m_BackslashExpressions);
+            AfxGetApp()->WriteProfileInt(L"Editor", L"BackslashExpressions", m_BackslashExpressions);
         }
 
         m_Modified = FALSE;
@@ -304,12 +314,12 @@ void CFindReplaceDlg::OnFindNext()
         UpdateData();
         SaveOption();
 
-        if (m_pView && !m_SearchText.IsEmpty())
+        if (m_pEditorView && !m_SearchText.IsEmpty())
         {
             COEditorView* pView;
-            if (m_pView->RepeadSearch(esdDefault, pView))
+            if (m_pEditorView->RepeadSearch(esdDefault, pView))
             {
-                m_pView = pView;
+                m_pEditorView = pView;
                 AdjustPosition();
 
                 if (!m_ReplaceMode)
@@ -331,9 +341,9 @@ void CFindReplaceDlg::OnReplace ()
 
         Square blk;
 
-        if (m_pView)
+        if (m_pEditorView)
         {
-            m_pView->GetSelection(blk);
+            m_pEditorView->GetSelection(blk);
             blk.normalize();
 
             // 01.06.2004 bug fix, Find/Replace dialog: replace skips empty lines, e.g. "^$"
@@ -345,7 +355,7 @@ void CFindReplaceDlg::OnReplace ()
                 ctx.m_line  = blk.start.line;
                 ctx.m_start = blk.start.column;
                 ctx.m_end   = blk.end.column;
-                m_pView->Replace(ctx);
+                m_pEditorView->Replace(ctx);
             }
         }
 
@@ -380,39 +390,39 @@ void CFindReplaceDlg::SearchBatch (OpenEditor::ESearchBatch mode)
         UpdateData();
         SaveOption();
 
-        if (m_pView)
+        if (m_pEditorView)
         {
             // replace in file(s) or count/mark
             if (m_WhereReplace == 1 || mode == esbCount || mode == esbMark )
             {
                 if (!m_AllWindows || mode == esbCount || mode == esbMark
-                || AfxMessageBox("All occurances will be replaced for all windows! Do You confirm?", MB_OKCANCEL|MB_ICONWARNING) == IDOK)
+                || AfxMessageBox(L"All occurances will be replaced for all windows! Do You confirm?", MB_OKCANCEL|MB_ICONWARNING) == IDOK)
                 {
-                    string buff;
+                    std::wstring buff;
                     toUnprintableStr(m_ReplaceText, buff, false);
-                    counter = m_pView->SearchBatch(buff.c_str(), mode);
+                    counter = m_pEditorView->SearchBatch(buff.c_str(), mode);
                 }
             }
             else // replace in selection
             {
                 Square blk;
-                m_pView->GetSelection(blk);
+                m_pEditorView->GetSelection(blk);
                 bool normBlk = (blk.start < blk.end);
                 if (!normBlk) blk.normalize();
-                Position pos = m_pView->GetPosition();
+                Position orgPos = m_pEditorView->GetPosition();
 
-                bool _backward = m_pView->IsBackwardSearch();
-                m_pView->SetBackwardSearch(false);
+                bool _backward = m_pEditorView->IsBackwardSearch();
+                m_pEditorView->SetBackwardSearch(false);
 
                 try
                 {
                     //Square blk;
-                    //m_pView->GetSelection(blk);
+                    //m_pEditorView->GetSelection(blk);
 
                     if (!blk.is_empty())
                     {
                         blk.normalize();
-                        switch (m_pView->GetBlockMode())
+                        switch (m_pEditorView->GetBlockMode())
                         {
                         default:
                             THROW_APP_EXCEPTION("Unsupported block type for counting or replacing.");
@@ -422,9 +432,9 @@ void CFindReplaceDlg::SearchBatch (OpenEditor::ESearchBatch mode)
 
                         COEditorView* pView = 0;
 
-                        COEditorView::UndoGroup undoGroup(*m_pView);
-                        Position pos = m_pView->GetPosition();
-                        m_pView->PushInUndoStack(pos);
+                        COEditorView::UndoGroup undoGroup(*m_pEditorView);
+                        Position pos = m_pEditorView->GetPosition();
+                        m_pEditorView->PushInUndoStack(pos);
 
                         FindCtx ctx;
                         ctx.m_line = blk.start.line;
@@ -434,8 +444,8 @@ void CFindReplaceDlg::SearchBatch (OpenEditor::ESearchBatch mode)
                         // 27.05.2002 bug fix, regexp replace fails on \1,... for ReplaceAll
                         toUnprintableStr(m_ReplaceText, ctx.m_text, m_RegExp ? true : false /*skipEscDgt*/);
 
-                        while (m_pView->Find((const COEditorView *&)pView, ctx)
-                        && !ctx.m_eofPassed && pView == m_pView)
+                        while (m_pEditorView->Find((const COEditorView *&)pView, ctx)
+                        && !ctx.m_eofPassed && pView == m_pEditorView)
                         {
                             if ((ctx.m_line >= blk.start.line && ctx.m_line < blk.end.line)
                             || (ctx.m_line == blk.end.line && ctx.m_end <= blk.end.column))
@@ -443,7 +453,7 @@ void CFindReplaceDlg::SearchBatch (OpenEditor::ESearchBatch mode)
                                 if (mode == esbReplace)
                                 {
                                     int orgLen = ctx.m_end - ctx.m_start;
-                                    m_pView->Replace(ctx);
+                                    m_pEditorView->Replace(ctx);
                                     int newLen = ctx.m_end - ctx.m_start;
                                     // 30.03.2005 (ak) bug fix, hanging on trying to replace 'a' with 'aa' in the current selection 
                                     ctx.m_start = ctx.m_end;
@@ -461,17 +471,17 @@ void CFindReplaceDlg::SearchBatch (OpenEditor::ESearchBatch mode)
                 }
                 catch (...)
                 {
-                    m_pView->SetBackwardSearch(_backward);
+                    m_pEditorView->SetBackwardSearch(_backward);
                     throw;
                 }
 
-                m_pView->SetBackwardSearch(_backward);
+                m_pEditorView->SetBackwardSearch(_backward);
                 if (!normBlk) 
                     std::swap(blk.start, blk.end);
                 else
-                    pos = blk.end;
-                m_pView->MoveTo(pos);
-                m_pView->SetSelection(blk);
+                    orgPos = blk.end;
+                m_pEditorView->MoveTo(orgPos);
+                m_pEditorView->SetSelection(blk);
             }
 
             if (mode == esbReplace && counter)
@@ -491,7 +501,7 @@ void CFindReplaceDlg::SearchBatch (OpenEditor::ESearchBatch mode)
             break;
         case esbCount:
             Global::SetStatusText(strcat(buff, " occurrence(s) have been found!"));
-            MessageBox(buff, "Find");
+            MessageBox(Common::wstr(buff).c_str(), L"Find");
             break;
         }
     }
@@ -501,18 +511,18 @@ void CFindReplaceDlg::SearchBatch (OpenEditor::ESearchBatch mode)
 BOOL CFindReplaceDlg::OnInitDialog ()
 {
     BOOL enableWhereReplace =
-        (!m_pView->IsSelectionEmpty()
-         && m_pView->GetBlockMode() != ebtColumn
+        (!m_pEditorView->IsSelectionEmpty()
+         && m_pEditorView->GetBlockMode() != ebtColumn
          && !m_AllWindows) ? TRUE : FALSE;
 
     Square blk;
-    m_pView->GetSelection(blk);
+    m_pEditorView->GetSelection(blk);
     m_WhereReplace = (enableWhereReplace
         && blk.start.line != blk.end.line) ? 0 : 1;
 
     CDialog::OnInitDialog();
 
-    Common::AppRestoreHistory(m_wndSearchText, "Editor", "SearchText", 10);
+    Common::AppRestoreHistory(m_wndSearchText, L"Editor", L"SearchText", 10);
 
     if (!m_SearchText.IsEmpty())
     {
@@ -522,7 +532,7 @@ BOOL CFindReplaceDlg::OnInitDialog ()
 
     if (m_ReplaceMode)
     {
-        Common::AppRestoreHistory(m_wndReplaceText, "Editor", "ReplaceText", 10);
+        Common::AppRestoreHistory(m_wndReplaceText, L"Editor", L"ReplaceText", 10);
 
         GetDlgItem(IDC_EF_REPLACE_IN_SELECTION)->EnableWindow(enableWhereReplace);
     }
@@ -579,8 +589,8 @@ void CFindReplaceDlg::OnAllWindows ()
     if (m_ReplaceMode)
     {
         GetDlgItem(IDC_EF_REPLACE_IN_SELECTION)
-            ->EnableWindow(!m_pView->IsSelectionEmpty()
-                           && m_pView->GetBlockMode() != ebtColumn
+            ->EnableWindow(!m_pEditorView->IsSelectionEmpty()
+                           && m_pEditorView->GetBlockMode() != ebtColumn
                            && !m_AllWindows);
 
         if (m_AllWindows && m_WhereReplace == 0)
@@ -681,25 +691,25 @@ void CFindReplaceDlg::OnInsertRegexpFind (UINT nID)
         ::SendMessage(::GetDlgItem(m_hWnd, IDC_EF_REGEXP), BM_SETCHECK, BST_CHECKED, 0L);
 
     static
-    struct { const char* text; int offset; }
+    struct { const wchar_t* text; int offset; }
         expr[] = {
-            { "\\t", -1 },
-            { ".",  -1 },
-            { "*",  -1 },
-            { "+",  -1 },
-            { "^",  -1 },
-            { "$",  -1 },
-            { "[]",  1 },
-            { "[^]", 2 },
-            { "|",  -1 },
-            { "\\", -1 },
-            { "([a-zA-Z0-9])",              -1 },
-            { "([a-zA-Z])",                 -1 },
-            { "([0-9])",                    -1 },
-            { "([0-9a-fA-F]+)",             -1 },
-            { "([a-zA-Z_$][a-zA-Z0-9_$]*)", -1 },
-            { "(([0-9]+\\.[0-9]*)|([0-9]*\\.[0-9]+)|([0-9]+))", -1 },
-            { "((\"[^\"]*\")|('[^']*'))",   -1 },
+            { L"\\t", -1 },
+            { L".",  -1 },
+            { L"*",  -1 },
+            { L"+",  -1 },
+            { L"^",  -1 },
+            { L"$",  -1 },
+            { L"[]",  1 },
+            { L"[^]", 2 },
+            { L"|",  -1 },
+            { L"\\", -1 },
+            { L"([a-zA-Z0-9])",              -1 },
+            { L"([a-zA-Z])",                 -1 },
+            { L"([0-9])",                    -1 },
+            { L"([0-9a-fA-F]+)",             -1 },
+            { L"([a-zA-Z_$][a-zA-Z0-9_$]*)", -1 },
+            { L"(([0-9]+\\.[0-9]*)|([0-9]*\\.[0-9]+)|([0-9]+))", -1 },
+            { L"((\"[^\"]*\")|('[^']*'))",   -1 },
         };
 
     _ASSERTE((nID - ID_REGEXP_FIND_TAB) < (sizeof(expr)/sizeof(expr[0])));
@@ -717,8 +727,8 @@ void CFindReplaceDlg::OnInsertRegexpReplace (UINT nID)
     ::SendMessage(::GetDlgItem(m_hWnd, IDC_EF_REGEXP), BM_SETCHECK, BST_CHECKED, 0L);
 
     static
-    const char* expr[]
-        = { "\\0", "\\1", "\\2", "\\3", "\\4", "\\5", "\\6", "\\7", "\\8", "\\9" };
+    const wchar_t* expr[]
+        = { L"\\0", L"\\1", L"\\2", L"\\3", L"\\4", L"\\5", L"\\6", L"\\7", L"\\8", L"\\9" };
 
     _ASSERTE((nID - ID_REGEXP_REPLACE_WHAT_FIND) < (sizeof(expr)/sizeof(expr[0])));
 

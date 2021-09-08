@@ -22,23 +22,23 @@
 class OESplitLinesDlg : public CDialog
 {
 public:
-	OESplitLinesDlg (CWnd* pParent = NULL);
+    OESplitLinesDlg (CWnd* pParent = NULL);
 
-	enum { IDD = IDD_OE_SPLIT_LINES };
+    enum { IDD = IDD_OE_SPLIT_LINES };
 
     int m_nLeftMargin;
     int m_nRightMargin;
-    std::string m_sInsertNewLineAfter;
-    std::string m_sIgnorePreviousBetween;
-    std::string m_sDontChangeBetween;
+    CString m_sInsertNewLineAfter;
+    CString m_sIgnorePreviousBetween;
+    CString m_sDontChangeBetween;
     bool m_bAdvancedOptions;
 
-    void GetIgnoreForceNewLine (std::vector<std::pair<char,char> >& ) const;
-    void GetDontChaneBeetwen (std::vector<std::pair<char,char> >& ) const;
+    void GetIgnoreForceNewLine (std::vector<std::pair<wchar_t,wchar_t> >& ) const;
+    void GetDontChaneBeetwen (std::vector<std::pair<wchar_t,wchar_t> >& ) const;
 
 protected:
     virtual BOOL OnInitDialog();
-	virtual void DoDataExchange(CDataExchange* pDX);
+    virtual void DoDataExchange(CDataExchange* pDX);
     virtual void OnOK();
 
 public:

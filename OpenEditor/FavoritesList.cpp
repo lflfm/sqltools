@@ -24,6 +24,8 @@
 #include "OpenEditor/OEDocument.h"
 #include <tinyxml\tinyxml.h>
 #include "COMMON/AppGlobal.h"
+#include "COMMON/MyUtf.h"
+#include "TiXmlUtils.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 FavoritesList::FavoritesList ()
     : m_favorites((TiXmlDocument*)0),
     m_modified(false),
-    m_fileAccessMutex(FALSE, "GNU.OpenEditor.Favorites")
+    m_fileAccessMutex(FALSE, L"GNU.OpenEditor.Favorites")
 {
 }
 
@@ -46,28 +48,28 @@ FavoritesList::~FavoritesList ()
 {
 }
 
-void FavoritesList::Open (const string& path)
+void FavoritesList::Open (const std::wstring& path)
 {
     m_path = path;
 
     CSingleLock lock(&m_fileAccessMutex);
     BOOL locked = lock.Lock(LOCK_TIMEOUT);
     if (!locked) 
-        THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + m_path + "\"!");
+        THROW_APP_EXCEPTION("Cannot get exclusive access to \"" + Common::str(m_path) + "\"!");
 
     if (::PathFileExists(m_path.c_str()))
     {
         m_favorites.reset(new TiXmlDocument);
-        m_favorites->LoadFile(m_path);
+        TiXmlUtils::LoadFile(*m_favorites, m_path.c_str());
 
         if (m_favorites->Error())
         {
-            if (AfxMessageBox(CString("The file \"") + path.c_str() + "\" is corruted!\r\nWould you like to backup it and cointinue?", MB_ICONEXCLAMATION|MB_OKCANCEL) == IDOK)
+            if (AfxMessageBox(CString(L"The file \"") + path.c_str() + L"\" is corruted!\r\nWould you like to backup it and cointinue?", MB_ICONEXCLAMATION|MB_OKCANCEL) == IDOK)
             {
-                ::DeleteFile((path + ".bad.3").c_str());
-                ::MoveFile((path + ".bad.2").c_str(), (path + ".bad.3").c_str());
-                ::MoveFile((path + ".bad.1").c_str(), (path + ".bad.2").c_str());
-                ::MoveFile( path            .c_str(), (path + ".bad.1").c_str());
+                ::DeleteFile((path + L".bad.3").c_str());
+                ::MoveFile((path + L".bad.2").c_str(), (path + L".bad.3").c_str());
+                ::MoveFile((path + L".bad.1").c_str(), (path + L".bad.2").c_str());
+                ::MoveFile( path             .c_str(), (path + L".bad.1").c_str());
                 m_favorites.reset(0);
             }
             else
@@ -96,9 +98,9 @@ void FavoritesList::Save ()
         CSingleLock lock(&m_fileAccessMutex);
         BOOL locked = lock.Lock(LOCK_TIMEOUT);
         if (!locked) 
-            THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + m_path + "\"!");
+            THROW_APP_EXCEPTION("Cannot get exclusive access to \"" + Common::str(m_path) + "\"!");
 
-        m_favorites->SaveFile(m_path);
+        TiXmlUtils::SaveFile(*m_favorites, m_path.c_str());
         m_modified = false;
 
         // resume file watching
@@ -191,63 +193,64 @@ void FavoritesList::RemoveWorkspaceQuickSave (const std::string& path)
 
 void FavoritesList::UpdateWorkspaceQuickSaveMenu (CCmdUI* pCmdUI, UINT nMaxSize)
 {
-	if (pCmdUI->m_pMenu == NULL)
-		return;
+    if (pCmdUI->m_pMenu == NULL)
+        return;
 
     vector<string> list;
     GetWorkspaceQuickSaves(list);
 
-	if (list.empty())
-	{
-		// no MRU files
-		if (!m_strOriginal.IsEmpty())
-			pCmdUI->SetText(m_strOriginal);
-		pCmdUI->Enable(FALSE);
-		return;
-	}
-
-	if (m_strOriginal.IsEmpty() && pCmdUI->m_pMenu != NULL)
-		pCmdUI->m_pMenu->GetMenuString(pCmdUI->m_nID, m_strOriginal, MF_BYCOMMAND);
-
-	UINT iMRU;
-	for (iMRU = 0; iMRU < nMaxSize; iMRU++)
-		pCmdUI->m_pMenu->DeleteMenu(pCmdUI->m_nID + iMRU, MF_BYCOMMAND);
-
-    vector<string>::const_iterator it = list.begin();
-	for (iMRU = 0; iMRU < nMaxSize && it != list.end(); iMRU++, ++it)
-	{
-		// insert mnemonic + the file name
-		TCHAR buf[10];
-		int nItem = ((iMRU) % _AFX_MRU_MAX_COUNT) + 1;
-
-		// number &1 thru &9, then 1&0, then 11 thru ...
-		if (nItem > 10)
-			_stprintf_s(buf, _countof(buf), _T("%d "), nItem);
-		else if (nItem == 10)
-			Checked::tcscpy_s(buf, _countof(buf), _T("1&0 "));
-		else
-			_stprintf_s(buf, _countof(buf), _T("&%d "), nItem);
-
-        LPCSTR fname = ::PathFindFileName(it->c_str());
-		pCmdUI->m_pMenu->InsertMenu(pCmdUI->m_nIndex++,
-			MF_STRING | MF_BYPOSITION, pCmdUI->m_nID++,
-			CString(buf) + fname);
+    if (list.empty())
+    {
+        // no MRU files
+        if (!m_strOriginal.IsEmpty())
+            pCmdUI->SetText(m_strOriginal);
+        pCmdUI->Enable(FALSE);
+        return;
     }
 
-	// update end menu count
-	pCmdUI->m_nIndex--; // point to last menu added
-	pCmdUI->m_nIndexMax = pCmdUI->m_pMenu->GetMenuItemCount();
-	pCmdUI->m_bEnableChanged = TRUE;    // all the added items are enabled
+    if (m_strOriginal.IsEmpty() && pCmdUI->m_pMenu != NULL)
+        pCmdUI->m_pMenu->GetMenuString(pCmdUI->m_nID, m_strOriginal, MF_BYCOMMAND);
+
+    UINT iMRU;
+    for (iMRU = 0; iMRU < nMaxSize; iMRU++)
+        pCmdUI->m_pMenu->DeleteMenu(pCmdUI->m_nID + iMRU, MF_BYCOMMAND);
+
+    vector<string>::const_iterator it = list.begin();
+    for (iMRU = 0; iMRU < nMaxSize && it != list.end(); iMRU++, ++it)
+    {
+        // insert mnemonic + the file name
+        TCHAR buf[10];
+        int nItem = ((iMRU) % _AFX_MRU_MAX_COUNT) + 1;
+
+        // number &1 thru &9, then 1&0, then 11 thru ...
+        if (nItem > 10)
+            _stprintf_s(buf, _countof(buf), _T("%d "), nItem);
+        else if (nItem == 10)
+            Checked::tcscpy_s(buf, _countof(buf), _T("1&0 "));
+        else
+            _stprintf_s(buf, _countof(buf), _T("&%d "), nItem);
+
+        std::wstring path = Common::wstr(*it);
+        LPCWSTR fname = ::PathFindFileName(path.c_str());
+        pCmdUI->m_pMenu->InsertMenu(pCmdUI->m_nIndex++,
+            MF_STRING | MF_BYPOSITION, pCmdUI->m_nID++,
+            CString(buf) + fname);
+    }
+
+    // update end menu count
+    pCmdUI->m_nIndex--; // point to last menu added
+    pCmdUI->m_nIndexMax = pCmdUI->m_pMenu->GetMenuItemCount();
+    pCmdUI->m_bEnableChanged = TRUE;    // all the added items are enabled
 }
 
 void FavoritesList::OnWatchedFileChanged ()
 {
     try { EXCEPTION_FRAME;
 
-        Global::SetStatusText(("Reloading file \"" + m_path + "\" ...").c_str());
+        Global::SetStatusText((L"Reloading file \"" + m_path + L"\" ...").c_str());
         CFileWatchClient::UpdateWatchInfo();
         Open(m_path);
-        Global::SetStatusText(("File \"" + m_path + "\" reloaded.").c_str());
+        Global::SetStatusText((L"File \"" + m_path + L"\" reloaded.").c_str());
     }
     _OE_DEFAULT_HANDLER_
 }

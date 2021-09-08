@@ -407,7 +407,7 @@ void TableBase::Load (OciConnect& connect)
             metaColumn.m_defCharLengthSemantics = (defCharLengthSemantics == 'C') ? OraMetaDict::USE_CHAR : OraMetaDict::USE_BYTE;
             metaColumn.m_charLengthSemantics = (cur.ToString(cn_col_char_used) == "C") ? OraMetaDict::USE_CHAR : OraMetaDict::USE_BYTE;
             metaColumn.m_bNullable = OraMetaDict::Loader::IsYes(cur.ToString(cn_col_nullable));
-            metaColumn.m_bVirtual  = OraMetaDict::Loader::IsYes(cur.ToString(cn_col_virtual_column));
+            metaColumn.m_bVirtual  = (metaColumn.m_strDataType != "XMLTYPE") ? OraMetaDict::Loader::IsYes(cur.ToString(cn_col_virtual_column)) : false;
             // the following two columns might be truncated but that is not really important for our purpose here
             cur.GetString(cn_col_comments, metaColumn.m_strComments);
             cur.GetString(cn_col_data_default, metaColumn.m_strDataDefault);
@@ -1265,7 +1265,7 @@ void Package::addProcedure (int position, const string& name,  const string& arg
         //re-introducing parameters as children nodes
         int childFirstTabPos = 0;
         vector<Argument>::const_iterator it = arguments.begin();
-        for (int position = 0; it != arguments.end(); ++it, ++position)
+        for (; it != arguments.end(); ++it)
         {
             ProcedureParameter* param = 0;
 
@@ -1382,10 +1382,10 @@ void Type::Load (OciConnect& connect)
             int childFirstTabPos = 0;
 
             for (std::vector<TreeNode*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
-                if (PackageProcedure* column = dynamic_cast<PackageProcedure*>(*it))
-                    childFirstTabPos = max(childFirstTabPos, (int)column->GetName().length());
-                else if (Column* column = dynamic_cast<Column*>(*it)) 
-                    childFirstTabPos = max(childFirstTabPos, (int)column->GetName().length());
+                if (PackageProcedure* column1 = dynamic_cast<PackageProcedure*>(*it))
+                    childFirstTabPos = max(childFirstTabPos, (int)column1->GetName().length());
+                else if (Column* column2 = dynamic_cast<Column*>(*it)) 
+                    childFirstTabPos = max(childFirstTabPos, (int)column2->GetName().length());
 
             SetChildFirstTabPos(childFirstTabPos);
         }

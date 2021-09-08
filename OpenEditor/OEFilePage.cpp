@@ -25,9 +25,11 @@
 
 
 COEFilePage::COEFilePage (SettingsManager& manager)
-	: CPropertyPage(COEFilePage::IDD)
+    : CPropertyPage(COEFilePage::IDD)
     , m_manager(manager)
 {
+    m_psp.dwFlags &= ~PSP_HASHELP;
+
     const OpenEditor::GlobalSettingsPtr settings = m_manager.GetGlobalSettings();
     m_Locking            = settings->GetFileLocking() ? TRUE : FALSE;
     m_MemMapForBig       = settings->GetFileMemMapForBig() ? TRUE : FALSE;
@@ -37,8 +39,6 @@ COEFilePage::COEFilePage (SettingsManager& manager)
     m_ReloadChangedFiles = settings->GetFileReloadChanges() ? TRUE : FALSE;
     m_AutoscrollAfterReload = settings->GetFileAutoscrollAfterReload() ? TRUE : FALSE;
     m_OverwriteReadonly  = settings->GetFileOverwriteReadonly() ? TRUE : FALSE;
-	//m_SaveAddTimestamp   = settings->GetFileSaveAddTimestamp() ? TRUE : FALSE;
-	//m_SaveAddTimestampFormat = settings->GetFileSaveAddTimestampFormat();
 }
 
 COEFilePage::~COEFilePage()
@@ -53,8 +53,8 @@ void COEFilePage::DoDataExchange(CDataExchange* pDX)
     DDX_Check(pDX, IDC_OE_FILE_SAVE_ON_SWITH, m_SaveOnSwitch);
     DDX_Check(pDX, IDC_OE_FILE_RELOAD_CHANGED, m_ReloadChangedFiles);
     DDX_Check(pDX, IDC_OE_FILE_OVERWRITE_READONLY, m_OverwriteReadonly);
-	//DDX_Check(pDX, IDC_OE_FILE_TIMESTAMP_ADD, m_SaveAddTimestamp);
-	//DDX_Text(pDX,  IDC_OE_FILE_TIMESTAMP_FORMAT, m_SaveAddTimestampFormat);
+    //DDX_Check(pDX, IDC_OE_FILE_TIMESTAMP_ADD, m_SaveAddTimestamp);
+    //DDX_Text(pDX,  IDC_OE_FILE_TIMESTAMP_FORMAT, m_SaveAddTimestampFormat);
     DDX_Text(pDX, IDC_OE_FILE_MEMMAP_THRESHOLD, m_MemMapThreshold);
     DDX_Check(pDX, IDC_OE_FILE_DETECT_CHANGES, m_DetectFileChanges);
     DDV_MinMaxUInt(pDX, m_MemMapThreshold, 1, 999999999);
@@ -92,15 +92,14 @@ BOOL COEFilePage::OnApply()
         settings->SetFileReloadChanges(m_ReloadChangedFiles ? true : false, false /*notify*/);
         settings->SetFileAutoscrollAfterReload(m_AutoscrollAfterReload ? true : false, false /*notify*/);
         settings->SetFileOverwriteReadonly(m_OverwriteReadonly ? true : false, false /*notify*/);
-		//settings->SetFileSaveAddTimestamp(m_SaveAddTimestamp ? true : false, false /*notify*/);
-		//settings->SetFileSaveAddTimestampFormat(m_SaveAddTimestampFormat, false /*notify*/);
     }
     _OE_DEFAULT_HANDLER_;
 
-	return TRUE;
+    return TRUE;
 }
 
 void COEFilePage::OnUpdateData()
 {
     UpdateData();
 }
+

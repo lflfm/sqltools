@@ -59,8 +59,8 @@ void CPropTreeItemDateTime::DrawAttribute(CDC* pDC, const RECT& rc)
 	    pDC->SetTextColor(RGB(0,0,0));
 	    pDC->SetBkMode(TRANSPARENT);
 
-        char buffer[100];
-        GetDateFormat(LOCALE_USER_DEFAULT, DATE_SHORTDATE, &m_datetime, 0,  buffer, sizeof(buffer));
+        TCHAR buffer[100];
+        GetDateFormat(LOCALE_USER_DEFAULT, DATE_SHORTDATE, &m_datetime, 0,  buffer, sizeof(buffer)/sizeof(buffer[0]));
 	    CRect r = rc;
         r.InflateRect(-2,-2);
 	    pDC->DrawText(buffer, &r, DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX);

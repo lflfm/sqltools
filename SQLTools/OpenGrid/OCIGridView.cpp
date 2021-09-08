@@ -447,13 +447,13 @@ void OciGridView::OnUpdate_OciGridIndicator (CCmdUI* pCmdUI)
         m_statusCxt = statusCxt;
 
         if (m_statusCxt.m_numOfRec) {
-            m_statusText.Format("Record %d of %d", m_statusCxt.m_curRec, m_statusCxt.m_numOfRec);
+            m_statusText.Format(L"Record %d of %d", m_statusCxt.m_curRec, m_statusCxt.m_numOfRec);
 
             if (!m_statusCxt.m_allRowsFetched)
-                m_statusText += ", last not fetched.";
+                m_statusText += L", last not fetched.";
         }
         else
-            m_statusText = "No records";
+            m_statusText = L"No records";
     }
 
     pCmdUI->SetText(m_statusText);

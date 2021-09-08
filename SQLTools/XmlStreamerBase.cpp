@@ -23,6 +23,7 @@
 #include "COMMON/AppUtilities.h"
 #include "Common/ConfigFilesLocator.h"
 #include "Common/VisualAttributes.h"
+#include "TiXmlUtils.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -42,17 +43,17 @@ static const char* VISUAL_ATTRIBUTE  = "VisualAttribute";
 ///////////////////////////////////////////////////////////////////////////
 // XmlStreamerBase
 ///////////////////////////////////////////////////////////////////////////
-XmlStreamerBase::XmlStreamerBase (const std::string& filename, bool backup) 
+XmlStreamerBase::XmlStreamerBase (const std::wstring& filename, bool backup) 
 : m_backup(backup), 
 m_filename(filename),
-m_fileAccessMutex(FALSE, ("GNU.SQLTools." + filename).c_str())
+m_fileAccessMutex(FALSE, (L"GNU.SQLTools." + filename).c_str())
 {
     ASSERT(m_filename.c_str() == ::PathFindFileName(m_filename.c_str()));
 }
 
 bool XmlStreamerBase::fileExists () const
 {
-    string path;
+    std::wstring path;
     return ConfigFilesLocator::GetFilePath(m_filename.c_str(), path);
 }
 
@@ -61,17 +62,17 @@ void XmlStreamerBase::read (void* ctx)
     CSingleLock lock(&m_fileAccessMutex);
     BOOL locked = lock.Lock(LOCK_TIMEOUT);
     if (!locked) 
-        THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + m_filename + '"');
+        THROW_APP_EXCEPTION(L"Cannot get exclusive access to \"" + m_filename + L"\"");
 
     TiXmlDocument doc;
 
-    string path;
+    std::wstring path;
     bool exists = ConfigFilesLocator::GetFilePath(m_filename.c_str(), path);
 
     if (exists)
     {
-        if (!doc.LoadFile(path.c_str()))
-            THROW_APP_EXCEPTION("Cannot parse \"" + path + "\"\nERROR: " + doc.ErrorDesc());
+        if (!TiXmlUtils::LoadFile(doc, path.c_str()))
+            THROW_APP_EXCEPTION(L"Cannot parse \"" + path + L"\"\nERROR: " + Common::wstr(doc.ErrorDesc()));
     }
     else // no problem - will load settings from resources
     {
@@ -83,11 +84,18 @@ void XmlStreamerBase::read (void* ctx)
             THROW_APP_EXCEPTION(string("Cannot parse default settings\nERROR: ") + doc.ErrorDesc());
     }
 
-    read(doc, ctx);
+    try
+    {
+        read(doc, ctx);
+    }
+    catch (std::range_error&)
+    {
+        THROW_APP_EXCEPTION(wstring(L"Invalid bytes in utf8 string in ") + m_filename);
+    }
 
     // create a settings file
-    if (!exists && !doc.SaveFile(path.c_str()))
-        THROW_APP_EXCEPTION("Cannot save \"" + path + "\"\nERROR: " + doc.ErrorDesc());
+    if (!exists && !TiXmlUtils::SaveFile(doc, path.c_str()))
+        THROW_APP_EXCEPTION(L"Cannot save \"" + path + L"\"\nERROR: " + Common::wstr(doc.ErrorDesc()));
 }
 
 
@@ -96,26 +104,26 @@ void XmlStreamerBase::write (const void* ctx)
     CSingleLock lock(&m_fileAccessMutex);
     BOOL locked = lock.Lock(LOCK_TIMEOUT);
     if (!locked) 
-        THROW_APP_EXCEPTION(string("Cannot get exclusive access to \"") + m_filename + '"');
+        THROW_APP_EXCEPTION(L"Cannot get exclusive access to \"" + m_filename + L"\"");
 
     TiXmlDocument doc;
 
-    string path;
+    std::wstring path;
     bool exists = ConfigFilesLocator::GetFilePath(m_filename.c_str(), path);
 
     if (!exists)
         doc.InsertEndChild(TiXmlDeclaration("1.0", ""/*"Windows-1252"*/, "yes"));
-    else if (!doc.LoadFile(path.c_str()))
-        THROW_APP_EXCEPTION("Cannot read \"" + path + "\"\nERROR: " + doc.ErrorDesc());
+    else if (!TiXmlUtils::LoadFile(doc, path.c_str()))
+        THROW_APP_EXCEPTION(L"Cannot read \"" + path + L"\"\nERROR: " + Common::wstr(doc.ErrorDesc()));
 
     if (exists && m_backup)
-        if (!::CopyFile(path.c_str(), (path + ".old").c_str(), FALSE))
-            THROW_APP_EXCEPTION("Cannot backup file \"" + path + "\"");
+        if (!::CopyFile(path.c_str(), (path + L".old").c_str(), FALSE))
+            THROW_APP_EXCEPTION(L"Cannot backup file \"" + path + L"\"");
 
     write(doc, !exists, ctx);
 
-    if (!doc.SaveFile(path.c_str()))
-        THROW_APP_EXCEPTION("Cannot save \"" + path + "\"\nERROR: " + doc.ErrorDesc());
+    if (!TiXmlUtils::SaveFile(doc, path.c_str()))
+        THROW_APP_EXCEPTION(L"Cannot save \"" + path + L"\"\nERROR: " + Common::wstr(doc.ErrorDesc()));
 }
 
 TiXmlElement* XmlStreamerBase::getNodeSafe (TiXmlNode* parent, const char* name)
@@ -141,7 +149,7 @@ void XmlStreamerBase::validateMajorVersion (const TiXmlElement* elem, int majorV
     if (elem->QueryIntAttribute("MajorVersion", &majorVer) != TIXML_SUCCESS)
         majorVer = 0;
     if (majorVer != majorVersion)
-        THROW_APP_EXCEPTION("Cannot load \""  + m_filename + "\".\nERROR: Unsupported settings version.");
+        THROW_APP_EXCEPTION(L"Cannot load \""  + m_filename + L"\".\nERROR: Unsupported settings version.");
 }
 
 void XmlStreamerBase::buildNodeMap (const TiXmlElement* parentElem, const char* elemName, const char* attrName, map<string, const TiXmlElement*>& map)

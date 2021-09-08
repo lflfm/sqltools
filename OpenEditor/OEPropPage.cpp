@@ -40,8 +40,8 @@ m_manager(manager), m_settings(settings)
 {
     m_dataInitialized = false;
 
-	//{{AFX_DATA_INIT(COEPropPage)
-	//}}AFX_DATA_INIT
+    //{{AFX_DATA_INIT(COEPropPage)
+    //}}AFX_DATA_INIT
 }
 
 COEPropPage::~COEPropPage()
@@ -50,24 +50,24 @@ COEPropPage::~COEPropPage()
 
 void COEPropPage::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertyPage::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(COEPropPage)
-	//}}AFX_DATA_MAP
+    CPropertyPage::DoDataExchange(pDX);
+    //{{AFX_DATA_MAP(COEPropPage)
+    //}}AFX_DATA_MAP
 }
 
 
 BEGIN_MESSAGE_MAP(COEPropPage, CPropertyPage)
-	//{{AFX_MSG_MAP(COEPropPage)
-	ON_CBN_SELCHANGE(IDC_OEC_LANGUAGE, OnSelChangeLanguage)
-	ON_EN_CHANGE(IDC_OEC_TAB_SIZE, OnChangeData)
-	ON_CBN_SELCHANGE(IDC_OEC_FILE_TYPE, OnChangeData)
-	ON_EN_CHANGE(IDC_OEC_INDENT_SIZE, OnChangeData)
-	ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_DEFAULT, OnChangeData)
-	ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_NONE, OnChangeData)
-	ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_SMART, OnChangeData)
+    //{{AFX_MSG_MAP(COEPropPage)
+    ON_CBN_SELCHANGE(IDC_OEC_LANGUAGE, OnSelChangeLanguage)
+    ON_EN_CHANGE(IDC_OEC_TAB_SIZE, OnChangeData)
+    ON_CBN_SELCHANGE(IDC_OEC_FILE_TYPE, OnChangeData)
+    ON_EN_CHANGE(IDC_OEC_INDENT_SIZE, OnChangeData)
+    ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_DEFAULT, OnChangeData)
+    ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_NONE, OnChangeData)
+    ON_BN_CLICKED(IDC_OEC_INDENT_TYPE_SMART, OnChangeData)
     ON_BN_CLICKED(IDC_OEC_INSERT_SPACES, OnChangeData)
     ON_BN_CLICKED(IDC_OEC_KEEP_TABS, OnChangeData)
-	//}}AFX_MSG_MAP
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ LRESULT COEPropPage::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 
 BOOL COEPropPage::OnInitDialog() 
 {
-	CPropertyPage::OnInitDialog();
+    CPropertyPage::OnInitDialog();
 
     SendDlgItemMessage(IDC_OEC_LANGUAGE, CB_RESETCONTENT);
     
@@ -96,7 +96,7 @@ BOOL COEPropPage::OnInitDialog()
     {
         const std::string& name = m_manager.GetClassByPos(i)->GetName();
 
-        SendDlgItemMessage(IDC_OEC_LANGUAGE, CB_ADDSTRING, 0, (LPARAM)name.c_str());
+        SendDlgItemMessage(IDC_OEC_LANGUAGE, CB_ADDSTRING, 0, (LPARAM)Common::wstr(name).c_str());
 
         if (name == m_settings.GetName())
             SendDlgItemMessage(IDC_OEC_LANGUAGE, CB_SETCURSEL, i);
@@ -113,7 +113,7 @@ BOOL COEPropPage::OnInitDialog()
     SendDlgItemMessage(IDC_OEC_INDENT_SIZE_SPIN, UDM_SETRANGE32, 1, 32);
     SendDlgItemMessage(IDC_OEC_TAB_SIZE_SPIN,    UDM_SETRANGE32, 1, 32);
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -121,9 +121,9 @@ void COEPropPage::doSelChangeLanguage ()
 {
     m_dataInitialized = false;
 
-    char buff[80];
-    SetDlgItemText(IDC_OEC_INDENT_SIZE, itoa(m_settings.GetIndentSpacing(), buff, 10));
-    SetDlgItemText(IDC_OEC_TAB_SIZE,    itoa(m_settings.GetTabSpacing(), buff, 10));   
+    WCHAR buff[80];
+    SetDlgItemText(IDC_OEC_INDENT_SIZE, _itow(m_settings.GetIndentSpacing(), buff, 10));
+    SetDlgItemText(IDC_OEC_TAB_SIZE,    _itow(m_settings.GetTabSpacing(), buff, 10));   
 
     CheckRadioButton(IDC_OEC_INDENT_TYPE_NONE, 
                      IDC_OEC_INDENT_TYPE_NONE + 2, 
@@ -150,23 +150,23 @@ void COEPropPage::OnChangeData()
 {
     if (m_dataInitialized)
     {
-        char buff[80];
-        GetDlgItemText(IDC_OEC_INDENT_SIZE, buff, sizeof(buff));
-	    m_settings.SetIndentSpacing(atoi(buff), false);
-        GetDlgItemText(IDC_OEC_TAB_SIZE, buff, sizeof(buff));
-	    m_settings.SetTabSpacing(atoi(buff), false);
+        WCHAR buff[80];
+        GetDlgItemText(IDC_OEC_INDENT_SIZE, buff, sizeof(buff)/sizeof(buff[0]));
+        m_settings.SetIndentSpacing(_wtoi(buff), false);
+        GetDlgItemText(IDC_OEC_TAB_SIZE, buff, sizeof(buff)/sizeof(buff[0]));
+        m_settings.SetTabSpacing(_wtoi(buff), false);
 
         if (IsDlgButtonChecked(IDC_OEC_INDENT_TYPE_SMART))
-	        m_settings.SetIndentType(2, false);
+            m_settings.SetIndentType(2, false);
         else if (IsDlgButtonChecked(IDC_OEC_INDENT_TYPE_DEFAULT))
-	        m_settings.SetIndentType(1, false);
+            m_settings.SetIndentType(1, false);
         else
-	        m_settings.SetIndentType(0, false);
+            m_settings.SetIndentType(0, false);
 
         if (IsDlgButtonChecked(IDC_OEC_INSERT_SPACES))
-	        m_settings.SetTabExpand(true, false);
+            m_settings.SetTabExpand(true, false);
         else
-	        m_settings.SetTabExpand(false, false);
+            m_settings.SetTabExpand(false, false);
     }
 }
 

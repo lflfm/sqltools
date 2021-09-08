@@ -20,19 +20,26 @@
 #include <COMMON/ExceptionHelper.h>
 #include <COMMON/DlgDataExt.h>
 #include "OpenEditor/OEFileManagerPage.h"
+#include "Common/MyUtf.h"
 
 
 COEFileManagerPage::COEFileManagerPage (SettingsManager& manager)
-	: CPropertyPage(COEFileManagerPage::IDD)
+    : CPropertyPage(COEFileManagerPage::IDD)
     , m_manager(manager)
 {
+    m_psp.dwFlags &= ~PSP_HASHELP;
+
     const OpenEditor::GlobalSettingsPtr settings = m_manager.GetGlobalSettings();
 
     m_FileManagerTooltips              = settings->GetFileManagerTooltips              () ? TRUE : FALSE;
     m_FileManagerPreviewInTooltips     = settings->GetFileManagerPreviewInTooltips     () ? TRUE : FALSE;
     m_FileManagerPreviewLines          = settings->GetFileManagerPreviewLines          ();
-    m_FileManagerShellContexMenu       = settings->GetFileManagerShellContexMenu       () ? TRUE : FALSE;
-    m_FileManagerShellContexMenuFilter = settings->GetFileManagerShellContexMenuFilter ();
+
+    //m_FileManagerShellContexMenu       = settings->GetFileManagerShellContexMenu       () ? TRUE : FALSE;
+    //m_FileManagerShellContexMenuFilter = Common::wstr(settings->GetFileManagerShellContexMenuFilter()).c_str();
+    m_FileManagerShellContexMenuProperties  = settings->GetFileManagerShellContexMenuProperties ();
+    m_FileManagerShellContexMenuTortoiseGIT = settings->GetFileManagerShellContexMenuTortoiseGIT();
+    m_FileManagerShellContexMenuTortoiseSVN = settings->GetFileManagerShellContexMenuTortoiseSVN();
 
     m_HistoryRestoreEditorState        = settings->GetHistoryRestoreEditorState      ();
     m_HistoryFiles                     = settings->GetHistoryFiles                   ();
@@ -54,13 +61,17 @@ void COEFileManagerPage::DoDataExchange(CDataExchange* pDX)
     CPropertyPage::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_OE_FLMGR_TOOLTIPS,             m_FileManagerTooltips);
     DDX_Check(pDX, IDC_OE_FLMGR_PREVIEWINTOOLTIPS,    m_FileManagerPreviewInTooltips);
-    DDX_Check(pDX, IDC_OE_FLMGR_SHELLCONTEXMENU,      m_FileManagerShellContexMenu);
+    //DDX_Check(pDX, IDC_OE_FLMGR_SHELLCONTEXMENU,      m_FileManagerShellContexMenu);
+    DDX_Check(pDX, IDC_OE_FLMGR_FILE_PROPERTIES,      m_FileManagerShellContexMenuProperties );
+    DDX_Check(pDX, IDC_OE_FLMGR_TORTOISE_GIT,         m_FileManagerShellContexMenuTortoiseGIT);
+    DDX_Check(pDX, IDC_OE_FLMGR_TORTOISE_SVN,         m_FileManagerShellContexMenuTortoiseSVN);
+
 
     DDX_Text(pDX, IDC_OE_FLMGR_PREVIEWLINES, m_FileManagerPreviewLines);
     DDV_MinMaxUInt(pDX, m_FileManagerPreviewLines, 1, 20);
-    SendDlgItemMessage(IDC_OE_FLMGR_SPIN1, UDM_SETRANGE32, 1, 20);
+    SendDlgItemMessage(IDC_OE_FLMGR_PREVIEWLINES_SPIN, UDM_SETRANGE32, 1, 20);
 
-    DDX_Text(pDX, IDC_OE_FLMGR_SHELLCONTEXMENUFILTER, m_FileManagerShellContexMenuFilter);
+    //DDX_Text(pDX, IDC_OE_FLMGR_SHELLCONTEXMENUFILTER, m_FileManagerShellContexMenuFilter);
 
     DDX_Check(pDX, IDC_OE_FLMGR_RESTORE_EDITOR_STATE           , m_HistoryRestoreEditorState     ); 
 
@@ -86,7 +97,7 @@ void COEFileManagerPage::DoDataExchange(CDataExchange* pDX)
 
     GetDlgItem(IDC_OE_FLMGR_PREVIEWINTOOLTIPS)->    EnableWindow(m_FileManagerTooltips);
     GetDlgItem(IDC_OE_FLMGR_PREVIEWLINES)->         EnableWindow(m_FileManagerTooltips && m_FileManagerPreviewInTooltips);
-    GetDlgItem(IDC_OE_FLMGR_SHELLCONTEXMENUFILTER)->EnableWindow(m_FileManagerShellContexMenu);
+    //GetDlgItem(IDC_OE_FLMGR_SHELLCONTEXMENUFILTER)->EnableWindow(m_FileManagerShellContexMenu);
 
     DDX_Check(pDX, IDC_OE_FLMGR_RECENT_FILE_ONLY_NAME_IN_MENU, m_HistoryOnlyFileNameInRecentMenu);
     DDX_Check(pDX, IDC_OE_FLMGR_RECENT_WORKSPACE_ONLY_NAME_IN_MENU, m_HistoryOnlyWorkspaceNameInRecentMenu);
@@ -97,8 +108,10 @@ BEGIN_MESSAGE_MAP(COEFileManagerPage, CPropertyPage)
     ON_BN_CLICKED(IDC_OE_FLMGR_TOOLTIPS             , OnUpdateData)
     ON_BN_CLICKED(IDC_OE_FLMGR_PREVIEWINTOOLTIPS    , OnUpdateData)
     ON_BN_CLICKED(IDC_OE_FLMGR_PREVIEWLINES         , OnUpdateData)
-    ON_BN_CLICKED(IDC_OE_FLMGR_SHELLCONTEXMENU      , OnUpdateData)
-    ON_BN_CLICKED(IDC_OE_FLMGR_SHELLCONTEXMENUFILTER, OnUpdateData)
+    ON_BN_CLICKED(IDC_OE_FLMGR_FILE_PROPERTIES      , OnUpdateData)
+    ON_BN_CLICKED(IDC_OE_FLMGR_TORTOISE_SVN         , OnUpdateData)
+    ON_BN_CLICKED(IDC_OE_FLMGR_TORTOISE_GIT         , OnUpdateData)
+    //ON_BN_CLICKED(IDC_OE_FLMGR_SHELLCONTEXMENUFILTER, OnUpdateData)
 END_MESSAGE_MAP()
 
 
@@ -113,8 +126,12 @@ BOOL COEFileManagerPage::OnApply()
         settings->SetFileManagerTooltips              (m_FileManagerTooltips             ? true : false, false);
         settings->SetFileManagerPreviewInTooltips     (m_FileManagerPreviewInTooltips    ? true : false, false);
         settings->SetFileManagerPreviewLines          (m_FileManagerPreviewLines                       , false);
-        settings->SetFileManagerShellContexMenu       (m_FileManagerShellContexMenu      ? true : false, false);
-        settings->SetFileManagerShellContexMenuFilter (m_FileManagerShellContexMenuFilter              , false);
+        
+        //settings->SetFileManagerShellContexMenu       (m_FileManagerShellContexMenu      ? true : false, false);
+        //settings->SetFileManagerShellContexMenuFilter (Common::str(m_FileManagerShellContexMenuFilter), false);
+        settings->SetFileManagerShellContexMenuProperties (m_FileManagerShellContexMenuProperties  ? true : false, false);
+        settings->SetFileManagerShellContexMenuTortoiseGIT(m_FileManagerShellContexMenuTortoiseGIT ? true : false, false);
+        settings->SetFileManagerShellContexMenuTortoiseSVN(m_FileManagerShellContexMenuTortoiseSVN ? true : false, false);
 
         settings->SetHistoryRestoreEditorState       (m_HistoryRestoreEditorState      , false);
         settings->SetHistoryFiles                    (m_HistoryFiles                   , false);
@@ -128,7 +145,7 @@ BOOL COEFileManagerPage::OnApply()
     }
     _OE_DEFAULT_HANDLER_;
 
-	return TRUE;
+    return TRUE;
 }
 
 void COEFileManagerPage::OnUpdateData()

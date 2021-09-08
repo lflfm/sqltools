@@ -13,7 +13,7 @@
     static const char* CONN_LIST = "Connections";
     static const char* CONN_ELEM = "Connection";
 
-ConnectDataXmlStreamer::ConnectDataXmlStreamer (const std::string& filename, bool backup)
+ConnectDataXmlStreamer::ConnectDataXmlStreamer (const std::wstring& filename, bool backup)
     : XmlStreamerBase(filename, backup), 
     m_overridePassword(false)
 {
@@ -43,7 +43,7 @@ void ConnectDataXmlStreamer::read (const TiXmlDocument& doc, void* ctx)
             }
         }
         else 
-            THROW_APP_EXCEPTION("\"" + getFilename() + "\" does not contain connection information.");
+            THROW_APP_EXCEPTION(L"\"" + getFilename() + L"\" does not contain connection information.");
     }
 }
 
@@ -101,7 +101,7 @@ void ConnectDataXmlStreamer::write (TiXmlDocument& doc, bool createNew, const vo
             }
             if (it->m_status == ConnectEntry::MODIFIED) 
             {
-                TiXmlElement* connElem = new TiXmlElement(CONN_ELEM);
+                /*TiXmlElement**/ connElem = new TiXmlElement(CONN_ELEM);
                 connListElem->LinkEndChild(connElem);
                 writeAwareness(*it, connElem);
                 it->m_status = ConnectEntry::UPTODATE;

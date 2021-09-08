@@ -86,6 +86,8 @@ static const char expl_clear[] = "DELETE FROM <PLAN_TABLE> WHERE statement_id = 
         {
             try
             {
+                m_proxy.SetActivePrimeExecution(true);
+
                 srand((UINT)time(NULL));
         
                 char sttm_id[80];
@@ -265,6 +267,19 @@ static const char expl_clear[] = "DELETE FROM <PLAN_TABLE> WHERE statement_id = 
             {
                 SetError(x.what());
             }
+            catch (const DocumentProxy::document_destroyed& x)
+            {
+                SetError(x.what());
+                m_proxy.SetActivePrimeExecution(false);
+                throw;
+            }
+            catch (...)
+            {
+                m_proxy.SetActivePrimeExecution(false);
+                throw;
+            }
+
+            m_proxy.SetActivePrimeExecution(false);
         }
 
         void ReturnInForeground ()
@@ -272,7 +287,7 @@ static const char expl_clear[] = "DELETE FROM <PLAN_TABLE> WHERE statement_id = 
             if (m_proxy.IsOk()) // check if document was not closed
             {
                 m_doc.GetExplainPlanView()->SetSource(m_source);
-	            m_doc.GetExplainPlanTextView()->SetWindowText(m_text_plan_output.c_str());
+	            m_doc.GetExplainPlanTextView()->SetWindowText(Common::wstr(m_text_plan_output).c_str());
                 m_doc.ActivatePlanTab();
             }
         }

@@ -224,7 +224,7 @@ BOOL CPropTreeList::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 		{
 			case HTCOLUMN:
 				//SetCursor(AfxGetApp()->LoadCursor(MAKEINTRESOURCE(IDC_PROPTREE_SPLITTER)));
-				SetCursor(AfxGetApp()->LoadCursor("IDC_PROPTREE_SPLITTER")); // (ak)
+				SetCursor(AfxGetApp()->LoadCursor(_T("IDC_PROPTREE_SPLITTER"))); // (ak)
 				return TRUE;
 /*
 			case HTCHECKBOX:
